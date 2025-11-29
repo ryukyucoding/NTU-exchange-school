@@ -2,6 +2,9 @@
 
 一個基於 React + TypeScript + Vite 的台大交換學校申請系統，提供地圖和表格兩種視圖模式，幫助學生快速找到適合的交換學校。
 
+# Deploy Link
+https://ntu-exchange-school.vercel.app
+
 ## 🎯 系統功能
 
 - **地圖視圖**：在地圖上顯示所有交換學校位置，支援縮放和標記點擊
