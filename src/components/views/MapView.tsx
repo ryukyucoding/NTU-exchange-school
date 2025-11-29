@@ -138,7 +138,7 @@ export default function MapView({ schools }: MapViewProps) {
             closeButton={false}
             closeOnClick={false}
             maxWidth="320px"
-            offset={[0, -10]}
+            offset={[0, -10] as [number, number]}
             anchor="bottom"
             style={{
               background: 'transparent',

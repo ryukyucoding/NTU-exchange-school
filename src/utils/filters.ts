@@ -65,8 +65,13 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
     }
 
     // 名額篩選
-    if (filters.quotaMin !== null) {
-      if (school.quota < filters.quotaMin) return false;
+    if (filters.quotaMin !== null && school.quota) {
+      // Extract number from quota string (e.g., "全學年5名" -> 5)
+      const quotaMatch = school.quota.match(/(\d+)/);
+      if (quotaMatch) {
+        const quotaNum = parseInt(quotaMatch[1], 10);
+        if (!isNaN(quotaNum) && quotaNum < filters.quotaMin) return false;
+      }
     }
 
     // 學期篩選

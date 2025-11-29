@@ -10,12 +10,12 @@ export default function SimpleFilterPanel() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = () => {
-    updateFilters({ keyword: searchTerm });
+    updateFilters({ searchKeyword: searchTerm });
   };
 
   const clearFilters = () => {
     setSearchTerm('');
-    updateFilters({ keyword: '' });
+    updateFilters({ searchKeyword: '' });
   };
 
   return (
@@ -86,7 +86,7 @@ export default function SimpleFilterPanel() {
           </div>
 
           {/* 清除按鈕 */}
-          {(filters.regions.length > 0 || filters.keyword) && (
+          {(filters.regions.length > 0 || filters.searchKeyword) && (
             <Button
               variant="outline"
               size="sm"

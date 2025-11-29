@@ -5,8 +5,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, XCircle, Minus } from 'lucide-react';
 
 interface CompareModalProps {
   schools: SchoolWithMatch[];
@@ -16,12 +14,6 @@ interface CompareModalProps {
 
 export default function CompareModal({ schools, open, onClose }: CompareModalProps) {
   if (schools.length === 0) return null;
-
-  const CompareIcon = ({ value }: { value: boolean | null }) => {
-    if (value === true) return <CheckCircle2 className="w-5 h-5 text-green-500" />;
-    if (value === false) return <XCircle className="w-5 h-5 text-red-500" />;
-    return <Minus className="w-5 h-5 text-gray-400" />;
-  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

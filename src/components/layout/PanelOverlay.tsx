@@ -13,7 +13,7 @@ export default function PanelOverlay({
   isVisible,
   onClose,
   children,
-  panelType
+  panelType: _panelType,
 }: PanelOverlayProps) {
   return (
     <AnimatePresence mode="wait">
