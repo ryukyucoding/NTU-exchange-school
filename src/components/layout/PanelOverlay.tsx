@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { PanelType } from '@/hooks/usePanelManager';
 import { motion, AnimatePresence } from 'framer-motion';

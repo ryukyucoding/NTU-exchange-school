@@ -1,3 +1,5 @@
+'use client';
+
 import { SchoolWithMatch } from '@/types/school';
 import {
   Dialog,

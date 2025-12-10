@@ -1,3 +1,5 @@
+'use client';
+
 import { useUserContext } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

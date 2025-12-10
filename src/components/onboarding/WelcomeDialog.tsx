@@ -16,14 +16,17 @@ export default function WelcomeDialog() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    if (!hasSeenWelcome) {
-      setOpen(true);
+    // 只在客戶端檢查 localStorage
+    if (typeof window !== 'undefined') {
+      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+      if (!hasSeenWelcome) {
+        setOpen(true);
+      }
     }
   }, []);
 
   const handleClose = () => {
-    if (dontShowAgain) {
+    if (dontShowAgain && typeof window !== 'undefined') {
       localStorage.setItem('hasSeenWelcome', 'true');
     }
     setOpen(false);

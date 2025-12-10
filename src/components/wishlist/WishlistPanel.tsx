@@ -1,3 +1,5 @@
+'use client';
+
 import { useWishlist } from '@/contexts/WishlistContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,10 +16,16 @@ export default function WishlistPanel() {
   const [submittedApplication, setSubmittedApplication] = useState<any>(null);
 
   useEffect(() => {
-    // 檢查是否有已提交的申請
-    const savedApplication = localStorage.getItem('applicationPreferences');
-    if (savedApplication) {
-      setSubmittedApplication(JSON.parse(savedApplication));
+    // 檢查是否有已提交的申請（只在客戶端）
+    if (typeof window !== 'undefined') {
+      const savedApplication = localStorage.getItem('applicationPreferences');
+      if (savedApplication) {
+        try {
+          setSubmittedApplication(JSON.parse(savedApplication));
+        } catch (error) {
+          console.error('Failed to parse application preferences:', error);
+        }
+      }
     }
   }, []);
 
@@ -95,7 +103,9 @@ export default function WishlistPanel() {
 
   const handleResetApplication = () => {
     if (confirm('確定要重新開始申請流程嗎？這將清除您目前已送出的志願。')) {
-      localStorage.removeItem('applicationPreferences');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('applicationPreferences');
+      }
       setSubmittedApplication(null);
       toast.success('已重置申請狀態');
     }

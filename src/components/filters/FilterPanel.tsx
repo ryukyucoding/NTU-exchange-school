@@ -1,3 +1,5 @@
+'use client';
+
 import { useFilters } from '@/contexts/FilterContext';
 import { useUserContext } from '@/contexts/UserContext';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';

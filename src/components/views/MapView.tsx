@@ -1,3 +1,5 @@
+'use client';
+
 import { SchoolWithMatch } from '@/types/school';
 import Map, { Marker, Popup } from 'react-map-gl';
 import { Badge } from '@/components/ui/badge';

@@ -1,0 +1,212 @@
+# 📁 Supabase 整合檔案結構
+
+## 新增的檔案和目錄
+
+```
+專案根目錄/
+│
+├── 📁 supabase/                          # Supabase 資料庫相關
+│   └── schema.sql                        # ⭐ 資料表結構定義
+│
+├── 📁 scripts/                           # 資料處理腳本
+│   ├── import-to-supabase.ts             # ⭐ CSV 資料匯入腳本
+│   └── test-supabase-connection.ts       # ⭐ 連線測試腳本
+│
+├── 📁 docs/                              # 文件
+│   ├── SUPABASE_SETUP.md                 # ⭐ 詳細設定指南（15分鐘）
+│   └── QUICK_START.md                    # ⭐ 快速開始指南（5分鐘）
+│
+├── 📁 src/
+│   ├── 📁 lib/
+│   │   └── supabase.ts                   # ⭐ Supabase 客戶端設定
+│   │
+│   ├── 📁 types/
+│   │   └── supabase.ts                   # ⭐ Supabase 資料庫型別
+│   │
+│   └── 📁 contexts/
+│       ├── SchoolContext.tsx             # 原始 CSV 版本（保留）
+│       └── SchoolContext.supabase.tsx    # ⭐ Supabase 版本（新增）
+│
+├── .env.example                          # ⭐ 環境變數範例（已更新）
+├── package.json                          # ⭐ 新增 import-data 和 test-db 腳本
+│
+├── SUPABASE_README.md                    # ⭐ 總覽文件
+├── SUPABASE_MIGRATION.md                 # ⭐ 遷移指南
+└── SUPABASE_FILES.txt                    # 本檔案
+
+```
+
+## 檔案說明
+
+### 🗄️ 核心資料庫檔案
+
+1. **supabase/schema.sql**
+   - 用途：建立資料表、索引、RLS 政策
+   - 何時使用：Supabase 專案建立後執行一次
+   - 大小：~3 KB
+
+2. **scripts/import-to-supabase.ts**
+   - 用途：將 CSV 資料匯入 Supabase
+   - 何時使用：資料更新時執行
+   - 執行方式：npm run import-data
+
+3. **scripts/test-supabase-connection.ts**
+   - 用途：測試 Supabase 連線和資料完整性
+   - 何時使用：設定完成後、除錯時
+   - 執行方式：npm run test-db
+
+### 🔧 前端整合檔案
+
+4. **src/lib/supabase.ts**
+   - 用途：初始化 Supabase 客戶端
+   - 匯入：import { supabase } from '@/lib/supabase'
+   - 大小：~500 bytes
+
+5. **src/types/supabase.ts**
+   - 用途：TypeScript 型別定義
+   - 匯入：import type { Database } from '@/types/supabase'
+   - 自動產生：未來可用 Supabase CLI 自動產生
+
+6. **src/contexts/SchoolContext.supabase.tsx**
+   - 用途：使用 Supabase 的 React Context
+   - 切換方式：重新命名為 SchoolContext.tsx
+   - 相容性：100% 與現有介面相容
+
+### 📚 文件檔案
+
+7. **docs/QUICK_START.md**
+   - 目標讀者：想快速開始的人
+   - 預估時間：5 分鐘
+   - 內容：精簡的步驟指南
+
+8. **docs/SUPABASE_SETUP.md**
+   - 目標讀者：第一次設定的人
+   - 預估時間：15 分鐘
+   - 內容：完整的教學、常見問題
+
+9. **SUPABASE_MIGRATION.md**
+   - 目標讀者：開發團隊
+   - 內容：技術細節、架構說明、擴充建議
+
+10. **SUPABASE_README.md**
+    - 目標讀者：所有人
+    - 內容：總覽、快速參考、檢查清單
+
+### ⚙️ 設定檔
+
+11. **.env.example**
+    - 新增欄位：
+      - VITE_SUPABASE_URL
+      - VITE_SUPABASE_ANON_KEY
+      - SUPABASE_SERVICE_ROLE_KEY
+    - 注意：記得複製為 .env 並填入真實值
+
+12. **package.json**
+    - 新增腳本：
+      - npm run import-data
+      - npm run test-db
+
+## 檔案大小統計
+
+```
+總計：約 50 KB
+
+- SQL 腳本：3 KB
+- TypeScript 檔案：20 KB
+- Markdown 文件：25 KB
+- 設定檔：2 KB
+```
+
+## 依賴套件
+
+需要安裝的新套件：
+
+```json
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.x.x"  // ~100 KB
+  },
+  "devDependencies": {
+    "tsx": "^4.x.x",                    // 用於執行 TS 腳本
+    "@types/node": "^20.x.x"            // Node.js 型別定義
+  }
+}
+```
+
+## 使用流程
+
+```
+1. 安裝套件
+   npm install @supabase/supabase-js
+   npm install -D tsx @types/node
+   
+2. 建立 Supabase 專案
+   https://supabase.com/dashboard
+   
+3. 執行 SQL
+   複製 supabase/schema.sql 到 SQL Editor
+   
+4. 設定環境變數
+   cp .env.example .env
+   # 編輯 .env 填入金鑰
+   
+5. 測試連線
+   npm run test-db
+   
+6. 匯入資料
+   npm run import-data
+   
+7. 切換前端
+   mv src/contexts/SchoolContext.tsx src/contexts/SchoolContext.csv.tsx
+   mv src/contexts/SchoolContext.supabase.tsx src/contexts/SchoolContext.tsx
+   
+8. 啟動開發
+   npm run dev
+```
+
+## Git 管理建議
+
+### 應該提交的檔案 ✅
+- supabase/schema.sql
+- scripts/*.ts
+- src/lib/supabase.ts
+- src/types/supabase.ts
+- src/contexts/SchoolContext.supabase.tsx
+- docs/*.md
+- .env.example
+- package.json
+
+### 不應提交的檔案 ❌
+- .env（包含敏感金鑰）
+- node_modules/
+- dist/
+
+### .gitignore 確認
+確保 .gitignore 包含：
+```
+.env
+.env.local
+.env.*.local
+```
+
+## 維護建議
+
+### 每週
+- 檢查 Supabase Dashboard 使用量
+- 監控資料庫大小
+
+### 每月
+- 備份資料庫（Supabase 提供自動備份）
+- 檢查 API 請求次數
+
+### 每季
+- 更新 @supabase/supabase-js 套件
+- 檢視並優化 SQL 查詢
+
+## 支援與幫助
+
+- 快速問題：查看 SUPABASE_README.md
+- 設定問題：查看 docs/SUPABASE_SETUP.md
+- 技術細節：查看 SUPABASE_MIGRATION.md
+- 官方文件：https://supabase.com/docs
+

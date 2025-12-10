@@ -54,11 +54,13 @@ export default function ApplicationSummary({
     setSubmitted(true);
     toast.success('申請志願已確認！');
 
-    // 儲存到 localStorage
-    localStorage.setItem('applicationPreferences', JSON.stringify({
-      preferences,
-      submittedAt: new Date().toISOString(),
-    }));
+    // 儲存到 localStorage（只在客戶端）
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('applicationPreferences', JSON.stringify({
+        preferences,
+        submittedAt: new Date().toISOString(),
+      }));
+    }
   };
 
   const handleExport = () => {

@@ -22,14 +22,28 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [wishlist, setWishlist] = useState<WishlistItem[]>(() => {
-    const saved = localStorage.getItem('wishlist');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
+  // 初始化：只在客戶端載入 localStorage
   useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    setIsClient(true);
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      try {
+        setWishlist(JSON.parse(saved));
+      } catch (error) {
+        console.error('Failed to parse wishlist:', error);
+      }
+    }
+  }, []);
+
+  // 保存到 localStorage（只在客戶端）
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+  }, [wishlist, isClient]);
 
   const addToWishlist = (school: SchoolWithMatch) => {
     if (wishlist.some(item => item.school.id === school.id)) {

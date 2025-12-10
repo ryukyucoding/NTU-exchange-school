@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { School } from '@/types/school';
 import { loadSchools } from '@/utils/csv';
@@ -23,6 +25,7 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
       const data = await loadSchools();
       setSchools(data);
     } catch (err) {
+      console.error('載入學校資料失敗:', err);
       setError(err as Error);
     } finally {
       setLoading(false);

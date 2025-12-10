@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { useFilters } from '@/contexts/FilterContext';
 import { Button } from '@/components/ui/button';
