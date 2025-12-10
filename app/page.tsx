@@ -1,17 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import { useFilters } from '@/contexts/FilterContext';
 import { useUserContext } from '@/contexts/UserContext';
 import { useFilteredSchools } from '@/hooks/useFilteredSchools';
 import { usePanelManager } from '@/hooks/usePanelManager';
 import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
-import { ViewMode } from '@/components/layout/ViewModeSwitcher';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
-import TableView from '@/components/views/TableView';
 import MapView from '@/components/views/MapView';
-import WishlistPanel from '@/components/wishlist/WishlistPanel';
 import WelcomeDialog from '@/components/onboarding/WelcomeDialog';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { Button } from '@/components/ui/button';
@@ -66,36 +62,6 @@ function UnifiedPanelManager() {
         </motion.div>
       </PanelOverlay>
 
-      {/* 收藏面板 */}
-      <PanelOverlay
-        isVisible={panels.wishlist.isExpanded}
-        onClose={() => collapsePanel('wishlist')}
-        panelType="wishlist"
-      >
-        <motion.div
-          className="fixed top-40 right-4 z-20 w-80"
-          initial={{ opacity: 0, x: 100, scale: 0.9 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: 100, scale: 0.9 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-        >
-          <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-semibold">收藏學校</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => collapsePanel('wishlist')}
-                className="text-white/70 hover:text-white hover:bg-white/20"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <WishlistPanel />
-          </div>
-        </motion.div>
-      </PanelOverlay>
-
       {/* 收合按鈕 */}
       <AnimatePresence>
         {!isAnyPanelOpen && (
@@ -114,19 +80,7 @@ function UnifiedPanelManager() {
               />
             </motion.div>
 
-            {/* 收藏收合按鈕 */}
-            <motion.div
-              initial={{ opacity: 0, x: 50, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 50, scale: 0.8 }}
-              transition={{ duration: 0.3, ease: "easeInOut", delay: 0.1 }}
-            >
-              <CollapseButton
-                top="top-56"
-                text="收<br />藏<br />學<br />校"
-                onClick={() => expandPanel('wishlist')}
-              />
-            </motion.div>
+            {/* 預留位置：未來可加入更多收合按鈕 */}
           </>
         )}
       </AnimatePresence>
@@ -163,8 +117,6 @@ function MainContent() {
   const { user } = useUserContext();
   const filteredSchools = useFilteredSchools(schools, filters, user);
 
-  const [viewMode, setViewMode] = useState<ViewMode>('map');
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -176,42 +128,13 @@ function MainContent() {
     );
   }
 
-  // 地圖模式使用滿版佈局
-  if (viewMode === 'map') {
-    return (
-      <div className="relative h-screen w-full">
-        <FloatingSearchBar
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          schoolCount={filteredSchools.length}
-        />
-
-        <UnifiedPanelManager />
-
-        <MapView schools={filteredSchools} />
-      </div>
-    );
-  }
-
-  // 其他模式使用與地圖模式一致的佈局
   return (
-    <div className="relative min-h-screen bg-black">
-      <FloatingSearchBar
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        schoolCount={filteredSchools.length}
-      />
+    <div className="relative h-screen w-full">
+      <FloatingSearchBar schoolCount={filteredSchools.length} />
 
       <UnifiedPanelManager />
 
-      {/* 主要內容區域 */}
-      <div className="pt-32 px-4 pb-6 pointer-events-auto relative z-10">
-        <div className="container mx-auto">
-          <div className="mt-8">
-            {viewMode === 'table' && <TableView schools={filteredSchools} />}
-          </div>
-        </div>
-      </div>
+      <MapView schools={filteredSchools} />
     </div>
   );
 }

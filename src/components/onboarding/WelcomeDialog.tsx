@@ -8,12 +8,9 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 
 export default function WelcomeDialog() {
   const [open, setOpen] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   useEffect(() => {
     // 只在客戶端檢查 localStorage
@@ -21,14 +18,13 @@ export default function WelcomeDialog() {
       const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
       if (!hasSeenWelcome) {
         setOpen(true);
+        // 一旦顯示過，就記錄起來，避免後續路由切換再次彈出
+        localStorage.setItem('hasSeenWelcome', 'true');
       }
     }
   }, []);
 
   const handleClose = () => {
-    if (dontShowAgain && typeof window !== 'undefined') {
-      localStorage.setItem('hasSeenWelcome', 'true');
-    }
     setOpen(false);
   };
 
@@ -88,17 +84,7 @@ export default function WelcomeDialog() {
           </div>
         </div>
 
-        <DialogFooter className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="dontShow"
-              checked={dontShowAgain}
-              onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
-            />
-            <Label htmlFor="dontShow" className="text-sm cursor-pointer">
-              不再顯示此訊息
-            </Label>
-          </div>
+        <DialogFooter className="flex items-center justify-end">
           <Button onClick={handleClose}>開始使用</Button>
         </DialogFooter>
       </DialogContent>

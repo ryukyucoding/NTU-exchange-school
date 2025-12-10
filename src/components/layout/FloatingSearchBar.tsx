@@ -4,22 +4,15 @@ import { useState } from 'react';
 import { Search, X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import ViewModeSwitcher, { ViewMode } from './ViewModeSwitcher';
 import { useFilters } from '@/contexts/FilterContext';
 import { usePanelManager } from '@/hooks/usePanelManager';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FloatingSearchBarProps {
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
   schoolCount: number;
 }
 
-export default function FloatingSearchBar({ 
-  viewMode, 
-  onViewModeChange, 
-  schoolCount 
-}: FloatingSearchBarProps) {
+export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProps) {
   const { filters, updateFilters } = useFilters();
   const [searchTerm, setSearchTerm] = useState(filters.searchKeyword || '');
   const panelManager = usePanelManager();
@@ -141,9 +134,6 @@ export default function FloatingSearchBar({
               <MapPin className="w-4 h-4" />
             </Button>
           </div>
-
-          {/* 視圖模式切換 */}
-          <ViewModeSwitcher currentMode={viewMode} onModeChange={onViewModeChange} />
 
           {/* 學校數量顯示 */}
           <div className="text-white text-sm drop-shadow-lg whitespace-nowrap">
