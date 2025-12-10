@@ -14,7 +14,7 @@ export interface PanelManager {
   togglePanel: (panelType: PanelType) => void;
   collapseAllPanels: () => void;
   isAnyPanelOpen: boolean;
-  getPanelRef: (panelType: PanelType) => React.RefObject<HTMLDivElement>;
+  getPanelRef: (panelType: PanelType) => React.RefObject<HTMLDivElement | null>;
 }
 
 export function usePanelManager(): PanelManager {
@@ -62,7 +62,7 @@ export function usePanelManager(): PanelManager {
 
   const isAnyPanelOpen = Object.values(panels).some(panel => panel.isExpanded);
 
-  const getPanelRef = (panelType: PanelType): React.RefObject<HTMLDivElement> => {
+  const getPanelRef = (panelType: PanelType): React.RefObject<HTMLDivElement | null> => {
     switch (panelType) {
       case 'search': return searchRef;
       case 'user': return userRef;
