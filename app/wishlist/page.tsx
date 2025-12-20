@@ -8,8 +8,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUp, ArrowDown, HeartOff, PlusCircle, CheckCircle2, GripVertical, ArrowUpFromLine, ArrowDownFromLine } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { SchoolWithMatch } from '@/types/school';
+import RouteGuard from '@/components/auth/RouteGuard';
 
-export default function WishlistPage() {
+function WishlistContent() {
   const { wishlist, removeFromWishlist } = useWishlist();
   const [preferences, setPreferences] = useState<
     { id: string; school: SchoolWithMatch; addedAt: number }[]
@@ -262,6 +263,14 @@ export default function WishlistPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function WishlistPage() {
+  return (
+    <RouteGuard>
+      <WishlistContent />
+    </RouteGuard>
   );
 }
 

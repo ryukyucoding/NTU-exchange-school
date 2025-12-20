@@ -132,7 +132,13 @@ function TableContent() {
   );
 }
 
+import RouteGuard from '@/components/auth/RouteGuard';
+
 export default function TablePage() {
-  return <TableContent />;
+  return (
+    <RouteGuard>
+      <TableContent />
+    </RouteGuard>
+  );
 }
 

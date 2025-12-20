@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import UserMenu from '@/components/auth/UserMenu';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -75,6 +76,9 @@ export default function AppShell({ children }: AppShellProps) {
           role="presentation"
         />
       )}
+
+      {/* 右上角用戶選單 */}
+      <UserMenu />
 
       {/* 主要內容 */}
       <div className="relative">{children}</div>

@@ -1,6 +1,8 @@
 'use client';
 
-export default function SocialPage() {
+import RouteGuard from '@/components/auth/RouteGuard';
+
+function SocialContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-blue-50">
       <div className="bg-white shadow-xl rounded-2xl p-10 max-w-lg text-center border border-slate-200">
@@ -10,6 +12,14 @@ export default function SocialPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SocialPage() {
+  return (
+    <RouteGuard>
+      <SocialContent />
+    </RouteGuard>
   );
 }
 
