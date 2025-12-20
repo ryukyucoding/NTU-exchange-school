@@ -1,12 +1,12 @@
 'use client';
 
 import { SchoolWithMatch } from '@/types/school';
-import Map, { Marker, Popup } from 'react-map-gl';
+import Map, { Marker, Popup, useMap } from 'react-map-gl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, ExternalLink, X, Info } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapViewProps {
@@ -28,10 +28,258 @@ function getMarkerColor(applicationGroup: string): string {
   return groupColors[applicationGroup] || '#6B7280'; // 預設灰色
 }
 
-export default function MapView({ schools }: MapViewProps) {
+// 內部組件：用於獲取地圖實例並計算 Popup 位置
+function PopupWithDynamicPosition({ 
+  school, 
+  onClose 
+}: { 
+  school: SchoolWithMatch; 
+  onClose: () => void;
+}) {
+  const { current: map } = useMap();
+  const [popupAnchor, setPopupAnchor] = useState<'top' | 'bottom'>('bottom');
+  const [popupOffset, setPopupOffset] = useState<[number, number]>([0, -10]);
+
+  // 計算地標在畫面中的位置並設置 Popup 位置
+  const calculatePopupPosition = useCallback(() => {
+    if (!map) return;
+
+    try {
+      // 將經緯度轉換為屏幕坐標（point.y 是從頂部開始的像素距離）
+      const point = map.project([school.longitude, school.latitude]);
+      
+      // 獲取地圖容器的尺寸
+      const mapContainer = map.getContainer();
+      if (!mapContainer) return;
+      
+      const mapHeight = mapContainer.clientHeight;
+      if (mapHeight === 0) return;
+      
+      // 計算地標在畫面中的垂直位置（百分比，0 = 頂部，1 = 底部）
+      const verticalPosition = point.y / mapHeight;
+      
+      // react-map-gl 的 anchor 屬性：
+      // - anchor="top": Popup 的頂部錨定到地標，Popup 顯示在地標下方
+      // - anchor="bottom": Popup 的底部錨定到地標，Popup 顯示在地標上方
+      
+      // 如果地標在畫面上半部（垂直位置 <= 50%），Popup 顯示在地標下方
+      // 如果地標在畫面下半部（垂直位置 > 50%），Popup 顯示在地標上方
+      if (verticalPosition <= 0.5) {
+        // 地標在上半部，視窗顯示在下方
+        setPopupAnchor('top');
+        setPopupOffset([0, 10]); // 向下偏移 10px
+      } else {
+        // 地標在下半部，視窗顯示在上方
+        setPopupAnchor('bottom');
+        setPopupOffset([0, -10]); // 向上偏移 10px
+      }
+    } catch (error) {
+      // 如果計算失敗，使用預設值（顯示在下方）
+      setPopupAnchor('top');
+      setPopupOffset([0, 10]);
+    }
+  }, [map, school.longitude, school.latitude]);
+
+  // 當學校改變或地圖移動/縮放時重新計算位置
+  useEffect(() => {
+    if (!map) return;
+    
+    // 立即計算位置（使用多個時機確保計算成功）
+    const calculate = () => {
+      requestAnimationFrame(() => {
+        calculatePopupPosition();
+      });
+    };
+    
+    // 立即計算一次
+    calculate();
+    
+    // 如果地圖已加載，立即再計算一次
+    if (map.loaded()) {
+      calculate();
+    } else {
+      map.once('load', calculate);
+    }
+    
+    // 監聽地圖移動和縮放事件
+    const updatePosition = () => {
+      requestAnimationFrame(() => {
+        calculatePopupPosition();
+      });
+    };
+    map.on('move', updatePosition);
+    map.on('zoom', updatePosition);
+    map.on('render', updatePosition);
+    
+    return () => {
+      map.off('move', updatePosition);
+      map.off('zoom', updatePosition);
+      map.off('render', updatePosition);
+    };
+  }, [map, school.longitude, school.latitude, calculatePopupPosition]);
+
+  return (
+    <Popup
+      longitude={school.longitude}
+      latitude={school.latitude}
+      onClose={onClose}
+      closeButton={false}
+      closeOnClick={false}
+      maxWidth="320px"
+      offset={popupOffset}
+      anchor={popupAnchor}
+      style={{
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
+        padding: 0
+      }}
+    >
+      <PopupContent school={school} onClose={onClose} />
+    </Popup>
+  );
+}
+
+// Popup 內容組件
+function PopupContent({ 
+  school, 
+  onClose 
+}: { 
+  school: SchoolWithMatch; 
+  onClose: () => void;
+}) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+
+  return (
+    <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4 relative w-80 flex flex-col">
+      {/* 關閉按鈕 */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 text-white/70 hover:text-white hover:bg-white/20"
+        onClick={() => {
+          onClose();
+          setShowDetails(false);
+        }}
+      >
+        <X className="w-4 h-4" />
+      </Button>
+      
+      {/* 標題區域 */}
+      <div className="flex justify-between items-start mb-4 pr-8">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg text-white font-semibold truncate">{school.name_zh}</h3>
+          <p className="text-sm text-white/70 truncate">{school.name_en}</p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-white border-white/30">
+              {school.country}
+            </Badge>
+            <Badge variant="outline" className="text-white border-white/30">
+              {school.region === 'Americas' ? '美洲' : 
+               school.region === 'Europe' ? '歐洲' :
+               school.region === 'Asia' ? '亞洲' :
+               school.region === 'Oceania' ? '大洋洲' : school.region}
+            </Badge>
+          </div>
+        </div>
+
+        <Button
+          variant={isInWishlist(school.id) ? "default" : "outline"}
+          size="icon"
+          className="ml-2 flex-shrink-0"
+          onClick={() => {
+            if (isInWishlist(school.id)) {
+              removeFromWishlist(school.id);
+            } else {
+              addToWishlist(school);
+            }
+          }}
+        >
+          <Heart className={isInWishlist(school.id) ? "fill-current" : ""} />
+        </Button>
+      </div>
+
+      {/* 詳細資料區域 */}
+      {showDetails && (
+        <div className="mb-4 space-y-3 text-sm">
+          <div className="flex justify-between">
+            <span className="text-white/70">申請組別:</span>
+            <span className="font-medium text-white text-right">
+              {school.application_group || '無限制'}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-white/70">年級限制:</span>
+            <span className="font-medium text-white text-right">
+              {school.grade_requirement || '無限制'}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-white/70">GPA 要求:</span>
+            <span className="font-medium text-white text-right">
+              {school.gpa_min ? `${school.gpa_min} 以上` : '無限制'}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-white/70">學院限制:</span>
+            <span className="font-medium text-white text-right">
+              {school.restricted_colleges && school.restricted_colleges !== '無' && school.restricted_colleges.trim() !== ''
+                ? school.restricted_colleges 
+                : '無限制'}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-white/70">語言要求:</span>
+            <span className="font-medium text-white text-right">
+              {(() => {
+                const requirements = [];
+                if (school.toefl_ibt) requirements.push(`TOEFL ${school.toefl_ibt}`);
+                if (school.ielts) requirements.push(`IELTS ${school.ielts}`);
+                if (school.toeic) requirements.push(`TOEIC ${school.toeic}`);
+                return requirements.length > 0 ? requirements.join(' / ') : '無限制';
+              })()}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-white/70">名額:</span>
+            <span className="font-medium text-white text-right">
+              {school.quota || '未提供'}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 按鈕區域 */}
+      <div className="flex gap-2 pt-3 border-t border-white/20">
+        <Button
+          variant="outline"
+          className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
+          onClick={() => setShowDetails(!showDetails)}
+        >
+          <Info className="w-4 h-4 mr-2" />
+          詳細資訊
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="bg-white/10 text-white hover:bg-white/20"
+          onClick={() => window.open(school.url, '_blank')}
+        >
+          <ExternalLink className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function MapView({ schools }: MapViewProps) {
+  const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
 
   // 過濾掉沒有有效經緯度的學校
   const schoolsWithCoordinates = schools.filter(school => 
@@ -133,146 +381,10 @@ export default function MapView({ schools }: MapViewProps) {
         })}
 
         {selectedSchool && (
-          <Popup
-            longitude={selectedSchool.longitude}
-            latitude={selectedSchool.latitude}
+          <PopupWithDynamicPosition
+            school={selectedSchool}
             onClose={() => setSelectedSchool(null)}
-            closeButton={false}
-            closeOnClick={false}
-            maxWidth="320px"
-            offset={[0, -10] as [number, number]}
-            anchor="bottom"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              boxShadow: 'none',
-              padding: 0
-            }}
-          >
-            <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4 relative w-80 flex flex-col">
-              {/* 關閉按鈕 */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 text-white/70 hover:text-white hover:bg-white/20"
-                onClick={() => {
-                  setSelectedSchool(null);
-                  setShowDetails(false);
-                }}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-              
-              {/* 標題區域 */}
-              <div className="flex justify-between items-start mb-4 pr-8">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg text-white font-semibold truncate">{selectedSchool.name_zh}</h3>
-                  <p className="text-sm text-white/70 truncate">{selectedSchool.name_en}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="outline" className="text-white border-white/30">
-                      {selectedSchool.country}
-                    </Badge>
-                    <Badge variant="outline" className="text-white border-white/30">
-                      {selectedSchool.region === 'Americas' ? '美洲' : 
-                       selectedSchool.region === 'Europe' ? '歐洲' :
-                       selectedSchool.region === 'Asia' ? '亞洲' :
-                       selectedSchool.region === 'Oceania' ? '大洋洲' : selectedSchool.region}
-                    </Badge>
-                  </div>
-                </div>
-
-                <Button
-                  variant={isInWishlist(selectedSchool.id) ? "default" : "outline"}
-                  size="icon"
-                  className="ml-2 flex-shrink-0"
-                  onClick={() => {
-                    if (isInWishlist(selectedSchool.id)) {
-                      removeFromWishlist(selectedSchool.id);
-                    } else {
-                      addToWishlist(selectedSchool);
-                    }
-                  }}
-                >
-                  <Heart className={isInWishlist(selectedSchool.id) ? "fill-current" : ""} />
-                </Button>
-              </div>
-
-              {/* 詳細資料區域 */}
-              {showDetails && (
-                <div className="mb-4 space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-white/70">申請組別:</span>
-                    <span className="font-medium text-white text-right">
-                      {selectedSchool.application_group || '無限制'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-white/70">年級限制:</span>
-                    <span className="font-medium text-white text-right">
-                      {selectedSchool.grade_requirement || '無限制'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-white/70">GPA 要求:</span>
-                    <span className="font-medium text-white text-right">
-                      {selectedSchool.gpa_min ? `${selectedSchool.gpa_min} 以上` : '無限制'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-white/70">學院限制:</span>
-                    <span className="font-medium text-white text-right">
-                      {selectedSchool.restricted_colleges && selectedSchool.restricted_colleges !== '無' && selectedSchool.restricted_colleges.trim() !== ''
-                        ? selectedSchool.restricted_colleges 
-                        : '無限制'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-white/70">語言要求:</span>
-                    <span className="font-medium text-white text-right">
-                      {(() => {
-                        const requirements = [];
-                        if (selectedSchool.toefl_ibt) requirements.push(`TOEFL ${selectedSchool.toefl_ibt}`);
-                        if (selectedSchool.ielts) requirements.push(`IELTS ${selectedSchool.ielts}`);
-                        if (selectedSchool.toeic) requirements.push(`TOEIC ${selectedSchool.toeic}`);
-                        return requirements.length > 0 ? requirements.join(' / ') : '無限制';
-                      })()}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-white/70">名額:</span>
-                    <span className="font-medium text-white text-right">
-                      {selectedSchool.quota || '未提供'}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* 按鈕區域 */}
-              <div className="flex gap-2 pt-3 border-t border-white/20">
-                <Button
-                  variant="outline"
-                  className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
-                  onClick={() => setShowDetails(!showDetails)}
-                >
-                  <Info className="w-4 h-4 mr-2" />
-                  詳細資訊
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-white/10 text-white hover:bg-white/20"
-                  onClick={() => window.open(selectedSchool.url, '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </Popup>
+          />
         )}
       </Map>
     </div>
