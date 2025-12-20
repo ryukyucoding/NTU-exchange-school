@@ -58,7 +58,7 @@ function UnifiedPanelManager() {
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            <UserQualificationPanel />
+            <UserQualificationPanel onApply={() => collapsePanel('user')} />
           </div>
         </motion.div>
       </PanelOverlay>
@@ -108,7 +108,7 @@ function CollapseButton({
       size="sm"
       className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px] ${
         isActive
-          ? 'bg-blue-500/80 backdrop-blur-md border-2 border-blue-400 text-white hover:bg-blue-600/80'
+          ? 'bg-white/95 backdrop-blur-md border-2 border-white/50 text-gray-800 hover:bg-white shadow-2xl'
           : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
       }`}
       onClick={onClick}

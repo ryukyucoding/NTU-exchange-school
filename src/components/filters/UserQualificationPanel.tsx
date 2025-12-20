@@ -10,7 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function UserQualificationPanel() {
+interface UserQualificationPanelProps {
+  onApply?: () => void;
+}
+
+export default function UserQualificationPanel({ onApply }: UserQualificationPanelProps) {
   const { user, setUser, resetUser } = useUserContext();
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
@@ -32,6 +36,12 @@ export default function UserQualificationPanel() {
     // 如果未登入，只套用篩選但不保存
     if (!session) {
       toast.success('已套用資格篩選（未登入，不會保存）');
+      // 自動收起面板
+      if (onApply) {
+        setTimeout(() => {
+          onApply();
+        }, 300);
+      }
       return;
     }
 
@@ -48,6 +58,12 @@ export default function UserQualificationPanel() {
         const data = await response.json();
         if (data.success) {
           toast.success('已套用資格篩選並保存');
+          // 自動收起面板
+          if (onApply) {
+            setTimeout(() => {
+              onApply();
+            }, 300); // 稍微延遲，讓 toast 顯示
+          }
         } else {
           throw new Error(data.error || data.details || '保存失敗');
         }
@@ -67,6 +83,12 @@ export default function UserQualificationPanel() {
   const handleClearFilter = async () => {
     resetUser();
     toast.success('已清除所有篩選條件');
+    // 自動收起面板
+    if (onApply) {
+      setTimeout(() => {
+        onApply();
+      }, 300); // 稍微延遲，讓 toast 顯示
+    }
   };
 
   const colleges = [
