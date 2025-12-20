@@ -43,6 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           try {
             const supabase = getSupabaseServer();
+            console.log("🔍 [signIn] 開始檢查用戶資料，email:", user.email);
 
             // 检查是否已有相同 email + 相同 provider 的帳號
             const { data: existingAccount, error: accountError } = await supabase
@@ -54,11 +55,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             // 如果查詢出錯且不是"找不到記錄"的錯誤，記錄並繼續
             if (accountError && accountError.code !== 'PGRST116') {
-              console.error("Error checking existing account:", accountError);
+              console.error("❌ [signIn] Error checking existing account:", accountError);
             }
 
             // 如果這個 OAuth 帳號已存在，允許登入
             if (existingAccount) {
+              console.log("✅ [signIn] 找到現有帳號，允許登入");
               return true;
             }
 
@@ -71,10 +73,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             // 如果查詢出錯且不是"找不到記錄"的錯誤，記錄並繼續
             if (userError && userError.code !== 'PGRST116') {
-              console.error("Error checking existing user:", userError);
+              console.error("❌ [signIn] Error checking existing user:", userError);
             }
 
             if (existingUser) {
+              console.log("👤 [signIn] 找到現有用戶，創建 Account 關聯");
               // 如果用戶已存在，創建 Account 關聯
               const { error: insertError } = await supabase.from('Account').insert({
                 id: crypto.randomUUID(),
@@ -91,10 +94,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               });
 
               if (insertError) {
-                console.error("Error creating account:", insertError);
+                console.error("❌ [signIn] Error creating account:", insertError);
                 // 即使創建 Account 失敗，也允許登入（用戶已存在）
+              } else {
+                console.log("✅ [signIn] Account 關聯創建成功");
               }
             } else {
+              console.log("🆕 [signIn] 創建新用戶");
               // 創建新用戶
               const userId = crypto.randomUUID();
               // 生成唯一的 userID（使用 email 前綴，如果重複則加上隨機字串）
@@ -112,7 +118,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               }
               
               const now = new Date().toISOString();
-              const { error: userInsertError } = await supabase.from('User').insert({
+              const userData = {
                 id: userId,
                 userID: userID,
                 name: user.name || null,
@@ -121,14 +127,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 image: user.image || null,
                 createdAt: now,
                 updatedAt: now,
-              });
+              };
+              
+              console.log("📝 [signIn] 準備插入用戶資料:", { ...userData, email: user.email });
+              
+              const { data: insertedUser, error: userInsertError } = await supabase
+                .from('User')
+                .insert(userData)
+                .select()
+                .single();
 
               if (userInsertError) {
-                console.error("Error creating user:", userInsertError);
+                console.error("❌ [signIn] Error creating user:", userInsertError);
+                console.error("❌ [signIn] 錯誤詳情:", JSON.stringify(userInsertError, null, 2));
                 // 如果創建用戶失敗，仍然允許登入（NextAuth 會處理 session）
               } else {
+                console.log("✅ [signIn] 用戶創建成功:", insertedUser?.id);
                 // 創建 Account 關聯
-                const { error: accountInsertError } = await supabase.from('Account').insert({
+                const accountData = {
                   id: crypto.randomUUID(),
                   userId: userId,
                   type: account.type,
@@ -140,10 +156,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                   token_type: account.token_type,
                   scope: account.scope,
                   id_token: account.id_token,
-                });
+                };
+                
+                console.log("📝 [signIn] 準備插入 Account 資料");
+                const { error: accountInsertError } = await supabase.from('Account').insert(accountData);
 
                 if (accountInsertError) {
-                  console.error("Error creating account:", accountInsertError);
+                  console.error("❌ [signIn] Error creating account:", accountInsertError);
+                  console.error("❌ [signIn] 錯誤詳情:", JSON.stringify(accountInsertError, null, 2));
+                } else {
+                  console.log("✅ [signIn] Account 創建成功");
                 }
               }
             }
@@ -151,7 +173,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return true;
           } catch (dbError) {
             // 如果資料庫操作失敗，記錄錯誤但允許登入
-            console.error("Database operation error in signIn:", dbError);
+            console.error("❌ [signIn] Database operation error:", dbError);
+            console.error("❌ [signIn] 錯誤堆疊:", dbError instanceof Error ? dbError.stack : String(dbError));
             return true;
           }
       } catch (error) {
