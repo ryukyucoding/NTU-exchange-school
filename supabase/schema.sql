@@ -87,3 +87,44 @@ BEGIN
     name_zh;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ============================================
+-- 建立國家資料表
+-- ============================================
+CREATE TABLE IF NOT EXISTS countries (
+  id TEXT PRIMARY KEY,
+  country_zh TEXT NOT NULL,
+  country_en TEXT NOT NULL,
+  continent TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 建立索引
+CREATE INDEX IF NOT EXISTS idx_countries_country_zh ON countries(country_zh);
+CREATE INDEX IF NOT EXISTS idx_countries_country_en ON countries(country_en);
+CREATE INDEX IF NOT EXISTS idx_countries_continent ON countries(continent);
+
+-- 啟用 Row Level Security (RLS)
+ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
+
+-- 建立 RLS 政策：所有人都可以讀取
+CREATE POLICY "Enable read access for all users" ON countries
+  FOR SELECT
+  USING (true);
+
+-- 建立 RLS 政策：只有認證使用者可以新增/更新
+CREATE POLICY "Enable insert for authenticated users only" ON countries
+  FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Enable update for authenticated users only" ON countries
+  FOR UPDATE
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- 建立更新時間的自動觸發器
+CREATE TRIGGER update_countries_updated_at
+  BEFORE UPDATE ON countries
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
