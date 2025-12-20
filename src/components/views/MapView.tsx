@@ -103,7 +103,7 @@ export default function MapView({ schools }: MapViewProps) {
           zoom: 2
         }}
         style={{ width: '100%', height: '100%' }}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/yuuuuuuuuuu/cmjeap61e002f01sk8q0v9u1m"
       >
         {schoolsWithCoordinates.map(school => {
           const markerColor = getMarkerColor(school.application_group);
