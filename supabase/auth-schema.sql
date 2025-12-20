@@ -58,6 +58,21 @@ CREATE TABLE IF NOT EXISTS "VerificationToken" (
   PRIMARY KEY ("identifier", "token")
 );
 
+-- 用戶資格篩選表（與 User 表一對一關聯）
+CREATE TABLE IF NOT EXISTS "UserQualification" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "userId" TEXT NOT NULL UNIQUE,
+  "college" TEXT,  -- 學院
+  "grade" TEXT,  -- 年級 (Freshman, Sophomore, Junior, Senior)
+  "gpa" NUMERIC(3, 2),  -- GPA (0.00-4.30)
+  "toefl" INTEGER,  -- TOEFL iBT 分數
+  "ielts" NUMERIC(2, 1),  -- IELTS 分數
+  "toeic" INTEGER,  -- TOEIC 分數
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  CONSTRAINT "UserQualification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- ============================================
 -- 索引
 -- ============================================
@@ -94,6 +109,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS "User_userID_key" ON "User"("userID") WHERE "u
 CREATE INDEX IF NOT EXISTS "User_userID_idx" ON "User"("userID");
 CREATE INDEX IF NOT EXISTS "User_email_idx" ON "User"("email");
 
+-- UserQualification 表索引
+CREATE INDEX IF NOT EXISTS "UserQualification_userId_idx" ON "UserQualification"("userId");
+
 -- ============================================
 -- 更新時間自動觸發器
 -- ============================================
@@ -112,6 +130,13 @@ CREATE TRIGGER update_user_updated_at_trigger
   FOR EACH ROW
   EXECUTE FUNCTION update_user_updated_at();
 
+-- UserQualification 表的更新時間觸發器
+DROP TRIGGER IF EXISTS update_user_qualification_updated_at_trigger ON "UserQualification";
+CREATE TRIGGER update_user_qualification_updated_at_trigger
+  BEFORE UPDATE ON "UserQualification"
+  FOR EACH ROW
+  EXECUTE FUNCTION update_user_updated_at();
+
 -- ============================================
 -- Row Level Security (RLS)
 -- ============================================
@@ -120,6 +145,7 @@ CREATE TRIGGER update_user_updated_at_trigger
 ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Account" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Session" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "UserQualification" ENABLE ROW LEVEL SECURITY;
 
 -- 刪除現有的 policy（如果存在）
 DROP POLICY IF EXISTS "Users can view own profile" ON "User";
@@ -128,6 +154,10 @@ DROP POLICY IF EXISTS "Users can view own accounts" ON "Account";
 DROP POLICY IF EXISTS "Users can insert own accounts" ON "Account";
 DROP POLICY IF EXISTS "Users can view own sessions" ON "Session";
 DROP POLICY IF EXISTS "Users can delete own sessions" ON "Session";
+DROP POLICY IF EXISTS "Users can view own qualification" ON "UserQualification";
+DROP POLICY IF EXISTS "Users can update own qualification" ON "UserQualification";
+DROP POLICY IF EXISTS "Users can insert own qualification" ON "UserQualification";
+DROP POLICY IF EXISTS "Users can delete own qualification" ON "UserQualification";
 
 -- User 表政策：用戶可以讀取自己的資料，也可以讀取其他用戶的公開資料
 CREATE POLICY "Users can view own profile" ON "User"
@@ -153,5 +183,22 @@ CREATE POLICY "Users can view own sessions" ON "Session"
   USING (true);  -- 暫時允許所有人讀取，之後可以改為 auth.uid() = "userId"
 
 CREATE POLICY "Users can delete own sessions" ON "Session"
+  FOR DELETE
+  USING (true);  -- 暫時允許所有人刪除，之後可以改為 auth.uid() = "userId"
+
+-- UserQualification 表政策
+CREATE POLICY "Users can view own qualification" ON "UserQualification"
+  FOR SELECT
+  USING (true);  -- 暫時允許所有人讀取，之後可以改為 auth.uid() = "userId"
+
+CREATE POLICY "Users can update own qualification" ON "UserQualification"
+  FOR UPDATE
+  USING (true);  -- 暫時允許所有人更新，之後可以改為 auth.uid() = "userId"
+
+CREATE POLICY "Users can insert own qualification" ON "UserQualification"
+  FOR INSERT
+  WITH CHECK (true);  -- 暫時允許所有人插入，之後可以改為 auth.uid() = "userId"
+
+CREATE POLICY "Users can delete own qualification" ON "UserQualification"
   FOR DELETE
   USING (true);  -- 暫時允許所有人刪除，之後可以改為 auth.uid() = "userId"

@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useUserContext } from '@/contexts/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +12,10 @@ import toast from 'react-hot-toast';
 
 export default function UserQualificationPanel() {
   const { user, setUser, resetUser } = useUserContext();
+  const { data: session } = useSession();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = async () => {
     const hasAnyQualification =
       user.college !== null ||
       user.grade !== null ||
@@ -20,14 +24,47 @@ export default function UserQualificationPanel() {
       user.ielts !== null ||
       user.toeic !== null;
 
-    if (hasAnyQualification) {
-      toast.success('已套用資格篩選');
-    } else {
+    if (!hasAnyQualification) {
       toast('請先填寫至少一項資格', { icon: 'ℹ️' });
+      return;
+    }
+
+    // 如果未登入，只套用篩選但不保存
+    if (!session) {
+      toast.success('已套用資格篩選（未登入，不會保存）');
+      return;
+    }
+
+    // 如果已登入，保存到資料庫
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/user/qualification', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          toast.success('已套用資格篩選並保存');
+        } else {
+          throw new Error(data.error || data.details || '保存失敗');
+        }
+      } else {
+        const error = await response.json();
+        throw new Error(error.details || error.error || '保存失敗');
+      }
+    } catch (error: any) {
+      console.error('Failed to save qualification:', error);
+      const errorMessage = error.message || '未知錯誤';
+      toast.error(`保存失敗: ${errorMessage}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleClearFilter = () => {
+  const handleClearFilter = async () => {
     resetUser();
     toast.success('已清除所有篩選條件');
   };
@@ -152,21 +189,28 @@ export default function UserQualificationPanel() {
         {/* 操作按鈕 */}
         <div className="flex gap-2 pt-2">
           <Button
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-md disabled:opacity-50"
             onClick={handleApplyFilter}
+            disabled={isSaving}
           >
             <Check className="w-4 h-4 mr-2" />
-            套用篩選
+            {isSaving ? '保存中...' : '套用篩選'}
           </Button>
           <Button
             variant="outline"
             className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white"
             onClick={handleClearFilter}
+            disabled={isSaving}
           >
             <X className="w-4 h-4 mr-2" />
             清除篩選
           </Button>
         </div>
+        {!session && (
+          <p className="text-xs text-white/70 text-center mt-2">
+            登入後可保存資格設定
+          </p>
+        )}
     </div>
   );
 }

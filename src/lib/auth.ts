@@ -76,30 +76,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               console.error("❌ [signIn] Error checking existing user:", userError);
             }
 
-            if (existingUser) {
-              console.log("👤 [signIn] 找到現有用戶，創建 Account 關聯");
-              // 如果用戶已存在，創建 Account 關聯
-              const { error: insertError } = await supabase.from('Account').insert({
-                id: crypto.randomUUID(),
-                userId: existingUser.id,
-                type: account.type,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                refresh_token: account.refresh_token,
-                access_token: account.access_token,
-                expires_at: account.expires_at,
-                token_type: account.token_type,
-                scope: account.scope,
-                id_token: account.id_token,
-              });
+        if (existingUser) {
+          console.log("👤 [signIn] 找到現有用戶，創建 Account 關聯");
+          // 重要：將 existingUser.id 設置到 user.id，確保 NextAuth 使用正確的 ID
+          user.id = existingUser.id;
+          
+          // 如果用戶已存在，創建 Account 關聯
+          const { error: insertError } = await supabase.from('Account').insert({
+            id: crypto.randomUUID(),
+            userId: existingUser.id,
+            type: account.type,
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+            refresh_token: account.refresh_token,
+            access_token: account.access_token,
+            expires_at: account.expires_at,
+            token_type: account.token_type,
+            scope: account.scope,
+            id_token: account.id_token,
+          });
 
-              if (insertError) {
-                console.error("❌ [signIn] Error creating account:", insertError);
-                // 即使創建 Account 失敗，也允許登入（用戶已存在）
-              } else {
-                console.log("✅ [signIn] Account 關聯創建成功");
-              }
-            } else {
+          if (insertError) {
+            console.error("❌ [signIn] Error creating account:", insertError);
+            // 即使創建 Account 失敗，也允許登入（用戶已存在）
+          } else {
+            console.log("✅ [signIn] Account 關聯創建成功");
+          }
+        } else {
               console.log("🆕 [signIn] 創建新用戶");
               // 創建新用戶
               const userId = crypto.randomUUID();
@@ -143,6 +146,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 // 如果創建用戶失敗，仍然允許登入（NextAuth 會處理 session）
               } else {
                 console.log("✅ [signIn] 用戶創建成功:", insertedUser?.id);
+                // 重要：將 userId 設置到 user.id，這樣 NextAuth 會使用這個 ID
+                user.id = userId;
+                
                 // 創建 Account 關聯
                 const accountData = {
                   id: crypto.randomUUID(),
@@ -190,16 +196,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async jwt({ token, user }) {
-      // 登入時（user 存在）把 userID 放進 token
+    async jwt({ token, user, account }) {
+      // 登入時（user 存在）設置 token.sub 為 user.id，並從資料庫獲取 userID
       if (user?.id) {
+        token.sub = user.id; // 確保 token.sub 是資料庫中的 User.id
+        
         try {
           const supabase = getSupabaseServer();
           const { data: dbUser } = await supabase
             .from('User')
             .select('userID')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           (token as any).userID = dbUser?.userID || null;
         } catch (error) {

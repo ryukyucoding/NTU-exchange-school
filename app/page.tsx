@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 function UnifiedPanelManager() {
   const panelManager = usePanelManager();
   const { panels, expandPanel, collapsePanel, isAnyPanelOpen } = panelManager;
+  const { isUsingQualificationFilter } = useUserContext();
 
   return (
     <>
@@ -77,6 +78,7 @@ function UnifiedPanelManager() {
                 top="top-20"
                 text="我<br />的<br />資<br />格"
                 onClick={() => expandPanel('user')}
+                isActive={isUsingQualificationFilter}
               />
             </motion.div>
 
@@ -92,17 +94,23 @@ function UnifiedPanelManager() {
 function CollapseButton({
   top,
   text,
-  onClick
+  onClick,
+  isActive = false,
 }: {
   top: string;
   text: string;
   onClick: () => void;
+  isActive?: boolean;
 }) {
   return (
     <Button
       variant="outline"
       size="sm"
-      className={`fixed ${top} right-4 z-20 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px]`}
+      className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px] ${
+        isActive
+          ? 'bg-blue-500/80 backdrop-blur-md border-2 border-blue-400 text-white hover:bg-blue-600/80'
+          : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
+      }`}
       onClick={onClick}
     >
       <ChevronLeft className="w-4 h-4 mb-2" />
@@ -114,7 +122,7 @@ function CollapseButton({
 function MainContent() {
   const { schools, loading } = useSchoolContext();
   const { filters } = useFilters();
-  const { user } = useUserContext();
+  const { user, isUsingQualificationFilter } = useUserContext();
   const filteredSchools = useFilteredSchools(schools, filters, user);
 
   if (loading) {
@@ -129,7 +137,11 @@ function MainContent() {
   }
 
   return (
-    <div className="relative h-screen w-full">
+    <div className={`relative h-screen w-full transition-colors duration-300 ${
+      isUsingQualificationFilter 
+        ? 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50' 
+        : 'bg-gray-50'
+    }`}>
       <FloatingSearchBar schoolCount={filteredSchools.length} />
 
       <UnifiedPanelManager />
