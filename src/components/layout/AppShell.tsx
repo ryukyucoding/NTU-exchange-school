@@ -4,18 +4,25 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, BookOpen, Users, Heart, Map } from 'lucide-react';
 import UserMenu from '@/components/auth/UserMenu';
+import type { LucideIcon } from 'lucide-react';
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
-const navItems = [
-  { href: '/', title: '轉轉轉轉轉', description: '目前的主頁（地圖模式）' },
-  { href: '/table', title: '瀏覽學校', description: '主頁的表格模式' },
-  { href: '/social', title: '社群', description: '即將推出的功能' },
-  { href: '/wishlist', title: '收藏學校', description: '獨立的收藏與志願序頁面' },
+interface NavItem {
+  href: string;
+  title: string;
+  icon: LucideIcon;
+}
+
+const navItems: NavItem[] = [
+  { href: '/', title: '地圖', icon: Map },
+  { href: '/table', title: '瀏覽學校', icon: BookOpen },
+  { href: '/social', title: '社群', icon: Users },
+  { href: '/wishlist', title: '收藏學校', icon: Heart },
 ];
 
 export default function AppShell({ children }: AppShellProps) {
@@ -33,38 +40,54 @@ export default function AppShell({ children }: AppShellProps) {
           onClick={() => setOpen(!open)}
           aria-label="開啟側邊選單"
         >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <Menu className="w-5 h-5" />
         </Button>
       </div>
 
       {/* 側邊欄 */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-40 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="px-5 py-6 space-y-4">
-          <div className="text-xl font-bold text-gray-800">功能選單</div>
-          <div className="space-y-3">
+        <div className="h-full flex flex-col">
+          {/* 導航項目 */}
+          <nav className="flex-1 px-4 pt-20 pb-6 space-y-1">
             {navItems.map((item) => {
               const active = pathname === item.href;
-              const activeClasses = 'border-[#b08a63] bg-[#f7efe5] text-[#4a3828] shadow-sm';
-              const normalClasses = 'border-[#d8c5aa] bg-white text-[#4a3828] hover:border-[#b08a63] hover:bg-[#f7efe5]';
+              const Icon = item.icon;
+              
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className={`block rounded-lg border transition-all ${active ? activeClasses : normalClasses}`}
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    active
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
                 >
-                  <div className="px-4 py-3">
-                    <div className="font-semibold">{item.title}</div>
-                    <div className="text-sm text-gray-600">{item.description}</div>
+                  {/* 激活狀態的左侧竖条 */}
+                  {active && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-900 rounded-r-full" />
+                  )}
+                  
+                  {/* 圖標 */}
+                  <div className={`flex-shrink-0 ${active ? 'text-gray-900' : 'text-gray-400'}`}>
+                    {active ? (
+                      <Icon className="w-5 h-5" fill="currentColor" />
+                    ) : (
+                      <Icon className="w-5 h-5" strokeWidth={2} />
+                    )}
                   </div>
+                  
+                  {/* 文字 */}
+                  <span className="text-sm">{item.title}</span>
                 </Link>
               );
             })}
-          </div>
+          </nav>
         </div>
       </div>
 
