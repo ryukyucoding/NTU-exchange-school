@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,14 +14,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { User, LogOut, Settings } from 'lucide-react';
 import LoginModal from './LoginModal';
+import NotificationButton from './NotificationButton';
 
 export default function UserMenu() {
   const { data: session, status } = useSession();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const pathname = usePathname();
+  const isSocialPage = pathname === '/social' || pathname?.startsWith('/social/');
 
   if (status === 'loading') {
     return (
-      <div className="fixed top-4 right-4 z-50">
+      <div className="flex items-center gap-2">
+        <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
         <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
       </div>
     );
@@ -29,11 +34,12 @@ export default function UserMenu() {
   if (!session) {
     return (
       <>
-        <div className="fixed top-4 right-4 z-50">
+        <div className="flex items-center gap-2">
+          {isSocialPage && <NotificationButton />}
           <Button
             variant="ghost"
             size="icon"
-            className="bg-white border border-[#b08a63] text-[#4a3828] shadow-lg hover:bg-[#f7efe5] w-10 h-10 rounded-full"
+            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5] w-10 h-10 rounded-full"
             onClick={() => setShowLoginModal(true)}
             aria-label="登入"
           >
@@ -46,13 +52,14 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="fixed top-4 right-4 z-50">
+    <div className="flex items-center gap-2">
+      {isSocialPage && <NotificationButton />}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="bg-white border border-[#b08a63] text-[#4a3828] shadow-lg hover:bg-[#f7efe5] w-10 h-10 rounded-full overflow-hidden"
+            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5] w-10 h-10 rounded-full overflow-hidden"
             aria-label="用戶選單"
           >
             {session.user?.image ? (

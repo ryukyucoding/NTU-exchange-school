@@ -124,7 +124,7 @@ function TableContent() {
   }
 
   return (
-    <div className={`relative min-h-screen transition-colors duration-300 ${
+    <div className={`relative h-screen w-full transition-colors duration-300 ${
       isUsingQualificationFilter 
         ? 'bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950' 
         : 'bg-black'
@@ -133,7 +133,7 @@ function TableContent() {
 
       <UnifiedPanelManager />
 
-      <div className="pt-32 px-4 pb-6 pointer-events-auto relative z-10">
+      <div className="px-4 pb-6 pointer-events-auto relative z-10 h-full overflow-y-auto pt-24">
         <div className="container mx-auto">
           <div className="mt-8">
             <TableView schools={filteredSchools} />

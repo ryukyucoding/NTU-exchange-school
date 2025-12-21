@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-TW" suppressHydrationWarning>
+    <html lang="zh-TW" suppressHydrationWarning style={{ backgroundColor: 'unset', background: 'unset' }}>
       <body className={inter.className}>
         <Providers>
           <AppShell>{children}</AppShell>

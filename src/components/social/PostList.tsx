@@ -26,9 +26,11 @@ interface Post {
 
 interface PostListProps {
   filter: 'all' | 'following';
+  boardId?: string | null;
+  sort?: 'latest' | 'popular';
 }
 
-export default function PostList({ filter }: PostListProps) {
+export default function PostList({ filter, boardId, sort = 'latest' }: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -40,7 +42,11 @@ export default function PostList({ filter }: PostListProps) {
       const params = new URLSearchParams({
         filter,
         limit: '20',
+        sort,
       });
+      if (boardId) {
+        params.append('boardId', boardId);
+      }
       if (cursor) {
         params.append('cursor', cursor);
       }
@@ -65,9 +71,13 @@ export default function PostList({ filter }: PostListProps) {
   };
 
   useEffect(() => {
+    // 切換 filter/boardId/sort 時重置列表
+    setPosts([]);
+    setNextCursor(null);
+    setHasMore(true);
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, boardId, sort]);
 
   const loadMore = () => {
     if (nextCursor && !loading) {
@@ -107,7 +117,7 @@ export default function PostList({ filter }: PostListProps) {
         }
         return <GeneralPostCard key={post.id} post={post} />;
       })}
-      {hasMore && (
+      {hasMore && sort === 'latest' && (
         <div className="flex justify-center pt-4">
           <Button onClick={loadMore} disabled={loading} variant="outline">
             {loading ? '載入中...' : '載入更多'}

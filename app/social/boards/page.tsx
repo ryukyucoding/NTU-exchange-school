@@ -1,16 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { REGIONS, getCountriesByRegion } from '@/utils/regions';
+import { REGIONS } from '@/utils/regions';
+import { getCountryISO } from '@/utils/countryFlags';
+import SocialSidebar from '@/components/social/SocialSidebar';
 
 function BoardsContent() {
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
-  const countriesByRegion = getCountriesByRegion();
+  const [countriesByRegion, setCountriesByRegion] = useState<Record<string, string[]>>({
+    Americas: [],
+    Europe: [],
+    Asia: [],
+    Africa: [],
+    Oceania: [],
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('/api/boards/countries');
+        const data = await response.json();
+        
+        console.log('API Response:', data);
+        
+        if (data.success) {
+          setCountriesByRegion(data.countriesByRegion || {});
+          // 計算總國家數
+          const totalCountries = Object.values(data.countriesByRegion || {}).reduce(
+            (sum: number, countries: any) => sum + (countries?.length || 0),
+            0
+          );
+          console.log(`Loaded ${totalCountries} countries from database`);
+        } else {
+          console.error('API returned error:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const toggleRegion = (region: string) => {
     setExpandedRegions((prev) => {
@@ -25,64 +63,108 @@ function BoardsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">所有看板</h1>
-          <p className="text-muted-foreground">
-            選擇地區或國家查看相關貼文
-          </p>
+    <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+      {/* Header section is handled by AppShell */}
+      
+      {/* Topic Frame: Title section - same style as posts page */}
+      <div className="sticky top-16 z-40 py-4 border-b border-transparent">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-center">
+            <div 
+              className="flex items-center justify-center"
+              style={{
+                width: '96px',
+                height: '32px',
+                border: '1px solid #5A5A5A',
+                borderRadius: '24px',
+                boxSizing: 'border-box'
+              }}
+            >
+              <h1 
+                className="text-sm font-semibold"
+                style={{ 
+                  color: '#5A5A5A',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  fontFamily: "'Noto Sans TC', sans-serif"
+                }}
+              >
+                所有看板
+              </h1>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="space-y-4">
-          {REGIONS.map((region) => {
-            const isExpanded = expandedRegions.has(region.value);
-            const countries = countriesByRegion[region.value] || [];
+      {/* Content Frame: Main content area with boards and sidebar */}
+      <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
+        <div className="flex gap-6 items-start justify-center">
+          {/* Left Sidebar - Empty but keeps layout structure */}
+          <aside className="hidden md:block w-64 flex-shrink-0">
+            {/* Empty sidebar to maintain three-column layout */}
+          </aside>
 
-            return (
-              <Card key={region.value} className="p-4">
-                <button
-                  onClick={() => toggleRegion(region.value)}
-                  className="w-full flex items-center justify-between mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
-                >
-                  <h2 className="text-xl font-semibold">{region.label}</h2>
-                  {isExpanded ? (
-                    <ChevronDown className="h-5 w-5" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5" />
-                  )}
-                </button>
+          {/* Main Content - Boards list (scrollable) */}
+          <main className="w-[800px] flex-shrink-0" style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}>
+            <div className="space-y-4">
+              {REGIONS.map((region) => {
+                const isExpanded = expandedRegions.has(region.value);
+                const countries = countriesByRegion[region.value] || [];
 
-                {isExpanded && (
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {countries
-                      .filter((country, index, self) => 
-                        // Filter out duplicates (some countries appear in both Chinese and English)
-                        self.indexOf(country) === index
-                      )
-                      .slice(0, 50) // Limit to 50 countries per region for performance
-                      .map((country, index) => {
-                        // Use the first occurrence (usually Chinese name)
-                        const countrySlug = encodeURIComponent(country);
-                        return (
-                          <Link
-                            key={`${country}-${index}`}
-                            href={`/social/boards/country/${countrySlug}`}
-                          >
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start hover:bg-primary hover:text-primary-foreground transition-colors"
-                            >
-                              {country}
-                            </Button>
-                          </Link>
-                        );
-                      })}
-                  </div>
-                )}
-              </Card>
-            );
-          })}
+                return (
+                  <Card key={region.value} className="p-4 bg-white border-0 shadow-none">
+                    <button
+                      onClick={() => toggleRegion(region.value)}
+                      className="w-full flex items-center justify-between mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
+                    >
+                      <h2 className="text-xl font-semibold text-gray-800">{region.label}</h2>
+                      {isExpanded ? (
+                        <ChevronDown className="h-5 w-5 text-gray-800" />
+                      ) : (
+                        <ChevronRight className="h-5 w-5 text-gray-800" />
+                      )}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="mt-4 space-y-2">
+                        {countries.length === 0 ? (
+                          <div className="text-sm text-gray-400 py-2">尚無資料</div>
+                        ) : (
+                          countries.map((country, index) => {
+                            const countryISO = getCountryISO(country);
+                            const countrySlug = encodeURIComponent(country);
+                            return (
+                              <Link
+                                key={`${country}-${index}`}
+                                href={`/social/boards/country/${countrySlug}`}
+                              >
+                                <Button
+                                  variant="ghost"
+                                  className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"
+                                >
+                                  {countryISO && (
+                                    <span className={`fi fi-${countryISO} mr-2`}></span>
+                                  )}
+                                  {country}
+                                </Button>
+                              </Link>
+                            );
+                          })
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          </main>
+
+          {/* Right Sidebar Frame - Fixed */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="sticky" style={{ top: '6rem' }}>
+              <SocialSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

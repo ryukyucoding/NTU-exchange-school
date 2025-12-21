@@ -344,6 +344,7 @@ export async function POST(req: NextRequest) {
  *   - limit: number (default: 20)
  *   - cursor: string (for pagination)
  *   - boardId: string (optional, filter by board)
+ *   - sort: "latest" | "popular" (default: "latest")
  */
 export async function GET(req: NextRequest) {
   try {
@@ -357,6 +358,7 @@ export async function GET(req: NextRequest) {
     const boardId = searchParams.get("boardId");
     const hashtag = searchParams.get("hashtag");
     const schoolId = searchParams.get("schoolId");
+    const sort = (searchParams.get("sort") || "latest") as "latest" | "popular";
 
     const supabase = getSupabaseServer();
     
@@ -529,7 +531,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 如果有 cursor，從該位置開始
-    if (cursor) {
+    if (cursor && sort === "latest") {
       const { data: cursorPost } = await supabase
         .from('Post')
         .select('createdAt')
@@ -711,11 +713,24 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    const nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;
+    // 熱門排序：先用互動數排序，暫時不提供 cursor 分頁（避免排序後 cursor 失真）
+    let finalPosts = postsWithStatus;
+    let nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;
+
+    if (sort === "popular") {
+      finalPosts = [...postsWithStatus].sort((a: any, b: any) => {
+        const aScore = (a.likeCount || 0) + (a.commentCount || 0) + (a.repostCount || 0);
+        const bScore = (b.likeCount || 0) + (b.commentCount || 0) + (b.repostCount || 0);
+        if (bScore !== aScore) return bScore - aScore;
+        // 分數相同時，以時間新舊做次排序
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      nextCursor = null;
+    }
 
     return NextResponse.json({
       success: true,
-      posts: postsWithStatus,
+      posts: finalPosts,
       nextCursor,
     });
   } catch (error: any) {

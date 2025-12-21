@@ -53,7 +53,7 @@ export default function SocialSidebar() {
           <Link href="/social/boards">
             <Button
               variant="ghost"
-              className="w-full justify-start text-gray-700 hover:bg-gray-100"
+              className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"
             >
               <div className="w-6 h-6 rounded-full bg-gray-300 mr-2"></div>
               所有看板
@@ -62,7 +62,7 @@ export default function SocialSidebar() {
           <Link href={`/social/profile/${(session?.user as any)?.id || ''}`}>
             <Button
               variant="ghost"
-              className="w-full justify-start text-gray-700 hover:bg-gray-100"
+              className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"
             >
               <div className="w-6 h-6 rounded-full bg-gray-300 mr-2"></div>
               個人頁面

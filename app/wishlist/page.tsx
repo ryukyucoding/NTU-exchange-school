@@ -133,7 +133,7 @@ function WishlistContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfaf5] p-6">
+    <div className="min-h-screen p-6" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
       <div className="max-w-6xl mx-auto space-y-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold text-[#4a3828]">收藏學校</h1>

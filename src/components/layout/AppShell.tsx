@@ -31,22 +31,44 @@ export default function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen">
-      {/* 左上角開關按鈕 */}
-      <div className="fixed top-4 left-4 z-50">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-white border border-[#b08a63] text-[#4a3828] shadow-lg hover:bg-[#f7efe5]"
-          onClick={() => setOpen(!open)}
-          aria-label="開啟側邊選單"
+      {/* Header Frame - 完全透明 */}
+      <header 
+        className="fixed top-0 left-0 right-0 h-16 z-50 pointer-events-none" 
+        style={{ backgroundColor: 'unset', background: 'unset' }}
+      >
+        <div 
+          className="h-full flex items-center justify-between px-4 header-inner pointer-events-auto" 
+          style={{ 
+            backgroundColor: 'unset', 
+            background: 'unset',
+            backgroundImage: 'none',
+            backgroundSize: 'initial',
+            backgroundPosition: 'initial',
+            backgroundRepeat: 'initial',
+            backgroundAttachment: 'initial',
+            backgroundOrigin: 'initial',
+            backgroundClip: 'initial'
+          }}
         >
-          <Menu className="w-5 h-5" />
-        </Button>
-      </div>
+          {/* 左上角開關按鈕 */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
+            onClick={() => setOpen(!open)}
+            aria-label="開啟側邊選單"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+          
+          {/* 右上角按鈕區域 */}
+          <UserMenu />
+        </div>
+      </header>
 
       {/* 側邊欄 */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-[80] ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -94,17 +116,14 @@ export default function AppShell({ children }: AppShellProps) {
       {/* 遮罩 */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-30"
+          className="fixed inset-0 bg-black/50 z-[70]"
           onClick={() => setOpen(false)}
           role="presentation"
         />
       )}
 
-      {/* 右上角用戶選單 */}
-      <UserMenu />
-
       {/* 主要內容 */}
-      <div className="relative">{children}</div>
+      <div className={`relative ${pathname === '/' || pathname === '/table' ? '' : 'pt-16'}`}>{children}</div>
     </div>
   );
 }

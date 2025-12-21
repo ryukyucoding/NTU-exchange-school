@@ -140,8 +140,8 @@ function MainContent() {
     <div className={`relative h-screen w-full transition-colors duration-300 ${
       isUsingQualificationFilter 
         ? 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50' 
-        : 'bg-gray-50'
-    }`}>
+        : 'bg-black'
+    }`} style={{ marginTop: 0, paddingTop: 0 }}>
       <FloatingSearchBar schoolCount={filteredSchools.length} />
 
       <UnifiedPanelManager />
@@ -153,7 +153,7 @@ function MainContent() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <MainContent />
       <WelcomeDialog />
     </div>
