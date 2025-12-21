@@ -98,11 +98,21 @@ cd scraper
 source venv/bin/activate
 pip install supabase
 3️⃣ 設定環境變數
-export SUPABASE_URL="https://your-project.supabase.co"
-export SUPABASE_KEY="your-anon-key"
+# 方式 1: 使用 service_role key（推薦，有完整權限）
+export NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+
+# 方式 2: 使用 anon key（需要設定 Storage bucket 的 RLS policy）
+export NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+export NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+
 4️⃣ 執行上傳腳本
 cd experiences
 python upload_to_supabase.py
+
+⚠️ 如果遇到 403 錯誤（RLS policy violation）：
+- 方案 A: 使用 service_role key（推薦）
+- 方案 B: 在 Supabase Dashboard 中修改 Storage bucket 的 RLS policy，允許匿名上傳
 
 腳本會做什麼
 讀取所有 content.json 中的圖片資訊

@@ -20,12 +20,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Supabase 設定
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+# 上傳到 Storage 需要使用 service_role key（有完整權限）
+# 如果沒有設定，則嘗試使用 anon key（但可能會有 RLS 限制）
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 STORAGE_BUCKET = "experience-images"  # 你的 bucket 名稱
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("請設定 SUPABASE_URL 和 SUPABASE_KEY 環境變數")
+    raise ValueError("請設定 SUPABASE_URL 和 SUPABASE_SERVICE_ROLE_KEY（或 NEXT_PUBLIC_SUPABASE_ANON_KEY）環境變數")
 
 # 初始化 Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -72,8 +74,11 @@ def upload_images_for_student(student_dir: Path, student_id: str):
                 file_data = f.read()
 
             # 上傳到 Supabase
+            # 注意：storage_path 需要以 / 開頭
+            storage_path_normalized = storage_path if storage_path.startswith('/') else f"/{storage_path}"
+            
             response = supabase.storage.from_(STORAGE_BUCKET).upload(
-                path=storage_path,
+                path=storage_path_normalized,
                 file=file_data,
                 file_options={
                     "content-type": f"image/{img['format']}",
@@ -82,6 +87,7 @@ def upload_images_for_student(student_dir: Path, student_id: str):
             )
 
             # 獲取公開 URL
+            # 注意：get_public_url 不需要前導斜線
             public_url = supabase.storage.from_(STORAGE_BUCKET).get_public_url(storage_path)
 
             # 更新圖片資訊
