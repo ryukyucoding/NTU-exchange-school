@@ -5,6 +5,7 @@ import { useFilters } from '@/contexts/FilterContext';
 import { useUserContext } from '@/contexts/UserContext';
 import { useFilteredSchools } from '@/hooks/useFilteredSchools';
 import { usePanelManager } from '@/hooks/usePanelManager';
+import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
 import MapView from '@/components/views/MapView';
@@ -19,6 +20,7 @@ function UnifiedPanelManager() {
   const panelManager = usePanelManager();
   const { panels, expandPanel, collapsePanel, isAnyPanelOpen } = panelManager;
   const { isUsingQualificationFilter } = useUserContext();
+  const isHighZoom = useMapBackgroundBrightness(3);
 
   return (
     <>
@@ -46,19 +48,29 @@ function UnifiedPanelManager() {
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4">
+          <div className={`backdrop-blur-md rounded-lg shadow-2xl p-4 transition-all duration-300 ${
+            isHighZoom 
+              ? 'bg-white/30 border-[rgba(255,255,255,0.35)]' 
+              : 'bg-white/20 border-[rgba(255,255,255,0.3)]'
+          }`}>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-semibold">我的資格</h3>
+              <h3 className={`font-semibold transition-all duration-300 ${
+                isHighZoom ? 'text-gray-800' : 'text-white'
+              }`}>我的資格</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => collapsePanel('user')}
-                className="text-white/70 hover:text-white hover:bg-white/20"
+                className={`transition-all duration-300 ${
+                  isHighZoom
+                    ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                    : 'text-white/70 hover:text-white hover:bg-white/20'
+                }`}
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            <UserQualificationPanel onApply={() => collapsePanel('user')} />
+            <UserQualificationPanel onApply={() => collapsePanel('user')} isHighZoom={isHighZoom} />
           </div>
         </motion.div>
       </PanelOverlay>
@@ -79,6 +91,7 @@ function UnifiedPanelManager() {
                 text="我<br />的<br />資<br />格"
                 onClick={() => expandPanel('user')}
                 isActive={isUsingQualificationFilter}
+                isHighZoom={isHighZoom}
               />
             </motion.div>
 
@@ -96,11 +109,13 @@ function CollapseButton({
   text,
   onClick,
   isActive = false,
+  isHighZoom = false,
 }: {
   top: string;
   text: string;
   onClick: () => void;
   isActive?: boolean;
+  isHighZoom?: boolean;
 }) {
   return (
     <Button
@@ -109,7 +124,9 @@ function CollapseButton({
       className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px] ${
         isActive
           ? 'bg-white/95 backdrop-blur-md border-2 border-white/50 text-gray-800 hover:bg-white shadow-2xl'
-          : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
+          : isHighZoom
+            ? 'bg-white/30 backdrop-blur-md border border-white/40 text-gray-800 hover:bg-white/40'
+            : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
       }`}
       onClick={onClick}
     >

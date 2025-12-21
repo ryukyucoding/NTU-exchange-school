@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Search, X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useFilters } from '@/contexts/FilterContext';
 import { usePanelManager } from '@/hooks/usePanelManager';
+import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FloatingSearchBarProps {
@@ -17,6 +18,7 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
   const [searchTerm, setSearchTerm] = useState(filters.searchKeyword || '');
   const panelManager = usePanelManager();
   const { panels, togglePanel, collapsePanel } = panelManager;
+  const isHighZoom = useMapBackgroundBrightness(3);
 
   const handleSearch = () => {
     updateFilters({ searchKeyword: searchTerm });
@@ -99,24 +101,38 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
         className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-auto"
         onClick={handleSearchBarClick}
       >
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg shadow-2xl p-4 min-w-[600px]">
-        <div className="flex items-center gap-4">
+        <div className={`backdrop-blur-md rounded-lg shadow-2xl p-4 min-w-[600px] transition-all duration-300 ${
+          isHighZoom 
+            ? 'bg-white/30 border-[rgba(255,255,255,0.35)]' 
+            : 'bg-white/10 border-[rgba(255,255,255,0.2)]'
+        }`}>
+        <div className={`flex items-center gap-4 ${isHighZoom ? 'text-gray-800' : 'text-white'}`}>
           {/* 搜尋輸入框 */}
           <div className="flex-1 flex items-center gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/70" />
+              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 transition-all duration-300 ${
+                isHighZoom ? 'text-gray-700' : 'text-white/90'
+              }`} />
               <Input
                 placeholder="搜尋學校名稱..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/50 backdrop-blur-sm"
+                className={`pl-10 backdrop-blur-sm transition-all duration-300 ${
+                  isHighZoom
+                    ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
+                    : 'bg-white/10 border-white/20 text-white placeholder:text-white/50'
+                }`}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
               {searchTerm && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white hover:bg-white/20"
+                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 transition-all duration-300 ${
+                    isHighZoom
+                      ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+                      : 'text-white/70 hover:text-white hover:bg-white/20'
+                  }`}
                   onClick={clearSearch}
                 >
                   <X className="w-4 h-4" />
@@ -128,7 +144,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
               className={`transition-all duration-300 ${
                 panels.search.isExpanded 
                   ? 'bg-blue-500/80 hover:bg-blue-500 text-white shadow-lg backdrop-blur-sm' 
-                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
+                  : isHighZoom
+                    ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
+                    : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
               }`}
             >
               <MapPin className="w-4 h-4" />
@@ -136,8 +154,12 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
           </div>
 
           {/* 學校數量顯示 */}
-          <div className="text-white text-sm drop-shadow-lg whitespace-nowrap">
-            找到 <span className="font-bold text-blue-300 drop-shadow-md">{schoolCount}</span> 間學校
+          <div className={`text-sm drop-shadow-lg whitespace-nowrap transition-all duration-300 ${
+            isHighZoom ? 'text-gray-800' : 'text-white'
+          }`}>
+            找到 <span className={`font-bold drop-shadow-md ${
+              isHighZoom ? 'text-blue-600' : 'text-blue-300'
+            }`}>{schoolCount}</span> 間學校
           </div>
         </div>
 
@@ -145,7 +167,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
         <AnimatePresence>
           {panels.search.isExpanded && (
             <motion.div 
-              className="mt-4 pt-4 border-t border-white/20"
+              className={`mt-4 pt-4 border-t transition-all duration-300 ${
+                isHighZoom ? 'border-gray-300' : 'border-white/20'
+              }`}
               initial={{ opacity: 0, height: 0, marginTop: 0, paddingTop: 0 }}
               animate={{ opacity: 1, height: "auto", marginTop: 16, paddingTop: 16 }}
               exit={{ opacity: 0, height: 0, marginTop: 0, paddingTop: 0 }}
@@ -154,7 +178,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
               <div className="space-y-3">
               {/* 地區篩選 */}
               <div>
-                <label className="text-white/70 text-xs mb-2 block drop-shadow-md">地區篩選</label>
+                <label className={`text-xs mb-2 block drop-shadow-md transition-all duration-300 ${
+                  isHighZoom ? 'text-gray-700' : 'text-white/70'
+                }`}>地區篩選</label>
                 <div className="flex flex-wrap gap-2">
                   {['Americas', 'Europe', 'Asia', 'Oceania'].map(region => (
                     <Button
@@ -164,7 +190,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
                       className={`text-xs transition-all duration-300 ${
                         filters.regions.includes(region) 
                           ? 'bg-blue-500/80 hover:bg-blue-500 text-white shadow-lg' 
-                          : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
+                          : isHighZoom
+                            ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
+                            : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
                       }`}
                       onClick={() => toggleRegion(region)}
                     >
@@ -179,7 +207,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
 
               {/* 國家篩選 */}
               <div>
-                <label className="text-white/70 text-xs mb-2 block drop-shadow-md">國家篩選</label>
+                <label className={`text-xs mb-2 block drop-shadow-md transition-all duration-300 ${
+                  isHighZoom ? 'text-gray-700' : 'text-white/70'
+                }`}>國家篩選</label>
                 <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
                   {allCountries.map(country => (
                     <Button
@@ -189,7 +219,9 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
                       className={`text-xs transition-all duration-300 ${
                         filters.countries?.includes(country) 
                           ? 'bg-green-500/80 hover:bg-green-500 text-white shadow-lg' 
-                          : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
+                          : isHighZoom
+                            ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
+                            : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
                       }`}
                       onClick={() => toggleCountry(country)}
                     >
@@ -205,7 +237,11 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
                   variant="outline"
                   size="sm"
                   onClick={clearFilters}
-                  className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm transition-all duration-300"
+                  className={`w-full backdrop-blur-sm transition-all duration-300 ${
+                    isHighZoom
+                      ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30'
+                      : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                  }`}
                 >
                   清除所有篩選
                 </Button>

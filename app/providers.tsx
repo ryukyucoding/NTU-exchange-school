@@ -6,6 +6,7 @@ import { SchoolProvider } from '@/contexts/SchoolContext';
 import { FilterProvider } from '@/contexts/FilterContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
 import { UserProvider } from '@/contexts/UserContext';
+import { MapZoomProvider } from '@/contexts/MapZoomContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -17,8 +18,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <SchoolProvider>
             <FilterProvider>
               <WishlistProvider>
-                {children}
-                <Toaster position="top-right" />
+                <MapZoomProvider>
+                  {children}
+                  <Toaster position="top-right" />
+                </MapZoomProvider>
               </WishlistProvider>
             </FilterProvider>
           </SchoolProvider>

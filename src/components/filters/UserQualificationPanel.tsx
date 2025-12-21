@@ -12,9 +12,10 @@ import toast from 'react-hot-toast';
 
 interface UserQualificationPanelProps {
   onApply?: () => void;
+  isHighZoom?: boolean;
 }
 
-export default function UserQualificationPanel({ onApply }: UserQualificationPanelProps) {
+export default function UserQualificationPanel({ onApply, isHighZoom = false }: UserQualificationPanelProps) {
   const { user, setUser, resetUser } = useUserContext();
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
@@ -102,17 +103,35 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
     <div className="w-full space-y-4">
         {/* 學院選擇 */}
         <div>
-          <Label htmlFor="college" className="text-white font-medium">學院</Label>
+          <Label htmlFor="college" className={`font-medium transition-all duration-300 ${
+            isHighZoom ? 'text-gray-800' : 'text-white'
+          }`}>學院</Label>
           <Select
             value={user.college || ''}
             onValueChange={(value) => setUser({ ...user, college: value })}
           >
-            <SelectTrigger id="college" className="bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70">
+            <SelectTrigger id="college" className={`transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
+                : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+            }`}>
               <SelectValue placeholder="請選擇學院" />
             </SelectTrigger>
-            <SelectContent className="bg-white/20 backdrop-blur-md border-white/30">
+            <SelectContent className={`backdrop-blur-md transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/30 border-white/35'
+                : 'bg-white/20 border-white/30'
+            }`}>
               {colleges.map(college => (
-                <SelectItem key={college} value={college} className="text-white hover:bg-white/20">
+                <SelectItem 
+                  key={college} 
+                  value={college} 
+                  className={`transition-all duration-300 ${
+                    isHighZoom
+                      ? 'text-gray-800 hover:bg-white/30'
+                      : 'text-white hover:bg-white/20'
+                  }`}
+                >
                   {college}
                 </SelectItem>
               ))}
@@ -122,17 +141,35 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
 
         {/* 年級選擇 */}
         <div>
-          <Label htmlFor="grade" className="text-white font-medium">年級</Label>
+          <Label htmlFor="grade" className={`font-medium transition-all duration-300 ${
+            isHighZoom ? 'text-gray-800' : 'text-white'
+          }`}>年級</Label>
           <Select
             value={user.grade || ''}
             onValueChange={(value: any) => setUser({ ...user, grade: value })}
           >
-            <SelectTrigger id="grade" className="bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70">
+            <SelectTrigger id="grade" className={`transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
+                : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+            }`}>
               <SelectValue placeholder="請選擇年級" />
             </SelectTrigger>
-            <SelectContent className="bg-white/20 backdrop-blur-md border-white/30">
+            <SelectContent className={`backdrop-blur-md transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/30 border-white/35'
+                : 'bg-white/20 border-white/30'
+            }`}>
               {grades.map(grade => (
-                <SelectItem key={grade} value={grade} className="text-white hover:bg-white/20">
+                <SelectItem 
+                  key={grade} 
+                  value={grade} 
+                  className={`transition-all duration-300 ${
+                    isHighZoom
+                      ? 'text-gray-800 hover:bg-white/30'
+                      : 'text-white hover:bg-white/20'
+                  }`}
+                >
                   {grade === 'Freshman' && '大一'}
                   {grade === 'Sophomore' && '大二'}
                   {grade === 'Junior' && '大三'}
@@ -145,7 +182,9 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
 
         {/* GPA 輸入 */}
         <div>
-          <Label htmlFor="gpa" className="text-white font-medium">GPA</Label>
+          <Label htmlFor="gpa" className={`font-medium transition-all duration-300 ${
+            isHighZoom ? 'text-gray-800' : 'text-white'
+          }`}>GPA</Label>
           <Input
             id="gpa"
             type="number"
@@ -155,17 +194,27 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
             value={user.gpa ?? ''}
             onChange={(e) => setUser({ ...user, gpa: e.target.value ? parseFloat(e.target.value) : null })}
             placeholder="例如: 3.8"
-            className="bg-white/10 border-white/30 text-white placeholder:text-white/70"
+            className={`transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
+                : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
+            }`}
           />
-          <p className="text-xs text-white/70 mt-1">滿分 4.3</p>
+          <p className={`text-xs mt-1 transition-all duration-300 ${
+            isHighZoom ? 'text-gray-600' : 'text-white/70'
+          }`}>滿分 4.3</p>
         </div>
 
         {/* 語言成績 */}
         <div className="space-y-3">
-          <Label className="text-base font-semibold text-white">語言成績</Label>
+          <Label className={`text-base font-semibold transition-all duration-300 ${
+            isHighZoom ? 'text-gray-800' : 'text-white'
+          }`}>語言成績</Label>
 
           <div>
-            <Label htmlFor="toefl" className="text-white font-medium">TOEFL iBT</Label>
+            <Label htmlFor="toefl" className={`font-medium transition-all duration-300 ${
+              isHighZoom ? 'text-gray-800' : 'text-white'
+            }`}>TOEFL iBT</Label>
             <Input
               id="toefl"
               type="number"
@@ -174,12 +223,18 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
               value={user.toefl ?? ''}
               onChange={(e) => setUser({ ...user, toefl: e.target.value ? parseInt(e.target.value) : null })}
               placeholder="例如: 90"
-              className="bg-white/10 border-white/30 text-white placeholder:text-white/70"
+              className={`transition-all duration-300 ${
+                isHighZoom
+                  ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
+                  : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
+              }`}
             />
           </div>
 
           <div>
-            <Label htmlFor="ielts" className="text-white font-medium">IELTS</Label>
+            <Label htmlFor="ielts" className={`font-medium transition-all duration-300 ${
+              isHighZoom ? 'text-gray-800' : 'text-white'
+            }`}>IELTS</Label>
             <Input
               id="ielts"
               type="number"
@@ -189,12 +244,18 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
               value={user.ielts ?? ''}
               onChange={(e) => setUser({ ...user, ielts: e.target.value ? parseFloat(e.target.value) : null })}
               placeholder="例如: 7.0"
-              className="bg-white/10 border-white/30 text-white placeholder:text-white/70"
+              className={`transition-all duration-300 ${
+                isHighZoom
+                  ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
+                  : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
+              }`}
             />
           </div>
 
           <div>
-            <Label htmlFor="toeic" className="text-white font-medium">TOEIC</Label>
+            <Label htmlFor="toeic" className={`font-medium transition-all duration-300 ${
+              isHighZoom ? 'text-gray-800' : 'text-white'
+            }`}>TOEIC</Label>
             <Input
               id="toeic"
               type="number"
@@ -203,7 +264,11 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
               value={user.toeic ?? ''}
               onChange={(e) => setUser({ ...user, toeic: e.target.value ? parseInt(e.target.value) : null })}
               placeholder="例如: 850"
-              className="bg-white/10 border-white/30 text-white placeholder:text-white/70"
+              className={`transition-all duration-300 ${
+                isHighZoom
+                  ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
+                  : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
+              }`}
             />
           </div>
         </div>
@@ -220,7 +285,11 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
           </Button>
           <Button
             variant="outline"
-            className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white"
+            className={`flex-1 transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/20 border-white/30 text-gray-800 hover:bg-white/30 hover:text-gray-900'
+                : 'bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white'
+            }`}
             onClick={handleClearFilter}
             disabled={isSaving}
           >
@@ -229,7 +298,9 @@ export default function UserQualificationPanel({ onApply }: UserQualificationPan
           </Button>
         </div>
         {!session && (
-          <p className="text-xs text-white/70 text-center mt-2">
+          <p className={`text-xs text-center mt-2 transition-all duration-300 ${
+            isHighZoom ? 'text-gray-600' : 'text-white/70'
+          }`}>
             登入後可保存資格設定
           </p>
         )}

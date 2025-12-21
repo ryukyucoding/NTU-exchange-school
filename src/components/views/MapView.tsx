@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, ExternalLink, X, Info } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
+import { useMapZoom } from '@/contexts/MapZoomContext';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapViewProps {
@@ -280,6 +282,8 @@ function PopupContent({
 
 export default function MapView({ schools }: MapViewProps) {
   const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
+  const { setZoomLevel, zoomLevel } = useMapZoom();
+  const isHighZoom = useMapBackgroundBrightness(3);
 
   // 過濾掉沒有有效經緯度的學校
   const schoolsWithCoordinates = schools.filter(school => 
@@ -311,11 +315,25 @@ export default function MapView({ schools }: MapViewProps) {
 
   return (
     <div className="h-screen w-full relative">
+      {/* 調試信息 - 臨時顯示縮放級別 */}
+      {/* <div className="absolute top-20 left-4 bg-black/70 text-white p-2 rounded z-50 text-xs">
+        縮放級別: {zoomLevel.toFixed(2)} | 高縮放: {isHighZoom ? '是' : '否'}
+      </div> */}
+      
       {/* 圖例 - 右下角 */}
-
-      <div className="absolute bottom-4 right-4 bg-white/10 backdrop-blur-md border border-white/20 text-white p-3 rounded-lg z-10 max-w-xs shadow-2xl">
-        <h3 className="text-sm font-semibold mb-2 drop-shadow-lg">申請組別</h3>
-        <div className="space-y-1 text-xs">
+      <div 
+        className={`absolute bottom-4 right-4 backdrop-blur-md p-3 rounded-lg z-10 max-w-xs shadow-2xl transition-all duration-300 ${
+          isHighZoom 
+            ? 'bg-white/30 border-[rgba(255,255,255,0.35)] text-gray-800' 
+            : 'bg-white/10 border-[rgba(255,255,255,0.2)] text-white'
+        }`}
+      >
+        <h3 className={`text-sm font-semibold mb-2 drop-shadow-lg transition-all duration-300 ${
+          isHighZoom ? 'text-gray-800' : 'text-white'
+        }`}>申請組別</h3>
+        <div className={`space-y-1 text-xs transition-all duration-300 ${
+          isHighZoom ? 'text-gray-800' : 'text-white'
+        }`}>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#3B82F6' }}></div>
             <span className="drop-shadow-md">一般組</span>
@@ -348,10 +366,24 @@ export default function MapView({ schools }: MapViewProps) {
         initialViewState={{
           longitude: center[0],
           latitude: center[1],
-          zoom: 2
+          zoom: 2,
+          padding: {
+            top: 100,
+            right: 0,
+            bottom: 0,
+            left: 0
+          }
+        }}
+        onMoveEnd={(evt) => {
+          // 更新縮放級別到 Context（只在移動結束時更新）
+          setZoomLevel(evt.viewState.zoom);
+        }}
+        onZoomEnd={(evt) => {
+          // 更新縮放級別到 Context（只在縮放結束時更新）
+          setZoomLevel(evt.viewState.zoom);
         }}
         style={{ width: '100%', height: '100%' }}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/yuuuuuuuuuu/cmjfofvq9003w01sg1khze8k0"
       >
         {schoolsWithCoordinates.map(school => {
           const markerColor = getMarkerColor(school.application_group);
