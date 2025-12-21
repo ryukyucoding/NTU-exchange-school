@@ -26,6 +26,7 @@ function UnifiedPanelManager() {
         isVisible={panels.search.isExpanded}
         onClose={() => collapsePanel('search')}
         panelType="search"
+        variant="wishlist"
       >
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50" />
       </PanelOverlay>
@@ -34,6 +35,7 @@ function UnifiedPanelManager() {
         isVisible={panels.user.isExpanded}
         onClose={() => collapsePanel('user')}
         panelType="user"
+        variant="wishlist"
       >
         <motion.div
           className="fixed top-20 right-4 z-20 w-80"
@@ -42,19 +44,19 @@ function UnifiedPanelManager() {
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
-          <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4">
+          <div className="bg-white border border-[#d6c3a1] rounded-xl shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-semibold">我的資格</h3>
+              <h3 className="text-[#4a3828] font-semibold">我的資格</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => collapsePanel('user')}
-                className="text-white/70 hover:text-white hover:bg-white/20"
+                className="text-[#6b5b4c] hover:text-[#4a3828] hover:bg-[#f5ede1]"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            <UserQualificationPanel onApply={() => collapsePanel('user')} />
+            <UserQualificationPanel onApply={() => collapsePanel('user')} variant="wishlist" />
           </div>
         </motion.div>
       </PanelOverlay>
@@ -95,10 +97,10 @@ function CollapseButton({
     <Button
       variant='outline'
       size='sm'
-      className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px] ${
+      className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-sm flex flex-col items-center py-4 px-3 min-h-[120px] ${
         isActive
-          ? 'bg-white/95 backdrop-blur-md border-2 border-white/50 text-gray-800 hover:bg-white shadow-2xl'
-          : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
+          ? 'bg-[#f5ede1] border-2 border-[#d6c3a1] text-[#4a3828] hover:bg-[#e8ddc8] hover:text-[#4a3828]'
+          : 'bg-white border border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
       }`}
       onClick={onClick}
     >
@@ -132,12 +134,11 @@ function TableContent() {
   }
 
   return (
-    <div className={`relative h-screen w-full transition-colors duration-300 ${
-      isUsingQualificationFilter 
-        ? 'bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-950' 
-        : 'bg-black'
-    }`}>
-      <FloatingSearchBar schoolCount={filteredSchools.length} />
+    <div
+      className="relative h-screen w-full transition-colors duration-300"
+      style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}
+    >
+      <FloatingSearchBar schoolCount={filteredSchools.length} variant="wishlist" />
 
       <UnifiedPanelManager />
 

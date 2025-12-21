@@ -29,6 +29,7 @@ function UnifiedPanelManager() {
         isVisible={panels.search.isExpanded}
         onClose={() => collapsePanel('search')}
         panelType="search"
+        variant="glass"
       >
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
           {/* 搜尋欄內容將由 FloatingSearchBar 處理 */}
@@ -40,6 +41,7 @@ function UnifiedPanelManager() {
         isVisible={panels.user.isExpanded}
         onClose={() => collapsePanel('user')}
         panelType="user"
+        variant="glass"
       >
         <motion.div
           className="fixed top-20 right-4 z-20 w-80"
@@ -75,7 +77,7 @@ function UnifiedPanelManager() {
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            <UserQualificationPanel onApply={() => collapsePanel('user')} isHighZoom={isHighZoom} />
+            <UserQualificationPanel onApply={() => collapsePanel('user')} variant="glass" isHighZoom={isHighZoom} />
           </div>
         </motion.div>
       </PanelOverlay>
@@ -159,12 +161,11 @@ function MainContent() {
   }
 
   return (
-    <div className={`relative h-screen w-full transition-colors duration-300 ${
-      isUsingQualificationFilter 
-        ? 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50' 
-        : 'bg-black'
-    }`} style={{ marginTop: 0, paddingTop: 0 }}>
-      <FloatingSearchBar schoolCount={filteredSchools.length} />
+    <div
+      className="relative h-screen w-full transition-colors duration-300"
+      style={{ marginTop: 0, paddingTop: 0, backgroundColor: 'rgba(244, 244, 244, 1)' }}
+    >
+      <FloatingSearchBar schoolCount={filteredSchools.length} variant="glass" />
 
       <UnifiedPanelManager />
 
@@ -175,7 +176,7 @@ function MainContent() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
       <MainContent />
       <WelcomeDialog />
     </div>

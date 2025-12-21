@@ -77,25 +77,25 @@ export default function TableView({ schools }: TableViewProps) {
 
   if (schools.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-white/70 text-lg">沒有符合條件的學校</p>
+      <div className="bg-white border border-dashed border-[#d6c3a1] rounded-xl p-12 text-center shadow-sm">
+        <p className="text-[#6b5b4c] text-lg">沒有符合條件的學校</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl overflow-hidden">
+    <div className="bg-white border border-[#d6c3a1] rounded-xl shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="border-white/20">
-              <TableHead className="w-[50px] text-white/70 text-center">收藏</TableHead>
+            <TableRow className="border-[#d6c3a1] bg-[#f9f3ea] hover:bg-[#f9f3ea]">
+              <TableHead className="w-[50px] text-[#6b5b4c] text-center">收藏</TableHead>
               <TableHead className="w-[200px] text-center">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort('name')}
-                  className="hover:bg-white/20 text-white/70 hover:text-white"
+                  className="hover:bg-[#f5ede1] text-[#6b5b4c] hover:text-[#4a3828]"
                 >
                   學校名稱
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -106,41 +106,41 @@ export default function TableView({ schools }: TableViewProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort('country')}
-                  className="hover:bg-white/20 text-white/70 hover:text-white"
+                  className="hover:bg-[#f5ede1] text-[#6b5b4c] hover:text-[#4a3828]"
                 >
                   國家
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[60px] text-white/70 text-center">地區</TableHead>
-              <TableHead className="w-[100px] text-white/70 text-center">申請組別</TableHead>
-              <TableHead className="w-[120px] text-white/70 text-center">年級限制</TableHead>
+              <TableHead className="w-[60px] text-[#6b5b4c] text-center">地區</TableHead>
+              <TableHead className="w-[100px] text-[#6b5b4c] text-center">申請組別</TableHead>
+              <TableHead className="w-[120px] text-[#6b5b4c] text-center">年級限制</TableHead>
               <TableHead className="w-[80px] text-center">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort('gpa_min')}
-                  className="hover:bg-white/20 text-white/70 hover:text-white"
+                  className="hover:bg-[#f5ede1] text-[#6b5b4c] hover:text-[#4a3828]"
                 >
                   GPA 要求
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[150px] text-white/70 text-center">學院限制</TableHead>
-              <TableHead className="w-[120px] text-white/70 text-center">語言要求</TableHead>
+              <TableHead className="w-[150px] text-[#6b5b4c] text-center">學院限制</TableHead>
+              <TableHead className="w-[120px] text-[#6b5b4c] text-center">語言要求</TableHead>
               <TableHead className="w-[80px] text-center">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort('quota')}
-                  className="hover:bg-white/20 text-white/70 hover:text-white"
+                  className="hover:bg-[#f5ede1] text-[#6b5b4c] hover:text-[#4a3828]"
                 >
                   名額
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[70px] text-white/70 text-center">詳細資料</TableHead>
-              <TableHead className="w-[70px] text-white/70 text-center">OIA官網</TableHead>
+              <TableHead className="w-[70px] text-[#6b5b4c] text-center">詳細資料</TableHead>
+              <TableHead className="w-[70px] text-[#6b5b4c] text-center">OIA官網</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -148,7 +148,7 @@ export default function TableView({ schools }: TableViewProps) {
               const inWishlist = isInWishlist(school.id);
 
               return (
-                <TableRow key={school.id} className="border-white/20 hover:bg-white/10 transition-colors">
+                <TableRow key={school.id} className="border-[#e8ddc8] hover:bg-[#f5ede1] transition-colors">
                   <TableCell className="text-center">
                     <Button
                       variant="ghost"
@@ -160,22 +160,22 @@ export default function TableView({ schools }: TableViewProps) {
                           addToWishlist(school);
                         }
                       }}
-                      className="hover:bg-white/20"
+                      className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <Heart
-                        className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-400' : 'text-white/70'}`}
+                        className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : 'text-[#8a7a63]'}`}
                       />
                     </Button>
                   </TableCell>
                   <TableCell className="font-medium text-center">
                     <div>
-                      <div className="text-white font-semibold">{school.name_zh}</div>
-                      <div className="text-xs text-white/70">{school.name_en}</div>
+                      <div className="text-[#4a3828] font-semibold">{school.name_zh}</div>
+                      <div className="text-xs text-[#6b5b4c]">{school.name_en}</div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-white text-center">{school.country}</TableCell>
+                  <TableCell className="text-[#4a3828] text-center">{school.country}</TableCell>
                   <TableCell className="text-center">
-                    <Badge variant="outline" className="text-white/70 border-white/30">
+                    <Badge variant="outline" className="border-[#d6c3a1] text-[#6b5b4c] bg-white">
                       {school.region === 'Americas' ? '美洲' : 
                        school.region === 'Europe' ? '歐洲' :
                        school.region === 'Asia' ? '亞洲' :
@@ -183,20 +183,20 @@ export default function TableView({ schools }: TableViewProps) {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="text-xs text-white/70">
+                    <div className="text-xs text-[#6b5b4c]">
                       {school.application_group || '無限制'}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="text-xs text-white/70">
+                    <div className="text-xs text-[#6b5b4c]">
                       {school.grade_requirement || '無限制'}
                     </div>
                   </TableCell>
-                  <TableCell className="text-white text-center">
+                  <TableCell className="text-[#4a3828] text-center">
                     {school.gpa_min ? `${school.gpa_min} 以上` : '無限制'}
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="text-xs text-white/70">
+                    <div className="text-xs text-[#6b5b4c]">
                       {(() => {
                         if (!school.restricted_colleges || school.restricted_colleges === '無' || school.restricted_colleges.trim() === '') {
                           return '無限制';
@@ -213,7 +213,7 @@ export default function TableView({ schools }: TableViewProps) {
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="text-xs text-white/70 whitespace-pre-line">
+                    <div className="text-xs text-[#6b5b4c] whitespace-pre-line">
                       {(() => {
                         const requirements = [];
                         if (school.toefl_ibt) requirements.push(`TOEFL ${school.toefl_ibt}`);
@@ -223,13 +223,13 @@ export default function TableView({ schools }: TableViewProps) {
                       })()}
                     </div>
                   </TableCell>
-                  <TableCell className="text-white text-center">{school.quota || '未提供'}</TableCell>
+                  <TableCell className="text-[#4a3828] text-center">{school.quota || '未提供'}</TableCell>
                   <TableCell className="text-center">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => setSelectedSchool(school)}
-                      className="hover:bg-white/20 text-white/70 hover:text-white"
+                      className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <Info className="w-4 h-4" />
                     </Button>
@@ -239,7 +239,7 @@ export default function TableView({ schools }: TableViewProps) {
                       variant="ghost"
                       size="icon"
                       onClick={() => window.open(school.url, '_blank')}
-                      className="hover:bg-white/20 text-white/70 hover:text-white"
+                      className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Button>
@@ -255,6 +255,7 @@ export default function TableView({ schools }: TableViewProps) {
         school={selectedSchool}
         open={!!selectedSchool}
         onClose={() => setSelectedSchool(null)}
+        variant="wishlist"
       />
     </div>
   );

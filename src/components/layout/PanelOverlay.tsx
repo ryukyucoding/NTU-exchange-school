@@ -9,6 +9,7 @@ interface PanelOverlayProps {
   onClose: () => void;
   children: React.ReactNode;
   panelType: PanelType;
+  variant?: 'glass' | 'wishlist';
 }
 
 export default function PanelOverlay({
@@ -16,14 +17,20 @@ export default function PanelOverlay({
   onClose,
   children,
   panelType: _panelType,
+  variant = 'glass',
 }: PanelOverlayProps) {
+  const overlayClass =
+    variant === 'wishlist'
+      ? 'fixed inset-0 bg-[#4a3828]/10 backdrop-blur-md z-40 pointer-events-none'
+      : 'fixed inset-0 bg-black/40 backdrop-blur-md z-40 pointer-events-none';
+
   return (
     <AnimatePresence mode="wait">
       {isVisible && (
         <>
           {/* 背景模糊遮罩層 */}
           <motion.div
-            className="fixed inset-0 bg-black/40 backdrop-blur-md z-40 pointer-events-none"
+            className={overlayClass}
             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
