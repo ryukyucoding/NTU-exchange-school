@@ -19,7 +19,7 @@ export async function POST(
         { status: 401 }
       );
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
     const { boardId } = await params;
 
     const supabase = getSupabaseServer();
@@ -31,7 +31,8 @@ export async function POST(
     }
 
     // 檢查看板是否存在
-    const { data: boardExists } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: boardExists } = await (supabase as any)
       .from("Board")
       .select("id")
       .eq("id", boardId)
@@ -45,7 +46,8 @@ export async function POST(
     }
 
     // 檢查是否已經追蹤
-    const { data: existing } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existing } = await (supabase as any)
       .from("BoardFollow")
       .select("id")
       .eq("userId", userId)
@@ -60,11 +62,12 @@ export async function POST(
     }
 
     // 建立追蹤關係
-    const { error } = await supabase.from("BoardFollow").insert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any).from("BoardFollow").insert({
       id: randomUUID(),
       userId,
       boardId,
-    } as any);
+    });
 
     if (error) {
       console.error("Error following board:", error);
@@ -88,10 +91,10 @@ export async function POST(
       success: true,
       isFollowing: true,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in POST /api/boards/[boardId]/follow:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
@@ -113,7 +116,7 @@ export async function DELETE(
         { status: 401 }
       );
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
     const { boardId } = await params;
 
     const supabase = getSupabaseServer();
@@ -124,7 +127,8 @@ export async function DELETE(
       );
     }
 
-    const { error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any)
       .from("BoardFollow")
       .delete()
       .eq("userId", userId)
@@ -142,10 +146,10 @@ export async function DELETE(
       success: true,
       isFollowing: false,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in DELETE /api/boards/[boardId]/follow:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
@@ -167,7 +171,7 @@ export async function GET(
         isFollowing: false,
       });
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
     const { boardId } = await params;
 
     const supabase = getSupabaseServer();
@@ -178,7 +182,8 @@ export async function GET(
       });
     }
 
-    const { data } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await (supabase as any)
       .from("BoardFollow")
       .select("id")
       .eq("userId", userId)
@@ -189,7 +194,7 @@ export async function GET(
       success: true,
       isFollowing: !!data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/boards/[boardId]/follow:", error);
     return NextResponse.json({
       success: true,

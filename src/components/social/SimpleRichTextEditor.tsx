@@ -5,13 +5,6 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Bold, Link, Plus, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { markdownToHtml, htmlToMarkdown } from '@/lib/utils';
@@ -47,7 +40,6 @@ export default function SimpleRichTextEditor({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const savedSelectionRef = useRef<Range | null>(null);
-  const cursorLineRef = useRef<number>(0);
   const plusButtonClickRangeRef = useRef<Range | null>(null); // 保存點擊"+"按鈕時的游標位置
 
   useEffect(() => {
@@ -121,7 +113,7 @@ export default function SimpleRichTextEditor({
             selection?.removeAllRanges();
             selection?.addRange(newRange);
           }
-        } catch (e) {
+        } catch (_e) {
           // 如果恢復失敗，將游標移到末尾
           const range = document.createRange();
           range.selectNodeContents(editor);
@@ -309,7 +301,7 @@ export default function SimpleRichTextEditor({
     if (!cursorRect) {
       try {
         cursorRect = range.getBoundingClientRect();
-      } catch (e) {
+      } catch (_e) {
         // ignore
       }
     }
@@ -364,7 +356,7 @@ export default function SimpleRichTextEditor({
         return;
       }
     } catch (e) {
-      console.error('Error in updateCursorPosition:', e);
+      console.error('Error in updateCursorPosition:', e instanceof Error ? e.message : String(e));
     }
 
     setShowPlusButton(false);
@@ -511,33 +503,39 @@ export default function SimpleRichTextEditor({
       let tag = '';
       let closingTag = '';
       switch (size) {
-        case 'h1':
+        case 'h1': {
           tag = '<h1>';
           closingTag = '</h1>';
           break;
-        case 'h2':
+        }
+        case 'h2': {
           tag = '<h2>';
           closingTag = '</h2>';
           break;
-        case 'h3':
+        }
+        case 'h3': {
           tag = '<h3>';
           closingTag = '</h3>';
           break;
-        case 'small':
+        }
+        case 'small': {
           tag = '<small>';
           closingTag = '</small>';
           break;
-        case 'large':
+        }
+        case 'large': {
           tag = '<big>';
           closingTag = '</big>';
           break;
-        case 'normal':
+        }
+        case 'normal': {
           // 正常大小不需要標籤，移除現有格式
           const span = document.createElement('span');
           span.textContent = selectedText;
           range.deleteContents();
           range.insertNode(span);
           return;
+        }
         default:
           return;
       }
@@ -753,8 +751,8 @@ export default function SimpleRichTextEditor({
         range = plusButtonClickRangeRef.current;
         // 確保範圍仍然有效
         try {
-          range.startContainer;
-        } catch (e) {
+          void range.startContainer;
+        } catch (_e) {
           // 如果範圍無效，使用當前位置
           if (selection.rangeCount > 0) {
             range = selection.getRangeAt(0);

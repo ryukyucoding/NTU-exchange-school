@@ -19,15 +19,9 @@ export default function RatingInput({
   type,
   value,
   onChange,
-  description,
-  onDescriptionChange,
-  placeholder,
-  maxLength = 500,
 }: RatingInputProps) {
-  const maxValue = type === 'stars' ? 5 : 3;
-
   const renderStars = () => {
-    return Array.from({ length: 5 }, (_, i) => (
+    return Array.from({ length: 5 }, (_v, i) => (
       <Star
         key={i}
         className={`w-5 h-5 cursor-pointer transition-colors ${
@@ -39,7 +33,7 @@ export default function RatingInput({
   };
 
   const renderDollarSigns = () => {
-    return Array.from({ length: 3 }, (_, i) => (
+    return Array.from({ length: 3 }, (_v, i) => (
       <button
         key={i}
         type="button"

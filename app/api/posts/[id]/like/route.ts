@@ -8,7 +8,7 @@ import { getSupabaseServer } from "@/lib/db";
  */
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -18,9 +18,9 @@ export async function POST(
         { status: 401 }
       );
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
 
-    const postId = params.id;
+    const { id: postId } = await params;
 
     if (!postId) {
       return NextResponse.json(
@@ -32,7 +32,8 @@ export async function POST(
     const supabase = getSupabaseServer();
 
     // 檢查貼文是否存在
-    const { data: post, error: postError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: post, error: postError } = await (supabase as any)
       .from('Post')
       .select('id')
       .eq('id', postId)
@@ -46,7 +47,8 @@ export async function POST(
     }
 
     // 檢查是否已經按讚
-    const { data: existingLike } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingLike } = await (supabase as any)
       .from('Like')
       .select('id')
       .eq('userId', userId)
@@ -62,13 +64,14 @@ export async function POST(
     }
 
     // 建立 Like 記錄
-    const { data: like, error: likeError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: like, error: likeError } = await (supabase as any)
       .from('Like')
       .insert({
         id: crypto.randomUUID(),
         userId: userId,
         postId: postId,
-      } as any)
+      })
       .select()
       .single();
 
@@ -85,10 +88,10 @@ export async function POST(
       liked: true,
       like,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error liking post:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
@@ -100,7 +103,7 @@ export async function POST(
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -110,9 +113,9 @@ export async function DELETE(
         { status: 401 }
       );
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
 
-    const postId = params.id;
+    const { id: postId } = await params;
 
     if (!postId) {
       return NextResponse.json(
@@ -124,7 +127,8 @@ export async function DELETE(
     const supabase = getSupabaseServer();
 
     // 刪除 Like 記錄
-    const { error: deleteError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: deleteError } = await (supabase as any)
       .from('Like')
       .delete()
       .eq('userId', userId)
@@ -142,10 +146,10 @@ export async function DELETE(
       success: true,
       liked: false,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error unliking post:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

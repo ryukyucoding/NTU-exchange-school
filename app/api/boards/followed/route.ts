@@ -6,7 +6,7 @@ import { getSupabaseServer } from "@/lib/db";
  * GET /api/boards/followed
  * 獲取當前用戶追蹤的看板列表
  */
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
         { status: 401 }
       );
     }
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
 
     const supabase = getSupabaseServer();
 
@@ -27,7 +27,8 @@ export async function GET(req: NextRequest) {
     }
 
     // 獲取用戶追蹤的看板 ID
-    const { data: boardFollows, error: followError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: boardFollows, error: followError } = await (supabase as any)
       .from('BoardFollow')
       .select('boardId')
       .eq('userId', userId);
@@ -58,8 +59,9 @@ export async function GET(req: NextRequest) {
     }
 
     // 獲取看板詳細信息
-    const boardIds = boardFollows.map((bf: any) => bf.boardId);
-    const { data: boards, error: boardsError } = await supabase
+    const boardIds = (boardFollows as { boardId: string }[]).map((bf) => bf.boardId);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: boards, error: boardsError } = await (supabase as any)
       .from('Board')
       .select('id, name, slug, type, schoolId, country_id')
       .in('id', boardIds);
@@ -76,10 +78,10 @@ export async function GET(req: NextRequest) {
       success: true,
       boards,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching followed boards:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

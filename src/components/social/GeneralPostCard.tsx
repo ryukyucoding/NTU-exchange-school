@@ -10,11 +10,16 @@ interface Post {
   id: string;
   title: string;
   content: string;
-  author: any;
+  author: {
+    id: string;
+    name: string;
+    userID: string;
+    image?: string;
+  };
   createdAt: string;
   hashtags?: string[];
-  photos?: any[];
-  schools?: any[];
+  photos?: { url: string; alt?: string }[];
+  schools?: { id: string; name_zh: string; country: string }[];
   likeCount: number;
   repostCount: number;
   commentCount: number;
@@ -139,7 +144,8 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
               href={`/social/boards/school/${school.id}`}
               className="text-sm px-3 py-1 rounded-full bg-[#BAC7E569] text-[#8D7051] hover:bg-[#BAC7E569]/80"
             >
-              {school.name_zh || school.name_en}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {school.name_zh || (school as any).name_en}
             </Link>
           ))}
           {post.hashtags && post.hashtags.map((tag, index) => (

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, ExternalLink, X, Info } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import { useMapZoom } from '@/contexts/MapZoomContext';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -75,7 +75,7 @@ function PopupWithDynamicPosition({
         setPopupAnchor('bottom');
         setPopupOffset([0, -10]); // 向上偏移 10px
       }
-    } catch (error) {
+    } catch (_error) {
       // 如果計算失敗，使用預設值（顯示在下方）
       setPopupAnchor('top');
       setPopupOffset([0, 10]);
@@ -289,7 +289,7 @@ function PopupContent({
 
 export default function MapView({ schools }: MapViewProps) {
   const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
-  const { setZoomLevel, zoomLevel } = useMapZoom();
+  const { setZoomLevel } = useMapZoom();
   const isHighZoom = useMapBackgroundBrightness(3);
 
   // 當組件掛載時，重置縮放級別為初始值（確保切換頁面時恢復預設狀態）

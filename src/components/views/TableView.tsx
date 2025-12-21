@@ -39,8 +39,8 @@ export default function TableView({ schools }: TableViewProps) {
   };
 
   const sortedSchools = [...schools].sort((a, b) => {
-    let aValue: any;
-    let bValue: any;
+    let aValue: string | number | null;
+    let bValue: string | number | null;
 
     switch (sortField) {
       case 'name':
@@ -66,13 +66,17 @@ export default function TableView({ schools }: TableViewProps) {
     if (aValue === null) return 1;
     if (bValue === null) return -1;
 
-    if (typeof aValue === 'string') {
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
       return sortOrder === 'asc'
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     }
 
-    return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+
+    return 0;
   });
 
   if (schools.length === 0) {

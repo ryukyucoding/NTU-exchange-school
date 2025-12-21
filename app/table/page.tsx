@@ -113,7 +113,7 @@ function CollapseButton({
 function TableContent() {
   const { schools, loading } = useSchoolContext();
   const { filters } = useFilters();
-  const { user, isUsingQualificationFilter } = useUserContext();
+  const { user } = useUserContext();
   const filteredSchools = useFilteredSchools(schools, filters, user);
   const { setZoomLevel } = useMapZoom();
 

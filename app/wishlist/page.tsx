@@ -5,7 +5,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowUp, ArrowDown, HeartOff, PlusCircle, CheckCircle2, GripVertical, ArrowUpFromLine, ArrowDownFromLine } from 'lucide-react';
+import { HeartOff, PlusCircle, GripVertical } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { SchoolWithMatch } from '@/types/school';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -75,7 +75,7 @@ function WishlistContent() {
     });
   };
 
-  const movePreference = (id: string, direction: 'up' | 'down') => {
+  const _movePreference = (id: string, direction: 'up' | 'down') => {
     setPreferences(prev => {
       const next = [...prev];
       const index = next.findIndex(p => p.id === id);
@@ -87,7 +87,7 @@ function WishlistContent() {
     });
   };
 
-  const moveToEdge = (id: string, to: 'top' | 'bottom') => {
+  const _moveToEdge = (id: string, to: 'top' | 'bottom') => {
     setPreferences(prev => {
       const next = prev.filter(p => p.id !== id);
       const target = prev.find(p => p.id === id);

@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
     
     // 確保用戶存在於資料庫中
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: existingUser } = await (supabase as any)
       .from('User')
       .select('id')
@@ -48,7 +47,6 @@ export async function POST(req: NextRequest) {
       
       // 檢查 userID 是否已存在
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: existingUserID } = await (supabase as any)
         .from('User')
         .select('userID')
@@ -60,7 +58,6 @@ export async function POST(req: NextRequest) {
       }
       
       const now = new Date().toISOString();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error: createUserError } = await (supabase as any)
         .from('User')
@@ -136,8 +133,7 @@ export async function POST(req: NextRequest) {
     let postId = providedPostId;
     let isUpdate = false;
     if (postId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: existingPost, error: fetchError } = await (supabase as any)
+      const { data: existingPost, error: fetchError } = await supabase
         .from('Post')
         .select('id, authorId')
         .eq('id', postId)
@@ -185,8 +181,7 @@ export async function POST(req: NextRequest) {
     // 建立或更新貼文
     if (isUpdate) {
       // 更新現有 post
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: _updatedPost, error: updateError } = await (supabase as any)
+      const { data: _updatedPost, error: updateError } = await supabase
         .from('Post')
         .update({
           title: trimmedTitle,
@@ -215,8 +210,7 @@ export async function POST(req: NextRequest) {
       ]);
     } else {
       // 創建新 post
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: _newPost, error: postError } = await (supabase as any)
+      const { data: _newPost, error: postError } = await supabase
         .from('Post')
         .insert({
           id: postId,
@@ -247,8 +241,7 @@ export async function POST(req: NextRequest) {
         }));
 
       if (hashtagInserts.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: hashtagError } = await (supabase as any)
+        const { error: hashtagError } = await supabase
           .from('Hashtag')
           .insert(hashtagInserts);
 
@@ -273,8 +266,7 @@ export async function POST(req: NextRequest) {
         }));
 
       if (photoInserts.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: photoError } = await (supabase as any)
+        const { error: photoError } = await supabase
           .from('PostPhoto')
           .insert(photoInserts);
 
@@ -289,8 +281,7 @@ export async function POST(req: NextRequest) {
     if (ratings && typeof ratings === 'object') {
       const { schoolId, livingConvenience, costOfLiving, courseLoading } = ratings;
       if (schoolId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: ratingError } = await (supabase as any)
+        const { error: ratingError } = await supabase
           .from('SchoolRating')
           .insert({
             postId: postId,
@@ -317,8 +308,7 @@ export async function POST(req: NextRequest) {
         
         // 查找國家版 Board（schoolId 為 null，type 為 'country'）
         // 通過 Board 的 name 或 slug 匹配國家名稱
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: countryBoards } = await (supabase as any)
+        const { data: countryBoards } = await supabase
           .from('Board')
           .select('id')
           .is('schoolId', null)
@@ -331,8 +321,7 @@ export async function POST(req: NextRequest) {
         } else {
           // 如果沒找到，嘗試通過 Country 表查找（如果存在）
           try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { data: countryData } = await (supabase as any)
+            const { data: countryData } = await supabase
               .from('Country')
               .select('id')
               .or(`name.eq.${countryName},name_zh.eq.${countryName},name_en.eq.${countryName}`)
@@ -340,8 +329,7 @@ export async function POST(req: NextRequest) {
             
             if (countryData) {
               // 通過 country_id 查找 Board
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const { data: countryBoard } = await (supabase as any)
+              const { data: countryBoard } = await supabase
                 .from('Board')
                 .select('id')
                 .is('schoolId', null)
@@ -371,8 +359,7 @@ export async function POST(req: NextRequest) {
         if (!schoolId || typeof schoolId !== 'string') continue;
         
         // 查找學校版 Board（有 schoolId）
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: schoolBoard } = await (supabase as any)
+        const { data: schoolBoard } = await supabase
           .from('Board')
           .select('id')
           .eq('schoolId', schoolId)
@@ -384,8 +371,7 @@ export async function POST(req: NextRequest) {
           boardIds.push(schoolBoard.id);
         } else {
           // 如果學校版不存在，嘗試創建
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const { data: schoolInfo } = await (supabase as any)
+          const { data: schoolInfo } = await supabase
             .from('schools')
             .select('name_zh, country')
             .eq('id', schoolId)
@@ -394,8 +380,7 @@ export async function POST(req: NextRequest) {
           if (schoolInfo) {
             const boardId = crypto.randomUUID();
             const slug = `school-${schoolId}`.toLowerCase();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { error: boardError } = await (supabase as any)
+            const { error: boardError } = await supabase
               .from('Board')
               .insert({
                 id: boardId,
@@ -428,8 +413,7 @@ export async function POST(req: NextRequest) {
         boardId: boardId,
       }));
       
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error: postBoardError } = await (supabase as any)
+      const { error: postBoardError } = await supabase
         .from('PostBoard')
         .insert(postBoardInserts);
       
@@ -442,8 +426,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 獲取完整的貼文資料（包含作者資訊）
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: fullPost, error: fetchError } = await (supabase as any)
+    const { data: fullPost, error: fetchError } = await supabase
       .from('Post')
       .select(`
         *,
@@ -527,8 +510,7 @@ export async function GET(req: NextRequest) {
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const draftQuery = (supabase as any)
+      const draftQuery = supabase
         .from('Post')
         .select(`
           *,
@@ -566,9 +548,8 @@ export async function GET(req: NextRequest) {
       }
 
       // 如果是review類型，只返回有評分的貼文；如果是general類型，只返回沒有評分的貼文
-      const postIds = (drafts as { id: string }[]).map((d) => d.id);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: ratingsData } = await (supabase as any)
+      const postIds = drafts.map(d => d.id);
+      const { data: ratingsData } = await supabase
         .from('SchoolRating')
         .select('postId')
         .in('postId', postIds)
@@ -578,9 +559,9 @@ export async function GET(req: NextRequest) {
 
       let filteredDrafts = drafts;
       if (type === 'review') {
-        filteredDrafts = (drafts as { id: string }[]).filter((d) => ratedPostIds.has(d.id));
+        filteredDrafts = drafts.filter(d => ratedPostIds.has(d.id));
       } else if (type === 'general') {
-        filteredDrafts = (drafts as { id: string }[]).filter((d) => !ratedPostIds.has(d.id));
+        filteredDrafts = drafts.filter(d => !ratedPostIds.has(d.id));
       }
 
       return NextResponse.json({
@@ -593,8 +574,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let query = (supabase as any)
+    let query = supabase
       .from('Post')
       .select(`
         *,
@@ -636,23 +616,21 @@ export async function GET(req: NextRequest) {
       }
       
       // 獲取用戶追蹤的看板
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: followedBoards } = await (supabase as any)
+      const { data: followedBoards } = await supabase
         .from('BoardFollow')
         .select('boardId')
         .eq('userId', userId);
 
       if (followedBoards && followedBoards.length > 0) {
-        const boardIds = (followedBoards as { boardId: string }[]).map((b) => b.boardId);
+        const boardIds = followedBoards.map(b => b.boardId);
         // 獲取這些看板的貼文
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: postBoardData } = await (supabase as any)
+        const { data: postBoardData } = await supabase
           .from('PostBoard')
           .select('postId')
           .in('boardId', boardIds);
 
         if (postBoardData && postBoardData.length > 0) {
-          const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
+          const postIds = postBoardData.map(p => p.postId);
           query = query.in('id', postIds);
         } else {
           // 沒有追蹤的看板，返回空列表
@@ -677,18 +655,17 @@ export async function GET(req: NextRequest) {
 
     // 如果指定了 boardId，只顯示該看板的貼文
     if (boardId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postBoardData } = await (supabase as any)
+      const { data: postBoardData } = await supabase
         .from('PostBoard')
         .select('postId')
         .eq('boardId', boardId);
 
       if (postBoardData && postBoardData.length > 0) {
-        const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
+        const postIds = postBoardData.map(p => p.postId);
         if (filterPostIds === null) {
           filterPostIds = postIds;
         } else {
-          filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
+          filterPostIds = filterPostIds.filter(id => postIds.includes(id));
         }
       } else {
         return NextResponse.json({
@@ -701,18 +678,17 @@ export async function GET(req: NextRequest) {
 
     // 如果指定了 hashtag，只顯示包含該 hashtag 的貼文
     if (hashtag) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: hashtagData } = await (supabase as any)
+      const { data: hashtagData } = await supabase
         .from('Hashtag')
         .select('postId')
         .eq('content', hashtag);
 
       if (hashtagData && hashtagData.length > 0) {
-        const postIds = (hashtagData as { postId: string }[]).map((h) => h.postId);
+        const postIds = hashtagData.map(h => h.postId);
         if (filterPostIds === null) {
           filterPostIds = postIds;
         } else {
-          filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
+          filterPostIds = filterPostIds.filter(id => postIds.includes(id));
         }
       } else {
         return NextResponse.json({
@@ -725,18 +701,17 @@ export async function GET(req: NextRequest) {
 
     // 如果指定了 schoolId，只顯示與該學校相關的貼文
     if (schoolId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postSchoolData } = await (supabase as any)
+      const { data: postSchoolData } = await supabase
         .from('PostSchool')
         .select('postId')
         .eq('schoolId', schoolId);
 
       if (postSchoolData && postSchoolData.length > 0) {
-        const postIds = (postSchoolData as { postId: string }[]).map((ps) => ps.postId);
+        const postIds = postSchoolData.map(ps => ps.postId);
         if (filterPostIds === null) {
           filterPostIds = postIds;
         } else {
-          filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
+          filterPostIds = filterPostIds.filter(id => postIds.includes(id));
         }
       } else {
         return NextResponse.json({
@@ -749,13 +724,12 @@ export async function GET(req: NextRequest) {
 
     // 如果指定了 filterType="rating"，只顯示有評分的貼文
     if (filterType === 'rating') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: ratingData } = await (supabase as any)
+      const { data: ratingData } = await supabase
         .from('SchoolRating')
         .select('postId');
 
       if (ratingData && ratingData.length > 0) {
-        const ratingPostIds = (ratingData as { postId: string }[]).map((r) => r.postId);
+        const ratingPostIds = ratingData.map(r => r.postId);
         if (filterPostIds === null) {
           filterPostIds = ratingPostIds;
         } else {
@@ -783,8 +757,7 @@ export async function GET(req: NextRequest) {
 
     // 如果有 cursor，從該位置開始
     if (cursor && sort === "latest") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: cursorPost } = await (supabase as any)
+      const { data: cursorPost } = await supabase
         .from('Post')
         .select('createdAt')
         .eq('id', cursor)
@@ -855,7 +828,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 批量獲取互動數據和相關數據
-    const postIds = (posts as { id: string }[]).map((p) => p.id);
+    const postIds = posts.map(p => p.id);
     
     // 獲取按讚數、轉發數、留言數、hashtags、photos、schools、ratings（使用 try-catch 避免錯誤）
     let likesData = { data: [] };
@@ -880,19 +853,17 @@ export async function GET(req: NextRequest) {
           photosData,
           schoolsData,
           ratingsData
-        /* eslint-disable @typescript-eslint/no-explicit-any */
         ] = await Promise.all([
-          (supabase as any).from('Like').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('Repost').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('Comment').select('postId').in('postId', postIds).is('deletedAt', null).catch(() => ({ data: [] })),
-          (userId) ? (supabase as any).from('Like').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-          (userId) ? (supabase as any).from('Repost').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-          (supabase as any).from('Hashtag').select('postId, content').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('PostPhoto').select('*').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('SchoolRating').select('*').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('Like').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('Repost').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('Comment').select('postId').in('postId', postIds).is('deletedAt', null).catch(() => ({ data: [] })),
+          (userId) ? supabase.from('Like').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
+          (userId) ? supabase.from('Repost').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
+          supabase.from('Hashtag').select('postId, content').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('PostPhoto').select('*').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').in('postId', postIds).catch(() => ({ data: [] })),
+          supabase.from('SchoolRating').select('*').in('postId', postIds).catch(() => ({ data: [] })),
         ]);
-        /* eslint-enable @typescript-eslint/no-explicit-any */
       } catch (err) {
         console.warn("Error fetching related data:", err);
         // 繼續執行，使用空數據
@@ -903,18 +874,18 @@ export async function GET(req: NextRequest) {
     const likeCounts = new Map<string, number>();
     const repostCounts = new Map<string, number>();
     const commentCounts = new Map<string, number>();
-    const userLikedPostIds = new Set(((userLikes.data || []) as { postId: string }[]).map((l) => l.postId));
-    const userRepostedPostIds = new Set(((userReposts.data || []) as { postId: string }[]).map((r) => r.postId));
+    const userLikedPostIds = new Set((userLikes.data || []).map(l => l.postId));
+    const userRepostedPostIds = new Set((userReposts.data || []).map(r => r.postId));
 
-    (((likesData.data || []) as { postId: string }[])).forEach((like) => {
+    (likesData.data || []).forEach(like => {
       likeCounts.set(like.postId, (likeCounts.get(like.postId) || 0) + 1);
     });
 
-    (((repostsData.data || []) as { postId: string }[])).forEach((repost) => {
+    (repostsData.data || []).forEach(repost => {
       repostCounts.set(repost.postId, (repostCounts.get(repost.postId) || 0) + 1);
     });
 
-    (((commentsData.data || []) as { postId: string }[])).forEach((comment) => {
+    (commentsData.data || []).forEach(comment => {
       commentCounts.set(comment.postId, (commentCounts.get(comment.postId) || 0) + 1);
     });
 

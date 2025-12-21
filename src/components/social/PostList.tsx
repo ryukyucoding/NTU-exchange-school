@@ -2,21 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import GeneralPostCard from './GeneralPostCard';
 import SchoolReviewPostCard from './SchoolReviewPostCard';
+
+interface Author {
+  id: string;
+  name: string | null;
+  image: string | null;
+}
+
+interface Photo {
+  id: string;
+  url: string;
+}
+
+interface Ratings {
+  schoolId: string;
+  livingConvenience: number;
+  costOfLiving: number;
+  courseLoading: number;
+}
+
+interface School {
+  id: string;
+  name_zh: string;
+  name_en: string;
+}
 
 interface Post {
   id: string;
   title: string;
   content: string;
-  author: any;
+  author: Author;
   createdAt: string;
   hashtags?: string[];
-  photos?: any[];
-  ratings?: any;
+  photos?: Photo[];
+  ratings?: Ratings;
   postType: 'general' | 'review';
-  schools?: any[];
+  schools?: School[];
   likeCount: number;
   repostCount: number;
   commentCount: number;
@@ -75,7 +98,7 @@ export default function PostList({
         setHasMore(data.nextCursor !== null);
       }
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Error fetching posts:', error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
@@ -121,7 +144,8 @@ export default function PostList({
         if (post.postType === 'review') {
           return <SchoolReviewPostCard key={post.id} post={post} />;
         }
-        return <GeneralPostCard key={post.id} post={post} />;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <GeneralPostCard key={post.id} post={post as any} />;
       })}
       {hasMore && sort === 'latest' && (
         <div className="flex justify-center pt-4">

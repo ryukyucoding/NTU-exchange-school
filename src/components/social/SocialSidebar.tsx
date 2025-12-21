@@ -59,7 +59,7 @@ export default function SocialSidebar() {
           setFollowedBoards(data.boards || []);
         }
       } catch (error) {
-        console.error('Error fetching followed boards:', error);
+        console.error('Error fetching followed boards:', error instanceof Error ? error.message : String(error));
       } finally {
         setLoading(false);
       }
@@ -93,7 +93,7 @@ export default function SocialSidebar() {
               所有看板
             </Button>
           </Link>
-          <Link href={`/social/profile/${(session?.user as any)?.id || ''}`}>
+          <Link href={`/social/profile/${(session?.user as { id?: string })?.id || ''}`}>
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"

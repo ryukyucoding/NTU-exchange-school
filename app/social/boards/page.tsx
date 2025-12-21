@@ -19,7 +19,7 @@ function BoardsContent() {
     Africa: [],
     Oceania: [],
   });
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -33,7 +33,7 @@ function BoardsContent() {
           setCountriesByRegion(data.countriesByRegion || {});
           // 計算總國家數
           const totalCountries = Object.values(data.countriesByRegion || {}).reduce(
-            (sum: number, countries: any) => sum + (countries?.length || 0),
+            (sum: number, countries: unknown) => sum + (Array.isArray(countries) ? countries.length : 0),
             0
           );
           console.log(`Loaded ${totalCountries} countries from database`);

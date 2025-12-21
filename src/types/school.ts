@@ -30,6 +30,4 @@ export interface School {
   tuition: 'Free' | 'Partial' | 'Self-funded' | null;
 }
 
-export interface SchoolWithMatch extends School {
-  // No additional properties needed
-}
+export type SchoolWithMatch = School;

@@ -903,18 +903,18 @@ export async function GET(req: NextRequest) {
     const likeCounts = new Map<string, number>();
     const repostCounts = new Map<string, number>();
     const commentCounts = new Map<string, number>();
-    const userLikedPostIds = new Set(((userLikes.data || []) as { postId: string }[]).map((l) => l.postId));
-    const userRepostedPostIds = new Set(((userReposts.data || []) as { postId: string }[]).map((r) => r.postId));
+    const userLikedPostIds = new Set((userLikes.data || []).map(l => l.postId));
+    const userRepostedPostIds = new Set((userReposts.data || []).map(r => r.postId));
 
-    (((likesData.data || []) as { postId: string }[])).forEach((like) => {
+    (likesData.data || []).forEach(like => {
       likeCounts.set(like.postId, (likeCounts.get(like.postId) || 0) + 1);
     });
 
-    (((repostsData.data || []) as { postId: string }[])).forEach((repost) => {
+    (repostsData.data || []).forEach(repost => {
       repostCounts.set(repost.postId, (repostCounts.get(repost.postId) || 0) + 1);
     });
 
-    (((commentsData.data || []) as { postId: string }[])).forEach((comment) => {
+    (commentsData.data || []).forEach(comment => {
       commentCounts.set(comment.postId, (commentCounts.get(comment.postId) || 0) + 1);
     });
 

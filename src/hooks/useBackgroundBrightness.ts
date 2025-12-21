@@ -23,11 +23,6 @@ export function useBackgroundBrightness(
 
     const checkBrightness = () => {
       try {
-        // 獲取元素的位置和尺寸
-        const rect = element.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height + sampleSize / 2; // 元素下方
-
         // 創建臨時 canvas 來讀取像素
         if (!canvasRef.current) {
           canvasRef.current = document.createElement('canvas');
@@ -101,7 +96,7 @@ export function useBackgroundBrightness(
         // 預設為深色背景
         setBrightness(50);
       } catch (error) {
-        console.error('Error checking background brightness:', error);
+        console.error('Error checking background brightness:', error instanceof Error ? error.message : String(error));
         setBrightness(50); // 預設為深色
       }
     };

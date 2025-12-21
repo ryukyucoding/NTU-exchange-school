@@ -26,7 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       try {
         if (!account || !user.email) {
           console.error("Missing account or user email");
@@ -46,7 +46,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             console.log("🔍 [signIn] 開始檢查用戶資料，email:", user.email);
 
             // 检查是否已有相同 email + 相同 provider 的帳號
-            const { data: existingAccount, error: accountError } = await supabase
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: existingAccount, error: accountError } = await (supabase as any)
               .from('Account')
               .select('*, User(*)')
               .eq('provider', account.provider)
@@ -65,7 +66,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
 
             // 如果是新帳號，檢查是否已有相同 email 的用戶
-            const { data: existingUser, error: userError } = await supabase
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: existingUser, error: userError } = await (supabase as any)
               .from('User')
               .select('id')
               .eq('email', user.email)
@@ -82,7 +84,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user.id = existingUser.id;
           
           // 如果用戶已存在，創建 Account 關聯
-          const { error: insertError } = await supabase.from('Account').insert({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { error: insertError } = await (supabase as any).from('Account').insert({
             id: crypto.randomUUID(),
             userId: existingUser.id,
             type: account.type,
@@ -110,7 +113,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               let userID = user.email.split('@')[0] || userId.substring(0, 8);
               
               // 檢查 userID 是否已存在，如果存在則加上隨機字串
-              const { data: existingUserID } = await supabase
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const { data: existingUserID } = await (supabase as any)
                 .from('User')
                 .select('userID')
                 .eq('userID', userID)
@@ -134,7 +138,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               
               console.log("📝 [signIn] 準備插入用戶資料:", { ...userData, email: user.email });
               
-              const { data: insertedUser, error: userInsertError } = await supabase
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const { data: insertedUser, error: userInsertError } = await (supabase as any)
                 .from('User')
                 .insert(userData)
                 .select()
@@ -165,7 +170,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 };
                 
                 console.log("📝 [signIn] 準備插入 Account 資料");
-                const { error: accountInsertError } = await supabase.from('Account').insert(accountData);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const { error: accountInsertError } = await (supabase as any).from('Account').insert(accountData);
 
                 if (accountInsertError) {
                   console.error("❌ [signIn] Error creating account:", accountInsertError);
@@ -184,7 +190,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return true;
           }
       } catch (error) {
-        console.error("SignIn callback error:", error);
+        console.error("SignIn callback error:", error instanceof Error ? error.message : String(error));
         // 即使出錯，也允許登入（NextAuth 會處理基本的 session）
         return true;
       }
@@ -192,27 +198,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (session.user && token?.sub) {
         session.user.id = token.sub;
-        (session.user as any).userID = (token as any).userID || null;
+        (session.user as { userID?: string | null }).userID = (token as { userID?: string | null }).userID || null;
       }
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // 登入時（user 存在）設置 token.sub 為 user.id，並從資料庫獲取 userID
       if (user?.id) {
         token.sub = user.id; // 確保 token.sub 是資料庫中的 User.id
         
         try {
           const supabase = getSupabaseServer();
-          const { data: dbUser } = await supabase
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: dbUser } = await (supabase as any)
             .from('User')
             .select('userID')
             .eq('id', user.id)
             .maybeSingle();
 
-          (token as any).userID = dbUser?.userID || null;
+          (token as { userID?: string | null }).userID = dbUser?.userID || null;
         } catch (error) {
-          console.error("Error fetching userID in jwt callback:", error);
-          (token as any).userID = null;
+          console.error("Error fetching userID in jwt callback:", error instanceof Error ? error.message : String(error));
+          (token as { userID?: string | null }).userID = null;
         }
       }
       return token;

@@ -5,7 +5,6 @@ import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 
 function SocialContent() {
   const [filter, setFilter] = useState<'all' | 'following'>('all');

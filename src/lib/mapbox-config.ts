@@ -8,23 +8,23 @@ if (typeof window !== 'undefined' && !workerInitialized) {
   
   // 使用本地 worker URL（避免 CORS 問題）
   try {
-    // @ts-expect-error - 動態導入
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mapboxgl = require('mapbox-gl');
-    
+
     // 設置 worker URL 為本地路徑
     if (mapboxgl.default) {
-      // @ts-expect-error - workerUrl 屬性沒有類型定義
-      mapboxgl.default.workerUrl = '/mapbox-gl-csp-worker.js';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (mapboxgl.default as any).workerUrl = '/mapbox-gl-csp-worker.js';
     }
-  } catch (error) {
+  } catch (_error) {
     // 如果同步方式失敗，使用異步方式
     import('mapbox-gl').then((mapboxgl) => {
       if (mapboxgl.default) {
-        // @ts-expect-error - workerUrl 屬性沒有類型定義
-        mapboxgl.default.workerUrl = '/mapbox-gl-csp-worker.js';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (mapboxgl.default as any).workerUrl = '/mapbox-gl-csp-worker.js';
       }
-    }).catch((err) => {
-      console.error('Failed to initialize mapbox-gl worker:', err);
+    }).catch((err: unknown) => {
+      console.error('Failed to initialize mapbox-gl worker:', err instanceof Error ? err.message : String(err));
     });
   }
 }

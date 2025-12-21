@@ -6,21 +6,38 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Star } from 'lucide-react';
 
+interface Author {
+  id: string;
+  name: string | null;
+  image: string | null;
+}
+
+interface Photo {
+  id: string;
+  url: string;
+}
+
+interface School {
+  id: string;
+  name_zh: string;
+  name_en: string;
+}
+
 interface Post {
   id: string;
   title: string;
   content: string;
-  author: any;
+  author: Author;
   createdAt: string;
   hashtags?: string[];
-  photos?: any[];
+  photos?: Photo[];
   ratings?: {
     schoolId: string;
     livingConvenience: number;
     costOfLiving: number;
     courseLoading: number;
   };
-  schools?: any[];
+  schools?: School[];
   likeCount: number;
   repostCount: number;
   commentCount: number;
@@ -49,7 +66,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error('Error toggling like:', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -63,7 +80,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         setIsReposted(!isReposted);
       }
     } catch (error) {
-      console.error('Error toggling repost:', error);
+      console.error('Error toggling repost:', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -77,7 +94,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         setIsBookmarked(!isBookmarked);
       }
     } catch (error) {
-      console.error('Error toggling bookmark:', error);
+      console.error('Error toggling bookmark:', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -97,16 +114,12 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   };
 
   const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
+    return Array.from({ length: 5 }, (_v, i) => (
       <Star
         key={i}
         className={`h-4 w-4 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
       />
     ));
-  };
-
-  const renderCostRating = (rating: number) => {
-    return '$'.repeat(rating);
   };
 
   return (

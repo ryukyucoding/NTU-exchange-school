@@ -37,16 +37,3 @@ export const supabase = createClient<Database>(
     },
   }
 );
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  },
-  db: {
-    schema: 'public',
-  },
-  global: {
-    headers: {
-      'x-application-name': 'ntu-exchange-school',
-    },
-  },
-});

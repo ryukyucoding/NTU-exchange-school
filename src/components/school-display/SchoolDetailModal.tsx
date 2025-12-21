@@ -28,7 +28,7 @@ function renderTextWithLinks(
       ? '!text-blue-600 underline underline-offset-2 hover:!text-blue-700 font-medium'
       : 'text-blue-300 underline underline-offset-2 hover:text-blue-200';
 
-  const nodes: any[] = [];
+  const nodes: (string | React.ReactElement)[] = [];
   const re =
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\[(https?:\/\/[^\s\]]+)\]|(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
 

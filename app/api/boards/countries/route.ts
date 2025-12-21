@@ -14,16 +14,16 @@ const continentToRegion: Record<string, string> = {
  * GET /api/boards/countries
  * 從 country 表獲取所有國家列表，按地區（continent）分組
  */
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     let supabase;
     try {
       supabase = getSupabaseServer();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating Supabase client:", error);
       return NextResponse.json({
         success: false,
-        error: error.message || "Failed to connect to database",
+        error: error instanceof Error ? error.message : "Failed to connect to database",
         countriesByRegion: {
           Americas: [],
           Europe: [],
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
       Oceania: [],
     };
 
-    countries?.forEach((country: any) => {
+    (countries as { id: string; country_zh: string; country_en: string; continent: string }[] | null)?.forEach((country) => {
       const continent = country.continent;
       const countryName = country.country_zh || country.country_en;
       
@@ -108,11 +108,11 @@ export async function GET(req: NextRequest) {
       success: true,
       countriesByRegion,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Unexpected error in GET /api/boards/countries:", error);
     return NextResponse.json({
       success: false,
-      error: error.message || "Internal server error",
+      error: error instanceof Error ? error.message : "Internal server error",
       countriesByRegion: {
         Americas: [],
         Europe: [],

@@ -77,9 +77,9 @@ export default function UserQualificationPanel({
         const error = await response.json();
         throw new Error(error.details || error.error || '保存失敗');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to save qualification:', error);
-      const errorMessage = error.message || '未知錯誤';
+      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
       toast.error(`保存失敗: ${errorMessage}`);
     } finally {
       setIsSaving(false);
@@ -174,7 +174,7 @@ export default function UserQualificationPanel({
           </Label>
           <Select
             value={user.grade || ''}
-            onValueChange={(value: any) => setUser({ ...user, grade: value })}
+            onValueChange={(value: string) => setUser({ ...user, grade: value as 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | null })}
           >
             <SelectTrigger
               id="grade"

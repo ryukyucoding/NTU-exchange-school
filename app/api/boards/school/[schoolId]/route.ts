@@ -45,7 +45,8 @@ export async function GET(
     }
 
     // 直接查詢 Board 表（所有學校板都已存在）
-    const { data: board, error: boardError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: board, error: boardError } = await (supabase as any)
       .from("Board")
       .select("id, name, slug, type, country_id, schoolId, description")
       .eq("type", "school")
@@ -79,15 +80,18 @@ export async function GET(
 
     // 並行查詢統計數據和貼文 ID
     const [{ count: followerExact }, { count: postExact }, { data: postBoardData }] = await Promise.all([
-      supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
         .from("BoardFollow")
         .select("*", { count: "exact", head: true })
         .eq("boardId", boardId),
-      supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
         .from("PostBoard")
         .select("*", { count: "exact", head: true })
         .eq("boardId", boardId),
-      supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any)
         .from("PostBoard")
         .select("postId")
         .eq("boardId", boardId),
@@ -98,8 +102,9 @@ export async function GET(
 
     // 計算平均評分
     if (postBoardData && postBoardData.length > 0) {
-      const postIds = postBoardData.map((pb: any) => pb.postId);
-      const { data: ratingsData } = await supabase
+      const postIds = (postBoardData as { postId: string }[]).map((pb) => pb.postId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: ratingsData } = await (supabase as any)
         .from("SchoolRating")
         .select("livingConvenience, costOfLiving, courseLoading")
         .in("postId", postIds)
@@ -107,13 +112,14 @@ export async function GET(
 
       if (ratingsData && ratingsData.length > 0) {
         const total = ratingsData.length;
+        const typedRatingsData = ratingsData as { livingConvenience: number | null; costOfLiving: number | null; courseLoading: number | null }[];
         avgRatings = {
           livingConvenience:
-            ratingsData.reduce((sum: number, r: any) => sum + (r.livingConvenience || 0), 0) / total,
+            typedRatingsData.reduce((sum, r) => sum + (r.livingConvenience || 0), 0) / total,
           costOfLiving:
-            ratingsData.reduce((sum: number, r: any) => sum + (r.costOfLiving || 0), 0) / total,
+            typedRatingsData.reduce((sum, r) => sum + (r.costOfLiving || 0), 0) / total,
           courseLoading:
-            ratingsData.reduce((sum: number, r: any) => sum + (r.courseLoading || 0), 0) / total,
+            typedRatingsData.reduce((sum, r) => sum + (r.courseLoading || 0), 0) / total,
         };
       }
     }
@@ -127,10 +133,10 @@ export async function GET(
       },
       avgRatings,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/boards/school/[schoolId]:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error" },
+      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

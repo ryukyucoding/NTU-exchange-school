@@ -3,8 +3,8 @@ import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
 
 /**
- * POST /api/posts/[id]/repost
- * 轉發貼文
+ * POST /api/posts/[id]/like
+ * 對貼文按讚
  */
 export async function POST(
   req: NextRequest,
@@ -32,41 +32,38 @@ export async function POST(
     const supabase = getSupabaseServer();
 
     // 檢查貼文是否存在
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: originalPost, error: postError } = await (supabase as any)
+    const { data: post, error: postError } = await supabase
       .from('Post')
-      .select('id, title, content, authorId')
+      .select('id')
       .eq('id', postId)
       .single();
 
-    if (postError || !originalPost) {
+    if (postError || !post) {
       return NextResponse.json(
         { error: "Post not found" },
         { status: 404 }
       );
     }
 
-    // 檢查是否已經轉發
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: existingRepost } = await (supabase as any)
-      .from('Repost')
+    // 檢查是否已經按讚
+    const { data: existingLike } = await supabase
+      .from('Like')
       .select('id')
       .eq('userId', userId)
       .eq('postId', postId)
       .maybeSingle();
 
-    if (existingRepost) {
+    if (existingLike) {
       return NextResponse.json({
         success: true,
-        message: "Already reposted",
-        reposted: true,
+        message: "Already liked",
+        liked: true,
       });
     }
 
-    // 建立 Repost 記錄
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: repost, error: repostError } = await (supabase as any)
-      .from('Repost')
+    // 建立 Like 記錄
+    const { data: like, error: likeError } = await supabase
+      .from('Like')
       .insert({
         id: crypto.randomUUID(),
         userId: userId,
@@ -75,25 +72,21 @@ export async function POST(
       .select()
       .single();
 
-    if (repostError) {
-      console.error("Error creating repost:", repostError);
+    if (likeError) {
+      console.error("Error creating like:", likeError);
       return NextResponse.json(
-        { error: "Failed to repost" },
+        { error: "Failed to like post" },
         { status: 500 }
       );
     }
 
-    // 可選：建立一個新的 Post 記錄來表示轉發（使用 repostedPostId）
-    // 這裡我們只建立 Repost 記錄，不建立新的 Post
-    // 如果需要，可以建立一個新的 Post 記錄，將 repostedPostId 設為原始貼文的 ID
-
     return NextResponse.json({
       success: true,
-      reposted: true,
-      repost,
+      liked: true,
+      like,
     });
   } catch (error: unknown) {
-    console.error("Error reposting:", error);
+    console.error("Error liking post:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
@@ -102,8 +95,8 @@ export async function POST(
 }
 
 /**
- * DELETE /api/posts/[id]/repost
- * 取消轉發
+ * DELETE /api/posts/[id]/like
+ * 取消按讚
  */
 export async function DELETE(
   req: NextRequest,
@@ -130,28 +123,27 @@ export async function DELETE(
 
     const supabase = getSupabaseServer();
 
-    // 刪除 Repost 記錄
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error: deleteError } = await (supabase as any)
-      .from('Repost')
+    // 刪除 Like 記錄
+    const { error: deleteError } = await supabase
+      .from('Like')
       .delete()
       .eq('userId', userId)
       .eq('postId', postId);
 
     if (deleteError) {
-      console.error("Error deleting repost:", deleteError);
+      console.error("Error deleting like:", deleteError);
       return NextResponse.json(
-        { error: "Failed to undo repost" },
+        { error: "Failed to unlike post" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      reposted: false,
+      liked: false,
     });
   } catch (error: unknown) {
-    console.error("Error undoing repost:", error);
+    console.error("Error unliking post:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }

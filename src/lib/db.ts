@@ -24,8 +24,8 @@ export function getSupabaseServer() {
   if (!supabaseKey) {
     throw new Error('缺少 Supabase 密鑰！請設置 SUPABASE_SERVICE_ROLE_KEY 或 NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
-  
-  return createClient<Database>(supabaseUrl, supabaseKey, {
+
+  return createClient<Database>(supabaseUrl!, supabaseKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

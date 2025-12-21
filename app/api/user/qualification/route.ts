@@ -6,7 +6,7 @@ import { getSupabaseServer } from "@/lib/db";
  * GET /api/user/qualification
  * 獲取用戶的資格篩選設定
  */
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -16,11 +16,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
     
     // 驗證用戶是否存在於 User 表中
     const supabase = getSupabaseServer();
-    const { data: userExists, error: userCheckError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: userExists, error: userCheckError } = await (supabase as any)
       .from('User')
       .select('id')
       .eq('id', userId)
@@ -43,7 +44,8 @@ export async function GET(req: NextRequest) {
     }
 
     // 查詢 UserQualification 表
-    const { data: qualification, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: qualification, error } = await (supabase as any)
       .from('UserQualification')
       .select('college, grade, gpa, toefl, ielts, toeic')
       .eq('userId', userId)
@@ -83,10 +85,10 @@ export async function GET(req: NextRequest) {
         toeic: qualification.toeic || null,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/user/qualification:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
@@ -106,11 +108,12 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const userId = (session.user as any).id;
+    const userId = (session.user as { id: string }).id;
     
     // 驗證用戶是否存在於 User 表中
     const supabase = getSupabaseServer();
-    const { data: userExists, error: userCheckError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: userExists, error: userCheckError } = await (supabase as any)
       .from('User')
       .select('id')
       .eq('id', userId)
@@ -183,7 +186,8 @@ export async function PUT(req: NextRequest) {
     // const supabase = getSupabaseServer(); // 已在上面創建
 
     // 先檢查是否已存在記錄
-    const { data: existing } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existing } = await (supabase as any)
       .from('UserQualification')
       .select('id')
       .eq('userId', userId)
@@ -192,7 +196,8 @@ export async function PUT(req: NextRequest) {
     let result;
     if (existing) {
       // 更新現有記錄
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
         .from('UserQualification')
         .update({
           college: college || null,
@@ -223,7 +228,8 @@ export async function PUT(req: NextRequest) {
     } else {
       // 創建新記錄
       const qualificationId = crypto.randomUUID();
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
         .from('UserQualification')
         .insert({
           id: qualificationId,
@@ -274,10 +280,10 @@ export async function PUT(req: NextRequest) {
         toeic: result?.toeic || null,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in PUT /api/user/qualification:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

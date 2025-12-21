@@ -99,7 +99,7 @@ export async function loadSchools(): Promise<School[]> {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
-          const schools = results.data.map((row: any, index: number) => {
+          const schools = (results.data as Record<string, string>[]).map((row: Record<string, string>, index: number) => {
             const languageInfo = parseLanguageRequirement(row.語言要求 || '');
             
             return {
@@ -140,7 +140,7 @@ export async function loadSchools(): Promise<School[]> {
         },
       });
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error loading schools:', error);
     throw error;
   }

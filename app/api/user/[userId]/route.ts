@@ -15,7 +15,7 @@ export async function GET(
     let supabase;
     try {
       supabase = getSupabaseServer();
-    } catch (err) {
+    } catch (_err) {
       // Allow UI to render even without DB env configured
       return NextResponse.json({
         success: true,
@@ -23,7 +23,8 @@ export async function GET(
       });
     }
 
-    const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
       .from("User")
       .select("id,name,userID,image")
       .eq("id", userId)
@@ -41,10 +42,10 @@ export async function GET(
       success: true,
       user: data || null,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/user/[userId]:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error" },
+      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

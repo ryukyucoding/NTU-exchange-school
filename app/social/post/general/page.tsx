@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import MultiCountrySchoolSelect from '@/components/social/MultiCountrySchoolSelect';
 import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';

@@ -11,14 +11,15 @@ export async function GET(_req: NextRequest) {
     let supabase;
     try {
       supabase = getSupabaseServer();
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Supabase 未配置或連接失敗
-      console.error("Supabase not configured:", err.message);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error("Supabase not configured:", errorMessage);
       return NextResponse.json(
-        { 
+        {
           success: false,
           error: "Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY",
-          details: err.message 
+          details: errorMessage
         },
         { status: 500 }
       );
@@ -63,14 +64,17 @@ export async function GET(_req: NextRequest) {
     // 調試：檢查查詢結果
     if (schools && schools.length > 0) {
       console.log(`[API /schools] 查詢到 ${schools.length} 個學校`);
-      const sampleSchool = schools[0];
-      console.log(`[API /schools] 樣本學校數據:`, {
-        id: sampleSchool.id,
-        name_zh: sampleSchool.name_zh,
-        country_id: sampleSchool.country_id,
-        country_idType: typeof sampleSchool.country_id,
-        hasCountryId: 'country_id' in sampleSchool,
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sampleSchool = schools[0] as any;
+      if (sampleSchool && 'id' in sampleSchool) {
+        console.log(`[API /schools] 樣本學校數據:`, {
+          id: sampleSchool.id,
+          name_zh: sampleSchool.name_zh,
+          country_id: sampleSchool.country_id,
+          country_idType: typeof sampleSchool.country_id,
+          hasCountryId: 'country_id' in sampleSchool,
+        });
+      }
     }
 
     // 獲取所有國家信息（用於後續匹配）
@@ -83,9 +87,10 @@ export async function GET(_req: NextRequest) {
     }
 
     // 創建國家 ID 到國家信息的映射
-    const countryMap = new Map();
+    const countryMap = new Map<string, { id: number; country_zh: string; country_en: string; continent: string }>();
     if (countries) {
-      countries.forEach((c: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (countries as any[]).forEach((c: { id: number; country_zh: string; country_en: string; continent: string }) => {
         countryMap.set(String(c.id), c);
       });
       console.log(`[API /schools] 載入 ${countries.length} 個國家到映射表`);
@@ -94,7 +99,27 @@ export async function GET(_req: NextRequest) {
     }
 
     // 轉換資料格式以符合前端 School 類型
-    const formattedSchools = (schools || []).map((school: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formattedSchools = ((schools || []) as any[]).map((school: {
+      id: number;
+      name_zh: string;
+      name_en: string;
+      country_id: number | null;
+      url: string;
+      second_exchange_eligible: boolean;
+      application_group: string;
+      gpa_requirement: string;
+      grade_requirement: string;
+      language_requirement: string;
+      restricted_colleges: string;
+      quota: string;
+      academic_calendar: string;
+      registration_fee: string;
+      accommodation_info: string;
+      notes: string;
+      latitude: number | null;
+      longitude: number | null;
+    }) => {
       // 確保 country_id 存在且正確處理
       // 注意：school.country_id 可能是 number 或 null/undefined
       const rawCountryId = school.country_id;
@@ -196,10 +221,10 @@ export async function GET(_req: NextRequest) {
       success: true,
       schools: formattedSchools,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/schools:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

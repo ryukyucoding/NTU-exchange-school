@@ -42,17 +42,17 @@ export async function GET(req: NextRequest) {
 
     // 去重並提取唯一值
     const uniqueHashtags = Array.from(
-      new Set((hashtags || []).map((h: any) => h.content))
+      new Set(((hashtags || []) as { content: string }[]).map((h) => h.content))
     );
 
     return NextResponse.json({
       success: true,
       hashtags: uniqueHashtags,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching hashtags:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }

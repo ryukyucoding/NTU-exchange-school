@@ -16,7 +16,12 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 
 interface WishlistItem {
-  school: any;
+  school: {
+    id: string;
+    name_zh: string;
+    name_en: string;
+    country: string;
+  };
   priority: number;
   note: string;
   addedAt: string;
@@ -85,22 +90,24 @@ export default function ApplicationSummary({
 
     content += '📋 申請志願序\n';
     content += '-'.repeat(60) + '\n';
-    selectedSchools.forEach((item, index) => {
-      content += `\n第 ${index + 1} 志願: ${item.school.name_zh} (${item.school.name_en})\n`;
-      content += `  國家/地區: ${item.school.country} (${item.school.region})\n`;
-      if (item.school.gpa_min) {
-        content += `  GPA 要求: ${item.school.gpa_min}\n`;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selectedSchools.forEach((item: any, index: number) => {
+      const school = item.school;
+      content += `\n第 ${index + 1} 志願: ${school.name_zh} (${school.name_en})\n`;
+      content += `  國家/地區: ${school.country}\n`;
+      if (school.gpa_min) {
+        content += `  GPA 要求: ${school.gpa_min}\n`;
       }
-      if (item.school.toefl_ibt || item.school.ielts || item.school.toeic) {
+      if (school.toefl_ibt || school.ielts || school.toeic) {
         content += `  語言要求: `;
-        if (item.school.toefl_ibt) content += `TOEFL ${item.school.toefl_ibt} `;
-        if (item.school.ielts) content += `IELTS ${item.school.ielts} `;
-        if (item.school.toeic) content += `TOEIC ${item.school.toeic}`;
+        if (school.toefl_ibt) content += `TOEFL ${school.toefl_ibt} `;
+        if (school.ielts) content += `IELTS ${school.ielts} `;
+        if (school.toeic) content += `TOEIC ${school.toeic}`;
         content += '\n';
       }
-      content += `  名額: ${item.school.quota}\n`;
-      content += `  開放學期: ${item.school.semesters.join(', ')}\n`;
-      content += `  官網: ${item.school.url}\n`;
+      content += `  名額: ${school.quota}\n`;
+      content += `  開放學期: ${school.semesters.join(', ')}\n`;
+      content += `  官網: ${school.url}\n`;
       if (item.note) {
         content += `  個人備註: ${item.note}\n`;
       }
@@ -234,8 +241,11 @@ export default function ApplicationSummary({
               <CardTitle>申請志願 ({selectedSchools.length})</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {selectedSchools.map((item, index) => (
-                <div key={item.school.id}>
+              {selectedSchools.map((item, index) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const school = item.school as any;
+                return (
+                <div key={school.id}>
                   <div className="flex gap-4 p-4 bg-gray-800 rounded-lg">
                     <div className="flex-shrink-0">
                       <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
@@ -245,39 +255,38 @@ export default function ApplicationSummary({
 
                     <div className="flex-1 space-y-2">
                       <div>
-                        <h4 className="font-semibold text-lg text-white">{item.school.name_zh}</h4>
-                        <p className="text-sm text-gray-400">{item.school.name_en}</p>
+                        <h4 className="font-semibold text-lg text-white">{school.name_zh}</h4>
+                        <p className="text-sm text-gray-400">{school.name_en}</p>
                       </div>
 
                       <div className="flex gap-2 flex-wrap">
-                        <Badge variant="secondary">{item.school.country}</Badge>
-                        <Badge variant="secondary">{item.school.region}</Badge>
+                        <Badge variant="secondary">{school.country}</Badge>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-sm">
-                        {item.school.gpa_min && (
+                        {school.gpa_min && (
                           <div>
                             <span className="text-gray-400">GPA 要求: </span>
-                            <span className="font-medium text-white">{item.school.gpa_min}</span>
+                            <span className="font-medium text-white">{school.gpa_min}</span>
                           </div>
                         )}
                         <div>
                           <span className="text-gray-400">名額: </span>
-                          <span className="font-medium text-white">{item.school.quota}</span>
+                          <span className="font-medium text-white">{school.quota}</span>
                         </div>
-                        {(item.school.toefl_ibt || item.school.ielts || item.school.toeic) && (
+                        {(school.toefl_ibt || school.ielts || school.toeic) && (
                           <div className="col-span-2">
                             <span className="text-gray-400">語言要求: </span>
                             <span className="font-medium text-white">
-                              {item.school.toefl_ibt && `TOEFL ${item.school.toefl_ibt}`}
-                              {item.school.ielts && ` / IELTS ${item.school.ielts}`}
-                              {item.school.toeic && ` / TOEIC ${item.school.toeic}`}
+                              {school.toefl_ibt && `TOEFL ${school.toefl_ibt}`}
+                              {school.ielts && ` / IELTS ${school.ielts}`}
+                              {school.toeic && ` / TOEIC ${school.toeic}`}
                             </span>
                           </div>
                         )}
                         <div className="col-span-2">
                           <span className="text-gray-400">開放學期: </span>
-                          <span className="font-medium text-white">{item.school.semesters.join(', ')}</span>
+                          <span className="font-medium text-white">{school.semesters.join(', ')}</span>
                         </div>
                       </div>
 
@@ -294,7 +303,8 @@ export default function ApplicationSummary({
                     <Separator className="my-3" />
                   )}
                 </div>
-              ))}
+                );
+              })}
             </CardContent>
           </Card>
 

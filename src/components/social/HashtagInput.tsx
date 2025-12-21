@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
@@ -31,7 +30,7 @@ export default function HashtagInput({ hashtags, onChange }: HashtagInputProps) 
           setSuggestions(filtered.slice(0, 10));
         }
       } catch (error) {
-        console.error('Error fetching hashtags:', error);
+        console.error('Error fetching hashtags:', error instanceof Error ? error.message : String(error));
       }
     };
 

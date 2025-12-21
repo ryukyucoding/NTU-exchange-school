@@ -146,7 +146,7 @@ function CollapseButton({
 function MainContent() {
   const { schools, loading } = useSchoolContext();
   const { filters } = useFilters();
-  const { user, isUsingQualificationFilter } = useUserContext();
+  const { user } = useUserContext();
   const filteredSchools = useFilteredSchools(schools, filters, user);
 
   if (loading) {

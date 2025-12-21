@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         const error = await cloudinaryResponse.json();
         console.error('Cloudinary upload error:', error);
         errorMessage = error.error?.message || error.message || '圖片上傳失敗';
-      } catch (e) {
+      } catch (_e) {
         const errorText = await cloudinaryResponse.text();
         console.error('Cloudinary upload error (text):', errorText);
         errorMessage = errorText || '圖片上傳失敗';

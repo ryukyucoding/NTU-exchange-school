@@ -9,11 +9,35 @@ import { useState, useEffect } from 'react';
 import ApplicationForm from '@/components/application/ApplicationForm';
 import toast from 'react-hot-toast';
 
+interface SubmittedApplication {
+  preferences: string[];
+  submittedAt: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface WishlistItem {
+  school: {
+    id: string;
+    name_zh: string;
+    name_en: string;
+    country: string;
+    region: string;
+    gpa_min: number | null;
+    toefl_ibt: number | null;
+    ielts: number | null;
+    toeic: number | null;
+    quota: string | null;
+    semesters: string[];
+    url: string;
+  };
+  note: string;
+}
+
 export default function WishlistPanel() {
   const { wishlist, removeFromWishlist, updateWishlistItem, reorderWishlist, clearWishlist } = useWishlist();
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
-  const [submittedApplication, setSubmittedApplication] = useState<any>(null);
+  const [submittedApplication, setSubmittedApplication] = useState<SubmittedApplication | null>(null);
 
   useEffect(() => {
     // 檢查是否有已提交的申請（只在客戶端）
@@ -23,7 +47,7 @@ export default function WishlistPanel() {
         try {
           setSubmittedApplication(JSON.parse(savedApplication));
         } catch (error) {
-          console.error('Failed to parse application preferences:', error);
+          console.error('Failed to parse application preferences:', error instanceof Error ? error.message : String(error));
         }
       }
     }
@@ -44,6 +68,7 @@ export default function WishlistPanel() {
 
     content += '📋 申請志願序\n';
     content += '-'.repeat(60) + '\n';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectedSchools.forEach((item: any, index: number) => {
       content += `\n第 ${index + 1} 志願: ${item.school.name_zh} (${item.school.name_en})\n`;
       content += `  國家/地區: ${item.school.country} (${item.school.region})\n`;
@@ -140,6 +165,7 @@ export default function WishlistPanel() {
 
           <div className="space-y-3 mb-6">
             <h4 className="font-semibold text-gray-800">您的志願序：</h4>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {selectedSchools.map((item: any, index: number) => (
               <div
                 key={item.school.id}
@@ -253,7 +279,7 @@ export default function WishlistPanel() {
               <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/30">
                 <span className="text-sm font-medium text-gray-700">優先順序:</span>
                 <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map(star => (
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       onClick={() => updateWishlistItem(item.school.id, { priority: star })}

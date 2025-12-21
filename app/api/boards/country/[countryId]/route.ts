@@ -49,8 +49,9 @@ export async function GET(
     }
 
     // 直接查詢 Board 表（所有國家板都已存在）
-    const boardQuery = (supabase
-      .from("Board") as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const boardQuery = (supabase as any)
+      .from("Board")
       .select("id, name, slug, type, country_id, schoolId, description")
       .eq("type", "country")
       .eq("country_id", countryIdNum)
@@ -65,25 +66,28 @@ export async function GET(
       );
     }
 
-    if (!board || !(board as any).id) {
+    if (!board || !board.id) {
       return NextResponse.json(
         { success: false, error: "Board not found" },
         { status: 404 }
       );
     }
 
-    const boardId = (board as any).id;
+    const boardId = board.id;
 
     // 並行查詢國家資訊和統計數據
     const [{ data: countryInfo }, { count: followerCount }, { count: postCount }] = await Promise.all([
-      ((supabase.from("Country") as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((supabase as any).from("Country")
         .select("id, country_zh, country_en, continent")
         .eq("id", countryIdNum)
         .maybeSingle()),
-      ((supabase.from("BoardFollow") as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((supabase as any).from("BoardFollow")
         .select("*", { count: "exact", head: true })
         .eq("boardId", boardId)),
-      ((supabase.from("PostBoard") as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((supabase as any).from("PostBoard")
         .select("*", { count: "exact", head: true })
         .eq("boardId", boardId)),
     ]);
@@ -97,10 +101,10 @@ export async function GET(
       },
       country: countryInfo,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/boards/country/[countryId]:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error" },
+      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
       { status: 500 }
     );
   }
