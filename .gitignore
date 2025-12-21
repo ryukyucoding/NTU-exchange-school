@@ -54,3 +54,8 @@ coverage
 
 # Turbopack
 .turbo
+
+
+
+#experience data
+scraper/experiences/pdf_extracts/

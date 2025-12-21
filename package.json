@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "import-data": "tsx scripts/import-to-supabase.ts",
+    "import-schools": "tsx scripts/import-schools-to-supabase.ts",
     "test-db": "tsx scripts/test-supabase-connection.ts"
   },
   "dependencies": {

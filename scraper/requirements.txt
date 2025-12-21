@@ -4,3 +4,6 @@ pandas>=2.2.0
 geopy>=2.4.0
 requests>=2.31.0
 lxml>=5.0.0
+PyMuPDF>=1.23.0
+urllib3>=2.0.0
+supabase>=2.0.0

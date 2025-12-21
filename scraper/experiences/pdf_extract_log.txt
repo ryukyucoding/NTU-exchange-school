@@ -1,0 +1,3285 @@
+INFO:__main__:============================================================
+INFO:__main__:開始處理 474 位學生的心得 PDF
+INFO:__main__:============================================================
+INFO:__main__:
+[1/474] 處理: 董同學 - 九州大學
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 140 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12894/content.json
+INFO:__main__:
+[2/474] 處理: 周同學 - 杜賓根大學
+INFO:__main__:處理 PDF: report_1.pdf (36 頁)
+INFO:__main__:  ✓ 提取完成: 850 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12909/content.json
+INFO:__main__:
+[3/474] 處理: 林同學 - 杜賓根大學
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 46 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12910/content.json
+INFO:__main__:
+[4/474] 處理: 何同學 - 巴塞隆納自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012911.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12911/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 4 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12911/content.json
+INFO:__main__:
+[5/474] 處理: 詹同學 - 御茶水女子大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012912.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12912/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12912/content.json
+INFO:__main__:
+[6/474] 處理: 張同學 - 加州州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012913.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12913/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 13 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12913/content.json
+INFO:__main__:
+[7/474] 處理: 林同學 - 新加坡國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012915.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12915/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12915/content.json
+INFO:__main__:
+[8/474] 處理: 邱同學 - 創價大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012918.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12918/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12918/content.json
+INFO:__main__:
+[9/474] 處理: 孔同學 - 瑞士東部應用科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012921.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12921/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 197 個文字區塊, 21 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12921/content.json
+INFO:__main__:
+[10/474] 處理: 伍同學 - 名古屋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012923.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12923/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 81 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12923/content.json
+INFO:__main__:
+[11/474] 處理: 林同學 - 馬里蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012924.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12924/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12924/content.json
+INFO:__main__:
+[12/474] 處理: 翁同學 - 東京外國語大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012925.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12925/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (17 頁)
+INFO:__main__:  ✓ 提取完成: 108 個文字區塊, 36 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12925/content.json
+INFO:__main__:
+[13/474] 處理: 諶同學 - 御茶水女子大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012927.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12927/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12927/content.json
+INFO:__main__:
+[14/474] 處理: 梁同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012928.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12928/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 83 個文字區塊, 32 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12928/content.json
+INFO:__main__:
+[15/474] 處理: 楊同學 - 奧斯陸大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012931.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12931/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 33 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12931/content.json
+INFO:__main__:
+[16/474] 處理: 牛同學 - 查理士大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012933.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12933/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12933/content.json
+INFO:__main__:
+[17/474] 處理: 曹同學 - 名古屋外國語大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012934.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12934/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 103 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12934/content.json
+INFO:__main__:
+[18/474] 處理: 林同學 - 國際教養大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012937.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12937/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 86 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12937/content.json
+INFO:__main__:
+[19/474] 處理: 夢同學 - 上智大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012938.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12938/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (14 頁)
+INFO:__main__:  ✓ 提取完成: 129 個文字區塊, 38 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12938/content.json
+INFO:__main__:
+[20/474] 處理: 廖同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012941.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12941/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 129 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12941/content.json
+INFO:__main__:
+[21/474] 處理: 廖同學 - 里爾天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012942.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12942/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 29 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12942/content.json
+INFO:__main__:
+[22/474] 處理: 温同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012943.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12943/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12943/content.json
+INFO:__main__:
+[23/474] 處理: 陳同學 - 朱拉隆功大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012944.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12944/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12944/content.json
+INFO:__main__:
+[24/474] 處理: 陳同學 - 畢爾肯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012946.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12946/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 158 個文字區塊, 36 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12946/content.json
+INFO:__main__:
+[25/474] 處理: 洪同學 - 新加坡國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012948.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12948/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12948/content.json
+INFO:__main__:
+[26/474] 處理: 楊同學 - 名古屋外國語大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012950.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12950/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 158 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12950/content.json
+INFO:__main__:
+[27/474] 處理: 葉同學 - 東京學藝大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012951.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12951/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 173 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12951/content.json
+INFO:__main__:
+[28/474] 處理: 劉同學 - 索邦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012952.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12952/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12952/content.json
+INFO:__main__:
+[29/474] 處理: 蔡同學 - 明治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012953.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12953/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 156 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12953/content.json
+INFO:__main__:
+[30/474] 處理: 陳同學 - 近畿大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012955.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12955/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12955/content.json
+INFO:__main__:
+[31/474] 處理: 曾同學 - 橫濱國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/Jing-Jie.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12958/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (17 頁)
+INFO:__main__:  ✓ 提取完成: 119 個文字區塊, 81 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12958/content.json
+INFO:__main__:
+[32/474] 處理: 黃同學 - 創價大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012959.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12959/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 142 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12959/content.json
+INFO:__main__:
+[33/474] 處理: 樓同學 - 托馬斯莫爾應用科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012960.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12960/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 142 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12960/content.json
+INFO:__main__:
+[34/474] 處理: 曾同學 - 東京外國語大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012961.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12961/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (40 頁)
+INFO:__main__:  ✓ 提取完成: 954 個文字區塊, 156 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12961/content.json
+INFO:__main__:
+[35/474] 處理: 李同學 - 波昂大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012963.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12963/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12963/content.json
+INFO:__main__:
+[36/474] 處理: 陳同學 - 慕尼黑大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012964.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12964/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 61 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12964/content.json
+INFO:__main__:
+[37/474] 處理: 陳同學 - 烏爾姆大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012966.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12966/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 60 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12966/content.json
+INFO:__main__:
+[38/474] 處理: 楊同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012968.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12968/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 44 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12968/content.json
+INFO:__main__:
+[39/474] 處理: 林同學 - 烏爾姆大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012969.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12969/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 24 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12969/content.json
+INFO:__main__:
+[40/474] 處理: 林同學 - 加拿大英屬哥倫比亞大學（卑詩大學）
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012970.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12970/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 199 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12970/content.json
+INFO:__main__:
+[41/474] 處理: 王同學 - 近畿大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012972.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12972/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12972/content.json
+INFO:__main__:
+[42/474] 處理: 杜同學 - 馬薩里克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012977.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12977/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12977/content.json
+INFO:__main__:
+[43/474] 處理: 陳同學 - 蘇黎世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012978.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12978/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12978/content.json
+INFO:__main__:
+[44/474] 處理: 何同學 - 巴塞隆納自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012980.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12980/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 42 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12980/content.json
+INFO:__main__:
+[45/474] 處理: 劉同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012985.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12985/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 11 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12985/content.json
+INFO:__main__:
+[46/474] 處理: 林同學 - 拉瑞爾應用科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012987.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12987/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 127 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12987/content.json
+INFO:__main__:
+[47/474] 處理: 陳同學 - 林茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012988.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12988/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 199 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12988/content.json
+INFO:__main__:
+[48/474] 處理: 曾同學 - 多倫多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012989.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12989/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 22 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12989/content.json
+INFO:__main__:
+[49/474] 處理: 黃同學 - 華盛頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012991.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12991/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 36 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12991/content.json
+INFO:__main__:
+[50/474] 處理: 劉同學 - 科諾伯勒阿爾卑斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012993.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12993/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 59 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12993/content.json
+INFO:__main__:
+[51/474] 處理: 林同學 - 青山學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012994.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12994/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 54 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12994/content.json
+INFO:__main__:
+[52/474] 處理: 賴同學 - 波爾多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012995.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12995/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 84 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12995/content.json
+INFO:__main__:
+[53/474] 處理: 林同學 - 北卡羅來納大學格林斯伯勒分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012997.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12997/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 68 個文字區塊, 28 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12997/content.json
+INFO:__main__:
+[54/474] 處理: 吳同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/012999.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/12999/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 81 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/12999/content.json
+INFO:__main__:
+[55/474] 處理: 葉同學 - 諾丁漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013001.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13001/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 81 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13001/content.json
+INFO:__main__:
+[56/474] 處理: 陳同學 - 威斯康辛大學麥迪遜分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013002.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13002/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13002/content.json
+INFO:__main__:
+[57/474] 處理: 柯同學 - 聖心天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013004.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13004/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 167 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13004/content.json
+INFO:__main__:
+[58/474] 處理: 劉同學 - 梨花女子大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013005.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13005/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 154 個文字區塊, 24 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13005/content.json
+INFO:__main__:
+[59/474] 處理: 林同學 - 龐貝法布拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013006.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13006/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13006/content.json
+INFO:__main__:
+[60/474] 處理: 高同學 - 琉球大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013007.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13007/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 49 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13007/content.json
+INFO:__main__:
+[61/474] 處理: 方同學 - 巴塞隆納自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013008.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13008/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13008/content.json
+INFO:__main__:
+[62/474] 處理: 蔡同學 - 巴塞隆納自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/巴塞隆納自治大學_交換心得_B09701116_蔡慈_0505_完整版.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13009/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (21 頁)
+INFO:__main__:  ✓ 提取完成: 421 個文字區塊, 22 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13009/content.json
+INFO:__main__:
+[63/474] 處理: 陳同學 - 華沙理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013011.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13011/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 205 個文字區塊, 31 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13011/content.json
+INFO:__main__:
+[64/474] 處理: 黃同學 - 東京學藝大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/Shih-Chieh.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13014/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (23 頁)
+INFO:__main__:  ✓ 提取完成: 245 個文字區塊, 32 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13014/content.json
+INFO:__main__:
+[65/474] 處理: 朱同學 - 滑鐵盧大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/校級交換心得.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13016/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (15 頁)
+INFO:__main__:  ✓ 提取完成: 331 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13016/content.json
+INFO:__main__:
+[66/474] 處理: 曾同學 - 新加坡管理大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013017.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13017/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13017/content.json
+INFO:__main__:
+[67/474] 處理: 黃同學 - 愛丁堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013018.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13018/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13018/content.json
+INFO:__main__:
+[68/474] 處理: 劉同學 - 聖加倫大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013019.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13019/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 188 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13019/content.json
+INFO:__main__:
+[69/474] 處理: 郭同學 - 成均館大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013020.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13020/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 48 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13020/content.json
+INFO:__main__:
+[70/474] 處理: 何同學 - 雪梨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013022.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13022/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13022/content.json
+INFO:__main__:
+[71/474] 處理: 洪同學 - 里爾天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013023.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13023/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 65 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13023/content.json
+INFO:__main__:
+[72/474] 處理: 周同學 - 斯圖加特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013026.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13026/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13026/content.json
+INFO:__main__:
+[73/474] 處理: 鍾同學 - 馬里蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013029.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13029/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 92 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13029/content.json
+INFO:__main__:
+[74/474] 處理: 趙同學 - 哥本哈根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013030.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13030/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 169 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13030/content.json
+INFO:__main__:
+[75/474] 處理: 李同學 - 卡爾斯魯爾理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013031.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13031/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 122 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13031/content.json
+INFO:__main__:
+[76/474] 處理: 彭同學 - 林茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013032.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13032/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13032/content.json
+INFO:__main__:
+[77/474] 處理: 曾同學 - 橫濱國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013034.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13034/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13034/content.json
+INFO:__main__:
+[78/474] 處理: 林同學 - 加州州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013038.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13038/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 120 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13038/content.json
+INFO:__main__:
+[79/474] 處理: 賴同學 - 早稻田大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013039.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13039/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 5 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13039/content.json
+INFO:__main__:
+[80/474] 處理: 陳同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013040.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13040/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 110 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13040/content.json
+INFO:__main__:
+[81/474] 處理: 王同學 - 洛桑大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013041.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13041/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13041/content.json
+INFO:__main__:
+[82/474] 處理: 王同學 - 索邦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013043.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13043/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 60 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13043/content.json
+INFO:__main__:
+[83/474] 處理: 陳同學 - 烏普薩拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013045.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13045/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13045/content.json
+INFO:__main__:
+[84/474] 處理: 陳同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013046.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13046/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 22 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13046/content.json
+INFO:__main__:
+[85/474] 處理: 王同學 - 南安普頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013047.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13047/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13047/content.json
+INFO:__main__:
+[86/474] 處理: 楊同學 - 倫敦大學學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013049.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13049/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13049/content.json
+INFO:__main__:
+[87/474] 處理: 趙同學 - 新加坡管理大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013050.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13050/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 124 個文字區塊, 13 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13050/content.json
+INFO:__main__:
+[88/474] 處理: 吳同學 - 匹茲堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013051.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13051/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 47 個文字區塊, 13 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13051/content.json
+INFO:__main__:
+[89/474] 處理: 林同學 - 慶應義塾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013052.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13052/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 4 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13052/content.json
+INFO:__main__:
+[90/474] 處理: 洪同學 - 肯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013053.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13053/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13053/content.json
+INFO:__main__:
+[91/474] 處理: 黃同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013056.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13056/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 198 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13056/content.json
+INFO:__main__:
+[92/474] 處理: 呂同學 - 馬里蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013058.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13058/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 3 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13058/content.json
+INFO:__main__:
+[93/474] 處理: 朱同學 - 布魯塞爾自由大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013059.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13059/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 54 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13059/content.json
+INFO:__main__:
+[94/474] 處理: 劉同學 - 艾朗根紐倫堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013060.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13060/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 8 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13060/content.json
+INFO:__main__:
+[95/474] 處理: 葉同學 - 馬德里自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013061.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13061/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13061/content.json
+INFO:__main__:
+[96/474] 處理: 葉同學 - 維也納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013062.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13062/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 29 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13062/content.json
+INFO:__main__:
+[97/474] 處理: 黄同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013063.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13063/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 83 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13063/content.json
+INFO:__main__:
+[98/474] 處理: 秋同學 - 盧比安納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013064.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13064/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13064/content.json
+INFO:__main__:
+[99/474] 處理: 林同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/2024.Fudan.LinLiChi_compressed.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13065/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 67 個文字區塊, 30 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13065/content.json
+INFO:__main__:
+[100/474] 處理: 金同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013066.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13066/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 69 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13066/content.json
+INFO:__main__:
+[101/474] 處理: 黃同學 - 倫敦大學瑪麗王后學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013067.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13067/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 38 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13067/content.json
+INFO:__main__:
+[102/474] 處理: 黃同學 - 馬奎里大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013068.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13068/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 220 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13068/content.json
+INFO:__main__:
+[103/474] 處理: 梁同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013069.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13069/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 57 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13069/content.json
+INFO:__main__:
+[104/474] 處理: 王同學 - 諾丁漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013070.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13070/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 201 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13070/content.json
+INFO:__main__:
+[105/474] 處理: 鍾同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013071.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13071/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13071/content.json
+INFO:__main__:
+[106/474] 處理: 廖同學 - 青山學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013073.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13073/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13073/content.json
+INFO:__main__:
+[107/474] 處理: 鄭同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013075.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13075/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 58 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13075/content.json
+INFO:__main__:
+[108/474] 處理: 任同學 - 立命館大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013076.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13076/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13076/content.json
+INFO:__main__:
+[109/474] 處理: 江同學 - 雷恩第一大學（原翰尼第一大學）
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013077.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13077/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13077/content.json
+INFO:__main__:
+[110/474] 處理: 黃同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013079.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13079/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 14 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13079/content.json
+INFO:__main__:
+[111/474] 處理: 陳同學 - 新加坡國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013081.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13081/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 49 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13081/content.json
+INFO:__main__:
+[112/474] 處理: 徐同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013083.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13083/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 46 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13083/content.json
+INFO:__main__:
+[113/474] 處理: 陳同學 - 杜賓根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013085.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13085/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 1 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13085/content.json
+INFO:__main__:
+[114/474] 處理: 蔡同學 - 阿姆斯特丹自由大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013090.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13090/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 74 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13090/content.json
+INFO:__main__:
+[115/474] 處理: 林同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013093.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13093/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 18 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13093/content.json
+INFO:__main__:
+[116/474] 處理: 林同學 - 巴塞隆納自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013094.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13094/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13094/content.json
+INFO:__main__:
+[117/474] 處理: 夏同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013095.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13095/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 35 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13095/content.json
+INFO:__main__:
+[118/474] 處理: 簡同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013096.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13096/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 62 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13096/content.json
+INFO:__main__:
+[119/474] 處理: 莊同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013097.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13097/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 152 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13097/content.json
+INFO:__main__:
+[120/474] 處理: 胡同學 - 武漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013098.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13098/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13098/content.json
+INFO:__main__:
+[121/474] 處理: 宋同學 - 聖加倫大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013099.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13099/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13099/content.json
+INFO:__main__:
+[122/474] 處理: 郭同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013100.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13100/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 62 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13100/content.json
+INFO:__main__:
+[123/474] 處理: 黃同學 - 慶熙大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013101.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13101/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 94 個文字區塊, 31 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13101/content.json
+INFO:__main__:
+[124/474] 處理: 熊同學 - 德州大學奧斯汀分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013102.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13102/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 33 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13102/content.json
+INFO:__main__:
+[125/474] 處理: 陳同學 - 匹茲堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013104.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13104/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 184 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13104/content.json
+INFO:__main__:
+[126/474] 處理: 黃同學 - 雪梨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013105.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13105/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 87 個文字區塊, 21 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13105/content.json
+INFO:__main__:
+[127/474] 處理: 賈同學 - 柏林洪堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013106.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13106/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 11 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13106/content.json
+INFO:__main__:
+[128/474] 處理: 葉同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013107.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13107/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 193 個文字區塊, 25 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13107/content.json
+INFO:__main__:
+[129/474] 處理: 王同學 - 多倫多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013109.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13109/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 125 個文字區塊, 26 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13109/content.json
+INFO:__main__:
+[130/474] 處理: 薛同學 - 北卡羅來納大學教堂山分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013110.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13110/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 218 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13110/content.json
+INFO:__main__:
+[131/474] 處理: 劉同學 - 新加坡國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013111.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13111/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13111/content.json
+INFO:__main__:
+[132/474] 處理: 朱同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013112.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13112/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 78 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13112/content.json
+INFO:__main__:
+[133/474] 處理: 徐同學 - 奧胡斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013113.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13113/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13113/content.json
+INFO:__main__:
+[134/474] 處理: 翁同學 - 奈梅亨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013114.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13114/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13114/content.json
+INFO:__main__:
+[135/474] 處理: 劉同學 - 蒙特婁大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013116.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13116/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 25 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13116/content.json
+INFO:__main__:
+[136/474] 處理: 楊同學 - 斯德哥爾摩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013117.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13117/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 300 個文字區塊, 22 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13117/content.json
+INFO:__main__:
+[137/474] 處理: 鍾同學 - 烏特列茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013118.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13118/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 107 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13118/content.json
+INFO:__main__:
+[138/474] 處理: 李同學 - 烏特列茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013120.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13120/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 136 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13120/content.json
+INFO:__main__:
+[139/474] 處理: 莊同學 - 加州州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013122.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13122/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13122/content.json
+INFO:__main__:
+[140/474] 處理: 白同學 - 布達佩斯考文紐斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013124.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13124/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 58 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13124/content.json
+INFO:__main__:
+[141/474] 處理: 林同學 - 威斯康辛大學麥迪遜分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013125.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13125/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 33 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13125/content.json
+INFO:__main__:
+[142/474] 處理: 王同學 - 慕尼黑工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013127.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13127/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 162 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13127/content.json
+INFO:__main__:
+[143/474] 處理: 卓同學 - 康斯坦茨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013129.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13129/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13129/content.json
+INFO:__main__:
+[144/474] 處理: 李同學 - 奧斯陸大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013132.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13132/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 110 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13132/content.json
+INFO:__main__:
+[145/474] 處理: 陳同學 - 布達佩斯考文紐斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013133.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13133/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 408 個文字區塊, 25 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13133/content.json
+INFO:__main__:
+[146/474] 處理: 徐同學 - 畢爾肯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013135.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13135/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 99 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13135/content.json
+INFO:__main__:
+[147/474] 處理: 蔡同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013137.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13137/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 49 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13137/content.json
+INFO:__main__:
+[148/474] 處理: 朱同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013139.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13139/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 11 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13139/content.json
+INFO:__main__:
+[149/474] 處理: 林同學 - 近畿大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013141.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13141/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13141/content.json
+INFO:__main__:
+[150/474] 處理: 陳同學 - 漢堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013143.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13143/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 3 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13143/content.json
+INFO:__main__:
+[151/474] 處理: 吳同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013145.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13145/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 156 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13145/content.json
+INFO:__main__:
+[152/474] 處理: 張同學 - 馬奎里大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013148.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13148/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 149 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13148/content.json
+INFO:__main__:
+[153/474] 處理: 蔡同學 - 里爾天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013149.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13149/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 57 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13149/content.json
+INFO:__main__:
+[154/474] 處理: 劉同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013150.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13150/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 164 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13150/content.json
+INFO:__main__:
+[155/474] 處理: 劉同學 - 曼徹斯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013153.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13153/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 102 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13153/content.json
+INFO:__main__:
+[156/474] 處理: 林同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013154.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13154/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 10 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13154/content.json
+INFO:__main__:
+[157/474] 處理: 郭同學 - 伯明罕大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013155.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13155/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (19 頁)
+INFO:__main__:  ✓ 提取完成: 79 個文字區塊, 25 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13155/content.json
+INFO:__main__:
+[158/474] 處理: 王同學 - 早稻田大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013156.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13156/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13156/content.json
+INFO:__main__:
+[159/474] 處理: 陳同學 - 上智大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013157.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13157/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13157/content.json
+INFO:__main__:
+[160/474] 處理: 彭同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013158.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13158/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 108 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13158/content.json
+INFO:__main__:
+[161/474] 處理: 楊同學 - 漢堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013161.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13161/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 16 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13161/content.json
+INFO:__main__:
+[162/474] 處理: 蔡同學 - 巴塞隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013162.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13162/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13162/content.json
+INFO:__main__:
+[163/474] 處理: 莊同學 - 慕尼黑大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013163.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13163/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 59 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13163/content.json
+INFO:__main__:
+[164/474] 處理: 林同學 - 國際教養大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013166.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13166/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 16 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13166/content.json
+INFO:__main__:
+[165/474] 處理: 阮同學 - 女王大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013167.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13167/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (16 頁)
+INFO:__main__:  ✓ 提取完成: 346 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13167/content.json
+INFO:__main__:
+[166/474] 處理: 黃同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013169.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13169/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13169/content.json
+INFO:__main__:
+[167/474] 處理: 陳同學 - 阿姆斯特丹自由大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013170.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13170/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (16 頁)
+INFO:__main__:  ✓ 提取完成: 272 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13170/content.json
+INFO:__main__:
+[168/474] 處理: 王同學 - 烏特列茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013171.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13171/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 36 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13171/content.json
+INFO:__main__:
+[169/474] 處理: 洪同學 - 馬德里自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013172.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13172/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13172/content.json
+INFO:__main__:
+[170/474] 處理: 羅同學 - 慶應義塾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013173.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13173/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 3 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13173/content.json
+INFO:__main__:
+[171/474] 處理: 康同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013174.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13174/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (21 頁)
+INFO:__main__:  ✓ 提取完成: 501 個文字區塊, 33 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13174/content.json
+INFO:__main__:
+[172/474] 處理: 江同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013175.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13175/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 119 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13175/content.json
+INFO:__main__:
+[173/474] 處理: 邱同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013176.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13176/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13176/content.json
+INFO:__main__:
+[174/474] 處理: 許同學 - 波隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013177.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13177/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13177/content.json
+INFO:__main__:
+[175/474] 處理: 王同學 - 明斯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013178.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13178/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 46 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13178/content.json
+INFO:__main__:
+[176/474] 處理: 邱同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013179.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13179/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13179/content.json
+INFO:__main__:
+[177/474] 處理: 林同學 - 喬治亞大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013180.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13180/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 28 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13180/content.json
+INFO:__main__:
+[178/474] 處理: 黃同學 - 皇家理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013183.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13183/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 14 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13183/content.json
+INFO:__main__:
+[179/474] 處理: 王同學 - 西北大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013184.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13184/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 1 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13184/content.json
+INFO:__main__:
+[180/474] 處理: 廖同學 - 曼漢姆大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013186.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13186/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13186/content.json
+INFO:__main__:
+[181/474] 處理: 邱同學 - 新南威爾斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013187.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13187/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 250 個文字區塊, 34 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13187/content.json
+INFO:__main__:
+[182/474] 處理: 許同學 - 杜賓根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013190.pdf
+ERROR:__main__:  ✗ 下載失敗: 404 Client Error: Not Found for url: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013190.pdf
+INFO:__main__:
+[183/474] 處理: 郭同學 - 中東科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013191.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13191/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13191/content.json
+INFO:__main__:
+[184/474] 處理: 李同學 - 中東科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013193.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13193/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 41 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13193/content.json
+INFO:__main__:
+[185/474] 處理: 王同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013195.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13195/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 93 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13195/content.json
+INFO:__main__:
+[186/474] 處理: 羅同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013197.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13197/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 16 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13197/content.json
+INFO:__main__:
+[187/474] 處理: 廖同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013198.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13198/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13198/content.json
+INFO:__main__:
+[188/474] 處理: 陳同學 - 諾丁漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013199.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13199/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 206 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13199/content.json
+INFO:__main__:
+[189/474] 處理: 李同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013200.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13200/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 320 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13200/content.json
+INFO:__main__:
+[190/474] 處理: 黃同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013201.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13201/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13201/content.json
+INFO:__main__:
+[191/474] 處理: 王同學 - 康乃爾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013202.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13202/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13202/content.json
+INFO:__main__:
+[192/474] 處理: 鄭同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013203.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13203/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 46 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13203/content.json
+INFO:__main__:
+[193/474] 處理: 高同學 - 首爾國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013204.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13204/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13204/content.json
+INFO:__main__:
+[194/474] 處理: 黃同學 - 愛丁堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013205.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13205/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13205/content.json
+INFO:__main__:
+[195/474] 處理: 孫同學 - 維多利亞大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013206.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13206/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (16 頁)
+INFO:__main__:  ✓ 提取完成: 231 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13206/content.json
+INFO:__main__:
+[196/474] 處理: 陳同學 - 倫敦大學學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013207.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13207/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 200 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13207/content.json
+INFO:__main__:
+[197/474] 處理: 嚴同學 - 渥太華大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013208.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13208/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 33 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13208/content.json
+INFO:__main__:
+[198/474] 處理: 張同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013209.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13209/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 152 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13209/content.json
+INFO:__main__:
+[199/474] 處理: 劉同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013210.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13210/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13210/content.json
+INFO:__main__:
+[200/474] 處理: 廖同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013211.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13211/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13211/content.json
+INFO:__main__:
+[201/474] 處理: 王同學 - 斯克蘭頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013212.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13212/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13212/content.json
+INFO:__main__:
+[202/474] 處理: 王同學 - 維也納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013213.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13213/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 81 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13213/content.json
+INFO:__main__:
+[203/474] 處理: 邱同學 - 維也納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013214.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13214/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13214/content.json
+INFO:__main__:
+[204/474] 處理: 吳同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013215.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13215/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13215/content.json
+INFO:__main__:
+[205/474] 處理: 蔡同學 - 西門菲沙大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013216.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13216/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 189 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13216/content.json
+INFO:__main__:
+[206/474] 處理: 謝同學 - 華沙大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013217.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13217/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13217/content.json
+INFO:__main__:
+[207/474] 處理: 陳同學 - 九州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013218.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13218/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 55 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13218/content.json
+INFO:__main__:
+[208/474] 處理: 楊同學 - 金澤大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013219.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13219/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13219/content.json
+INFO:__main__:
+[209/474] 處理: 陳同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013221.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13221/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (17 頁)
+INFO:__main__:  ✓ 提取完成: 131 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13221/content.json
+INFO:__main__:
+[210/474] 處理: 盤同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013222.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13222/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 76 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13222/content.json
+INFO:__main__:
+[211/474] 處理: 蘇同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013224.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13224/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 112 個文字區塊, 113 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13224/content.json
+INFO:__main__:
+[212/474] 處理: 周同學 - 羅蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013225.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13225/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 115 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13225/content.json
+INFO:__main__:
+[213/474] 處理: 洪同學 - 卡爾斯魯爾理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013226.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13226/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13226/content.json
+INFO:__main__:
+[214/474] 處理: 沈同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013229.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13229/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13229/content.json
+INFO:__main__:
+[215/474] 處理: 李同學 - 墨爾本大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013230.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13230/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 117 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13230/content.json
+INFO:__main__:
+[216/474] 處理: 陳同學 - 新加坡科技與設計大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013231.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13231/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13231/content.json
+INFO:__main__:
+[217/474] 處理: 陳同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013232.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13232/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13232/content.json
+INFO:__main__:
+[218/474] 處理: 許同學 - 北卡羅來納大學教堂山分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013234.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13234/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 105 個文字區塊, 76 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13234/content.json
+INFO:__main__:
+[219/474] 處理: 杜同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013237.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13237/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 77 個文字區塊, 22 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13237/content.json
+INFO:__main__:
+[220/474] 處理: 夏同學 - 滑鐵盧大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013238.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13238/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (40 頁)
+INFO:__main__:  ✓ 提取完成: 1075 個文字區塊, 179 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13238/content.json
+INFO:__main__:
+[221/474] 處理: 蔡同學 - 杜賓根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013241.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13241/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 65 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13241/content.json
+INFO:__main__:
+[222/474] 處理: 張同學 - 名古屋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013243.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13243/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13243/content.json
+INFO:__main__:
+[223/474] 處理: 許同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013244.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13244/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 57 個文字區塊, 26 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13244/content.json
+INFO:__main__:
+[224/474] 處理: 謝同學 - 聖心天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013245.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13245/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 141 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13245/content.json
+INFO:__main__:
+[225/474] 處理: 鮑同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013246.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13246/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 30 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13246/content.json
+INFO:__main__:
+[226/474] 處理: 徐同學 - 香港理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013248.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13248/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 5 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13248/content.json
+INFO:__main__:
+[227/474] 處理: 廖同學 - 魯耳波洪大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013250.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13250/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13250/content.json
+INFO:__main__:
+[228/474] 處理: 陳同學 - 一橋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013251.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13251/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13251/content.json
+INFO:__main__:
+[229/474] 處理: 蔡同學 - 布達佩斯科技經濟大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013252.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13252/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13252/content.json
+INFO:__main__:
+[230/474] 處理: 王同學 - 北海道大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013253.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13253/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 67 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13253/content.json
+INFO:__main__:
+[231/474] 處理: 賴同學 - 京都大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013254.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13254/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 43 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13254/content.json
+INFO:__main__:
+[232/474] 處理: 林同學 - 隆德大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013255.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13255/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13255/content.json
+INFO:__main__:
+[233/474] 處理: 李同學 - 明斯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013256.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13256/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 4 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13256/content.json
+INFO:__main__:
+[234/474] 處理: 鍾同學 - 威斯康辛大學麥迪遜分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013257.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13257/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13257/content.json
+INFO:__main__:
+[235/474] 處理: 陳同學 - 雪梨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013258.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13258/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 189 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13258/content.json
+INFO:__main__:
+[236/474] 處理: 劉同學 - 聖心天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013261.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13261/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13261/content.json
+INFO:__main__:
+[237/474] 處理: 張同學 - 卡爾斯魯爾理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013262.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13262/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 218 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13262/content.json
+INFO:__main__:
+[238/474] 處理: 郭同學 - 國立釜山大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013264.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13264/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (17 頁)
+INFO:__main__:  ✓ 提取完成: 239 個文字區塊, 84 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13264/content.json
+INFO:__main__:
+[239/474] 處理: 吳同學 - 林雪平大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013265.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13265/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13265/content.json
+INFO:__main__:
+[240/474] 處理: 黃同學 - 艾朗根紐倫堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013266.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13266/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 112 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13266/content.json
+INFO:__main__:
+[241/474] 處理: 林同學 - 德勒斯登工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013267.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13267/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 91 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13267/content.json
+INFO:__main__:
+[242/474] 處理: 陳同學 - 亞亨工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013270.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13270/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13270/content.json
+INFO:__main__:
+[243/474] 處理: 黃同學 - 慕尼黑大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013272.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13272/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 71 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13272/content.json
+INFO:__main__:
+[244/474] 處理: 陳同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013275.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13275/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13275/content.json
+INFO:__main__:
+[245/474] 處理: 郭同學 - 拉脫維亞大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013277.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13277/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 15 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13277/content.json
+INFO:__main__:
+[246/474] 處理: 劉同學 - 東北大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013278.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13278/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 135 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13278/content.json
+INFO:__main__:
+[247/474] 處理: 周同學 - 新加坡科技與設計大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/新加坡科技設計大學交換心得與建議_周心慈.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13279/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 105 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13279/content.json
+INFO:__main__:
+[248/474] 處理: 陳同學 - 兵庫縣立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013281.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13281/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 167 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13281/content.json
+INFO:__main__:
+[249/474] 處理: 羅同學 - 慕尼黑大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013282.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13282/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 53 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13282/content.json
+INFO:__main__:
+[250/474] 處理: 蕭同學 - 四川大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013283.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13283/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 157 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13283/content.json
+INFO:__main__:
+[251/474] 處理: 胡同學 - 漢堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013284.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13284/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 8 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13284/content.json
+INFO:__main__:
+[252/474] 處理: 王同學 - 烏普薩拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013285.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13285/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 56 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13285/content.json
+INFO:__main__:
+[253/474] 處理: 黃同學 - 波隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013286.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13286/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 147 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13286/content.json
+INFO:__main__:
+[254/474] 處理: 劉同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013287.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13287/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 58 個文字區塊, 22 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13287/content.json
+INFO:__main__:
+[255/474] 處理: 郭同學 - 慕尼黑工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013290.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13290/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 50 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13290/content.json
+INFO:__main__:
+[256/474] 處理: 張同學 - 冰島大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013291.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13291/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13291/content.json
+INFO:__main__:
+[257/474] 處理: 張同學 - 斯圖加特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013293.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13293/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13293/content.json
+INFO:__main__:
+[258/474] 處理: 楊同學 - 巴黎中央理工學院-電力高等學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013294.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13294/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 64 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13294/content.json
+INFO:__main__:
+[259/474] 處理: 洪同學 - 立命館大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013296.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13296/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13296/content.json
+INFO:__main__:
+[260/474] 處理: 黃同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013299.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13299/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (14 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13299/content.json
+INFO:__main__:
+[261/474] 處理: 任同學 - 北卡羅來納大學格林斯伯勒分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013300.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13300/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 76 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13300/content.json
+INFO:__main__:
+[262/474] 處理: 葉同學 - 東京科學大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013301.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13301/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13301/content.json
+INFO:__main__:
+[263/474] 處理: 葉同學 - 北海道大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013303.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13303/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 22 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13303/content.json
+INFO:__main__:
+[264/474] 處理: 蔡同學 - 柏林工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013304.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13304/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 36 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13304/content.json
+INFO:__main__:
+[265/474] 處理: 陳同學 - 東京科學大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013305.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13305/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (28 頁)
+INFO:__main__:  ✓ 提取完成: 115 個文字區塊, 41 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13305/content.json
+INFO:__main__:
+[266/474] 處理: 陳同學 - 康斯坦茨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013306.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13306/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13306/content.json
+INFO:__main__:
+[267/474] 處理: 戴同學 - 北卡羅來納大學教堂山分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013307.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13307/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 69 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13307/content.json
+INFO:__main__:
+[268/474] 處理: 劉同學 - 烏爾姆大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013308.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13308/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13308/content.json
+INFO:__main__:
+[269/474] 處理: 簡同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013309.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13309/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 38 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13309/content.json
+INFO:__main__:
+[270/474] 處理: 張同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013311.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13311/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 56 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13311/content.json
+INFO:__main__:
+[271/474] 處理: 黃同學 - 奧胡斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013312.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13312/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13312/content.json
+INFO:__main__:
+[272/474] 處理: 邱同學 - 名古屋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013313.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13313/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13313/content.json
+INFO:__main__:
+[273/474] 處理: 吳同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013314.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13314/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 45 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13314/content.json
+INFO:__main__:
+[274/474] 處理: 董同學 - 武漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013315.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13315/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13315/content.json
+INFO:__main__:
+[275/474] 處理: 林同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013322.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13322/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 80 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13322/content.json
+INFO:__main__:
+[276/474] 處理: 葉同學 - 羅蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013326.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13326/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13326/content.json
+INFO:__main__:
+[277/474] 處理: 陳同學 - 成均館大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013327.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13327/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 18 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13327/content.json
+INFO:__main__:
+[278/474] 處理: 盧同學 - 魯耳波洪大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013328.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13328/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 83 個文字區塊, 21 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13328/content.json
+INFO:__main__:
+[279/474] 處理: 林同學 - 延世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013330.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13330/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 21 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13330/content.json
+INFO:__main__:
+[280/474] 處理: 陳同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013331.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13331/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13331/content.json
+INFO:__main__:
+[281/474] 處理: 湯同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013333.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13333/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 105 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13333/content.json
+INFO:__main__:
+[282/474] 處理: 陳同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013335.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13335/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 109 個文字區塊, 26 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13335/content.json
+INFO:__main__:
+[283/474] 處理: 林同學 - 斯圖加特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013336.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13336/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 24 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13336/content.json
+INFO:__main__:
+[284/474] 處理: 吳同學 - 九州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013340.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13340/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13340/content.json
+INFO:__main__:
+[285/474] 處理: 黃同學 - 柏林工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013344.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13344/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 78 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13344/content.json
+INFO:__main__:
+[286/474] 處理: 周同學 - 阿德雷德大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013345.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13345/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13345/content.json
+INFO:__main__:
+[287/474] 處理: 劉同學 - 林雪平大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013346.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13346/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13346/content.json
+INFO:__main__:
+[288/474] 處理: 陳同學 - 慕尼黑工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013347.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13347/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 70 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13347/content.json
+INFO:__main__:
+[289/474] 處理: 吳同學 - 神奈川大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013349.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13349/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 15 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13349/content.json
+INFO:__main__:
+[290/474] 處理: 陳同學 - 亞亨工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013352.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13352/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 63 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13352/content.json
+INFO:__main__:
+[291/474] 處理: 許同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013357.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13357/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (34 頁)
+INFO:__main__:  ✓ 提取完成: 321 個文字區塊, 66 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13357/content.json
+INFO:__main__:
+[292/474] 處理: 楊同學 - 延世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013358.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13358/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 184 個文字區塊, 33 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13358/content.json
+INFO:__main__:
+[293/474] 處理: 洪同學 - 里爾天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013360.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13360/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 99 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13360/content.json
+INFO:__main__:
+[294/474] 處理: 方同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013361.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13361/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 48 個文字區塊, 27 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13361/content.json
+INFO:__main__:
+[295/474] 處理: 林同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013362.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13362/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13362/content.json
+INFO:__main__:
+[296/474] 處理: 周同學 - 柏林工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013363.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13363/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13363/content.json
+INFO:__main__:
+[297/474] 處理: 簡同學 - 哥本哈根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013364.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13364/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 95 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13364/content.json
+INFO:__main__:
+[298/474] 處理: 張同學 - 韓國科學技術院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013365.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13365/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13365/content.json
+INFO:__main__:
+[299/474] 處理: 王同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013366.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13366/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 82 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13366/content.json
+INFO:__main__:
+[300/474] 處理: 盧同學 - 伊利諾大學香檳分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013368.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13368/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13368/content.json
+INFO:__main__:
+[301/474] 處理: 朴同學 - 墨西哥國立自治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013627.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13627/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 171 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13627/content.json
+INFO:__main__:
+[302/474] 處理: 姚同學 - 華沙大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013628.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13628/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 24 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13628/content.json
+INFO:__main__:
+[303/474] 處理: 邱同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013629.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13629/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 107 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13629/content.json
+INFO:__main__:
+[304/474] 處理: 林同學 - 波隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013630.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13630/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13630/content.json
+INFO:__main__:
+[305/474] 處理: 余同學 - 阿德雷德大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013631.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13631/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13631/content.json
+INFO:__main__:
+[306/474] 處理: 梁同學 - 薩塞克斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013633.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13633/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 120 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13633/content.json
+INFO:__main__:
+[307/474] 處理: 關同學 - 明治大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013634.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13634/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 70 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13634/content.json
+INFO:__main__:
+[308/474] 處理: 胡同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013635.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13635/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 98 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13635/content.json
+INFO:__main__:
+[309/474] 處理: 劉同學 - 奧斯陸大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013639.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13639/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 78 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13639/content.json
+INFO:__main__:
+[310/474] 處理: 曾同學 - 神戶大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013641.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13641/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (17 頁)
+INFO:__main__:  ✓ 提取完成: 122 個文字區塊, 30 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13641/content.json
+INFO:__main__:
+[311/474] 處理: 陳同學 - 慶應義塾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013642.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13642/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 103 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13642/content.json
+INFO:__main__:
+[312/474] 處理: 黃同學 - 德勒斯登工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013643.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13643/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 29 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13643/content.json
+INFO:__main__:
+[313/474] 處理: 朱同學 - 成均館大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013647.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13647/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 141 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13647/content.json
+INFO:__main__:
+[314/474] 處理: 黃同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013648.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13648/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 117 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13648/content.json
+INFO:__main__:
+[315/474] 處理: 曾同學 - 新南威爾斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013651.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13651/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13651/content.json
+INFO:__main__:
+[316/474] 處理: 丁同學 - 加拿大英屬哥倫比亞大學（卑詩大學）
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013652.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13652/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 55 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13652/content.json
+INFO:__main__:
+[317/474] 處理: 張同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/113-2_University of Tsukuba_YTJ.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13653/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 50 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13653/content.json
+INFO:__main__:
+[318/474] 處理: 楊同學 - 亞亨工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013654.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13654/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 1 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13654/content.json
+INFO:__main__:
+[319/474] 處理: 劉同學 - 柏林工業大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[320/474] 處理: 張同學 - 龐貝法布拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013660.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13660/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 57 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13660/content.json
+INFO:__main__:
+[321/474] 處理: 翁同學 - 羅蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013661.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13661/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 92 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13661/content.json
+INFO:__main__:
+[322/474] 處理: 林同學 - 烏普薩拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013662.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13662/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13662/content.json
+INFO:__main__:
+[323/474] 處理: 林同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/交換心得.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13664/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13664/content.json
+INFO:__main__:
+[324/474] 處理: 林同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013665.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13665/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13665/content.json
+INFO:__main__:
+[325/474] 處理: 柳同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013667.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13667/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (30 頁)
+INFO:__main__:  ✓ 提取完成: 632 個文字區塊, 13 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13667/content.json
+INFO:__main__:
+[326/474] 處理: 于同學 - 一橋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013669.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13669/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 93 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13669/content.json
+INFO:__main__:
+[327/474] 處理: 李同學 - 馬奎里大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013672.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13672/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 125 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13672/content.json
+INFO:__main__:
+[328/474] 處理: 陳同學 - 倫敦大學學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013674.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13674/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 28 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13674/content.json
+INFO:__main__:
+[329/474] 處理: 陳同學 - 倫敦大學學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013675.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13675/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 103 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13675/content.json
+INFO:__main__:
+[330/474] 處理: 朱同學 - 上智大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013676.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13676/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13676/content.json
+INFO:__main__:
+[331/474] 處理: 紀同學 - 波爾多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013677.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13677/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 5 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13677/content.json
+INFO:__main__:
+[332/474] 處理: 楊同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013680.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13680/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13680/content.json
+INFO:__main__:
+[333/474] 處理: 楊同學 - 筑波大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013681.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13681/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13681/content.json
+INFO:__main__:
+[334/474] 處理: 翁同學 - 延世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013682.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13682/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 120 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13682/content.json
+INFO:__main__:
+[335/474] 處理: 湯同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013684.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13684/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 18 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13684/content.json
+INFO:__main__:
+[336/474] 處理: 陳同學 - 橫濱國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013685.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13685/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 3 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13685/content.json
+INFO:__main__:
+[337/474] 處理: 謝同學 - 長崎大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013686.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13686/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 54 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13686/content.json
+INFO:__main__:
+[338/474] 處理: 陳同學 - 南安普頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013687.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13687/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 76 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13687/content.json
+INFO:__main__:
+[339/474] 處理: 蔡同學 - 諾丁漢大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013689.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13689/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 221 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13689/content.json
+INFO:__main__:
+[340/474] 處理: 羅同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013690.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13690/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13690/content.json
+INFO:__main__:
+[341/474] 處理: 蘇同學 - 神戶大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013691.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13691/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13691/content.json
+INFO:__main__:
+[342/474] 處理: 江同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013693.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13693/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 209 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13693/content.json
+INFO:__main__:
+[343/474] 處理: 林同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013694.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13694/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13694/content.json
+INFO:__main__:
+[344/474] 處理: 師同學 - 橫濱國立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013696.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13696/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 85 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13696/content.json
+INFO:__main__:
+[345/474] 處理: 卓同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013700.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13700/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (18 頁)
+INFO:__main__:  ✓ 提取完成: 71 個文字區塊, 25 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13700/content.json
+INFO:__main__:
+[346/474] 處理: 蔡同學 - 早稻田大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013702.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13702/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 45 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13702/content.json
+INFO:__main__:
+[347/474] 處理: 趙同學 - 北海道大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013703.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13703/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13703/content.json
+INFO:__main__:
+[348/474] 處理: 饒同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013705.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13705/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13705/content.json
+INFO:__main__:
+[349/474] 處理: 葉同學 - 岡山大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013706.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13706/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 84 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13706/content.json
+INFO:__main__:
+[350/474] 處理: 胡同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013707.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13707/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13707/content.json
+INFO:__main__:
+[351/474] 處理: 宋同學 - 里爾天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013708.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13708/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13708/content.json
+INFO:__main__:
+[352/474] 處理: 鄭同學 - 康乃爾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013710.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13710/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 127 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13710/content.json
+INFO:__main__:
+[353/474] 處理: 徐同學 - 西北大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013711.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13711/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 105 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13711/content.json
+INFO:__main__:
+[354/474] 處理: 陳同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013712.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13712/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13712/content.json
+INFO:__main__:
+[355/474] 處理: 陳同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013713.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13713/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13713/content.json
+INFO:__main__:
+[356/474] 處理: 李同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013714.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13714/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 154 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13714/content.json
+INFO:__main__:
+[357/474] 處理: 劉同學 - 赫爾辛基大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013715.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13715/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 62 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13715/content.json
+INFO:__main__:
+[358/474] 處理: 林同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013716.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13716/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 29 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13716/content.json
+INFO:__main__:
+[359/474] 處理: 高同學 - 維也納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013717.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13717/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13717/content.json
+INFO:__main__:
+[360/474] 處理: 游同學 - 哥本哈根大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[361/474] 處理: 林同學 - 查理士大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013720.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13720/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 118 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13720/content.json
+INFO:__main__:
+[362/474] 處理: 吳同學 - 斯德哥爾摩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013721.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13721/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 51 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13721/content.json
+INFO:__main__:
+[363/474] 處理: 余同學 - 廈門大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013724.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13724/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13724/content.json
+INFO:__main__:
+[364/474] 處理: 李同學 - 東京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013726.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13726/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (33 頁)
+INFO:__main__:  ✓ 提取完成: 267 個文字區塊, 122 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13726/content.json
+INFO:__main__:
+[365/474] 處理: 李同學 - 哥本哈根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013727.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13727/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 185 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13727/content.json
+INFO:__main__:
+[366/474] 處理: 姚同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013728.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13728/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 104 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13728/content.json
+INFO:__main__:
+[367/474] 處理: 項同學 - 一橋大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013729.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13729/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13729/content.json
+INFO:__main__:
+[368/474] 處理: 賴同學 - 柏林洪堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013730.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13730/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13730/content.json
+INFO:__main__:
+[369/474] 處理: 張同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013731.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13731/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 59 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13731/content.json
+INFO:__main__:
+[370/474] 處理: 陳同學 - 烏普薩拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013732.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13732/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 17 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13732/content.json
+INFO:__main__:
+[371/474] 處理: 廖同學 - 威斯康辛大學麥迪遜分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013733.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13733/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13733/content.json
+INFO:__main__:
+[372/474] 處理: 高同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013735.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13735/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 48 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13735/content.json
+INFO:__main__:
+[373/474] 處理: 吳同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013736.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13736/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 48 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13736/content.json
+INFO:__main__:
+[374/474] 處理: 李同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013738.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13738/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 115 個文字區塊, 10 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13738/content.json
+INFO:__main__:
+[375/474] 處理: 吳同學 - 威斯康辛大學麥迪遜分校
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[376/474] 處理: 李同學 - 國際教養大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013741.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13741/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 128 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13741/content.json
+INFO:__main__:
+[377/474] 處理: 李同學 - 伊利諾大學香檳分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013742.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13742/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13742/content.json
+INFO:__main__:
+[378/474] 處理: 蔡同學 - 巴塞隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013744.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13744/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 5 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13744/content.json
+INFO:__main__:
+[379/474] 處理: 許同學 - 肯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013746.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13746/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 153 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13746/content.json
+INFO:__main__:
+[380/474] 處理: 官同學 - 奧克蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013747.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13747/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 23 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13747/content.json
+INFO:__main__:
+[381/474] 處理: 賴同學 - 華沙大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013748.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13748/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 1 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13748/content.json
+INFO:__main__:
+[382/474] 處理: 陳同學 - 布達佩斯科技經濟大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[383/474] 處理: 李同學 - 慶熙大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[384/474] 處理: 豊同學 - 新加坡科技與設計大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013752.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13752/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 27 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13752/content.json
+INFO:__main__:
+[385/474] 處理: 陳同學 - 林雪平大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013753.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13753/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 44 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13753/content.json
+INFO:__main__:
+[386/474] 處理: 呂同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013754.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13754/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 127 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13754/content.json
+INFO:__main__:
+[387/474] 處理: 陳同學 - 加拿大英屬哥倫比亞大學（卑詩大學）
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013755.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13755/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 44 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13755/content.json
+INFO:__main__:
+[388/474] 處理: 李同學 - 喬治亞大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013757.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13757/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 48 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13757/content.json
+INFO:__main__:
+[389/474] 處理: 劉同學 - 伯恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013758.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13758/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 79 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13758/content.json
+INFO:__main__:
+[390/474] 處理: 陳同學 - 加州大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[391/474] 處理: 陳同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013760.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13760/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13760/content.json
+INFO:__main__:
+[392/474] 處理: 李同學 - 延世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013761.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13761/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 97 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13761/content.json
+INFO:__main__:
+[393/474] 處理: 柯同學 - 龐貝法布拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013762.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13762/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 248 個文字區塊, 28 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13762/content.json
+INFO:__main__:
+[394/474] 處理: 倪同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013764.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13764/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 47 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13764/content.json
+INFO:__main__:
+[395/474] 處理: 蔡同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013765.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13765/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13765/content.json
+INFO:__main__:
+[396/474] 處理: 林同學 - 格里菲斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013766.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13766/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13766/content.json
+INFO:__main__:
+[397/474] 處理: 莊同學 - 布達佩斯考文紐斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013767.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13767/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 31 個文字區塊, 2 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13767/content.json
+INFO:__main__:
+[398/474] 處理: 錢同學 - 香港大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013768.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13768/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 4 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13768/content.json
+INFO:__main__:
+[399/474] 處理: 高同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013769.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13769/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 88 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13769/content.json
+INFO:__main__:
+[400/474] 處理: 陳同學 - 里茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013770.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13770/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 65 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13770/content.json
+INFO:__main__:
+[401/474] 處理: 楊同學 - 國際教養大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013771.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13771/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (15 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 190 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13771/content.json
+INFO:__main__:
+[402/474] 處理: 譚同學 - 波爾多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013772.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13772/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 62 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13772/content.json
+INFO:__main__:
+[403/474] 處理: 謝同學 - 奧塔哥大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013775.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13775/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 7 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13775/content.json
+INFO:__main__:
+[404/474] 處理: 林同學 - 烏特列茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013776.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13776/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 23 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13776/content.json
+INFO:__main__:
+[405/474] 處理: 張同學 - 馬斯垂克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013777.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13777/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 13 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13777/content.json
+INFO:__main__:
+[406/474] 處理: 許同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013778.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13778/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 44 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13778/content.json
+INFO:__main__:
+[407/474] 處理: 朱同學 - 馬薩里克大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013779.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13779/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 36 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13779/content.json
+INFO:__main__:
+[408/474] 處理: 鄭同學 - 薩塞克斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013780.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13780/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 237 個文字區塊, 53 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13780/content.json
+INFO:__main__:
+[409/474] 處理: 黃同學 - 皇家理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013783.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13783/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (10 頁)
+INFO:__main__:  ✓ 提取完成: 264 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13783/content.json
+INFO:__main__:
+[410/474] 處理: 張同學 - 皇家理工學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013785.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13785/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 44 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13785/content.json
+INFO:__main__:
+[411/474] 處理: 陳同學 - 龐貝法布拉大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013786.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13786/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13786/content.json
+INFO:__main__:
+[412/474] 處理: 呂同學 - 雷恩第一大學（原翰尼第一大學）
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013787.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13787/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13787/content.json
+INFO:__main__:
+[413/474] 處理: 陳同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013789.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13789/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 106 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13789/content.json
+INFO:__main__:
+[414/474] 處理: 林同學 - 慶應義塾大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013790.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13790/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 84 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13790/content.json
+INFO:__main__:
+[415/474] 處理: 王同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013791.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13791/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 55 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13791/content.json
+INFO:__main__:
+[416/474] 處理: 李同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013792.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13792/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 16 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13792/content.json
+INFO:__main__:
+[417/474] 處理: 黃同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013793.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13793/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 4 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13793/content.json
+INFO:__main__:
+[418/474] 處理: 張同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/交換心得 - Jackson Chang.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13794/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13794/content.json
+INFO:__main__:
+[419/474] 處理: 黃同學 - 杜賓根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013795.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13795/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13795/content.json
+INFO:__main__:
+[420/474] 處理: 陳同學 - 廈門大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013796.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13796/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 50 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13796/content.json
+INFO:__main__:
+[421/474] 處理: 林同學 - 昆士蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013797.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13797/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 25 個文字區塊, 1 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13797/content.json
+INFO:__main__:
+[422/474] 處理: 張同學 - 伊利諾大學香檳分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013798.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13798/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 92 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13798/content.json
+INFO:__main__:
+[423/474] 處理: 蘇同學 - 萊頓大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013799.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13799/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 138 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13799/content.json
+INFO:__main__:
+[424/474] 處理: 潘同學 - 波爾多大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013800.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13800/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 10 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13800/content.json
+INFO:__main__:
+[425/474] 處理: 蔡同學 - 奧克蘭大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013801.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13801/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13801/content.json
+INFO:__main__:
+[426/474] 處理: 黃同學 - 杜賓根大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013802.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13802/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 19 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13802/content.json
+INFO:__main__:
+[427/474] 處理: 黃同學 - 復旦大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013803.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13803/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 83 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13803/content.json
+INFO:__main__:
+[428/474] 處理: 于同學 - 北海道大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013804.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13804/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 103 個文字區塊, 40 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13804/content.json
+INFO:__main__:
+[429/474] 處理: 黃同學 - 烏特列茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013805.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13805/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 49 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13805/content.json
+INFO:__main__:
+[430/474] 處理: 張同學 - 里茲大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013806.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13806/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 111 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13806/content.json
+INFO:__main__:
+[431/474] 處理: 孫同學 - 新加坡管理大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013807.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13807/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13807/content.json
+INFO:__main__:
+[432/474] 處理: 鄭同學 - 柏林洪堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013808.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13808/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 77 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13808/content.json
+INFO:__main__:
+[433/474] 處理: 吳同學 - 波隆納大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013809.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13809/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 39 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13809/content.json
+INFO:__main__:
+[434/474] 處理: 張同學 - 巴黎高等政治學院
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013810.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13810/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 52 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13810/content.json
+INFO:__main__:
+[435/474] 處理: 齊同學 - 加州州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013811.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13811/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 56 個文字區塊, 5 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13811/content.json
+INFO:__main__:
+[436/474] 處理: 桑同學 - 浙江大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013812.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13812/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 109 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13812/content.json
+INFO:__main__:
+[437/474] 處理: 陳同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013813.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13813/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 40 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13813/content.json
+INFO:__main__:
+[438/474] 處理: 楊同學 - 葛洛寧恩大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013814.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13814/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 0 個文字區塊, 0 張圖片
+INFO:__main__:
+[439/474] 處理: 楊同學 - 南洋理工大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013815.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13815/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (9 頁)
+INFO:__main__:  ✓ 提取完成: 213 個文字區塊, 7 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13815/content.json
+INFO:__main__:
+[440/474] 處理: 陳同學 - 浙江大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013816.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13816/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 29 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13816/content.json
+INFO:__main__:
+[441/474] 處理: 何同學 - 奧塔哥大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013817.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13817/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (24 頁)
+INFO:__main__:  ✓ 提取完成: 203 個文字區塊, 38 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13817/content.json
+INFO:__main__:
+[442/474] 處理: 呂同學 - 廈門大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013818.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13818/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 60 個文字區塊, 8 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13818/content.json
+INFO:__main__:
+[443/474] 處理: 林同學 - 加州大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013819.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13819/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 2 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13819/content.json
+INFO:__main__:
+[444/474] 處理: 藍同學 - 馬奎里大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013820.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13820/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 26 個文字區塊, 9 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13820/content.json
+INFO:__main__:
+[445/474] 處理: 湯同學 - 雪梨大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013823.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13823/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (12 頁)
+INFO:__main__:  ✓ 提取完成: 79 個文字區塊, 1318 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13823/content.json
+INFO:__main__:
+[446/474] 處理: 黃同學 - 優密歐大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013824.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13824/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 34 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13824/content.json
+INFO:__main__:
+[447/474] 處理: 顏同學 - 曼徹斯特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013825.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13825/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (4 頁)
+INFO:__main__:  ✓ 提取完成: 16 個文字區塊, 12 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13825/content.json
+INFO:__main__:
+[448/474] 處理: 陳同學 - 西北大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013827.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13827/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 20 個文字區塊, 13 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13827/content.json
+INFO:__main__:
+[449/474] 處理: 陳同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013829.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13829/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (5 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 4 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13829/content.json
+INFO:__main__:
+[450/474] 處理: 蔡同學 - 瑞士東部應用科技大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013830.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13830/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 15 個文字區塊, 20 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13830/content.json
+INFO:__main__:
+[451/474] 處理: 陳同學 - 青山學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013832.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13832/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 11 個文字區塊, 6 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13832/content.json
+INFO:__main__:
+[452/474] 處理: 李同學 - 聖安德魯斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013833.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13833/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 314 個文字區塊, 14 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13833/content.json
+INFO:__main__:
+[453/474] 處理: 王同學 - 聖心天主教大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013837.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13837/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 32 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13837/content.json
+INFO:__main__:
+[454/474] 處理: 林同學 - 北卡羅來納州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013838.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13838/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 72 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13838/content.json
+INFO:__main__:
+[455/474] 處理: 鄧同學 - 關西學院大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013839.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13839/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13839/content.json
+INFO:__main__:
+[456/474] 處理: 周同學 - 斯圖加特大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013840.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13840/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (11 頁)
+INFO:__main__:  ✓ 提取完成: 129 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13840/content.json
+INFO:__main__:
+[457/474] 處理: 吳同學 - 亞亨工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013841.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13841/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 73 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13841/content.json
+INFO:__main__:
+[458/474] 處理: 傅同學 - 上智大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[459/474] 處理: 黃同學 - 金澤大學
+WARNING:__main__:  沒有 PDF 連結
+INFO:__main__:
+[460/474] 處理: 陳同學 - 東京科學大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013847.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13847/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (8 頁)
+INFO:__main__:  ✓ 提取完成: 41 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13847/content.json
+INFO:__main__:
+[461/474] 處理: 魏同學 - 北卡羅來納大學格林斯伯勒分校
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013848.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13848/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 125 個文字區塊, 18 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13848/content.json
+INFO:__main__:
+[462/474] 處理: 施同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013849.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13849/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 38 個文字區塊, 11 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13849/content.json
+INFO:__main__:
+[463/474] 處理: 朱同學 - 汀肯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013850.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13850/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (1 頁)
+INFO:__main__:  ✓ 提取完成: 6 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13850/content.json
+INFO:__main__:
+[464/474] 處理: 黃同學 - 墨爾本大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013851.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13851/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 53 個文字區塊, 15 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13851/content.json
+INFO:__main__:
+[465/474] 處理: 張同學 - 關西大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013852.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13852/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (6 頁)
+INFO:__main__:  ✓ 提取完成: 47 個文字區塊, 19 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13852/content.json
+INFO:__main__:
+[466/474] 處理: 閻同學 - 林雪平大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013858.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13858/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 53 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13858/content.json
+INFO:__main__:
+[467/474] 處理: 陳同學 - 布達佩斯考文紐斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013861.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13861/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 41 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13861/content.json
+INFO:__main__:
+[468/474] 處理: 高同學 - 慕尼黑工業大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013862.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13862/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 8 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13862/content.json
+INFO:__main__:
+[469/474] 處理: 方同學 - 漢堡大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013866.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13866/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (3 頁)
+INFO:__main__:  ✓ 提取完成: 37 個文字區塊, 3 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13866/content.json
+INFO:__main__:
+[470/474] 處理: 李同學 - 北京大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013868.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13868/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 12 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13868/content.json
+INFO:__main__:
+[471/474] 處理: 郭同學 - 同志社大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013869.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13869/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 9 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13869/content.json
+INFO:__main__:
+[472/474] 處理: 劉同學 - 奧瑞岡州立大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013870.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13870/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (7 頁)
+INFO:__main__:  ✓ 提取完成: 129 個文字區塊, 17 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13870/content.json
+INFO:__main__:
+[473/474] 處理: 管同學 - 奧胡斯大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013872.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13872/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (13 頁)
+INFO:__main__:  ✓ 提取完成: 101 個文字區塊, 42 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13872/content.json
+INFO:__main__:
+[474/474] 處理: 黃同學 - 蘇黎世大學
+INFO:__main__:下載 PDF: https://oiasystem.ntu.edu.tw/IncomingExchange/www/experience/113/Outgoing/013873.pdf
+INFO:__main__:  ✓ 已儲存至: pdf_extracts/13873/report_1.pdf
+INFO:__main__:處理 PDF: report_1.pdf (2 頁)
+INFO:__main__:  ✓ 提取完成: 31 個文字區塊, 0 張圖片
+INFO:__main__:  ✓ 內容已儲存至: pdf_extracts/13873/content.json
+INFO:__main__:
+============================================================
+INFO:__main__:處理完成！
+INFO:__main__:詳細內容已儲存至: pdf_extracts
+INFO:__main__:完整資料已儲存至: experiences_with_content.json
+INFO:__main__:============================================================
