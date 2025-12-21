@@ -31,6 +31,17 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       
       if (data.success && data.schools) {
+        // 調試：檢查接收到的數據
+        if (data.schools.length > 0) {
+          const sampleSchool = data.schools[0];
+          console.log('[SchoolContext] 接收到的樣本學校:', {
+            id: sampleSchool.id,
+            name_zh: sampleSchool.name_zh,
+            country_id: sampleSchool.country_id,
+            country_idType: typeof sampleSchool.country_id,
+            hasCountryId: 'country_id' in sampleSchool,
+          });
+        }
         setSchools(data.schools);
       } else {
         throw new Error(data.error || 'Failed to load schools from Supabase');

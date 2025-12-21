@@ -34,9 +34,13 @@ export async function GET(_req: NextRequest) {
       );
     }
 
+    // 查詢 schools 表
+    // 注意：根據 current-database.sql，schools 表沒有 country 和 country_en 欄位
+    // 需要通過 country_id JOIN Country 表來獲取國家信息
+    // 明確選擇所有欄位，確保 country_id 被包含
     const { data: schools, error } = await supabase
       .from("schools")
-      .select("*")
+      .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, application_group, gpa_requirement, grade_requirement, language_requirement, restricted_colleges, quota, academic_calendar, registration_fee, accommodation_info, notes, latitude, longitude")
       .order("name_zh");
 
     if (error) {
@@ -56,20 +60,81 @@ export async function GET(_req: NextRequest) {
       );
     }
 
+    // 調試：檢查查詢結果
+    if (schools && schools.length > 0) {
+      console.log(`[API /schools] 查詢到 ${schools.length} 個學校`);
+      const sampleSchool = schools[0];
+      console.log(`[API /schools] 樣本學校數據:`, {
+        id: sampleSchool.id,
+        name_zh: sampleSchool.name_zh,
+        country_id: sampleSchool.country_id,
+        country_idType: typeof sampleSchool.country_id,
+        hasCountryId: 'country_id' in sampleSchool,
+      });
+    }
+
+    // 獲取所有國家信息（用於後續匹配）
+    const { data: countries, error: countriesError } = await supabase
+      .from("Country")
+      .select("id, country_zh, country_en, continent");
+
+    if (countriesError) {
+      console.error("Error fetching countries:", countriesError);
+    }
+
+    // 創建國家 ID 到國家信息的映射
+    const countryMap = new Map();
+    if (countries) {
+      countries.forEach((c: any) => {
+        countryMap.set(String(c.id), c);
+      });
+      console.log(`[API /schools] 載入 ${countries.length} 個國家到映射表`);
+    } else {
+      console.warn("[API /schools] 沒有獲取到國家數據");
+    }
 
     // 轉換資料格式以符合前端 School 類型
     const formattedSchools = (schools || []).map((school: any) => {
-      // 解析 region（如果沒有，根據 country 推斷）
+      // 確保 country_id 存在且正確處理
+      // 注意：school.country_id 可能是 number 或 null/undefined
+      const rawCountryId = school.country_id;
+      const countryIdStr = (rawCountryId !== null && rawCountryId !== undefined) ? String(rawCountryId) : null;
+      
+      // 調試：記錄 country_id 的原始值和轉換後的值
+      if (!countryIdStr) {
+        console.warn(`[API /schools] 學校 ${school.id} (${school.name_zh}) 的 country_id 為空:`, rawCountryId);
+      }
+      
+      const countryInfo = countryIdStr ? countryMap.get(countryIdStr) : null;
+      
+      // 調試：記錄沒有匹配到國家的學校
+      if (countryIdStr && !countryInfo) {
+        console.warn(`[API /schools] 學校 ${school.id} (${school.name_zh}) 的 country_id ${countryIdStr} 沒有匹配到國家`);
+      }
+      
+      const country = countryInfo?.country_zh || '';
+      const country_en = countryInfo?.country_en || '';
+      const continent = countryInfo?.continent || '';
+
+      // 解析 region（根據 continent 或 country 推斷）
       let region: 'Americas' | 'Europe' | 'Asia' | 'Oceania' | 'Africa' = 'Asia';
-      const country = school.country || '';
-      if (['美國', '加拿大', '墨西哥', '巴西', '阿根廷', '智利', '哥倫比亞'].some(c => country.includes(c))) {
-        region = 'Americas';
-      } else if (['英國', '法國', '德國', '義大利', '西班牙', '荷蘭', '瑞士', '瑞典', '挪威', '丹麥', '芬蘭', '比利時', '奧地利', '葡萄牙', '波蘭', '捷克', '匈牙利'].some(c => country.includes(c))) {
-        region = 'Europe';
-      } else if (['澳洲', '紐西蘭'].some(c => country.includes(c))) {
-        region = 'Oceania';
-      } else if (['南非', '埃及'].some(c => country.includes(c))) {
-        region = 'Africa';
+      if (continent) {
+        if (continent === 'Americas') region = 'Americas';
+        else if (continent === 'Europe') region = 'Europe';
+        else if (continent === 'Asia') region = 'Asia';
+        else if (continent === 'Oceania') region = 'Oceania';
+        else if (continent === 'Africa') region = 'Africa';
+      } else {
+        // Fallback: 根據國家名稱推斷
+        if (['美國', '加拿大', '墨西哥', '巴西', '阿根廷', '智利', '哥倫比亞'].some(c => country.includes(c))) {
+          region = 'Americas';
+        } else if (['英國', '法國', '德國', '義大利', '西班牙', '荷蘭', '瑞士', '瑞典', '挪威', '丹麥', '芬蘭', '比利時', '奧地利', '葡萄牙', '波蘭', '捷克', '匈牙利'].some(c => country.includes(c))) {
+          region = 'Europe';
+        } else if (['澳洲', '紐西蘭'].some(c => country.includes(c))) {
+          region = 'Oceania';
+        } else if (['南非', '埃及'].some(c => country.includes(c))) {
+          region = 'Africa';
+        }
       }
 
       // 解析語言要求
@@ -84,12 +149,12 @@ export async function GET(_req: NextRequest) {
       const semesters = parseSemesters(school.academic_calendar || '');
 
       return {
-        id: school.id,
+        id: String(school.id), // 確保 id 是字符串（因為數據庫中是 bigint）
         name_zh: school.name_zh || '',
         name_en: school.name_en || '',
-        country: school.country || '',
-        country_en: school.country_en || '',
-        country_id: school.country_id || null, // 添加 country_id 字段
+        country: country,
+        country_en: country_en,
+        country_id: countryIdStr, // 使用上面處理過的 countryIdStr
         url: school.url || '',
         second_exchange_eligible: school.second_exchange_eligible || false,
         application_group: school.application_group || '',
@@ -114,6 +179,18 @@ export async function GET(_req: NextRequest) {
         tuition: null,
       };
     });
+
+    // 統計有 country_id 的學校數量
+    const schoolsWithCountryId = formattedSchools.filter(s => s.country_id != null).length;
+    console.log(`[API /schools] 返回 ${formattedSchools.length} 個學校，其中 ${schoolsWithCountryId} 個有 country_id`);
+    
+    // 調試：檢查前幾個學校的 country_id
+    if (formattedSchools.length > 0) {
+      console.log(`[API /schools] 前3個學校的 country_id:`);
+      formattedSchools.slice(0, 3).forEach((s, idx) => {
+        console.log(`  ${idx + 1}. ${s.name_zh}: country_id = ${s.country_id} (${typeof s.country_id})`);
+      });
+    }
 
     return NextResponse.json({
       success: true,

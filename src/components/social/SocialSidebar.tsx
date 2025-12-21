@@ -6,6 +6,29 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
+import PostTypeDialog from './PostTypeDialog';
+
+function PostButton() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <>
+      <Button
+        onClick={() => setDialogOpen(true)}
+        style={{
+          borderRadius: '9999px',
+          backgroundColor: '#BAC7E5',
+          color: 'white',
+        }}
+        className="w-full hover:bg-[#BAC7E5]/90 border-0 shadow-none"
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        發佈貼文
+      </Button>
+      <PostTypeDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+    </>
+  );
+}
 
 interface Board {
   id: string;
@@ -111,19 +134,7 @@ export default function SocialSidebar() {
       </Card>
 
       {/* Post Button */}
-      <Link href="/social/post">
-        <Button
-          style={{
-            borderRadius: '9999px',
-            backgroundColor: '#BAC7E5',
-            color: 'white',
-          }}
-          className="w-full hover:bg-[#BAC7E5]/90 border-0 shadow-none"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          發佈貼文
-        </Button>
-      </Link>
+      <PostButton />
     </div>
   );
 }

@@ -46,18 +46,55 @@ function CountryBoardContent() {
 
   const boardSchools = useMemo(() => {
     if (!schools || schools.length === 0 || !countryId) {
+      console.log('[CountryBoard] 過濾條件不滿足:', {
+        schoolsCount: schools?.length || 0,
+        countryId,
+        schoolsLoading,
+      });
       return [];
     }
 
-    // 使用 country_id 來過濾學校（支持字符串和数字比较）
+    // 使用 country_id 來過濾學校
+    // countryId 來自 URL 參數（字符串），需要與 schools 的 country_id 匹配
+    const targetCountryId = String(countryId);
+    
+    console.log('[CountryBoard] 開始過濾學校:', {
+      totalSchools: schools.length,
+      targetCountryId,
+      targetCountryIdType: typeof targetCountryId,
+      sampleSchool: schools[0] ? {
+        id: schools[0].id,
+        name_zh: schools[0].name_zh,
+        country_id: schools[0].country_id,
+        country_idType: typeof schools[0].country_id,
+      } : null,
+    });
+    
     const list = (schools || []).filter((s) => {
-      const schoolCountryId = s.country_id?.toString() || null;
-      const targetCountryId = countryId.toString();
-      return schoolCountryId === targetCountryId;
+      // 確保 country_id 轉換為字符串進行比較
+      const schoolCountryId = s.country_id != null ? String(s.country_id) : null;
+      const matches = schoolCountryId === targetCountryId;
+      
+      if (matches) {
+        console.log('[CountryBoard] 找到匹配的學校:', {
+          schoolId: s.id,
+          schoolName: s.name_zh,
+          schoolCountryId,
+          targetCountryId,
+        });
+      }
+      
+      return matches;
+    });
+    
+    console.log('[CountryBoard] 過濾結果:', {
+      matchedCount: list.length,
+      totalSchools: schools.length,
+      targetCountryId,
     });
     
     return list.slice().sort((a, b) => a.name_zh.localeCompare(b.name_zh, 'zh-Hant'));
-  }, [schools, countryId]);
+  }, [schools, countryId, schoolsLoading]);
 
   const schoolScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);

@@ -19,6 +19,13 @@ export async function GET(req: NextRequest) {
 
     const supabase = getSupabaseServer();
 
+    if (!supabase) {
+      return NextResponse.json({
+        success: true,
+        boards: [],
+      });
+    }
+
     // 獲取用戶追蹤的看板 ID
     const { data: boardFollows, error: followError } = await supabase
       .from('BoardFollow')
@@ -27,6 +34,16 @@ export async function GET(req: NextRequest) {
 
     if (followError) {
       console.error("Error fetching followed boards:", followError);
+      // 如果是表不存在的錯誤，返回空列表而不是錯誤
+      if (followError.code === 'PGRST116' || 
+          followError.code === '42P01' ||
+          followError.message?.includes('relation') || 
+          followError.message?.includes('does not exist')) {
+        return NextResponse.json({
+          success: true,
+          boards: [],
+        });
+      }
       return NextResponse.json(
         { error: "Failed to fetch followed boards" },
         { status: 500 }

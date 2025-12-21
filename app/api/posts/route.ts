@@ -18,51 +18,136 @@ export async function POST(req: NextRequest) {
       );
     }
     const userId = (session.user as any).id;
+    const userEmail = session.user.email;
+    const userName = session.user.name;
+    const userImage = (session.user as any).image;
     
-    // 如果沒有 userId，使用臨時測試用戶ID（僅用於開發測試）
-    // const userId = session?.user?.id || "00000000-0000-0000-0000-000000000001";
+    if (!userId) {
+      return NextResponse.json(
+        { error: "無法獲取用戶ID" },
+        { status: 401 }
+      );
+    }
+
+    const supabase = getSupabaseServer();
+    
+    // 確保用戶存在於資料庫中
+    const { data: existingUser } = await supabase
+      .from('User')
+      .select('id')
+      .eq('id', userId)
+      .maybeSingle();
+    
+    if (!existingUser) {
+      // 用戶不存在，創建用戶
+      console.log(`[POST /api/posts] 用戶不存在，創建新用戶: ${userId}`);
+      
+      // 生成唯一的 userID
+      let userID = userEmail ? userEmail.split('@')[0] : userId.substring(0, 8);
+      
+      // 檢查 userID 是否已存在
+      const { data: existingUserID } = await supabase
+        .from('User')
+        .select('userID')
+        .eq('userID', userID)
+        .maybeSingle();
+      
+      if (existingUserID) {
+        userID = `${userID}_${Math.random().toString(36).substring(2, 8)}`;
+      }
+      
+      const now = new Date().toISOString();
+      const { error: createUserError } = await supabase
+        .from('User')
+        .insert({
+          id: userId,
+          userID: userID,
+          name: userName || null,
+          email: userEmail || null,
+          emailVerified: now,
+          image: userImage || null,
+          createdAt: now,
+          updatedAt: now,
+        } as any);
+      
+      if (createUserError) {
+        console.error("Error creating user:", createUserError);
+        return NextResponse.json(
+          { error: "無法創建用戶資料" },
+          { status: 500 }
+        );
+      }
+      
+      console.log(`[POST /api/posts] 用戶創建成功: ${userId}`);
+    }
 
     const { 
+      postId: providedPostId, // 如果提供，則更新現有 post
       title, 
       content, 
       status = 'published',
       hashtags = [],
       photos = [],
       schoolIds = [],
-      countryId,
+      countryId, // 保留向後兼容
+      countryNames = [], // 新的多國家支持
       ratings
     } = await req.json();
 
-    // 驗證必填欄位
-    if (!title || typeof title !== "string") {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      );
+    // 驗證必填欄位（草稿允許空標題和內容）
+    if (status !== 'draft') {
+      if (!title || typeof title !== "string") {
+        return NextResponse.json(
+          { error: "Title is required" },
+          { status: 400 }
+        );
+      }
+
+      if (!content || typeof content !== "string") {
+        return NextResponse.json(
+          { error: "Content is required" },
+          { status: 400 }
+        );
+      }
     }
 
-    if (!content || typeof content !== "string") {
-      return NextResponse.json(
-        { error: "Content is required" },
-        { status: 400 }
-      );
-    }
-
-    const trimmedTitle = title.trim();
-    const trimmedContent = content.trim();
+    const trimmedTitle = (title || '').trim() || '未命名草稿';
+    const trimmedContent = (content || '').trim();
     
-    if (trimmedTitle.length === 0) {
+    if (status !== 'draft' && trimmedTitle.length === 0) {
       return NextResponse.json(
         { error: "Title cannot be empty" },
         { status: 400 }
       );
     }
 
-    if (trimmedContent.length === 0) {
+    if (status !== 'draft' && trimmedContent.length === 0) {
       return NextResponse.json(
         { error: "Content cannot be empty" },
         { status: 400 }
       );
+    }
+
+    // 如果提供了 postId，檢查該 post 是否存在且屬於當前用戶
+    let postId = providedPostId;
+    let isUpdate = false;
+    if (postId) {
+      const { data: existingPost, error: fetchError } = await supabase
+        .from('Post')
+        .select('id, authorId')
+        .eq('id', postId)
+        .eq('authorId', userId)
+        .maybeSingle();
+      
+      if (fetchError || !existingPost) {
+        return NextResponse.json(
+          { error: "Post not found or unauthorized" },
+          { status: 404 }
+        );
+      }
+      isUpdate = true;
+    } else {
+      postId = crypto.randomUUID();
     }
 
     // 驗證 status
@@ -83,37 +168,69 @@ export async function POST(req: NextRequest) {
         );
       }
       if (typeof livingConvenience !== 'number' || livingConvenience < 1 || livingConvenience > 5 ||
-          typeof costOfLiving !== 'number' || costOfLiving < 1 || costOfLiving > 5 ||
+          typeof costOfLiving !== 'number' || costOfLiving < 1 || costOfLiving > 3 ||
           typeof courseLoading !== 'number' || courseLoading < 1 || courseLoading > 5) {
         return NextResponse.json(
-          { error: "Ratings must be numbers between 1 and 5" },
+          { error: "Ratings must be numbers (livingConvenience, courseLoading 1-5, costOfLiving 1-3)" },
           { status: 400 }
         );
       }
     }
 
-    const supabase = getSupabaseServer();
+    // 建立或更新貼文
+    let post;
+    if (isUpdate) {
+      // 更新現有 post
+      const { data: updatedPost, error: updateError } = await supabase
+        .from('Post')
+        .update({
+          title: trimmedTitle,
+          content: trimmedContent,
+          status: status,
+          updatedAt: new Date().toISOString(),
+        } as any)
+        .eq('id', postId)
+        .select()
+        .single();
 
-    // 建立貼文
-    const postId = crypto.randomUUID();
-    const { data: post, error: postError } = await supabase
-      .from('Post')
-      .insert({
-        id: postId,
-        title: trimmedTitle,
-        content: trimmedContent,
-        status: status,
-        authorId: userId,
-      } as any)
-      .select()
-      .single();
+      if (updateError) {
+        console.error("Error updating post:", updateError);
+        return NextResponse.json(
+          { error: "Failed to update post" },
+          { status: 500 }
+        );
+      }
+      post = updatedPost;
 
-    if (postError) {
-      console.error("Error creating post:", postError);
-      return NextResponse.json(
-        { error: "Failed to create post" },
-        { status: 500 }
-      );
+      // 刪除舊的關聯資料
+      await Promise.all([
+        supabase.from('Hashtag').delete().eq('postId', postId),
+        supabase.from('PostPhoto').delete().eq('postId', postId),
+        supabase.from('SchoolRating').delete().eq('postId', postId),
+        supabase.from('PostBoard').delete().eq('postId', postId),
+      ]);
+    } else {
+      // 創建新 post
+      const { data: newPost, error: postError } = await supabase
+        .from('Post')
+        .insert({
+          id: postId,
+          title: trimmedTitle,
+          content: trimmedContent,
+          status: status,
+          authorId: userId,
+        } as any)
+        .select()
+        .single();
+
+      if (postError) {
+        console.error("Error creating post:", postError);
+        return NextResponse.json(
+          { error: "Failed to create post" },
+          { status: 500 }
+        );
+      }
+      post = newPost;
     }
 
     // 建立 Hashtag 記錄
@@ -162,24 +279,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 如果有選擇學校，建立關聯
-    if (schoolIds && Array.isArray(schoolIds) && schoolIds.length > 0) {
-      const postSchoolInserts = schoolIds.map((schoolId: string) => ({
-        id: crypto.randomUUID(),
-        postId: postId,
-        schoolId: schoolId,
-      }));
-
-      const { error: relationError } = await supabase
-        .from('PostSchool')
-        .insert(postSchoolInserts as any);
-
-      if (relationError) {
-        console.error("Error creating post-school relations:", relationError);
-        // 不影響貼文建立，只記錄錯誤
-      }
-    }
-
     // 如果是學校心得文，建立 SchoolRating 記錄
     if (ratings && typeof ratings === 'object') {
       const { schoolId, livingConvenience, costOfLiving, courseLoading } = ratings;
@@ -201,89 +300,116 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 處理看板：根據 countryId 或 schoolIds 建立看板關聯
+    // 處理看板：根據 countryNames 和 schoolIds 建立 PostBoard 關聯
     const boardIds: string[] = [];
     
-    // 如果有 countryId，建立或查找國家看板
-    if (countryId) {
-      // 查找或創建國家看板
-      const { data: existingCountryBoard } = await supabase
-        .from('Board')
-        .select('id')
-        .eq('country_id', countryId)
-        .is('schoolId', null)
-        .eq('type', 'country')
-        .limit(1)
-        .maybeSingle();
-      
-      if (existingCountryBoard) {
-        boardIds.push(existingCountryBoard.id);
-      } else {
-        // 創建新的國家看板（需要先查詢國家名稱，這裡簡化處理）
-        const boardId = crypto.randomUUID();
-        const slug = `country-${countryId}`.toLowerCase();
-        const { error: boardError } = await supabase
-          .from('Board')
-          .insert({
-            id: boardId,
-            type: 'country',
-            name: countryId, // 可以後續改進為實際國家名稱
-            slug: slug,
-            country_id: countryId,
-            schoolId: null,
-            description: null,
-          } as any);
+    // 1. 處理國家看板（根據 countryNames 查找國家版，schoolId 為 null）
+    if (countryNames && Array.isArray(countryNames) && countryNames.length > 0) {
+      for (const countryName of countryNames) {
+        if (!countryName || typeof countryName !== 'string') continue;
         
-        if (!boardError) {
-          boardIds.push(boardId);
-        } else {
-          console.error("Error creating country board:", boardError);
-        }
-      }
-    }
-    
-    // 如果有 schoolIds，建立或查找學校看板
-    if (schoolIds && Array.isArray(schoolIds) && schoolIds.length > 0) {
-      for (const schoolId of schoolIds) {
-        // 查找或創建學校看板
-        const { data: existingSchoolBoard } = await supabase
+        // 查找國家版 Board（schoolId 為 null，type 為 'country'）
+        // 通過 Board 的 name 或 slug 匹配國家名稱
+        const { data: countryBoards } = await supabase
           .from('Board')
           .select('id')
-          .eq('schoolId', schoolId)
-          .eq('type', 'school')
-          .limit(1)
-          .maybeSingle();
+          .is('schoolId', null)
+          .or(`name.ilike.%${countryName}%,slug.ilike.%${countryName}%,name.eq.${countryName}`)
+          .limit(10); // 限制結果數量
         
-        if (existingSchoolBoard) {
-          boardIds.push(existingSchoolBoard.id);
+        if (countryBoards && countryBoards.length > 0) {
+          // 如果找到多個，選擇第一個（或可以選擇最匹配的）
+          boardIds.push(countryBoards[0].id);
         } else {
-          // 創建新的學校看板
-          const boardId = crypto.randomUUID();
-          const slug = `school-${schoolId}`.toLowerCase();
-          const { error: boardError } = await supabase
-            .from('Board')
-            .insert({
-              id: boardId,
-              type: 'school',
-              name: schoolId, // 可以後續改進為實際學校名稱
-              slug: slug,
-              country_id: null,
-              schoolId: schoolId,
-              description: null,
-            } as any);
-          
-          if (!boardError) {
-            boardIds.push(boardId);
-          } else {
-            console.error("Error creating school board:", boardError);
+          // 如果沒找到，嘗試通過 Country 表查找（如果存在）
+          try {
+            const { data: countryData } = await supabase
+              .from('Country')
+              .select('id')
+              .or(`name.eq.${countryName},name_zh.eq.${countryName},name_en.eq.${countryName}`)
+              .maybeSingle();
+            
+            if (countryData) {
+              // 通過 country_id 查找 Board
+              const { data: countryBoard } = await supabase
+                .from('Board')
+                .select('id')
+                .is('schoolId', null)
+                .eq('country_id', countryData.id)
+                .limit(1)
+                .maybeSingle();
+              
+              if (countryBoard) {
+                boardIds.push(countryBoard.id);
+              } else {
+                console.log(`[POST /api/posts] 未找到國家版 (通過 country_id): ${countryName}`);
+              }
+            } else {
+              console.log(`[POST /api/posts] 未找到國家版: ${countryName}`);
+            }
+          } catch (e) {
+            // Country 表可能不存在，只記錄日誌
+            console.log(`[POST /api/posts] 未找到國家版，Country 表查詢失敗: ${countryName}`);
           }
         }
       }
     }
     
-    // 建立 PostBoard 關聯
-    if (boardIds.length > 0) {
-      const postBoardInserts = boardIds.map((boardId: string) => ({
+    // 2. 處理學校看板（根據 schoolIds 查找學校版，有 schoolId）
+    if (schoolIds && Array.isArray(schoolIds) && schoolIds.length > 0) {
+      for (const schoolId of schoolIds) {
+        if (!schoolId || typeof schoolId !== 'string') continue;
+        
+        // 查找學校版 Board（有 schoolId）
+        const { data: schoolBoard } = await supabase
+          .from('Board')
+          .select('id')
+          .eq('schoolId', schoolId)
+          .not('schoolId', 'is', null)
+          .limit(1)
+          .maybeSingle();
+        
+        if (schoolBoard) {
+          boardIds.push(schoolBoard.id);
+        } else {
+          // 如果學校版不存在，嘗試創建
+          const { data: schoolInfo } = await supabase
+            .from('schools')
+            .select('name_zh, country')
+            .eq('id', schoolId)
+            .maybeSingle();
+          
+          if (schoolInfo) {
+            const boardId = crypto.randomUUID();
+            const slug = `school-${schoolId}`.toLowerCase();
+            const { error: boardError } = await supabase
+              .from('Board')
+              .insert({
+                id: boardId,
+                type: 'school',
+                name: schoolInfo.name_zh || schoolId,
+                slug: slug,
+                country_id: null,
+                schoolId: schoolId,
+                description: null,
+              } as any);
+            
+            if (!boardError) {
+              boardIds.push(boardId);
+            } else {
+              console.error("Error creating school board:", boardError);
+            }
+          } else {
+            console.log(`[POST /api/posts] 未找到學校: ${schoolId}`);
+          }
+        }
+      }
+    }
+    
+    // 3. 建立 PostBoard 關聯（去重，避免重複）
+    const uniqueBoardIds = [...new Set(boardIds)];
+    if (uniqueBoardIds.length > 0) {
+      const postBoardInserts = uniqueBoardIds.map((boardId: string) => ({
         id: crypto.randomUUID(),
         postId: postId,
         boardId: boardId,
@@ -296,6 +422,8 @@ export async function POST(req: NextRequest) {
       if (postBoardError) {
         console.error("Error creating post-board relations:", postBoardError);
         // 不影響貼文建立，只記錄錯誤
+      } else {
+        console.log(`[POST /api/posts] 成功建立 ${postBoardInserts.length} 個 PostBoard 關聯`);
       }
     }
 
@@ -348,8 +476,9 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   try {
-    // 暫時禁用認證檢查，允許未登入訪問
-    const userId = null; // 暫時設為 null
+    // 獲取登入 session
+    const session = await auth();
+    const userId = session?.user ? (session.user as any).id : null;
 
     const searchParams = req.nextUrl.searchParams;
     const filter = searchParams.get("filter") || "all";
@@ -360,6 +489,7 @@ export async function GET(req: NextRequest) {
     const schoolId = searchParams.get("schoolId");
     const sort = (searchParams.get("sort") || "latest") as "latest" | "popular";
     const filterType = searchParams.get("filterType"); // "rating" for rating posts only
+    const type = searchParams.get("type"); // 'general' or 'review'
 
     const supabase = getSupabaseServer();
     
@@ -368,6 +498,80 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({
         success: true,
         posts: [],
+        nextCursor: null,
+      });
+    }
+
+    // 如果是草稿查詢，只返回當前用戶的草稿
+    if (filter === "drafts") {
+      if (!userId) {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      let draftQuery = supabase
+        .from('Post')
+        .select(`
+          *,
+          author:User!Post_authorId_fkey (
+            id,
+            name,
+            userID,
+            image,
+            email
+          )
+        `)
+        .eq('authorId', userId)
+        .eq('status', 'draft')
+        .is('deletedAt', null)
+        .order('updatedAt', { ascending: false })
+        .limit(limit);
+
+      const { data: drafts, error: draftError } = await draftQuery;
+
+      if (draftError) {
+        console.error("Error fetching drafts:", draftError);
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      if (!drafts || drafts.length === 0) {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      // 如果是review類型，只返回有評分的貼文；如果是general類型，只返回沒有評分的貼文
+      const postIds = drafts.map(d => d.id);
+      const { data: ratingsData } = await supabase
+        .from('SchoolRating')
+        .select('postId')
+        .in('postId', postIds)
+        .catch(() => ({ data: [] }));
+
+      const ratedPostIds = new Set((ratingsData || []).map((r: any) => r.postId));
+
+      let filteredDrafts = drafts;
+      if (type === 'review') {
+        filteredDrafts = drafts.filter(d => ratedPostIds.has(d.id));
+      } else if (type === 'general') {
+        filteredDrafts = drafts.filter(d => !ratedPostIds.has(d.id));
+      }
+
+      return NextResponse.json({
+        success: true,
+        posts: filteredDrafts.map((post: any) => ({
+          ...post,
+          type: ratedPostIds.has(post.id) ? 'review' : 'general',
+        })),
         nextCursor: null,
       });
     }
