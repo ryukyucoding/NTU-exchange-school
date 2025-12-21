@@ -359,6 +359,7 @@ export async function GET(req: NextRequest) {
     const hashtag = searchParams.get("hashtag");
     const schoolId = searchParams.get("schoolId");
     const sort = (searchParams.get("sort") || "latest") as "latest" | "popular";
+    const filterType = searchParams.get("filterType"); // "rating" for rating posts only
 
     const supabase = getSupabaseServer();
     
@@ -509,6 +510,28 @@ export async function GET(req: NextRequest) {
           filterPostIds = postIds;
         } else {
           filterPostIds = filterPostIds.filter(id => postIds.includes(id));
+        }
+      } else {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+    }
+
+    // 如果指定了 filterType="rating"，只顯示有評分的貼文
+    if (filterType === 'rating') {
+      const { data: ratingData } = await supabase
+        .from('SchoolRating')
+        .select('postId');
+
+      if (ratingData && ratingData.length > 0) {
+        const ratingPostIds = ratingData.map(r => r.postId);
+        if (filterPostIds === null) {
+          filterPostIds = ratingPostIds;
+        } else {
+          filterPostIds = filterPostIds.filter(id => ratingPostIds.includes(id));
         }
       } else {
         return NextResponse.json({

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import PostList from '@/components/social/PostList';
@@ -9,26 +10,42 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 
-type SortMode = 'popular' | 'latest';
+type SortMode = 'popular' | 'latest' | 'rating';
 
 interface BoardInfoResponse {
   success: boolean;
   board: { id: string | null; name: string; schoolId?: string | null } | null;
   stats: { followerCount: number; postCount: number };
+  avgRatings?: {
+    livingConvenience: number;
+    costOfLiving: number;
+    courseLoading: number;
+  };
 }
 
 function SchoolBoardContent() {
   const params = useParams<{ schoolId: string }>();
   const schoolId = params?.schoolId || '';
 
+  const { data: session } = useSession();
   const { schools } = useSchoolContext();
   const school = useMemo(() => (schools || []).find((s) => s.id === schoolId), [schools, schoolId]);
-  const boardTitle = school ? `${school.name_zh}版` : '學校版';
+  const boardTitle = school ? `${school.name_zh}板` : '學校板';
 
   const [boardId, setBoardId] = useState<string | null>(null);
   const [stats, setStats] = useState<{ followerCount: number; postCount: number }>({
     followerCount: 0,
     postCount: 0,
+  });
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [avgRatings, setAvgRatings] = useState<{
+    livingConvenience: number;
+    costOfLiving: number;
+    courseLoading: number;
+  }>({
+    livingConvenience: 0,
+    costOfLiving: 0,
+    courseLoading: 0,
   });
   const [sort, setSort] = useState<SortMode>('popular');
   const [loading, setLoading] = useState(true);
@@ -41,8 +58,19 @@ function SchoolBoardContent() {
         const res = await fetch(`/api/boards/school/${schoolId}`);
         const data: BoardInfoResponse = await res.json();
         if (!cancelled && data?.success) {
-          setBoardId(data.board?.id || null);
+          const bid = data.board?.id || null;
+          setBoardId(bid);
           setStats(data.stats || { followerCount: 0, postCount: 0 });
+          setAvgRatings(data.avgRatings || { livingConvenience: 0, costOfLiving: 0, courseLoading: 0 });
+          
+          // 檢查是否已追蹤
+          if (bid && session?.user) {
+            const followRes = await fetch(`/api/boards/${bid}/follow`);
+            const followData = await followRes.json();
+            if (!cancelled && followData?.success) {
+              setIsFollowing(followData.isFollowing || false);
+            }
+          }
         }
       } catch (err) {
         console.error('Error fetching board info:', err);
@@ -54,7 +82,31 @@ function SchoolBoardContent() {
     return () => {
       cancelled = true;
     };
-  }, [schoolId]);
+  }, [schoolId, session]);
+
+  const handleFollowToggle = async () => {
+    if (!boardId || !session?.user) return;
+    
+    try {
+      if (isFollowing) {
+        const res = await fetch(`/api/boards/${boardId}/follow`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          setIsFollowing(false);
+          setStats(prev => ({ ...prev, followerCount: Math.max(0, prev.followerCount - 1) }));
+        }
+      } else {
+        const res = await fetch(`/api/boards/${boardId}/follow`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          setIsFollowing(true);
+          setStats(prev => ({ ...prev, followerCount: prev.followerCount + 1 }));
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling follow:', err);
+    }
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
@@ -108,76 +160,123 @@ function SchoolBoardContent() {
                       </p>
                     )}
                   </div>
-                  <div className="flex gap-10 text-gray-600">
-                    <div className="text-right">
-                      <div className="text-sm">貼文數</div>
-                      <div className="text-xl font-semibold">{stats.postCount}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm">追蹤數</div>
-                      <div className="text-xl font-semibold">{stats.followerCount}</div>
+                  <div className="flex items-center gap-6">
+                    {boardId && (
+                      <Button
+                        onClick={handleFollowToggle}
+                        className="px-4 py-2 text-sm font-medium rounded-md transition-colors"
+                        style={{
+                          backgroundColor: isFollowing ? 'rgba(141, 112, 81, 0.2)' : '#8D7051',
+                          color: isFollowing ? '#8D7051' : 'white',
+                          border: 'none',
+                          opacity: session?.user ? 1 : 0.6,
+                        }}
+                        disabled={!session?.user}
+                      >
+                        {isFollowing ? '追蹤中' : '追蹤'}
+                      </Button>
+                    )}
+                    <div className="flex gap-10 text-gray-600">
+                      <div className="text-right">
+                        <div className="text-sm">貼文數</div>
+                        <div className="text-xl font-semibold">{stats.postCount}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm">追蹤數</div>
+                        <div className="text-xl font-semibold">{stats.followerCount}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Card>
 
-            <div className="flex justify-center mb-4">
-              <div className="flex gap-2" style={{ width: '35%' }}>
-                <Button
-                  onClick={() => setSort('popular')}
-                  style={{
-                    borderRadius: '9999px',
-                    boxShadow: 'none',
-                    ...(sort === 'popular'
-                      ? {
-                          backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                          borderColor: '#8D7051',
-                          color: 'white',
-                        }
-                      : {
-                          backgroundColor: 'transparent',
-                          borderColor: '#8D7051',
-                          color: '#8D7051',
-                        }),
-                  }}
-                  className="flex-1 text-xs py-1 border transition-colors shadow-none"
-                >
-                  熱門
-                </Button>
-                <Button
-                  onClick={() => setSort('latest')}
-                  style={{
-                    borderRadius: '9999px',
-                    boxShadow: 'none',
-                    ...(sort === 'latest'
-                      ? {
-                          backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                          borderColor: '#8D7051',
-                          color: 'white',
-                        }
-                      : {
-                          backgroundColor: 'transparent',
-                          borderColor: '#8D7051',
-                          color: '#8D7051',
-                        }),
-                  }}
-                  className="flex-1 text-xs py-1 border transition-colors shadow-none"
-                >
-                  最新
-                </Button>
-              </div>
-            </div>
+                {/* Rating display */}
+                {avgRatings.livingConvenience > 0 || avgRatings.costOfLiving > 0 || avgRatings.courseLoading > 0 ? (
+                  <div className="mt-6 flex gap-8">
+                    <div>
+                      <div className="text-sm text-gray-600 mb-1">生活機能</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-gray-800">
+                          {avgRatings.livingConvenience.toFixed(1)}
+                        </span>
+                        <div className="flex text-[#8D7051] text-sm">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i}>{i < Math.round(avgRatings.livingConvenience) ? '★' : '☆'}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600 mb-1">學習體驗</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-gray-800">
+                          {avgRatings.courseLoading.toFixed(1)}
+                        </span>
+                        <div className="flex text-[#8D7051] text-sm">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i}>{i < Math.round(avgRatings.courseLoading) ? '★' : '☆'}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600 mb-1">生活開銷</div>
+                      <div className="flex items-center gap-1">
+                        <div className="flex text-[#8D7051] text-base">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i} style={{ fontSize: '16px' }}>
+                              {i < Math.round(avgRatings.costOfLiving) ? '$' : '○'}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
 
-            {loading && !boardId ? (
-              <div className="bg-white p-8 rounded-lg">
-                <div className="p-8 text-center">
-                  <p className="text-muted-foreground">載入中...</p>
+                {/* Sort tabs (text only) */}
+                <div className="mt-6 flex gap-12" style={{ fontFamily: "'Noto Sans TC', sans-serif", paddingLeft: '40px' }}>
+                  <button
+                    onClick={() => setSort('popular')}
+                    className="text-sm font-semibold"
+                    style={{ color: sort === 'popular' ? '#5A5A5A' : '#A6A6A6' }}
+                  >
+                    熱門
+                  </button>
+                  <button
+                    onClick={() => setSort('latest')}
+                    className="text-sm font-semibold"
+                    style={{ color: sort === 'latest' ? '#5A5A5A' : '#A6A6A6' }}
+                  >
+                    全部
+                  </button>
+                  <button
+                    onClick={() => setSort('rating')}
+                    className="text-sm font-semibold"
+                    style={{ color: sort === 'rating' ? '#5A5A5A' : '#A6A6A6' }}
+                  >
+                    評分
+                  </button>
+                </div>
+                <div className="mt-3 border-b" style={{ borderColor: '#D9D9D9', width: '100%' }} />
+
+                {/* Posts (continuous with the same white block) */}
+                <div className="mt-6">
+                  {loading && !boardId ? (
+                    <div className="p-8 text-center">
+                      <p className="text-muted-foreground">載入中...</p>
+                    </div>
+                  ) : (
+                    <PostList
+                      filter="all"
+                      boardId={boardId}
+                      sort={sort === 'popular' ? 'popular' : 'latest'}
+                      filterType={sort === 'rating' ? 'rating' : null}
+                      variant="plain"
+                    />
+                  )}
                 </div>
               </div>
-            ) : (
-              <PostList filter="all" boardId={boardId} sort={sort === 'popular' ? 'popular' : 'latest'} />
-            )}
+            </Card>
           </main>
 
           <aside className="hidden lg:block w-64 flex-shrink-0">

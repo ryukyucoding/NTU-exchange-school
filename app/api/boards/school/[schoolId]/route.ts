@@ -83,8 +83,14 @@ export async function GET(
 
     let followerCount = 0;
     let postCount = 0;
+    let avgRatings = {
+      livingConvenience: 0,
+      costOfLiving: 0,
+      courseLoading: 0,
+    };
+
     if (boardId) {
-      const [{ count: followerExact }, { count: postExact }] = await Promise.all([
+      const [{ count: followerExact }, { count: postExact }, { data: postBoardData }] = await Promise.all([
         supabase
           .from("BoardFollow")
           .select("*", { count: "exact", head: true })
@@ -93,10 +99,36 @@ export async function GET(
           .from("PostBoard")
           .select("*", { count: "exact", head: true })
           .eq("boardId", boardId),
+        supabase
+          .from("PostBoard")
+          .select("postId")
+          .eq("boardId", boardId),
       ]);
 
       followerCount = followerExact || 0;
       postCount = postExact || 0;
+
+      // 計算平均評分
+      if (postBoardData && postBoardData.length > 0) {
+        const postIds = postBoardData.map((pb: any) => pb.postId);
+        const { data: ratingsData } = await supabase
+          .from("SchoolRating")
+          .select("livingConvenience, costOfLiving, courseLoading")
+          .in("postId", postIds)
+          .eq("schoolId", schoolId);
+
+        if (ratingsData && ratingsData.length > 0) {
+          const total = ratingsData.length;
+          avgRatings = {
+            livingConvenience:
+              ratingsData.reduce((sum: number, r: any) => sum + (r.livingConvenience || 0), 0) / total,
+            costOfLiving:
+              ratingsData.reduce((sum: number, r: any) => sum + (r.costOfLiving || 0), 0) / total,
+            courseLoading:
+              ratingsData.reduce((sum: number, r: any) => sum + (r.courseLoading || 0), 0) / total,
+          };
+        }
+      }
     }
 
     return NextResponse.json({
@@ -106,6 +138,7 @@ export async function GET(
         followerCount,
         postCount,
       },
+      avgRatings,
     });
   } catch (error: any) {
     console.error("Error in GET /api/boards/school/[schoolId]:", error);

@@ -28,9 +28,17 @@ interface PostListProps {
   filter: 'all' | 'following';
   boardId?: string | null;
   sort?: 'latest' | 'popular';
+  variant?: 'card' | 'plain';
+  filterType?: 'rating' | null; // 'rating' to show only posts with SchoolRating
 }
 
-export default function PostList({ filter, boardId, sort = 'latest' }: PostListProps) {
+export default function PostList({
+  filter,
+  boardId,
+  sort = 'latest',
+  variant = 'card',
+  filterType = null,
+}: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -46,6 +54,9 @@ export default function PostList({ filter, boardId, sort = 'latest' }: PostListP
       });
       if (boardId) {
         params.append('boardId', boardId);
+      }
+      if (filterType) {
+        params.append('filterType', filterType);
       }
       if (cursor) {
         params.append('cursor', cursor);
@@ -71,13 +82,13 @@ export default function PostList({ filter, boardId, sort = 'latest' }: PostListP
   };
 
   useEffect(() => {
-    // 切換 filter/boardId/sort 時重置列表
+    // 切換 filter/boardId/sort/filterType 時重置列表
     setPosts([]);
     setNextCursor(null);
     setHasMore(true);
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, boardId, sort]);
+  }, [filter, boardId, sort, filterType]);
 
   const loadMore = () => {
     if (nextCursor && !loading) {
@@ -85,32 +96,27 @@ export default function PostList({ filter, boardId, sort = 'latest' }: PostListP
     }
   };
 
+  const containerClassName =
+    variant === 'plain' ? 'space-y-4' : 'space-y-4 bg-white p-4 rounded-lg';
+
   if (loading && posts.length === 0) {
     return (
-      <div className="space-y-4 bg-white p-4 rounded-lg">
-        {[1, 2, 3].map((i) => (
-          <Card key={i} className="p-4 animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-          </Card>
-        ))}
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
       </div>
     );
   }
 
   if (posts.length === 0) {
     return (
-      <div className="bg-white p-8 rounded-lg">
-        <div className="p-8 text-center">
-          <p className="text-muted-foreground">尚無貼文</p>
-        </div>
+      <div className={variant === 'plain' ? 'p-8 text-center' : 'bg-white p-8 rounded-lg'}>
+        <p className="text-muted-foreground">尚無貼文</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 bg-white p-4 rounded-lg">
+    <div className={containerClassName}>
       {posts.map((post) => {
         if (post.postType === 'review') {
           return <SchoolReviewPostCard key={post.id} post={post} />;
