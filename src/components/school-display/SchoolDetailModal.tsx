@@ -7,6 +7,97 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { useEffect } from 'react';
 
+function normalizeUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  if (trimmed.startsWith('www.')) return `https://${trimmed}`;
+  return trimmed;
+}
+
+function renderTextWithLinks(
+  text: string,
+  opts: { variant: 'wishlist' | 'glass' }
+) {
+  // Supports:
+  // - Markdown: [label](https://...)
+  // - Bracketed URL: [https://...]
+  // - Bare URL: https://...
+  const linkClass =
+    opts.variant === 'wishlist'
+      ? '!text-blue-600 underline underline-offset-2 hover:!text-blue-700 font-medium'
+      : 'text-blue-300 underline underline-offset-2 hover:text-blue-200';
+
+  const nodes: any[] = [];
+  const re =
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\[(https?:\/\/[^\s\]]+)\]|(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
+
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(text.slice(lastIndex, match.index));
+    }
+
+    // [label](url)
+    if (match[1] && match[2]) {
+      const url = normalizeUrl(match[2]);
+      nodes.push(
+        <a
+          key={`a-${key++}`}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+          title={url}
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = re.lastIndex;
+      continue;
+    }
+
+    // [url] or bare url or www.
+    const rawUrl = match[3] || match[4] || match[5] || '';
+    const url = normalizeUrl(rawUrl);
+    const label = match[3] ? '此連結' : url;
+
+    // If the source text already contains a preceding "此連結" (common in CSV like: "此連結 [https://...]"),
+    // remove the duplicated plain-text prefix so only the clickable "此連結" remains.
+    if (match[3] && nodes.length > 0) {
+      const last = nodes[nodes.length - 1];
+      if (typeof last === 'string') {
+        const cleaned = last.replace(/(此連結|此链接)\s*$/u, '');
+        nodes[nodes.length - 1] = cleaned;
+      }
+    }
+
+    nodes.push(
+      <a
+        key={`a-${key++}`}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={linkClass}
+        title={url}
+      >
+        {label}
+      </a>
+    );
+
+    lastIndex = re.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    nodes.push(text.slice(lastIndex));
+  }
+
+  return nodes;
+}
+
 interface SchoolDetailModalProps {
   school: SchoolWithMatch | null;
   open: boolean;
@@ -160,7 +251,9 @@ export default function SchoolDetailModal({
               {school.language_requirement && (
                 <div>
                   <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>語言要求:</span>
-                  <p className={isWishlist ? 'mt-1 text-sm' : 'mt-1 text-sm text-white'}>{school.language_requirement}</p>
+                  <p className={isWishlist ? 'mt-1 text-sm' : 'mt-1 text-sm text-white'}>
+                    {renderTextWithLinks(school.language_requirement, { variant: isWishlist ? 'wishlist' : 'glass' })}
+                  </p>
                 </div>
               )}
 
@@ -204,21 +297,27 @@ export default function SchoolDetailModal({
               {school.academic_calendar && (
                 <div>
                   <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>學校年曆:</span>
-                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>{school.academic_calendar}</p>
+                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
+                    {renderTextWithLinks(school.academic_calendar, { variant: isWishlist ? 'wishlist' : 'glass' })}
+                  </p>
                 </div>
               )}
 
               {school.registration_fee && (
                 <div>
                   <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>註冊繳費:</span>
-                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>{school.registration_fee}</p>
+                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
+                    {renderTextWithLinks(school.registration_fee, { variant: isWishlist ? 'wishlist' : 'glass' })}
+                  </p>
                 </div>
               )}
 
               {school.accommodation_info && (
                 <div>
                   <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>住宿資訊:</span>
-                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>{school.accommodation_info}</p>
+                  <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
+                    {renderTextWithLinks(school.accommodation_info, { variant: isWishlist ? 'wishlist' : 'glass' })}
+                  </p>
                 </div>
               )}
 
@@ -244,7 +343,7 @@ export default function SchoolDetailModal({
                         : 'mt-1 bg-white/10 border border-white/20 p-3 rounded-lg text-white'
                     }
                   >
-                    {school.notes}
+                    {renderTextWithLinks(school.notes, { variant: isWishlist ? 'wishlist' : 'glass' })}
                   </p>
                 </div>
               )}
