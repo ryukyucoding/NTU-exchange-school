@@ -5,6 +5,7 @@ import { useFilters } from '@/contexts/FilterContext';
 import { useUserContext } from '@/contexts/UserContext';
 import { useFilteredSchools } from '@/hooks/useFilteredSchools';
 import { usePanelManager } from '@/hooks/usePanelManager';
+import { useMapZoom } from '@/contexts/MapZoomContext';
 import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
 import TableView from '@/components/views/TableView';
@@ -12,6 +13,7 @@ import PanelOverlay from '@/components/layout/PanelOverlay';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 function UnifiedPanelManager() {
   const panelManager = usePanelManager();
@@ -111,6 +113,12 @@ function TableContent() {
   const { filters } = useFilters();
   const { user, isUsingQualificationFilter } = useUserContext();
   const filteredSchools = useFilteredSchools(schools, filters, user);
+  const { setZoomLevel } = useMapZoom();
+
+  // 當組件掛載時，重置縮放級別為初始值（確保切換頁面時恢復預設狀態）
+  useEffect(() => {
+    setZoomLevel(2);
+  }, [setZoomLevel]);
 
   if (loading) {
     return (

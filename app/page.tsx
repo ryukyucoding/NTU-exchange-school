@@ -48,11 +48,16 @@ function UnifiedPanelManager() {
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className={`backdrop-blur-md rounded-lg shadow-2xl p-4 transition-all duration-300 ${
-            isHighZoom 
-              ? 'bg-white/30 border-[rgba(255,255,255,0.35)]' 
-              : 'bg-white/20 border-[rgba(255,255,255,0.3)]'
-          }`}>
+          <div
+            className={`backdrop-blur-md rounded-lg shadow-2xl p-4 transition-all duration-300 ${
+              isHighZoom ? 'bg-white/30' : 'bg-white/20'
+            }`}
+            style={{
+              border: isHighZoom
+                ? '1px solid rgba(255, 255, 255, 0.35)'
+                : '1px solid rgba(255, 255, 255, 0.30)',
+            }}
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className={`font-semibold transition-all duration-300 ${
                 isHighZoom ? 'text-gray-800' : 'text-white'

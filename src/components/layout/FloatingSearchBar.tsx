@@ -101,11 +101,16 @@ export default function FloatingSearchBar({ schoolCount }: FloatingSearchBarProp
         className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-auto"
         onClick={handleSearchBarClick}
       >
-        <div className={`backdrop-blur-md rounded-lg shadow-2xl p-4 min-w-[600px] transition-all duration-300 ${
-          isHighZoom 
-            ? 'bg-white/30 border-[rgba(255,255,255,0.35)]' 
-            : 'bg-white/10 border-[rgba(255,255,255,0.2)]'
-        }`}>
+        <div
+          className={`backdrop-blur-md rounded-lg shadow-2xl p-4 min-w-[600px] transition-all duration-300 ${
+            isHighZoom ? 'bg-white/30' : 'bg-white/10'
+          }`}
+          style={{
+            border: isHighZoom
+              ? '1px solid rgba(255, 255, 255, 0.35)'
+              : '1px solid rgba(255, 255, 255, 0.20)',
+          }}
+        >
         <div className={`flex items-center gap-4 ${isHighZoom ? 'text-gray-800' : 'text-white'}`}>
           {/* 搜尋輸入框 */}
           <div className="flex-1 flex items-center gap-2">

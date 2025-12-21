@@ -154,7 +154,14 @@ function PopupContent({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg shadow-2xl p-4 relative w-80 flex flex-col">
+    <div
+      className="backdrop-blur-md rounded-lg shadow-2xl p-4 relative w-80 flex flex-col"
+      style={{
+        // 若 CSS 變數沒載入，fallback 回一個「有點藍」的半透明色，避免變透明
+        backgroundColor: 'var(--map-popup-bg, rgba(9, 47, 83, 0.72))',
+        border: '1px solid rgba(255, 255, 255, 0.4)',
+      }}
+    >
       {/* 關閉按鈕 */}
       <Button
         variant="ghost"
@@ -285,6 +292,11 @@ export default function MapView({ schools }: MapViewProps) {
   const { setZoomLevel, zoomLevel } = useMapZoom();
   const isHighZoom = useMapBackgroundBrightness(3);
 
+  // 當組件掛載時，重置縮放級別為初始值（確保切換頁面時恢復預設狀態）
+  useEffect(() => {
+    setZoomLevel(2);
+  }, [setZoomLevel]);
+
   // 過濾掉沒有有效經緯度的學校
   const schoolsWithCoordinates = schools.filter(school => 
     school.latitude !== 0 && 
@@ -404,7 +416,7 @@ export default function MapView({ schools }: MapViewProps) {
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 {/* 大學名稱標籤 */}
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-[100]">
                   {school.name_zh}
                 </div>
               </div>
