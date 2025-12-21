@@ -43,6 +43,17 @@ export default function SocialSidebar() {
     };
 
     fetchFollowedBoards();
+
+    // 監聽追蹤狀態變化事件
+    const handleBoardFollowChanged = () => {
+      fetchFollowedBoards();
+    };
+
+    window.addEventListener('boardFollowChanged', handleBoardFollowChanged);
+
+    return () => {
+      window.removeEventListener('boardFollowChanged', handleBoardFollowChanged);
+    };
   }, [session]);
 
   return (
@@ -83,9 +94,9 @@ export default function SocialSidebar() {
                 key={board.id}
                 href={
                   board.type === 'school' && board.schoolId
-                    ? `/social/boards/school/${board.schoolId}`
+                    ? `/social/boards/school/${board.schoolId.toString()}`
                     : board.country_id
-                    ? `/social/boards/country/${board.country_id}`
+                    ? `/social/boards/country/${board.country_id.toString()}`
                     : '#'
                 }
                 className="block text-sm text-gray-600 hover:text-gray-800"

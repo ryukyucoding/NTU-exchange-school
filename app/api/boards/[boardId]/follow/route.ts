@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { randomUUID } from "crypto";
 
 /**
  * POST /api/boards/[boardId]/follow
@@ -29,6 +30,20 @@ export async function POST(
       );
     }
 
+    // 檢查看板是否存在
+    const { data: boardExists } = await supabase
+      .from("Board")
+      .select("id")
+      .eq("id", boardId)
+      .maybeSingle();
+
+    if (!boardExists) {
+      return NextResponse.json(
+        { error: "Board not found" },
+        { status: 404 }
+      );
+    }
+
     // 檢查是否已經追蹤
     const { data: existing } = await supabase
       .from("BoardFollow")
@@ -46,14 +61,25 @@ export async function POST(
 
     // 建立追蹤關係
     const { error } = await supabase.from("BoardFollow").insert({
+      id: randomUUID(),
       userId,
       boardId,
     } as any);
 
     if (error) {
       console.error("Error following board:", error);
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
       return NextResponse.json(
-        { error: "Failed to follow board" },
+        { 
+          error: "Failed to follow board",
+          details: error.message,
+          code: error.code,
+        },
         { status: 500 }
       );
     }

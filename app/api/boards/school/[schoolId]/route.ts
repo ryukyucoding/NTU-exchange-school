@@ -11,6 +11,15 @@ export async function GET(
 ) {
   try {
     const { schoolId } = await params;
+    
+    // 將 schoolId 轉換為數字（因為 schools.id 和 Board.schoolId 都是 number 類型）
+    const schoolIdNum = parseInt(schoolId, 10);
+    if (isNaN(schoolIdNum)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid school ID" },
+        { status: 400 }
+      );
+    }
 
     let supabase;
     try {
@@ -26,7 +35,7 @@ export async function GET(
           id: null,
           type: "school",
           name: schoolId,
-          schoolId,
+          schoolId: schoolIdNum,
         },
         stats: {
           followerCount: 0,
@@ -35,51 +44,30 @@ export async function GET(
       });
     }
 
-    const { data: existingBoard, error: boardFetchError } = await supabase
+    // 直接查詢 Board 表（所有學校板都已存在）
+    const { data: board, error: boardError } = await supabase
       .from("Board")
-      .select("id,name,slug,type,country_id,schoolId,description")
+      .select("id, name, slug, type, country_id, schoolId, description")
       .eq("type", "school")
-      .eq("schoolId", schoolId)
-      .limit(1)
+      .eq("schoolId", schoolIdNum)
       .maybeSingle();
 
-    if (boardFetchError) {
-      console.error("Error fetching school board:", boardFetchError);
+    if (boardError) {
+      console.error("Error fetching school board:", boardError);
+      return NextResponse.json(
+        { success: false, error: "Failed to fetch board" },
+        { status: 500 }
+      );
     }
-
-    let board = existingBoard as any;
 
     if (!board) {
-      const newId = crypto.randomUUID();
-      const slug = `school-${schoolId}`;
-      const { data: created, error: createError } = await supabase
-        .from("Board")
-        .insert({
-          id: newId,
-          type: "school",
-          name: schoolId,
-          slug,
-          country_id: null,
-          schoolId,
-          description: null,
-        } as any)
-        .select("id,name,slug,type,country_id,schoolId,description")
-        .single();
-
-      if (createError) {
-        console.error("Error creating school board:", createError);
-        board = {
-          id: null,
-          type: "school",
-          name: schoolId,
-          schoolId,
-        };
-      } else {
-        board = created;
-      }
+      return NextResponse.json(
+        { success: false, error: "Board not found" },
+        { status: 404 }
+      );
     }
 
-    const boardId = board?.id;
+    const boardId = board.id;
 
     let followerCount = 0;
     let postCount = 0;
@@ -89,45 +77,44 @@ export async function GET(
       courseLoading: 0,
     };
 
-    if (boardId) {
-      const [{ count: followerExact }, { count: postExact }, { data: postBoardData }] = await Promise.all([
-        supabase
-          .from("BoardFollow")
-          .select("*", { count: "exact", head: true })
-          .eq("boardId", boardId),
-        supabase
-          .from("PostBoard")
-          .select("*", { count: "exact", head: true })
-          .eq("boardId", boardId),
-        supabase
-          .from("PostBoard")
-          .select("postId")
-          .eq("boardId", boardId),
-      ]);
+    // 並行查詢統計數據和貼文 ID
+    const [{ count: followerExact }, { count: postExact }, { data: postBoardData }] = await Promise.all([
+      supabase
+        .from("BoardFollow")
+        .select("*", { count: "exact", head: true })
+        .eq("boardId", boardId),
+      supabase
+        .from("PostBoard")
+        .select("*", { count: "exact", head: true })
+        .eq("boardId", boardId),
+      supabase
+        .from("PostBoard")
+        .select("postId")
+        .eq("boardId", boardId),
+    ]);
 
-      followerCount = followerExact || 0;
-      postCount = postExact || 0;
+    followerCount = followerExact || 0;
+    postCount = postExact || 0;
 
-      // 計算平均評分
-      if (postBoardData && postBoardData.length > 0) {
-        const postIds = postBoardData.map((pb: any) => pb.postId);
-        const { data: ratingsData } = await supabase
-          .from("SchoolRating")
-          .select("livingConvenience, costOfLiving, courseLoading")
-          .in("postId", postIds)
-          .eq("schoolId", schoolId);
+    // 計算平均評分
+    if (postBoardData && postBoardData.length > 0) {
+      const postIds = postBoardData.map((pb: any) => pb.postId);
+      const { data: ratingsData } = await supabase
+        .from("SchoolRating")
+        .select("livingConvenience, costOfLiving, courseLoading")
+        .in("postId", postIds)
+        .eq("schoolId", schoolIdNum);
 
-        if (ratingsData && ratingsData.length > 0) {
-          const total = ratingsData.length;
-          avgRatings = {
-            livingConvenience:
-              ratingsData.reduce((sum: number, r: any) => sum + (r.livingConvenience || 0), 0) / total,
-            costOfLiving:
-              ratingsData.reduce((sum: number, r: any) => sum + (r.costOfLiving || 0), 0) / total,
-            courseLoading:
-              ratingsData.reduce((sum: number, r: any) => sum + (r.courseLoading || 0), 0) / total,
-          };
-        }
+      if (ratingsData && ratingsData.length > 0) {
+        const total = ratingsData.length;
+        avgRatings = {
+          livingConvenience:
+            ratingsData.reduce((sum: number, r: any) => sum + (r.livingConvenience || 0), 0) / total,
+          costOfLiving:
+            ratingsData.reduce((sum: number, r: any) => sum + (r.costOfLiving || 0), 0) / total,
+          courseLoading:
+            ratingsData.reduce((sum: number, r: any) => sum + (r.courseLoading || 0), 0) / total,
+        };
       }
     }
 

@@ -4,6 +4,7 @@ export interface School {
   name_en: string;
   country: string;
   country_en: string;
+  country_id: string | null; // Country.id 的外键
   url: string;
   second_exchange_eligible: boolean;
   application_group: string;

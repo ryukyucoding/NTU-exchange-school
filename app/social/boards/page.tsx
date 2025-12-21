@@ -12,7 +12,7 @@ import SocialSidebar from '@/components/social/SocialSidebar';
 
 function BoardsContent() {
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
-  const [countriesByRegion, setCountriesByRegion] = useState<Record<string, string[]>>({
+  const [countriesByRegion, setCountriesByRegion] = useState<Record<string, Array<{ id: string; country_zh: string; country_en: string }>>>({
     Americas: [],
     Europe: [],
     Asia: [],
@@ -130,13 +130,12 @@ function BoardsContent() {
                         {countries.length === 0 ? (
                           <div className="text-sm text-gray-400 py-2">尚無資料</div>
                         ) : (
-                          countries.map((country, index) => {
-                            const countryISO = getCountryISO(country);
-                            const countrySlug = encodeURIComponent(country);
+                          countries.map((country) => {
+                            const countryISO = getCountryISO(country.country_zh);
                             return (
                               <Link
-                                key={`${country}-${index}`}
-                                href={`/social/boards/country/${countrySlug}`}
+                                key={country.id}
+                                href={`/social/boards/country/${country.id}`}
                               >
                                 <Button
                                   variant="ghost"
@@ -145,7 +144,7 @@ function BoardsContent() {
                                   {countryISO && (
                                     <span className={`fi fi-${countryISO} mr-2`}></span>
                                   )}
-                                  {country}
+                                  {country.country_zh}
                                 </Button>
                               </Link>
                             );

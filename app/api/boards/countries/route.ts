@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     // 從 Country 表查詢所有國家（注意：表名是大寫 C）
     const { data: countries, error } = await supabase
       .from('Country')
-      .select('country_zh, country_en, continent')
+      .select('id, country_zh, country_en, continent')
       .order('country_zh');
 
     if (error) {
@@ -73,7 +73,8 @@ export async function GET(req: NextRequest) {
     console.log(`Fetched ${countries?.length || 0} countries from country table`);
 
     // 按地區分組（使用資料庫中的 continent 欄位）
-    const countriesByRegion: Record<string, string[]> = {
+    // 返回格式：{ region: [{ id, country_zh, country_en }] }
+    const countriesByRegion: Record<string, Array<{ id: string; country_zh: string; country_en: string }>> = {
       Americas: [],
       Europe: [],
       Asia: [],
@@ -85,10 +86,14 @@ export async function GET(req: NextRequest) {
       const continent = country.continent;
       const countryName = country.country_zh || country.country_en;
       
-      if (continent && continentToRegion[continent] && countryName) {
+      if (continent && continentToRegion[continent] && countryName && country.id) {
         const region = continentToRegion[continent];
         if (countriesByRegion[region]) {
-          countriesByRegion[region].push(countryName);
+          countriesByRegion[region].push({
+            id: country.id,
+            country_zh: country.country_zh,
+            country_en: country.country_en,
+          });
         }
       }
     });

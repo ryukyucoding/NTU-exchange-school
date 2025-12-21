@@ -19,18 +19,18 @@ interface BoardInfoResponse {
   success: boolean;
   board: { id: string | null; name: string; country_id?: string | null } | null;
   stats: { followerCount: number; postCount: number };
-  country?: { country_zh: string; country_en: string; continent: string } | null;
+  country?: { id: string; country_zh: string; country_en: string; continent: string } | null;
 }
 
 function CountryBoardContent() {
   const params = useParams<{ countryId: string }>();
-  const encodedCountry = params?.countryId || '';
-  const countryName = useMemo(() => decodeURIComponent(encodedCountry), [encodedCountry]);
+  const countryId = params?.countryId || '';
 
-  const { schools } = useSchoolContext();
+  const { schools, loading: schoolsLoading } = useSchoolContext();
 
   const { data: session } = useSession();
   const [boardId, setBoardId] = useState<string | null>(null);
+  const [countryInfo, setCountryInfo] = useState<{ country_zh: string; country_en: string } | null>(null);
   const [stats, setStats] = useState<{ followerCount: number; postCount: number }>({
     followerCount: 0,
     postCount: 0,
@@ -39,16 +39,25 @@ function CountryBoardContent() {
   const [sort, setSort] = useState<SortMode>('popular');
   const [loading, setLoading] = useState(true);
 
-  const boardTitle = `${countryName}板`;
+  const boardTitle = countryInfo ? `${countryInfo.country_zh}板` : null;
+  const countryName = countryInfo?.country_zh || '';
 
   const countryISO = useMemo(() => getCountryISO(countryName), [countryName]);
 
   const boardSchools = useMemo(() => {
-    const list = (schools || []).filter(
-      (s) => s.country === countryName || s.country_en === countryName
-    );
+    if (!schools || schools.length === 0 || !countryId) {
+      return [];
+    }
+
+    // 使用 country_id 來過濾學校（支持字符串和数字比较）
+    const list = (schools || []).filter((s) => {
+      const schoolCountryId = s.country_id?.toString() || null;
+      const targetCountryId = countryId.toString();
+      return schoolCountryId === targetCountryId;
+    });
+    
     return list.slice().sort((a, b) => a.name_zh.localeCompare(b.name_zh, 'zh-Hant'));
-  }, [schools, countryName]);
+  }, [schools, countryId]);
 
   const schoolScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -84,12 +93,20 @@ function CountryBoardContent() {
     const fetchBoard = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/boards/country/${encodeURIComponent(countryName)}`);
+        const res = await fetch(`/api/boards/country/${countryId}`);
         const data: BoardInfoResponse = await res.json();
         if (!cancelled && data?.success) {
           const bid = data.board?.id || null;
           setBoardId(bid);
           setStats(data.stats || { followerCount: 0, postCount: 0 });
+          
+          // 設置國家資訊
+          if (data.country) {
+            setCountryInfo({
+              country_zh: data.country.country_zh,
+              country_en: data.country.country_en,
+            });
+          }
           
           // 檢查是否已追蹤
           if (bid && session?.user) {
@@ -106,11 +123,11 @@ function CountryBoardContent() {
         if (!cancelled) setLoading(false);
       }
     };
-    if (countryName) fetchBoard();
+    if (countryId) fetchBoard();
     return () => {
       cancelled = true;
     };
-  }, [countryName, session]);
+  }, [countryId, session]);
 
   const handleFollowToggle = async () => {
     if (!boardId || !session?.user) return;
@@ -122,6 +139,8 @@ function CountryBoardContent() {
         if (data.success) {
           setIsFollowing(false);
           setStats(prev => ({ ...prev, followerCount: Math.max(0, prev.followerCount - 1) }));
+          // 觸發側邊欄刷新
+          window.dispatchEvent(new CustomEvent('boardFollowChanged'));
         }
       } else {
         const res = await fetch(`/api/boards/${boardId}/follow`, { method: 'POST' });
@@ -129,6 +148,8 @@ function CountryBoardContent() {
         if (data.success) {
           setIsFollowing(true);
           setStats(prev => ({ ...prev, followerCount: prev.followerCount + 1 }));
+          // 觸發側邊欄刷新
+          window.dispatchEvent(new CustomEvent('boardFollowChanged'));
         }
       }
     } catch (err) {
@@ -179,6 +200,16 @@ function CountryBoardContent() {
             className="w-[800px] flex-shrink-0"
             style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}
           >
+            {loading || !countryInfo ? (
+              <Card className="border-0 shadow-none overflow-hidden mb-4">
+                <div className="bg-white p-6">
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <>
             {/* Board info */}
             <Card className="border-0 shadow-none overflow-hidden mb-4">
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
@@ -303,6 +334,8 @@ function CountryBoardContent() {
                 </div>
               </div>
             </Card>
+            </>
+            )}
           </main>
 
           {/* Right Sidebar */}

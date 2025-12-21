@@ -28,9 +28,22 @@ function SchoolBoardContent() {
   const schoolId = params?.schoolId || '';
 
   const { data: session } = useSession();
-  const { schools } = useSchoolContext();
-  const school = useMemo(() => (schools || []).find((s) => s.id === schoolId), [schools, schoolId]);
-  const boardTitle = school ? `${school.name_zh}板` : '學校板';
+  const { schools, loading: schoolsLoading } = useSchoolContext();
+  const school = useMemo(() => {
+    if (!schools || schools.length === 0 || !schoolId) {
+      return null;
+    }
+
+    // 使用字符串比较，避免类型不匹配
+    const found = (schools || []).find((s) => {
+      const schoolIdStr = s.id?.toString() || '';
+      const targetIdStr = schoolId.toString();
+      return schoolIdStr === targetIdStr;
+    });
+
+    return found;
+  }, [schools, schoolId]);
+  const boardTitle = school ? `${school.name_zh}板` : null;
 
   const [boardId, setBoardId] = useState<string | null>(null);
   const [stats, setStats] = useState<{ followerCount: number; postCount: number }>({
@@ -94,6 +107,8 @@ function SchoolBoardContent() {
         if (data.success) {
           setIsFollowing(false);
           setStats(prev => ({ ...prev, followerCount: Math.max(0, prev.followerCount - 1) }));
+          // 觸發側邊欄刷新
+          window.dispatchEvent(new CustomEvent('boardFollowChanged'));
         }
       } else {
         const res = await fetch(`/api/boards/${boardId}/follow`, { method: 'POST' });
@@ -101,6 +116,8 @@ function SchoolBoardContent() {
         if (data.success) {
           setIsFollowing(true);
           setStats(prev => ({ ...prev, followerCount: prev.followerCount + 1 }));
+          // 觸發側邊欄刷新
+          window.dispatchEvent(new CustomEvent('boardFollowChanged'));
         }
       }
     } catch (err) {
@@ -111,34 +128,36 @@ function SchoolBoardContent() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
       {/* Topic Frame */}
-      <div className="sticky top-16 z-40 py-4 border-b border-transparent">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center">
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: '180px',
-                height: '32px',
-                border: '1px solid #5A5A5A',
-                borderRadius: '24px',
-                boxSizing: 'border-box',
-              }}
-            >
-              <h1
-                className="text-sm font-semibold"
+      {boardTitle && (
+        <div className="sticky top-16 z-40 py-4 border-b border-transparent">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex justify-center">
+              <div
+                className="flex items-center justify-center"
                 style={{
-                  color: '#5A5A5A',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  fontFamily: "'Noto Sans TC', sans-serif",
+                  width: '180px',
+                  height: '32px',
+                  border: '1px solid #5A5A5A',
+                  borderRadius: '24px',
+                  boxSizing: 'border-box',
                 }}
               >
-                {boardTitle}
-              </h1>
+                <h1
+                  className="text-sm font-semibold"
+                  style={{
+                    color: '#5A5A5A',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    fontFamily: "'Noto Sans TC', sans-serif",
+                  }}
+                >
+                  {boardTitle}
+                </h1>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
         <div className="flex gap-6 items-start justify-center">
@@ -148,6 +167,16 @@ function SchoolBoardContent() {
             className="w-[800px] flex-shrink-0"
             style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}
           >
+            {schoolsLoading || !school || loading ? (
+              <Card className="border-0 shadow-none overflow-hidden mb-4">
+                <div className="bg-white p-6">
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <>
             <Card className="border-0 shadow-none overflow-hidden mb-4">
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
               <div className="bg-white p-6">
@@ -156,7 +185,7 @@ function SchoolBoardContent() {
                     <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
                     {school && (
                       <p className="text-gray-500 mt-2">
-                        {school.name_en} · {school.country}
+                        {school.name_en} {school.country}
                       </p>
                     )}
                   </div>
@@ -277,6 +306,8 @@ function SchoolBoardContent() {
                 </div>
               </div>
             </Card>
+            </>
+            )}
           </main>
 
           <aside className="hidden lg:block w-64 flex-shrink-0">

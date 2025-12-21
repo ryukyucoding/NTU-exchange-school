@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "import-data": "tsx scripts/import-to-supabase.ts",
-    "test-db": "tsx scripts/test-supabase-connection.ts"
+    "test-db": "tsx scripts/test-supabase-connection.ts",
+    "create-boards": "tsx scripts/create-boards.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -5,7 +5,7 @@ import { getSupabaseServer } from "@/lib/db";
  * GET /api/boards/country/[countryId]
  * 回傳國家看板資訊 + 追蹤數/貼文數
  *
- * countryId 目前在前端是用 encodeURIComponent(countryName) 直接當 path param
+ * countryId 是 Country.id (number，從 URL 參數轉換)
  */
 export async function GET(
   _req: NextRequest,
@@ -13,7 +13,15 @@ export async function GET(
 ) {
   try {
     const { countryId } = await params;
-    const decodedCountry = decodeURIComponent(countryId);
+    
+    // 將 countryId 轉換為數字（因為 Country.id 和 Board.country_id 都是 number 類型）
+    const countryIdNum = parseInt(countryId, 10);
+    if (isNaN(countryIdNum)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid country ID" },
+        { status: 400 }
+      );
+    }
 
     let supabase;
     try {
@@ -29,8 +37,8 @@ export async function GET(
         board: {
           id: null,
           type: "country",
-          name: decodedCountry,
-          country_id: decodedCountry,
+          name: null,
+          country_id: countryIdNum,
         },
         stats: {
           followerCount: 0,
@@ -40,104 +48,52 @@ export async function GET(
       });
     }
 
-    // 找或建立 Board
-    const { data: existingBoard, error: boardFetchError } = await supabase
-      .from("Board")
-      .select("id,name,slug,type,country_id,schoolId,description")
+    // 直接查詢 Board 表（所有國家板都已存在）
+    const boardQuery = (supabase
+      .from("Board") as any)
+      .select("id, name, slug, type, country_id, schoolId, description")
       .eq("type", "country")
-      .eq("country_id", decodedCountry)
-      .limit(1)
+      .eq("country_id", countryIdNum)
       .maybeSingle();
+    const { data: board, error: boardError } = await boardQuery;
 
-    if (boardFetchError) {
-      console.error("Error fetching country board:", boardFetchError);
+    if (boardError) {
+      console.error("Error fetching country board:", boardError);
+      return NextResponse.json(
+        { success: false, error: "Failed to fetch board" },
+        { status: 500 }
+      );
     }
 
-    let board = existingBoard as any;
-
-    if (!board) {
-      const newId = crypto.randomUUID();
-      const slug = `country-${encodeURIComponent(decodedCountry)}`;
-      const { data: created, error: createError } = await supabase
-        .from("Board")
-        .insert({
-          id: newId,
-          type: "country",
-          name: decodedCountry,
-          slug,
-          country_id: decodedCountry,
-          schoolId: null,
-          description: null,
-        } as any)
-        .select("id,name,slug,type,country_id,schoolId,description")
-        .single();
-
-      if (createError) {
-        console.error("Error creating country board:", createError);
-        board = {
-          id: null,
-          type: "country",
-          name: decodedCountry,
-          country_id: decodedCountry,
-        };
-      } else {
-        board = created;
-      }
+    if (!board || !(board as any).id) {
+      return NextResponse.json(
+        { success: false, error: "Board not found" },
+        { status: 404 }
+      );
     }
 
-    const boardId = board?.id;
+    const boardId = (board as any).id;
 
-    // 統計：追蹤數、貼文數
-    let followerCount = 0;
-    let postCount = 0;
-
-    if (boardId) {
-      const [{ count: followerExact }, { count: postExact }] = await Promise.all([
-        supabase
-          .from("BoardFollow")
-          .select("*", { count: "exact", head: true })
-          .eq("boardId", boardId),
-        supabase
-          .from("PostBoard")
-          .select("*", { count: "exact", head: true })
-          .eq("boardId", boardId),
-      ]);
-
-      followerCount = followerExact || 0;
-      postCount = postExact || 0;
-    }
-
-    // Country 資訊（若有）
-    let countryInfo: any = null;
-    try {
-      const { data: byZh } = await supabase
-        .from("Country")
-        .select("country_zh,country_en,continent")
-        .eq("country_zh", decodedCountry)
-        .limit(1)
-        .maybeSingle();
-      countryInfo = byZh;
-
-      if (!countryInfo) {
-        const { data: byEn } = await supabase
-          .from("Country")
-          .select("country_zh,country_en,continent")
-          .eq("country_en", decodedCountry)
-          .limit(1)
-          .maybeSingle();
-        countryInfo = byEn;
-      }
-    } catch (err) {
-      console.warn("Error fetching country info:", err);
-      countryInfo = null;
-    }
+    // 並行查詢國家資訊和統計數據
+    const [{ data: countryInfo }, { count: followerCount }, { count: postCount }] = await Promise.all([
+      ((supabase.from("Country") as any)
+        .select("id, country_zh, country_en, continent")
+        .eq("id", countryIdNum)
+        .maybeSingle()),
+      ((supabase.from("BoardFollow") as any)
+        .select("*", { count: "exact", head: true })
+        .eq("boardId", boardId)),
+      ((supabase.from("PostBoard") as any)
+        .select("*", { count: "exact", head: true })
+        .eq("boardId", boardId)),
+    ]);
 
     return NextResponse.json({
       success: true,
       board,
       stats: {
-        followerCount,
-        postCount,
+        followerCount: followerCount || 0,
+        postCount: postCount || 0,
       },
       country: countryInfo,
     });
