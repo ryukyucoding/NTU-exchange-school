@@ -52,6 +52,14 @@ function GeneralPostContent() {
   const handleSaveDraft = async () => {
     setIsSavingDraft(true);
     try {
+      // 根據選中的國家名稱，從 schools 中找到對應的 country_id
+      const countryIds = selectedCountries
+        .map(countryName => {
+          const school = schools.find(s => s.country === countryName);
+          return school?.country_id;
+        })
+        .filter((id): id is string => id !== null && id !== undefined);
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -62,9 +70,11 @@ function GeneralPostContent() {
           title: title.trim() || '未命名草稿',
           content: content.trim() || '',
           status: 'draft',
+          type: 'general',
           hashtags,
           schoolIds: selectedSchoolIds,
-          countryNames: selectedCountries,
+          countryIds: countryIds.length > 0 ? countryIds : undefined,
+          countryNames: countryIds.length === 0 ? selectedCountries : undefined, // 向後兼容
         }),
       });
 
@@ -96,6 +106,14 @@ function GeneralPostContent() {
 
     setIsSubmitting(true);
     try {
+      // 根據選中的國家名稱，從 schools 中找到對應的 country_id
+      const countryIds = selectedCountries
+        .map(countryName => {
+          const school = schools.find(s => s.country === countryName);
+          return school?.country_id;
+        })
+        .filter((id): id is string => id !== null && id !== undefined);
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -106,9 +124,11 @@ function GeneralPostContent() {
           title: title.trim(),
           content: content.trim(),
           status: 'published',
+          type: 'general',
           hashtags,
           schoolIds: selectedSchoolIds,
-          countryNames: selectedCountries,
+          countryIds: countryIds.length > 0 ? countryIds : undefined,
+          countryNames: countryIds.length === 0 ? selectedCountries : undefined, // 向後兼容
         }),
       });
 

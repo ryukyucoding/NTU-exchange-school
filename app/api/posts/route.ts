@@ -91,10 +91,12 @@ export async function POST(req: NextRequest) {
       title,
       content,
       status = 'published',
+      type, // 'general' 或 'review'，決定貼文類型
       hashtags = [],
       photos = [],
       schoolIds = [],
-      countryNames = [], // 新的多國家支持
+      countryIds = [], // 國家 ID 陣列（優先使用）
+      countryNames = [], // 國家名稱陣列（向後兼容，會轉換為 countryIds）
       ratings
     } = await req.json();
 
@@ -182,6 +184,18 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // 決定貼文類型：根據 type 參數（'general' -> 'normal', 'review' -> 'rating'）
+    // 如果沒有提供 type，則根據是否有 ratings 來判斷（向後兼容）
+    let postType: 'normal' | 'rating';
+    if (type === 'review') {
+      postType = 'rating';
+    } else if (type === 'general') {
+      postType = 'normal';
+    } else {
+      // 向後兼容：根據是否有 ratings 來決定
+      postType = (ratings && typeof ratings === 'object' && ratings.schoolId) ? 'rating' : 'normal';
+    }
+
     // 建立或更新貼文
     if (isUpdate) {
       // 更新現有 post
@@ -192,6 +206,7 @@ export async function POST(req: NextRequest) {
           title: trimmedTitle,
           content: trimmedContent,
           status: status,
+          type: postType,
           updatedAt: new Date().toISOString(),
         })
         .eq('id', postId)
@@ -223,6 +238,7 @@ export async function POST(req: NextRequest) {
           title: trimmedTitle,
           content: trimmedContent,
           status: status,
+          type: postType,
           authorId: userId,
         })
         .select()
@@ -307,60 +323,61 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 處理看板：根據 countryNames 和 schoolIds 建立 PostBoard 關聯
+    // 處理看板：根據 countryIds 和 schoolIds 建立 PostBoard 關聯
     const boardIds: string[] = [];
     
-    // 1. 處理國家看板（根據 countryNames 查找國家版，schoolId 為 null）
-    if (countryNames && Array.isArray(countryNames) && countryNames.length > 0) {
+    // 1. 處理國家看板（根據 countryIds 查找國家版，schoolId 為 null）
+    // 如果提供了 countryIds，直接使用；否則嘗試從 countryNames 轉換
+    let finalCountryIds: (string | number)[] = [];
+    
+    if (countryIds && Array.isArray(countryIds) && countryIds.length > 0) {
+      // 優先使用 countryIds
+      finalCountryIds = countryIds.filter(id => id !== null && id !== undefined);
+    } else if (countryNames && Array.isArray(countryNames) && countryNames.length > 0) {
+      // 向後兼容：從 countryNames 轉換為 countryIds
+      console.log(`[POST /api/posts] 使用 countryNames 轉換為 countryIds: ${countryNames.join(', ')}`);
       for (const countryName of countryNames) {
         if (!countryName || typeof countryName !== 'string') continue;
         
-        // 查找國家版 Board（schoolId 為 null，type 為 'country'）
-        // 通過 Board 的 name 或 slug 匹配國家名稱
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: countryBoards } = await (supabase as any)
-          .from('Board')
-          .select('id')
-          .is('schoolId', null)
-          .or(`name.ilike.%${countryName}%,slug.ilike.%${countryName}%,name.eq.${countryName}`)
-          .limit(10); // 限制結果數量
-        
-        if (countryBoards && countryBoards.length > 0) {
-          // 如果找到多個，選擇第一個（或可以選擇最匹配的）
-          boardIds.push(countryBoards[0].id);
-        } else {
-          // 如果沒找到，嘗試通過 Country 表查找（如果存在）
-          try {
+        try {
+          // 通過 Country 表查找 country_id
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { data: countryData } = await (supabase as any)
               .from('Country')
               .select('id')
-              .or(`name.eq.${countryName},name_zh.eq.${countryName},name_en.eq.${countryName}`)
+            .or(`country_zh.eq.${countryName},country_en.eq.${countryName}`)
               .maybeSingle();
             
-            if (countryData) {
-              // 通過 country_id 查找 Board
+          if (countryData && countryData.id) {
+            finalCountryIds.push(countryData.id);
+          } else {
+            console.log(`[POST /api/posts] 未找到國家 ID (通過 countryName): ${countryName}`);
+          }
+        } catch (_e) {
+          console.log(`[POST /api/posts] 查詢 Country 表失敗: ${countryName}`);
+        }
+      }
+    }
+    
+    // 使用 countryIds 查找國家看板
+    if (finalCountryIds.length > 0) {
+      for (const countryId of finalCountryIds) {
+        if (!countryId) continue;
+        
+        // 通過 country_id 查找 Board（schoolId 為 null）
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const { data: countryBoard } = await (supabase as any)
                 .from('Board')
                 .select('id')
                 .is('schoolId', null)
-                .eq('country_id', countryData.id)
+          .eq('country_id', countryId)
                 .limit(1)
                 .maybeSingle();
               
               if (countryBoard) {
                 boardIds.push(countryBoard.id);
               } else {
-                console.log(`[POST /api/posts] 未找到國家版 (通過 country_id): ${countryName}`);
-              }
-            } else {
-              console.log(`[POST /api/posts] 未找到國家版: ${countryName}`);
-            }
-          } catch (_e) {
-            // Country 表可能不存在，只記錄日誌
-            console.log(`[POST /api/posts] 未找到國家版，Country 表查詢失敗: ${countryName}`);
-          }
+          console.log(`[POST /api/posts] 未找到國家版 (country_id=${countryId})`);
         }
       }
     }
@@ -506,6 +523,19 @@ export async function GET(req: NextRequest) {
     const filterType = searchParams.get("filterType"); // "rating" for rating posts only
     const type = searchParams.get("type"); // 'general' or 'review'
 
+    console.log('[GET /api/posts] 請求參數:', {
+      filter,
+      limit,
+      cursor,
+      boardId,
+      hashtag,
+      schoolId,
+      sort,
+      filterType,
+      type,
+      userId: userId ? '有' : '無',
+    });
+
     const supabase = getSupabaseServer();
     
     // 如果 Supabase 未配置，返回空列表
@@ -515,6 +545,113 @@ export async function GET(req: NextRequest) {
         posts: [],
         nextCursor: null,
       });
+    }
+
+    // 收集所有過濾條件下的 postIds，然後取交集
+    let filterPostIds: string[] | null = null;
+
+    // 如果指定了 boardId，先驗證 board 是否存在，然後通過 PostBoard 表查詢
+    if (boardId) {
+      console.log('[GET /api/posts] 查詢 boardId:', boardId);
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: boardData, error: boardError } = await (supabase as any)
+        .from('Board')
+        .select('id')
+        .eq('id', boardId)
+        .maybeSingle();
+
+      console.log('[GET /api/posts] Board 查詢結果:', {
+        boardData,
+        boardError: boardError ? { message: boardError.message, code: boardError.code } : null,
+      });
+
+      if (boardError || !boardData) {
+        console.log('[GET /api/posts] Board 不存在或查詢失敗，返回空列表');
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      // 通過 PostBoard 表查詢該看板的貼文
+      console.log('[GET /api/posts] 🔍 開始查詢 PostBoard，boardId:', boardId, '類型:', typeof boardId);
+      
+      // 先查詢所有PostBoard數據看看有什麼
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: allPostBoardData, error: allPostBoardError } = await (supabase as any)
+        .from('PostBoard')
+        .select('*')
+        .limit(10);
+      
+      console.log('[GET /api/posts] 📋 PostBoard 表所有數據（前10筆）:', {
+        count: allPostBoardData?.length || 0,
+        error: allPostBoardError ? { message: allPostBoardError.message, code: allPostBoardError.code } : null,
+        sampleData: allPostBoardData?.slice(0, 5).map((p: { id: string; postId: string; boardId: string }) => ({
+          id: p.id,
+          postId: p.postId,
+          boardId: p.boardId,
+          boardIdType: typeof p.boardId,
+        })) || [],
+      });
+      
+      // 查詢特定boardId的PostBoard
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: postBoardData, error: postBoardError } = await (supabase as any)
+        .from('PostBoard')
+        .select('*')
+        .eq('boardId', boardId);
+
+      console.log('[GET /api/posts] 🔍 PostBoard 查詢結果（boardId=' + boardId + '）:', {
+        postBoardDataCount: postBoardData?.length || 0,
+        postBoardError: postBoardError ? { 
+          message: postBoardError.message, 
+          code: postBoardError.code,
+          details: postBoardError.details,
+          hint: postBoardError.hint,
+        } : null,
+        postBoardData: postBoardData || [],
+        samplePostIds: postBoardData?.slice(0, 5).map((p: { postId: string }) => p.postId) || [],
+      });
+
+      if (postBoardError) {
+        console.error('[GET /api/posts] ❌ PostBoard 查詢錯誤:', {
+          error: postBoardError,
+          message: postBoardError.message,
+          code: postBoardError.code,
+          details: postBoardError.details,
+          hint: postBoardError.hint,
+        });
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      if (!postBoardData || postBoardData.length === 0) {
+        console.log('[GET /api/posts] ⚠️ PostBoard 沒有數據（查詢成功但結果為空）', {
+          boardId,
+          boardIdType: typeof boardId,
+          queryResult: postBoardData,
+        });
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+
+      const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
+      filterPostIds = postIds;
+      console.log('[GET /api/posts] ✅ 成功從 PostBoard 獲取 postIds:', {
+        count: postIds.length,
+        sampleIds: postIds.slice(0, 5),
+        allPostIds: postIds,
+      });
+    } else {
+      console.log('[GET /api/posts] 沒有 boardId，將查詢所有 Posts');
     }
 
     // 如果是草稿查詢，只返回當前用戶的草稿
@@ -593,6 +730,31 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // 如果沒有 boardId，查詢所有 Posts（社群主頁）
+    console.log('[GET /api/posts] 開始構建查詢，沒有 boardId，查詢所有 Posts');
+    
+    // 🔍 先檢查 Post 表中的所有數據（用於調試）
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: allPostsDebug, error: allPostsDebugError } = await (supabase as any)
+      .from('Post')
+      .select('id, title, status, deletedAt, createdAt, authorId')
+      .limit(20);
+    
+    console.log('[GET /api/posts] 🔍 Post 表所有數據（前20筆，用於調試）:', {
+      count: allPostsDebug?.length || 0,
+      error: allPostsDebugError ? { message: allPostsDebugError.message, code: allPostsDebugError.code } : null,
+      posts: allPostsDebug?.map((p: { id: string; title: string; status: string; deletedAt: string | null; createdAt: string }) => ({
+        id: p.id,
+        title: p.title?.substring(0, 30) || '(無標題)',
+        status: p.status,
+        deletedAt: p.deletedAt,
+        createdAt: p.createdAt,
+      })) || [],
+      publishedCount: allPostsDebug?.filter((p: { status: string; deletedAt: string | null }) => 
+        p.status === 'published' && !p.deletedAt
+      ).length || 0,
+    });
+    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase as any)
       .from('Post')
@@ -604,25 +766,22 @@ export async function GET(req: NextRequest) {
           userID,
           image,
           email
-        ),
-        repostedPost:Post!Post_repostedPostId_fkey (
-          id,
-          title,
-          content,
-          createdAt,
-          author:User!Post_authorId_fkey (
-            id,
-            name,
-            userID,
-            image,
-            email
-          )
         )
       `)
       .is('deletedAt', null)
       .eq('status', 'published')
       .order('createdAt', { ascending: false })
       .limit(limit);
+    
+    console.log('[GET /api/posts] 基礎查詢已構建:', {
+      table: 'Post',
+      filters: {
+        deletedAt: 'is null',
+        status: 'published',
+      },
+      orderBy: 'createdAt DESC',
+      limit,
+    });
 
     // 如果是 "following"，只顯示追蹤看板中的貼文
     if (filter === "following") {
@@ -673,31 +832,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 收集所有過濾條件下的 postIds，然後取交集
-    let filterPostIds: string[] | null = null;
-
-    // 如果指定了 boardId，只顯示該看板的貼文
-    if (boardId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postBoardData } = await (supabase as any)
-        .from('PostBoard')
-        .select('postId')
-        .eq('boardId', boardId);
-
-      if (postBoardData && postBoardData.length > 0) {
-        const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
-        if (filterPostIds === null) {
-          filterPostIds = postIds;
-        } else {
-          filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
-        }
-      } else {
-        return NextResponse.json({
-          success: true,
-          posts: [],
-          nextCursor: null,
-        });
-      }
-    }
+    // 注意：如果已經有 boardId 過濾，filterPostIds 已經在上面設置了
 
     // 如果指定了 hashtag，只顯示包含該 hashtag 的貼文
     if (hashtag) {
@@ -771,14 +906,44 @@ export async function GET(req: NextRequest) {
     }
 
     // 如果有過濾條件，應用過濾
+    console.log('[GET /api/posts] 應用過濾條件:', {
+      filterPostIds: filterPostIds ? { count: filterPostIds.length, sampleIds: filterPostIds.slice(0, 5) } : null,
+      filterPostIdsIsNull: filterPostIds === null,
+    });
+
     if (filterPostIds !== null && filterPostIds.length > 0) {
+      // 先檢查這些postId是否真的存在於Post表中，以及它們的狀態
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: postCheckData, error: postCheckError } = await (supabase as any)
+        .from('Post')
+        .select('id, status, deletedAt')
+        .in('id', filterPostIds);
+      
+      console.log('[GET /api/posts] 🔍 檢查 filterPostIds 對應的 Post 記錄:', {
+        requestedPostIds: filterPostIds,
+        foundPosts: postCheckData?.length || 0,
+        foundPostIds: postCheckData?.map((p: { id: string; status: string; deletedAt: string | null }) => ({
+          id: p.id,
+          status: p.status,
+          deletedAt: p.deletedAt,
+        })) || [],
+        publishedPosts: postCheckData?.filter((p: { status: string; deletedAt: string | null }) => 
+          p.status === 'published' && !p.deletedAt
+        ).length || 0,
+        error: postCheckError ? { message: postCheckError.message, code: postCheckError.code } : null,
+      });
+      
       query = query.in('id', filterPostIds);
+      console.log('[GET /api/posts] ✅ 已應用 filterPostIds 過濾，將查詢', filterPostIds.length, '個貼文');
     } else if (filterPostIds !== null && filterPostIds.length === 0) {
+      console.log('[GET /api/posts] ⚠️ filterPostIds 為空數組，返回空列表');
       return NextResponse.json({
         success: true,
         posts: [],
         nextCursor: null,
       });
+    } else {
+      console.log('[GET /api/posts] ✅ 沒有過濾條件，將查詢所有已發布的 Posts');
     }
 
     // 如果有 cursor，從該位置開始
@@ -797,9 +962,32 @@ export async function GET(req: NextRequest) {
 
     let posts, error;
     try {
+      console.log('[GET /api/posts] 🔍 執行查詢...');
+      console.log('[GET /api/posts] 查詢對象類型:', typeof query);
       const result = await query;
       posts = result.data;
       error = result.error;
+      
+      console.log('[GET /api/posts] 📊 查詢結果:', {
+        postsCount: posts?.length || 0,
+        postsIsArray: Array.isArray(posts),
+        postsIsNull: posts === null,
+        postsIsUndefined: posts === undefined,
+        error: error ? { 
+          message: error.message, 
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        } : null,
+        samplePostIds: posts?.slice(0, 3).map((p: { id: string }) => p.id) || [],
+        samplePost: posts?.[0] ? {
+          id: posts[0].id,
+          title: posts[0].title,
+          status: posts[0].status,
+          type: posts[0].type,
+          hasAuthor: !!posts[0].author,
+        } : null,
+      });
     } catch (queryError: unknown) {
       console.error("Query error:", queryError);
       // 如果是表不存在的错误，返回空列表
@@ -847,6 +1035,21 @@ export async function GET(req: NextRequest) {
     }
 
     if (!posts || posts.length === 0) {
+      console.log('[GET /api/posts] ⚠️ 查詢結果為空，返回空列表', {
+        posts: posts,
+        postsLength: posts?.length || 0,
+        postsIsNull: posts === null,
+        postsIsUndefined: posts === undefined,
+        queryApplied: {
+          hasFilterPostIds: filterPostIds !== null,
+          filterPostIdsCount: filterPostIds?.length || 0,
+          hasBoardId: !!boardId,
+          hasHashtag: !!hashtag,
+          hasSchoolId: !!schoolId,
+          filterType,
+          filter,
+        },
+      });
       return NextResponse.json({
         success: true,
         posts: [],
@@ -854,15 +1057,24 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    console.log('[GET /api/posts] 查詢到貼文:', {
+      count: posts.length,
+      samplePosts: posts.slice(0, 3).map((p: { id: string; title: string; type?: string }) => ({
+        id: p.id,
+        title: p.title,
+        type: p.type,
+      })),
+    });
+
     // 批量獲取互動數據和相關數據
     const postIds = (posts as { id: string }[]).map((p) => p.id);
     
     // 獲取按讚數、轉發數、留言數、hashtags、photos、schools、ratings（使用 try-catch 避免錯誤）
     let likesData = { data: [] };
-    let repostsData = { data: [] };
+    let repostsData = { data: [] }; // 現在是 Post 記錄，其中 repostId 指向原始貼文
     let commentsData = { data: [] };
     let userLikes = { data: [] };
-    let userReposts = { data: [] };
+    let userReposts = { data: [] }; // 用戶轉發的 Post 記錄
     let hashtagsData = { data: [] };
     let photosData = { data: [] };
     let schoolsData = { data: [] };
@@ -870,31 +1082,79 @@ export async function GET(req: NextRequest) {
 
     if (supabase && postIds.length > 0) {
       try {
-        [
-          likesData, 
-          repostsData, 
-          commentsData, 
-          userLikes, 
-          userReposts,
-          hashtagsData,
-          photosData,
-          schoolsData,
-          ratingsData
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        ] = await Promise.all([
-          (supabase as any).from('Like').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('Repost').select('postId').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('Comment').select('postId').in('postId', postIds).is('deletedAt', null).catch(() => ({ data: [] })),
-          (userId) ? (supabase as any).from('Like').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-          (userId) ? (supabase as any).from('Repost').select('postId').eq('userId', userId).in('postId', postIds).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-          (supabase as any).from('Hashtag').select('postId, content').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('PostPhoto').select('*').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').in('postId', postIds).catch(() => ({ data: [] })),
-          (supabase as any).from('SchoolRating').select('*').in('postId', postIds).catch(() => ({ data: [] })),
+        console.log('[GET /api/posts] 🔍 開始批量查詢相關數據，postIds:', postIds);
+        
+        // 使用 Promise.allSettled 來處理錯誤，避免一個失敗影響其他查詢
+        const results = await Promise.allSettled([
+          (supabase as any).from('Like').select('postId').in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] Like 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          (supabase as any).from('Post').select('repostId').in('repostId', postIds).eq('status', 'published').not('repostId', 'is', null).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] Repost 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          (supabase as any).from('Comment').select('postId').in('postId', postIds).is('deletedAt', null).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] Comment 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          (userId) ? (supabase as any).from('Like').select('postId').eq('userId', userId).in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] UserLike 查詢失敗:', e);
+            return { data: [], error: e };
+          }) : Promise.resolve({ data: [] }),
+          (userId) ? (supabase as any).from('Post').select('repostId').eq('authorId', userId).in('repostId', postIds).eq('status', 'published').not('repostId', 'is', null).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] UserRepost 查詢失敗:', e);
+            return { data: [], error: e };
+          }) : Promise.resolve({ data: [] }),
+          (supabase as any).from('Hashtag').select('postId, content').in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] Hashtag 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          (supabase as any).from('PostPhoto').select('*').in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] PostPhoto 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          // 從 PostBoard -> Board 獲取版名（name）和類型（type）
+          // 統一邏輯：通過 PostBoard 找到該貼文對應的所有版，然後根據 Board 的 type 和 name 來顯示標籤
+          (supabase as any).from('PostBoard').select('postId, board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)').in('postId', postIds).then((r: any) => {
+            console.log('[GET /api/posts] 📋 PostBoard 查詢結果:', {
+              count: r.data?.length || 0,
+              error: r.error,
+              sampleData: r.data?.slice(0, 3) || [],
+            });
+            return r;
+          }).catch((e: any) => {
+            console.error('[GET /api/posts] ❌ PostBoard 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
+          (supabase as any).from('SchoolRating').select('*').in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] SchoolRating 查詢失敗:', e);
+            return { data: [], error: e };
+          }),
         ]);
-        /* eslint-enable @typescript-eslint/no-explicit-any */
+
+        // 提取結果
+        likesData = results[0].status === 'fulfilled' ? results[0].value : { data: [] };
+        repostsData = results[1].status === 'fulfilled' ? results[1].value : { data: [] };
+        commentsData = results[2].status === 'fulfilled' ? results[2].value : { data: [] };
+        userLikes = results[3].status === 'fulfilled' ? results[3].value : { data: [] };
+        userReposts = results[4].status === 'fulfilled' ? results[4].value : { data: [] };
+        hashtagsData = results[5].status === 'fulfilled' ? results[5].value : { data: [] };
+        photosData = results[6].status === 'fulfilled' ? results[6].value : { data: [] };
+        schoolsData = results[7].status === 'fulfilled' ? results[7].value : { data: [] };
+        ratingsData = results[8].status === 'fulfilled' ? results[8].value : { data: [] };
+
+        console.log('[GET /api/posts] ✅ 批量查詢完成:', {
+          likesCount: likesData.data?.length || 0,
+          repostsCount: repostsData.data?.length || 0,
+          commentsCount: commentsData.data?.length || 0,
+          hashtagsCount: hashtagsData.data?.length || 0,
+          photosCount: photosData.data?.length || 0,
+          postBoardsCount: schoolsData.data?.length || 0,
+          ratingsCount: ratingsData.data?.length || 0,
+        });
       } catch (err) {
-        console.warn("Error fetching related data:", err);
+        console.error('[GET /api/posts] ❌ 批量查詢發生錯誤:', err);
         // 繼續執行，使用空數據
       }
     }
@@ -904,14 +1164,17 @@ export async function GET(req: NextRequest) {
     const repostCounts = new Map<string, number>();
     const commentCounts = new Map<string, number>();
     const userLikedPostIds = new Set(((userLikes.data || []) as { postId: string }[]).map((l) => l.postId));
-    const userRepostedPostIds = new Set(((userReposts.data || []) as { postId: string }[]).map((r) => r.postId));
+    const userRepostedPostIds = new Set(((userReposts.data || []) as { repostId: string }[]).map((r) => r.repostId));
 
     (((likesData.data || []) as { postId: string }[])).forEach((like) => {
       likeCounts.set(like.postId, (likeCounts.get(like.postId) || 0) + 1);
     });
 
-    (((repostsData.data || []) as { postId: string }[])).forEach((repost) => {
-      repostCounts.set(repost.postId, (repostCounts.get(repost.postId) || 0) + 1);
+    // 計算轉發數：統計 repostId 指向每個貼文的 Post 記錄數量
+    (((repostsData.data || []) as { repostId: string }[])).forEach((repost) => {
+      if (repost.repostId) {
+        repostCounts.set(repost.repostId, (repostCounts.get(repost.repostId) || 0) + 1);
+      }
     });
 
     (((commentsData.data || []) as { postId: string }[])).forEach((comment) => {
@@ -922,6 +1185,7 @@ export async function GET(req: NextRequest) {
     const hashtagsByPostId = new Map<string, string[]>();
     const photosByPostId = new Map<string, { postId: string; url: string; order: number }[]>();
     const schoolsByPostId = new Map<string, { id: string; name_zh: string; name_en: string; country: string }[]>();
+    const countriesByPostId = new Map<string, string[]>(); // 國家列表
     const ratingsByPostId = new Map<string, { postId: string; livingConvenience: number; costOfLiving: number; courseLoading: number }>();
 
     (hashtagsData.data || []).forEach((h: { postId: string; content: string }) => {
@@ -938,13 +1202,166 @@ export async function GET(req: NextRequest) {
       photosByPostId.get(photo.postId)!.push(photo);
     });
 
-    (schoolsData.data || []).forEach((ps: { postId: string; school: { id: string; name_zh: string; name_en: string; country: string } | null }) => {
-      if (!schoolsByPostId.has(ps.postId)) {
-        schoolsByPostId.set(ps.postId, []);
+    // 統一邏輯：從 PostBoard -> Board 獲取版名（name）
+    // 根據 Board 的 type 來判斷是國家版還是學校版
+    // type='country' -> 國家標籤，type='school' -> 學校標籤
+    console.log('[GET /api/posts] 📋 開始處理 PostBoard 數據:', {
+      schoolsDataCount: schoolsData.data?.length || 0,
+      schoolsDataError: (schoolsData as any).error,
+      sampleData: schoolsData.data?.slice(0, 3) || [],
+    });
+
+    // 收集所有需要查詢的 schoolId
+    const schoolIdsToFetch = new Set<string | number>();
+    const boardDataByPostId = new Map<string, Array<{
+      boardId: string;
+      boardName: string;
+      boardType: 'country' | 'school' | null;
+      schoolId: string | number | null;
+      country_id: number | null;
+    }>>();
+
+    (schoolsData.data || []).forEach((pb: { 
+      postId: string; 
+      board: { 
+        id: string;
+        name: string;
+        type: 'country' | 'school' | null;
+        schoolId: string | number | null; 
+        country_id: number | null;
+      } | null 
+    }) => {
+      console.log('[GET /api/posts] 🔍 處理 PostBoard 記錄:', {
+        postId: pb.postId,
+        board: pb.board ? {
+          id: pb.board.id,
+          name: pb.board.name,
+          type: pb.board.type,
+          schoolId: pb.board.schoolId,
+          country_id: pb.board.country_id,
+        } : null,
+      });
+
+      if (pb.board && pb.board.name) {
+        if (!boardDataByPostId.has(pb.postId)) {
+          boardDataByPostId.set(pb.postId, []);
+        }
+        boardDataByPostId.get(pb.postId)!.push({
+          boardId: pb.board.id,
+          boardName: pb.board.name,
+          boardType: pb.board.type,
+          schoolId: pb.board.schoolId,
+          country_id: pb.board.country_id,
+        });
+
+        // 收集需要查詢的 schoolId
+        if (pb.board.schoolId) {
+          schoolIdsToFetch.add(pb.board.schoolId);
+        }
       }
-      if (ps.school) {
-        schoolsByPostId.get(ps.postId)!.push(ps.school);
+    });
+
+    console.log('[GET /api/posts] 📊 處理後的 boardDataByPostId:', {
+      postIds: Array.from(boardDataByPostId.keys()),
+      boardDataCount: Array.from(boardDataByPostId.values()).reduce((sum, arr) => sum + arr.length, 0),
+      schoolIdsToFetch: Array.from(schoolIdsToFetch),
+    });
+
+    // 批量查詢學校完整信息
+    const schoolsInfoMap = new Map<string | number, { id: string; name_zh: string; name_en: string; country: string }>();
+    if (schoolIdsToFetch.size > 0) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: schoolsInfo } = await (supabase as any)
+          .from('schools')
+          .select('id, name_zh, name_en, country')
+          .in('id', Array.from(schoolIdsToFetch));
+        
+        if (schoolsInfo) {
+          schoolsInfo.forEach((school: { id: string | number; name_zh: string; name_en: string; country: string }) => {
+            schoolsInfoMap.set(school.id, {
+              id: String(school.id),
+              name_zh: school.name_zh,
+              name_en: school.name_en,
+              country: school.country,
+            });
+          });
+        }
+      } catch (err) {
+        console.warn("Error fetching schools info:", err);
       }
+    }
+
+    // 處理每個貼文的版信息
+    console.log('[GET /api/posts] 🔄 開始處理每個貼文的版信息...');
+    boardDataByPostId.forEach((boards, postId) => {
+      console.log(`[GET /api/posts] 📝 處理貼文 ${postId}，有 ${boards.length} 個版`);
+      boards.forEach((boardData, index) => {
+        console.log(`[GET /api/posts]   - 版 ${index + 1}:`, {
+          boardId: boardData.boardId,
+          boardName: boardData.boardName,
+          boardType: boardData.boardType,
+          schoolId: boardData.schoolId,
+          country_id: boardData.country_id,
+        });
+
+        // 學校版：type='school' 或 schoolId 不為 null
+        if (boardData.boardType === 'school' || boardData.schoolId) {
+          if (!schoolsByPostId.has(postId)) {
+            schoolsByPostId.set(postId, []);
+          }
+          
+          const existingSchools = schoolsByPostId.get(postId)!;
+          const schoolIdStr = boardData.schoolId ? String(boardData.schoolId) : null;
+          
+          // 檢查是否已存在
+          const existingSchool = existingSchools.find(s => schoolIdStr && s.id === schoolIdStr);
+          if (!existingSchool) {
+            // 如果有學校完整信息，使用它；否則使用 Board.name
+            if (boardData.schoolId && schoolsInfoMap.has(boardData.schoolId)) {
+              const schoolInfo = schoolsInfoMap.get(boardData.schoolId)!;
+              console.log(`[GET /api/posts]     ✅ 添加學校（完整信息）:`, schoolInfo);
+              existingSchools.push(schoolInfo);
+            } else {
+              // 使用 Board.name 作為學校名稱
+              const schoolInfo = {
+                id: schoolIdStr || boardData.boardId,
+                name_zh: boardData.boardName,
+                name_en: boardData.boardName,
+                country: '',
+              };
+              console.log(`[GET /api/posts]     ✅ 添加學校（使用 Board.name）:`, schoolInfo);
+              existingSchools.push(schoolInfo);
+            }
+          } else {
+            console.log(`[GET /api/posts]     ⏭️  學校已存在，跳過`);
+          }
+        }
+        
+        // 國家版：type='country' 或 (country_id 不為 null 且 schoolId 為 null)
+        if (boardData.boardType === 'country' || (boardData.country_id && !boardData.schoolId)) {
+          if (!countriesByPostId.has(postId)) {
+            countriesByPostId.set(postId, []);
+          }
+          // 使用 Board.name 作為國家名稱
+          const countryList = countriesByPostId.get(postId)!;
+          if (!countryList.includes(boardData.boardName)) {
+            console.log(`[GET /api/posts]     ✅ 添加國家: ${boardData.boardName}`);
+            countryList.push(boardData.boardName);
+          } else {
+            console.log(`[GET /api/posts]     ⏭️  國家已存在，跳過`);
+          }
+        }
+      });
+    });
+
+    console.log('[GET /api/posts] 📊 處理完成後的統計:', {
+      schoolsByPostId: Object.fromEntries(
+        Array.from(schoolsByPostId.entries()).map(([id, schools]) => [id, schools.length])
+      ),
+      countriesByPostId: Object.fromEntries(
+        Array.from(countriesByPostId.entries()).map(([id, countries]) => [id, countries.length])
+      ),
     });
 
     (ratingsData.data || []).forEach((rating: { postId: string; livingConvenience: number; costOfLiving: number; courseLoading: number }) => {
@@ -952,26 +1369,53 @@ export async function GET(req: NextRequest) {
     });
 
     // 組合數據
+    console.log('[GET /api/posts] 🔄 開始組合最終數據...');
     const postsWithStatus = posts.map((post: { id: string; createdAt: string }) => {
       const ratings = ratingsByPostId.get(post.id);
+      const schools = schoolsByPostId.get(post.id) || [];
+      const countries = countriesByPostId.get(post.id) || [];
+      const hashtags = hashtagsByPostId.get(post.id) || [];
+      
+      console.log(`[GET /api/posts] 📄 組合貼文 ${post.id}:`, {
+        title: (post as { title?: string }).title,
+        schoolsCount: schools.length,
+        schools: schools,
+        countriesCount: countries.length,
+        countries: countries,
+        hashtagsCount: hashtags.length,
+        hashtags: hashtags,
+      });
+      
       return {
         ...post,
         isLiked: userId ? userLikedPostIds.has(post.id) : false,
-        isReposted: userId ? userRepostedPostIds.has(post.id) : false,
+        isReposted: userId ? userRepostedPostIds.has(post.id) : false, // userRepostedPostIds 現在包含的是 repostId（原始貼文ID）
         likeCount: likeCounts.get(post.id) || 0,
         repostCount: repostCounts.get(post.id) || 0,
         commentCount: commentCounts.get(post.id) || 0,
-        schools: schoolsByPostId.get(post.id) || [],
-        hashtags: hashtagsByPostId.get(post.id) || [],
+        schools: schools,
+        countries: countries, // 添加國家列表
+        hashtags: hashtags,
         photos: (photosByPostId.get(post.id) || []).sort((a, b) => a.order - b.order),
         ratings: ratings || null,
-        postType: ratings ? 'review' : 'general',
+        postType: (post as { type?: string }).type === 'rating' ? 'review' : 'general',
       };
     });
 
     // 熱門排序：先用互動數排序，暫時不提供 cursor 分頁（避免排序後 cursor 失真）
     let finalPosts = postsWithStatus;
     let nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;
+
+    console.log('[GET /api/posts] 排序前貼文:', {
+      count: finalPosts.length,
+      samplePosts: finalPosts.slice(0, 3).map((p: { id: string; title: string; postType?: string; author?: unknown }) => ({
+        id: p.id,
+        title: p.title,
+        postType: p.postType,
+        hasAuthor: !!p.author,
+        authorType: p.author ? typeof p.author : 'none',
+      })),
+    });
 
     if (sort === "popular") {
       finalPosts = [...postsWithStatus].sort((a, b) => {
@@ -984,11 +1428,39 @@ export async function GET(req: NextRequest) {
       nextCursor = null;
     }
 
-    return NextResponse.json({
+    console.log('[GET /api/posts] 準備返回數據:', {
+      success: true,
+      postsCount: finalPosts.length,
+      nextCursor,
+      firstPost: finalPosts[0] ? {
+        id: finalPosts[0].id,
+        title: finalPosts[0].title,
+        postType: finalPosts[0].postType,
+        hasAuthor: !!finalPosts[0].author,
+        author: finalPosts[0].author ? {
+          id: (finalPosts[0].author as { id?: string }).id,
+          name: (finalPosts[0].author as { name?: string }).name,
+        } : null,
+        likeCount: finalPosts[0].likeCount,
+        repostCount: finalPosts[0].repostCount,
+        commentCount: finalPosts[0].commentCount,
+      } : null,
+    });
+
+    const responseData = {
       success: true,
       posts: finalPosts,
       nextCursor,
+    };
+
+    console.log('[GET /api/posts] 返回響應數據結構:', {
+      success: responseData.success,
+      postsLength: responseData.posts?.length || 0,
+      nextCursor: responseData.nextCursor,
+      postsIsArray: Array.isArray(responseData.posts),
     });
+
+    return NextResponse.json(responseData);
   } catch (error: unknown) {
     console.error("Error fetching posts:", error);
     // 任何錯誤都返回空列表，避免 500 錯誤

@@ -65,6 +65,11 @@ function ReviewPostContent() {
   const handleSaveDraft = async () => {
     setIsSavingDraft(true);
     try {
+      // 根據選中的國家名稱，從 schools 中找到對應的 country_id
+      const countryId = selectedCountry
+        ? schools.find(s => s.country === selectedCountry)?.country_id
+        : undefined;
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -75,9 +80,11 @@ function ReviewPostContent() {
           title: title.trim() || '未命名草稿',
           content: content.trim() || '',
           status: 'draft',
+          type: 'review',
           hashtags,
           schoolIds: selectedSchoolId ? [selectedSchoolId] : [],
-          countryId: selectedCountry || undefined,
+          countryIds: countryId ? [countryId] : undefined,
+          countryNames: !countryId && selectedCountry ? [selectedCountry] : undefined, // 向後兼容
           ratings: (livingConvenience && courseLoading && costOfLiving) ? {
             schoolId: selectedSchoolId,
             livingConvenience,
@@ -123,6 +130,11 @@ function ReviewPostContent() {
 
     setIsSubmitting(true);
     try {
+      // 根據選中的國家名稱，從 schools 中找到對應的 country_id
+      const countryId = selectedCountry
+        ? schools.find(s => s.country === selectedCountry)?.country_id
+        : undefined;
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -133,9 +145,11 @@ function ReviewPostContent() {
           title: title.trim(),
           content: content.trim(),
           status: 'published',
+          type: 'review',
           hashtags,
           schoolIds: [selectedSchoolId],
-          countryId: selectedCountry,
+          countryIds: countryId ? [countryId] : undefined,
+          countryNames: !countryId && selectedCountry ? [selectedCountry] : undefined, // 向後兼容
           ratings: {
             schoolId: selectedSchoolId,
             livingConvenience,

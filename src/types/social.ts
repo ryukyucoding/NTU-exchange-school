@@ -1,15 +1,16 @@
 // Social feature types
 
 export type PostStatus = 'draft' | 'published' | 'deleted';
-export type PostType = 'general' | 'review';
+export type PostType = 'normal' | 'rating'; // 數據庫中的 type 欄位
 
 export interface Post {
   id: string;
   title: string;
   content: string;
   status: PostStatus;
+  type: PostType; // 新增：normal 或 rating
   authorId: string;
-  repostedPostId?: string;
+  repostId?: string; // 改名：從 repostedPostId 改為 repostId
   deletedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -24,7 +25,7 @@ export interface Post {
   photos?: PostPhoto[];
   ratings?: SchoolRating;
   schools?: School[];
-  postType: PostType;
+  postType: 'general' | 'review'; // 前端顯示類型（基於 type 推斷）
   likeCount: number;
   repostCount: number;
   commentCount: number;

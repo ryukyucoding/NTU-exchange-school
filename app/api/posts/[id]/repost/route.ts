@@ -46,13 +46,14 @@ export async function POST(
       );
     }
 
-    // 檢查是否已經轉發
+    // 檢查是否已經轉發（查找是否有 repostId 指向此貼文的 Post）
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: existingRepost } = await (supabase as any)
-      .from('Repost')
+      .from('Post')
       .select('id')
-      .eq('userId', userId)
-      .eq('postId', postId)
+      .eq('authorId', userId)
+      .eq('repostId', postId)
+      .eq('status', 'published')
       .maybeSingle();
 
     if (existingRepost) {
@@ -63,34 +64,35 @@ export async function POST(
       });
     }
 
-    // 建立 Repost 記錄
+    // 建立新的 Post 記錄來表示轉發
+    const newPostId = crypto.randomUUID();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: repost, error: repostError } = await (supabase as any)
-      .from('Repost')
+    const { data: repostPost, error: repostError } = await (supabase as any)
+      .from('Post')
       .insert({
-        id: crypto.randomUUID(),
-        userId: userId,
-        postId: postId,
+        id: newPostId,
+        content: '', // 轉發貼文內容為空
+        title: '',
+        authorId: userId,
+        repostId: postId, // 指向原始貼文
+        type: 'normal',
+        status: 'published',
       })
       .select()
       .single();
 
     if (repostError) {
-      console.error("Error creating repost:", repostError);
+      console.error("Error creating repost post:", repostError);
       return NextResponse.json(
         { error: "Failed to repost" },
         { status: 500 }
       );
     }
 
-    // 可選：建立一個新的 Post 記錄來表示轉發（使用 repostedPostId）
-    // 這裡我們只建立 Repost 記錄，不建立新的 Post
-    // 如果需要，可以建立一個新的 Post 記錄，將 repostedPostId 設為原始貼文的 ID
-
     return NextResponse.json({
       success: true,
       reposted: true,
-      repost,
+      repost: repostPost,
     });
   } catch (error: unknown) {
     console.error("Error reposting:", error);
@@ -130,16 +132,17 @@ export async function DELETE(
 
     const supabase = getSupabaseServer();
 
-    // 刪除 Repost 記錄
+    // 刪除轉發的 Post 記錄（查找 repostId 指向此貼文的 Post）
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error: deleteError } = await (supabase as any)
-      .from('Repost')
+      .from('Post')
       .delete()
-      .eq('userId', userId)
-      .eq('postId', postId);
+      .eq('authorId', userId)
+      .eq('repostId', postId)
+      .eq('status', 'published');
 
     if (deleteError) {
-      console.error("Error deleting repost:", deleteError);
+      console.error("Error deleting repost post:", deleteError);
       return NextResponse.json(
         { error: "Failed to undo repost" },
         { status: 500 }
