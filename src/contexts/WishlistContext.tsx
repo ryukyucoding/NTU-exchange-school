@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { SchoolWithMatch } from '@/types/school';
 import toast from 'react-hot-toast';
 
-interface WishlistItem {
+export interface WishlistItem {
   school: SchoolWithMatch;
   note: string;
   order: number | null;
@@ -19,6 +19,7 @@ interface WishlistContextType {
   isInWishlist: (schoolId: string) => boolean;
   getPreferences: () => WishlistItem[]; // 返回order不为null的项目，按order排序
   reorderPreferences: (updates: { schoolId: string; order: number }[]) => Promise<void>; // 批量更新order
+  reorderWishlist: (fromIndex: number, toIndex: number) => Promise<void>; // 以列表索引为单位调整顺序
   clearWishlist: () => Promise<void>;
   refreshWishlist: () => Promise<void>; // 手动刷新
 }
@@ -195,6 +196,25 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const reorderWishlist = async (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    if (fromIndex < 0 || toIndex < 0) return;
+    if (fromIndex >= wishlist.length || toIndex >= wishlist.length) return;
+
+    const next = [...wishlist];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+
+    // Persist the new ordering via the existing batch update API.
+    // Use 1-based order values to avoid ambiguity with "0" and match typical DB ordering.
+    const updates = next.map((item, index) => ({
+      schoolId: item.school.id,
+      order: index + 1,
+    }));
+
+    await reorderPreferences(updates);
+  };
+
   const clearWishlist = async () => {
     // 删除所有收藏
     const deletePromises = wishlist.map(item =>
@@ -224,6 +244,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         isInWishlist,
         getPreferences,
         reorderPreferences,
+        reorderWishlist,
         clearWishlist,
         refreshWishlist,
       }}

@@ -282,12 +282,12 @@ export default function WishlistPanel() {
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
-                      onClick={() => updateWishlistItem(item.school.id, { priority: star })}
+                      onClick={() => updateWishlistItem(item.school.id, { order: star })}
                       className="hover:scale-110 transition-transform"
                     >
                       <Star
                         className={`w-5 h-5 ${
-                          star <= item.priority
+                          star <= (item.order ?? 0)
                             ? 'fill-amber-400 text-amber-400'
                             : 'text-gray-300 hover:text-amber-200'
                         }`}

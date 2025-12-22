@@ -14,47 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-interface Author {
-  id: string;
-  name: string | null;
-  image: string | null;
-}
-
-interface Photo {
-  id: string;
-  url: string;
-}
-
-interface School {
-  id: string;
-  name_zh: string;
-  name_en: string;
-  country: string;
-}
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author: Author;
-  createdAt: string;
-  hashtags?: string[];
-  photos?: Photo[];
-  ratings?: {
-    schoolId: string;
-    livingConvenience: number;
-    costOfLiving: number;
-    courseLoading: number;
-  };
-  schools?: School[];
-  countries?: string[]; // 國家列表
-  likeCount: number;
-  repostCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isReposted: boolean;
-}
+import type { PostWithAuthor as Post } from '@/types/social';
 
 interface SchoolReviewPostCardProps {
   post: Post;

@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Avoid monorepo/workspace root mis-detection when multiple lockfiles exist.
+  outputFileTracingRoot: __dirname,
+  eslint: {
+    // Our eslint config uses devDependencies that might not be installed in some environments.
+    // This keeps `next build` unblocked; use `npm run lint` when deps are available.
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: ['your-domain.com'], // 如果需要載入外部圖片
   },

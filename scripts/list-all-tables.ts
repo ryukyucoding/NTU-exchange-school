@@ -162,8 +162,10 @@ async function main() {
   console.log(`✅ 找到 ${tables.length} 個表格：\n`);
 
   // 顯示每個表格的詳細資訊
+  let totalRecords = 0;
   for (const table of tables) {
     const details = await getTableDetails(table.table_name);
+    totalRecords += details.count;
     
     console.log(`📊 ${table.table_name}`);
     console.log(`   記錄數: ${details.count}`);
@@ -179,10 +181,7 @@ async function main() {
   console.log('='.repeat(80));
   console.log('📋 總結：');
   console.log(`   總表格數: ${tables.length}`);
-  console.log(`   總記錄數: ${tables.reduce((sum, t) => {
-    const details = getTableDetails(t.table_name);
-    return sum;
-  }, 0)}`);
+  console.log(`   總記錄數: ${totalRecords}`);
   
   console.log('\n💡 提示：');
   console.log('   如需查看更詳細的表格結構，請使用：');
