@@ -1,22 +1,34 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useEffect, useRef } from 'react';
 
 interface PostTypeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  position: { top: number; left: number; width: number } | null;
 }
 
-export default function PostTypeDialog({ open, onOpenChange }: PostTypeDialogProps) {
+export default function PostTypeDialog({ open, onOpenChange, position }: PostTypeDialogProps) {
   const router = useRouter();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open, onOpenChange]);
 
   const handleSelectType = async (type: 'general' | 'review') => {
     const path = type === 'general' ? '/social/post/general' : '/social/post/review';
@@ -27,41 +39,43 @@ export default function PostTypeDialog({ open, onOpenChange }: PostTypeDialogPro
     router.push(path);
   };
 
+  if (!open || !position) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-white [&>button]:text-[#5A5A5A] [&>button>svg]:text-[#5A5A5A]">
-        <DialogHeader>
-          <DialogTitle className="text-[#5A5A5A]">選擇發文類型</DialogTitle>
-          <DialogDescription>
-            請選擇您要發佈的貼文類型
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-3 pt-4">
-          <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSelectType('general');
-            }}
-            className="w-full py-6 text-lg bg-transparent border border-[#8D7051] text-[#8D7051] hover:bg-transparent hover:opacity-80"
-          >
-            我有話要說
-          </Button>
-          <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSelectType('review');
-            }}
-            className="w-full py-6 text-lg bg-transparent border border-[#8D7051] text-[#8D7051] hover:bg-transparent hover:opacity-80"
-          >
-            學校心得文
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div
+      ref={dialogRef}
+      className="fixed z-50 bg-white border border-[#d6c3a1] rounded-lg shadow-lg p-4"
+      style={{
+        top: `${position.top}px`,
+        left: `${position.left}px`,
+        width: `${position.width}px`,
+      }}
+    >
+      <div className="flex flex-col gap-2">
+        <Button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleSelectType('general');
+          }}
+          className="w-full py-3 text-sm bg-transparent border border-[#8D7051] text-[#8D7051] hover:bg-transparent hover:opacity-80"
+        >
+          我有話要說
+        </Button>
+        <Button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleSelectType('review');
+          }}
+          className="w-full py-3 text-sm bg-transparent border border-[#8D7051] text-[#8D7051] hover:bg-transparent hover:opacity-80"
+        >
+          學校心得文
+        </Button>
+      </div>
+    </div>
   );
 }
 

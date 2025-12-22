@@ -14,6 +14,8 @@ interface PostListProps {
   variant?: 'card' | 'plain';
   filterType?: 'rating' | null; // 'rating' to show only posts with SchoolRating
   hashtag?: string | null; // Filter posts by hashtag
+  bookmarked?: boolean; // Filter posts by bookmarked
+  liked?: boolean; // Filter posts by liked
 }
 
 export default function PostList({
@@ -24,6 +26,8 @@ export default function PostList({
   variant = 'card',
   filterType = null,
   hashtag = null,
+  bookmarked = false,
+  liked = false,
 }: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +53,12 @@ export default function PostList({
       }
       if (hashtag) {
         params.append('hashtag', hashtag);
+      }
+      if (bookmarked) {
+        params.append('bookmarked', 'true');
+      }
+      if (liked) {
+        params.append('liked', 'true');
       }
       if (cursor) {
         params.append('cursor', cursor);
@@ -121,7 +131,7 @@ export default function PostList({
   };
 
   useEffect(() => {
-    // 切換 filter/boardId/authorId/sort/filterType/hashtag 時重置列表
+    // 切換 filter/boardId/authorId/sort/filterType/hashtag/bookmarked/liked 時重置列表
     console.log('[PostList] useEffect 觸發，重置並獲取貼文:', {
       filter,
       boardId,
@@ -129,13 +139,15 @@ export default function PostList({
       sort,
       filterType,
       hashtag,
+      bookmarked,
+      liked,
     });
     setPosts([]);
     setNextCursor(null);
     setHasMore(true);
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, boardId, authorId, sort, filterType, hashtag]);
+  }, [filter, boardId, authorId, sort, filterType, hashtag, bookmarked, liked]);
 
   const loadMore = () => {
     if (nextCursor && !loading) {
@@ -167,7 +179,6 @@ export default function PostList({
     return (
       <div className={variant === 'plain' ? 'p-8 text-center' : 'bg-white p-8 rounded-lg'}>
         <p className="text-muted-foreground">尚無貼文</p>
-        <p className="text-xs text-gray-400 mt-2">Debug: loading={loading ? 'true' : 'false'}, posts.length={posts.length}</p>
       </div>
     );
   }
@@ -184,10 +195,13 @@ export default function PostList({
           hasAuthor: !!post.author,
         });
         const isLast = index === posts.length - 1;
-        const postCard = post.postType === 'review' 
-          ? <SchoolReviewPostCard key={post.id} post={post} />
-          : <GeneralPostCard key={post.id} post={post as any} />;
-        
+        let postCard;
+        if (post.postType === 'review') {
+          postCard = <SchoolReviewPostCard key={post.id} post={post as any} />;
+        } else {
+          postCard = <GeneralPostCard key={post.id} post={post as any} />;
+        }
+
         return (
           <div key={post.id}>
             {postCard}

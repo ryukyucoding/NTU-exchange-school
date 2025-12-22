@@ -176,31 +176,38 @@ function ReviewPostContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F3F3]">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6 justify-center items-start">
-          {/* Left Sidebar - 留空間給「+」號 */}
-          <aside className="hidden md:block w-64 flex-shrink-0">
-            {/* 左側空間給「+」號 */}
-          </aside>
+    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
+      {/* Topic pill - 固定在 header 内部居中 */}
+      <div 
+        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
+        style={{ 
+          height: '64px',
+          pointerEvents: 'none'
+        }}
+      >
+        <div className="pointer-events-auto">
+          <div
+            className="inline-block px-4 py-2 rounded-full text-sm font-medium bg-transparent border"
+            style={{ 
+              color: '#5A5A5A',
+              borderColor: '#5A5A5A',
+              borderRadius: '9999px'
+            }}
+          >
+            發布貼文
+          </div>
+        </div>
+      </div>
 
-          {/* Main Content - 固定寬度 800px */}
-          <main className="w-[800px] flex-shrink-0">
-            {/* Content area */}
+      {/* Content Frame */}
+      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+        <div className="flex gap-6 items-start justify-center h-full">
+          {/* Left Sidebar */}
+          <aside className="hidden md:block w-64 flex-shrink-0" />
+
+          {/* Main Content - Scrollable */}
+          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
             <div className="w-full">
-              {/* 發布貼文標籤 */}
-              <div className="mb-4 flex justify-center">
-                <div
-                  className="inline-block px-4 py-2 rounded-full text-sm font-medium bg-transparent border"
-                  style={{ 
-                    color: '#5A5A5A',
-                    borderColor: '#5A5A5A',
-                    borderRadius: '9999px'
-                  }}
-                >
-                  發布貼文
-                </div>
-              </div>
 
               {/* White Card Container */}
               <Card className="p-6 bg-white relative pt-8" style={{ borderColor: 'white', width: '800px' }}>
@@ -319,9 +326,7 @@ function ReviewPostContent() {
 
           {/* Right Sidebar - Drafts */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-6 mt-[54px]">
-              <DraftList type="review" onLoadDraft={handleLoadDraft} />
-            </div>
+            <DraftList type="review" onLoadDraft={handleLoadDraft} />
           </aside>
         </div>
       </div>

@@ -86,10 +86,10 @@ export async function POST(req: NextRequest) {
       console.log(`[POST /api/posts] 用戶創建成功: ${userId}`);
     }
 
-    const {
+    const { 
       postId: providedPostId, // 如果提供，則更新現有 post
-      title,
-      content,
+      title, 
+      content, 
       status = 'published',
       type, // 'general' 或 'review'，決定貼文類型
       hashtags = [],
@@ -102,18 +102,18 @@ export async function POST(req: NextRequest) {
 
     // 驗證必填欄位（草稿允許空標題和內容）
     if (status !== 'draft') {
-      if (!title || typeof title !== "string") {
-        return NextResponse.json(
-          { error: "Title is required" },
-          { status: 400 }
-        );
-      }
+    if (!title || typeof title !== "string") {
+      return NextResponse.json(
+        { error: "Title is required" },
+        { status: 400 }
+      );
+    }
 
-      if (!content || typeof content !== "string") {
-        return NextResponse.json(
-          { error: "Content is required" },
-          { status: 400 }
-        );
+    if (!content || typeof content !== "string") {
+      return NextResponse.json(
+        { error: "Content is required" },
+        { status: 400 }
+      );
       }
     }
 
@@ -232,24 +232,24 @@ export async function POST(req: NextRequest) {
       // 創建新 post
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: _newPost, error: postError } = await (supabase as any)
-        .from('Post')
-        .insert({
-          id: postId,
-          title: trimmedTitle,
-          content: trimmedContent,
-          status: status,
+      .from('Post')
+      .insert({
+        id: postId,
+        title: trimmedTitle,
+        content: trimmedContent,
+        status: status,
           type: postType,
-          authorId: userId,
+        authorId: userId,
         })
-        .select()
-        .single();
+      .select()
+      .single();
 
-      if (postError) {
-        console.error("Error creating post:", postError);
-        return NextResponse.json(
-          { error: "Failed to create post" },
-          { status: 500 }
-        );
+    if (postError) {
+      console.error("Error creating post:", postError);
+      return NextResponse.json(
+        { error: "Failed to create post" },
+        { status: 500 }
+      );
       }
     }
 
@@ -367,16 +367,16 @@ export async function POST(req: NextRequest) {
         // 通過 country_id 查找 Board（schoolId 為 null）
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const { data: countryBoard } = await (supabase as any)
-                .from('Board')
-                .select('id')
-                .is('schoolId', null)
+        .from('Board')
+        .select('id')
+        .is('schoolId', null)
           .eq('country_id', countryId)
-                .limit(1)
-                .maybeSingle();
-              
+        .limit(1)
+        .maybeSingle();
+      
               if (countryBoard) {
                 boardIds.push(countryBoard.id);
-              } else {
+      } else {
           console.log(`[POST /api/posts] 未找到國家版 (country_id=${countryId})`);
         }
       }
@@ -409,25 +409,25 @@ export async function POST(req: NextRequest) {
             .maybeSingle();
           
           if (schoolInfo) {
-            const boardId = crypto.randomUUID();
-            const slug = `school-${schoolId}`.toLowerCase();
+          const boardId = crypto.randomUUID();
+          const slug = `school-${schoolId}`.toLowerCase();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { error: boardError } = await (supabase as any)
-              .from('Board')
-              .insert({
-                id: boardId,
-                type: 'school',
+            .from('Board')
+            .insert({
+              id: boardId,
+              type: 'school',
                 name: schoolInfo.name_zh || schoolId,
-                slug: slug,
-                country_id: null,
-                schoolId: schoolId,
-                description: null,
+              slug: slug,
+              country_id: null,
+              schoolId: schoolId,
+              description: null,
               });
-            
-            if (!boardError) {
-              boardIds.push(boardId);
-            } else {
-              console.error("Error creating school board:", boardError);
+          
+          if (!boardError) {
+            boardIds.push(boardId);
+          } else {
+            console.error("Error creating school board:", boardError);
             }
           } else {
             console.log(`[POST /api/posts] 未找到學校: ${schoolId}`);
@@ -520,6 +520,8 @@ export async function GET(req: NextRequest) {
     const hashtag = searchParams.get("hashtag");
     const schoolId = searchParams.get("schoolId");
     const authorId = searchParams.get("authorId"); // Filter by author
+    const bookmarked = searchParams.get("bookmarked") === "true"; // Filter by bookmarked posts
+    const liked = searchParams.get("liked") === "true"; // Filter by liked posts
     const sort = (searchParams.get("sort") || "latest") as "latest" | "popular";
     const filterType = searchParams.get("filterType"); // "rating" for rating posts only
     const type = searchParams.get("type"); // 'general' or 'review'
@@ -550,6 +552,66 @@ export async function GET(req: NextRequest) {
 
     // 收集所有過濾條件下的 postIds，然後取交集
     let filterPostIds: string[] | null = null;
+    
+    // 如果請求的是收藏的貼文，先查詢收藏的 postIds
+    let bookmarkedPostIdsOrdered: string[] = []; // 按收藏時間倒序
+    if (bookmarked && userId) {
+      const supabase = getSupabaseServer();
+      if (supabase) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: userBookmarks } = await (supabase as any)
+          .from('Bookmark')
+          .select('postId, createdAt')
+          .eq('userId', userId)
+          .order('createdAt', { ascending: false }); // 最新收藏的在最上面
+        bookmarkedPostIdsOrdered = ((userBookmarks || []) as { postId: string }[]).map((b) => b.postId);
+        
+        if (bookmarkedPostIdsOrdered.length === 0) {
+          return NextResponse.json({
+            success: true,
+            posts: [],
+            nextCursor: null,
+          });
+        }
+        filterPostIds = bookmarkedPostIdsOrdered;
+      } else {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+    }
+
+    // 如果請求的是按讚的貼文，先查詢按讚的 postIds
+    let likedPostIdsOrdered: string[] = []; // 按按讚時間倒序
+    if (liked && userId) {
+      const supabase = getSupabaseServer();
+      if (supabase) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: userLikes } = await (supabase as any)
+          .from('Like')
+          .select('postId, createdAt')
+          .eq('userId', userId)
+          .order('createdAt', { ascending: false }); // 最新按讚的在最上面
+        likedPostIdsOrdered = ((userLikes || []) as { postId: string }[]).map((l) => l.postId);
+        
+        if (likedPostIdsOrdered.length === 0) {
+          return NextResponse.json({
+            success: true,
+            posts: [],
+            nextCursor: null,
+          });
+        }
+        filterPostIds = likedPostIdsOrdered;
+      } else {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+    }
 
     // 如果指定了 boardId，先驗證 board 是否存在，然後通過 PostBoard 表查詢
     if (boardId) {
@@ -667,15 +729,15 @@ export async function GET(req: NextRequest) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const draftQuery = (supabase as any)
-        .from('Post')
-        .select(`
-          *,
-          author:User!Post_authorId_fkey (
-            id,
-            name,
-            userID,
-            image,
-            email
+      .from('Post')
+      .select(`
+        *,
+        author:User!Post_authorId_fkey (
+          id,
+          name,
+          userID,
+          image,
+          email
           )
         `)
         .eq('authorId', userId)
@@ -761,12 +823,12 @@ export async function GET(req: NextRequest) {
       .from('Post')
       .select(`
         *,
-        author:User!Post_authorId_fkey (
-          id,
-          name,
-          userID,
-          image,
-          email
+          author:User!Post_authorId_fkey (
+            id,
+            name,
+            userID,
+            image,
+            email
         )
       `)
       .is('deletedAt', null)
@@ -1172,6 +1234,17 @@ export async function GET(req: NextRequest) {
     const commentCounts = new Map<string, number>();
     const userLikedPostIds = new Set(((userLikes.data || []) as { postId: string }[]).map((l) => l.postId));
     const userRepostedPostIds = new Set(((userReposts.data || []) as { repostId: string }[]).map((r) => r.repostId));
+    
+    // 查詢用戶收藏的貼文（用於設置 isBookmarked 狀態）
+    let userBookmarkedPostIds = new Set<string>();
+    if (userId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: userBookmarks } = await (supabase as any)
+        .from('Bookmark')
+        .select('postId')
+        .eq('userId', userId);
+      userBookmarkedPostIds = new Set(((userBookmarks || []) as { postId: string }[]).map((b) => b.postId));
+    }
 
     (((likesData.data || []) as { postId: string }[])).forEach((like) => {
       likeCounts.set(like.postId, (likeCounts.get(like.postId) || 0) + 1);
@@ -1397,6 +1470,7 @@ export async function GET(req: NextRequest) {
         ...post,
         isLiked: userId ? userLikedPostIds.has(post.id) : false,
         isReposted: userId ? userRepostedPostIds.has(post.id) : false, // userRepostedPostIds 現在包含的是 repostId（原始貼文ID）
+        isBookmarked: userId ? userBookmarkedPostIds.has(post.id) : false,
         likeCount: likeCounts.get(post.id) || 0,
         repostCount: repostCounts.get(post.id) || 0,
         commentCount: commentCounts.get(post.id) || 0,
@@ -1409,6 +1483,17 @@ export async function GET(req: NextRequest) {
       };
     });
 
+    // 如果是收藏的貼文，按收藏時間排序（最新收藏的在最上面）
+    if (bookmarked && userId && bookmarkedPostIdsOrdered.length > 0) {
+      // 創建一個順序映射
+      const orderMap = new Map(bookmarkedPostIdsOrdered.map((id, index) => [id, index]));
+      postsWithStatus.sort((a, b) => {
+        const orderA = orderMap.get(a.id) ?? Infinity;
+        const orderB = orderMap.get(b.id) ?? Infinity;
+        return orderA - orderB;
+      });
+    }
+    
     // 熱門排序：先用互動數排序，暫時不提供 cursor 分頁（避免排序後 cursor 失真）
     let finalPosts = postsWithStatus;
     let nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;

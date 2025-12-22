@@ -9,6 +9,7 @@ import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSchoolContext } from '@/contexts/SchoolContext';
+import { Star } from 'lucide-react';
 
 type SortMode = 'popular' | 'latest' | 'rating';
 
@@ -220,46 +221,52 @@ function SchoolBoardContent() {
                   </div>
                 </div>
 
-                {/* Rating display */}
+                {/* Rating display - 和贴文一样的排版 */}
                 {avgRatings.livingConvenience > 0 || avgRatings.costOfLiving > 0 || avgRatings.courseLoading > 0 ? (
-                  <div className="mt-6 flex gap-8">
-                    <div>
-                      <div className="text-sm text-gray-600 mb-1">生活機能</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-gray-800">
-                          {avgRatings.livingConvenience.toFixed(1)}
-                        </span>
-                        <div className="flex text-[#8D7051] text-sm">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <span key={i}>{i < Math.round(avgRatings.livingConvenience) ? '★' : '☆'}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-600 mb-1">學習體驗</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-gray-800">
-                          {avgRatings.courseLoading.toFixed(1)}
-                        </span>
-                        <div className="flex text-[#8D7051] text-sm">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <span key={i}>{i < Math.round(avgRatings.courseLoading) ? '★' : '☆'}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-600 mb-1">生活開銷</div>
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        生活機能
+                      </span>
                       <div className="flex items-center gap-1">
-                        <div className="flex text-[#8D7051] text-base">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <span key={i} style={{ fontSize: '16px' }}>
-                              {i < Math.round(avgRatings.costOfLiving) ? '$' : '○'}
-                            </span>
-                          ))}
-                        </div>
+                        {Array.from({ length: 5 }, (_v, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < Math.round(avgRatings.livingConvenience) ? 'fill-[#8D7051] text-[#8D7051]' : 'text-gray-300'}`}
+                          />
+                        ))}
                       </div>
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        學習體驗
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }, (_v, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < Math.round(avgRatings.courseLoading) ? 'fill-[#8D7051] text-[#8D7051]' : 'text-gray-300'}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        物價水準
+                      </span>
+                      {avgRatings.costOfLiving > 0 && (
+                        <button
+                          type="button"
+                          disabled
+                          className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
+                          style={{
+                            backgroundColor: 'rgba(141, 112, 81, 0.2)',
+                            letterSpacing: '0.1em',
+                          }}
+                        >
+                          {'$'.repeat(Math.round(avgRatings.costOfLiving))}
+                        </button>
+                      )}
                     </div>
                   </div>
                 ) : null}
