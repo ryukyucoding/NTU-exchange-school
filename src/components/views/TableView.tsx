@@ -167,7 +167,7 @@ export default function TableView({ schools }: TableViewProps) {
                       className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <Heart
-                        className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : 'text-[#8a7a63]'}`}
+                        className={`w-4 h-4 ${inWishlist ? 'fill-current text-[#8D7051]' : 'text-[#8a7a63]'}`}
                       />
                     </Button>
                   </TableCell>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 export default function Loading() {
-  const [imgSrc, setImgSrc] = useState('/favicon.svg');
+  const [imgSrc, setImgSrc] = useState('/icon.svg');
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F4F4F4]">

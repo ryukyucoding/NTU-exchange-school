@@ -55,8 +55,8 @@ export default function AppShell({ children }: AppShellProps) {
                 <Image
                   src="/logo-social.png"
                   alt="社群 Logo"
-                  width={120}
-                  height={32}
+                  width={0}
+                  height={0}
                   style={{ width: 'auto', height: '2rem' }}
                   priority
                   unoptimized
@@ -68,8 +68,8 @@ export default function AppShell({ children }: AppShellProps) {
                 <Image
                   src="/logo-social.png"
                   alt="瀏覽學校 Logo"
-                  width={120}
-                  height={32}
+                  width={0}
+                  height={0}
                   style={{ width: 'auto', height: '2rem' }}
                   priority
                   unoptimized
@@ -81,8 +81,8 @@ export default function AppShell({ children }: AppShellProps) {
                 <Image
                   src="/logo-social.png"
                   alt="收藏學校 Logo"
-                  width={120}
-                  height={32}
+                  width={0}
+                  height={0}
                   style={{ width: 'auto', height: '2rem' }}
                   priority
                   unoptimized
