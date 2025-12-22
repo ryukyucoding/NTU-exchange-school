@@ -502,6 +502,7 @@ export async function GET(req: NextRequest) {
     const boardId = searchParams.get("boardId");
     const hashtag = searchParams.get("hashtag");
     const schoolId = searchParams.get("schoolId");
+    const authorId = searchParams.get("authorId"); // Filter by author
     const sort = (searchParams.get("sort") || "latest") as "latest" | "popular";
     const filterType = searchParams.get("filterType"); // "rating" for rating posts only
     const type = searchParams.get("type"); // 'general' or 'review'
@@ -620,9 +621,14 @@ export async function GET(req: NextRequest) {
         )
       `)
       .is('deletedAt', null)
-      .eq('status', 'published')
-      .order('createdAt', { ascending: false })
-      .limit(limit);
+      .eq('status', 'published');
+    
+    // Filter by authorId if provided
+    if (authorId) {
+      query = query.eq('authorId', authorId);
+    }
+    
+    query = query.order('createdAt', { ascending: false }).limit(limit);
 
     // 如果是 "following"，只顯示追蹤看板中的貼文
     if (filter === "following") {

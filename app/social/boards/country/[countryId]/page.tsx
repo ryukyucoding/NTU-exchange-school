@@ -195,7 +195,8 @@ function CountryBoardContent() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+    // AppShell 在 /social/boards/country/[id] 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
+    <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
       {/* Topic Frame - 固定在 header 内部居中 */}
       {boardTitle && (
         <div 
@@ -232,13 +233,13 @@ function CountryBoardContent() {
       )}
 
       {/* Content Frame */}
-      <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
-        <div className="flex gap-6 items-start justify-center">
+      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+        <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar placeholder */}
           <aside className="hidden md:block w-64 flex-shrink-0" />
 
-          {/* Main */}
-          <main className="w-[800px] flex-shrink-0">
+          {/* Main (ONLY scrollable area) */}
+          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
             {loading || !countryInfo ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -377,11 +378,9 @@ function CountryBoardContent() {
             )}
           </main>
 
-          {/* Right Sidebar */}
+          {/* Right Sidebar (fixed, does NOT scroll) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky" style={{ top: '6rem' }}>
-              <SocialSidebar />
-            </div>
+            <SocialSidebar />
           </aside>
         </div>
       </div>

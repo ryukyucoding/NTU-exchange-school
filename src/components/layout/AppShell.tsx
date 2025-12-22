@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -37,8 +38,8 @@ export default function AppShell({ children }: AppShellProps) {
         style={{ backgroundColor: 'unset', background: 'unset' }}
       >
         <div className="h-full flex items-center justify-between px-4">
-          {/* 左上角開關按鈕 */}
-          <div className="pointer-events-auto">
+          {/* 左上角開關按鈕和 Logo */}
+          <div className="pointer-events-auto flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
@@ -48,6 +49,43 @@ export default function AppShell({ children }: AppShellProps) {
             >
               <Menu className="w-5 h-5" />
             </Button>
+            {/* 在特定頁面顯示 Logo */}
+            {pathname?.startsWith('/social') && (
+              <Link href="/social" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="社群 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
+            {pathname === '/table' && (
+              <Link href="/table" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="瀏覽學校 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
+            {pathname === '/wishlist' && (
+              <Link href="/wishlist" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="收藏學校 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
           </div>
           
           {/* 中間區域留空，給 topic/篩選按鈕使用 */}
