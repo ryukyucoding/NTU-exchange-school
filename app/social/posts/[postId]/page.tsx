@@ -247,21 +247,20 @@ function PostDetailContentInner() {
   };
 
   const renderDollarSigns = (rating: number) => {
-    const dollarSign = '$';
-    return Array.from({ length: 3 }, (_v, i) => (
+    if (rating <= 0) return null;
+    return (
       <button
-        key={i}
         type="button"
         disabled
-        className={`px-2 py-0.5 rounded text-xs font-semibold transition-colors ${
-          i < rating
-            ? 'bg-[#8D7051] text-white'
-            : 'bg-gray-100 text-gray-400'
-        }`}
+        className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
+        style={{
+          backgroundColor: 'rgba(141, 112, 81, 0.2)',
+          letterSpacing: '0.1em',
+        }}
       >
-        {dollarSign.repeat(i + 1)}
+        {'$'.repeat(Math.round(rating))}
       </button>
-    ));
+    );
   };
 
   if (loading) {
@@ -576,7 +575,7 @@ function PostDetailContentInner() {
 
                     {/* Ratings (if review post) */}
                     {post.ratings && (
-                      <div className="mb-6 flex items-center justify-between gap-4 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
+                      <div className="mb-6 mt-6 flex items-center justify-between gap-4 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
                         <div className="flex items-center gap-2 flex-1">
                           <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             生活機能

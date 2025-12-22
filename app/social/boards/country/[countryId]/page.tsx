@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import { getCountryISO } from '@/utils/countryFlags';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 type SortMode = 'popular' | 'latest';
 
@@ -38,6 +38,7 @@ function CountryBoardContent() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [sort, setSort] = useState<SortMode>('popular');
   const [loading, setLoading] = useState(true);
+  const [schoolRatings, setSchoolRatings] = useState<Record<string, { avgRating: number | null; count: number }>>({});
 
   const boardTitle = countryInfo ? `${countryInfo.country_zh}板` : null;
   const countryName = countryInfo?.country_zh || '';
@@ -165,6 +166,33 @@ function CountryBoardContent() {
       cancelled = true;
     };
   }, [countryId, session]);
+
+  // 獲取學校評分
+  useEffect(() => {
+    let cancelled = false;
+    const fetchRatings = async () => {
+      if (boardSchools.length === 0) return;
+      
+      try {
+        const schoolIds = boardSchools.map((s) => String(s.id));
+        const res = await fetch('/api/schools/ratings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ schoolIds }),
+        });
+        const data = await res.json();
+        if (!cancelled && data?.success) {
+          setSchoolRatings(data.ratings || {});
+        }
+      } catch (err) {
+        console.error('Error fetching school ratings:', err);
+      }
+    };
+    fetchRatings();
+    return () => {
+      cancelled = true;
+    };
+  }, [boardSchools]);
 
   const handleFollowToggle = async () => {
     if (!boardId || !session?.user) return;
@@ -311,21 +339,54 @@ function CountryBoardContent() {
                     className="flex gap-4 overflow-x-auto scrollbar-hide"
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                   >
-                    {boardSchools.map((s) => (
-                      <Link key={s.id} href={`/social/boards/school/${s.id}`}>
-                        <Card
-                          className="flex-shrink-0 p-4 bg-white border border-gray-200 shadow-sm rounded-xl cursor-pointer hover:shadow-md transition-shadow"
-                          style={{ width: '260px' }}
-                        >
-                          <div className="text-sm text-gray-700 font-medium">{s.name_zh}</div>
-                          <div className="text-xs text-gray-400 mt-1">{s.name_en}</div>
-                          <div className="flex items-center gap-2 mt-3">
-                            <div className="text-xs text-gray-600">4.2</div>
-                            <div className="text-[#8D7051] text-sm">★★★★☆</div>
-                          </div>
-                        </Card>
-                      </Link>
-                    ))}
+                    {boardSchools.map((s) => {
+                      const rating = schoolRatings[String(s.id)];
+                      const avgRating = rating?.avgRating ?? null;
+                      const hasRating = avgRating !== null && avgRating > 0;
+                      
+                      return (
+                        <Link key={s.id} href={`/social/boards/school/${s.id}`}>
+                          <Card
+                            className="flex-shrink-0 p-4 bg-white border border-gray-200 shadow-sm rounded-xl cursor-pointer hover:shadow-md transition-shadow"
+                            style={{ width: '260px' }}
+                          >
+                            <div className="text-sm text-gray-700 font-medium">{s.name_zh}</div>
+                            <div className="text-xs text-gray-400 mt-1">{s.name_en}</div>
+                            <div className="flex items-center gap-2 mt-3">
+                              {hasRating ? (
+                                <>
+                                  <div className="text-xs text-gray-600">{avgRating?.toFixed(1)}</div>
+                                  <div className="flex items-center gap-0.5">
+                                    {Array.from({ length: 5 }, (_v, i) => (
+                                      <Star
+                                        key={i}
+                                        className={`h-3 w-3 ${
+                                          i < Math.round(avgRating!)
+                                            ? 'fill-[#8D7051] text-[#8D7051]'
+                                            : 'text-gray-300'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="text-xs text-gray-400">N/A</div>
+                                  <div className="flex items-center gap-0.5">
+                                    {Array.from({ length: 5 }, (_v, i) => (
+                                      <Star
+                                        key={i}
+                                        className="h-3 w-3 text-gray-300"
+                                      />
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </Card>
+                        </Link>
+                      );
+                    })}
                   </div>
                   {boardSchools.length > 3 && canScrollRight && (
                     <button

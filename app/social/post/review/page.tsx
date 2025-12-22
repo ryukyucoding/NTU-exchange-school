@@ -57,6 +57,59 @@ function ReviewPostContent() {
   const [draftId, setDraftId] = useState<string | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [loading, setLoading] = useState(!!editPostId);
+  const [hasInitializedFromUrl, setHasInitializedFromUrl] = useState(false);
+
+  // 從 URL 參數預填國家/學校（只在非編輯模式下執行一次）
+  useEffect(() => {
+    // 如果是編輯模式，不讀取 URL 參數
+    if (editPostId || hasInitializedFromUrl) return;
+    
+    // 等待 schools 載入完成
+    if (schools.length === 0) return;
+    
+    const countryName = searchParams.get('countryName');
+    const schoolId = searchParams.get('schoolId');
+    
+    if (countryName || schoolId) {
+      let newCountry: string | null = null;
+      let newSchoolId: string | null = null;
+      
+      // 驗證並設置國家
+      if (countryName) {
+        // 檢查該國家是否存在於 schools 列表中
+        const countryExists = schools.some(s => s.country === countryName);
+        if (countryExists) {
+          newCountry = countryName;
+        }
+      }
+      
+      // 驗證並設置學校
+      if (schoolId) {
+        const school = schools.find(s => String(s.id) === String(schoolId));
+        if (school) {
+          newSchoolId = String(school.id);
+          // 如果學校有國家資訊，也設置國家（如果還沒設置）
+          if (school.country && !newCountry) {
+            newCountry = school.country;
+          }
+        }
+      }
+      
+      // 只在有有效值時才設置
+      if (newCountry || newSchoolId) {
+        if (newCountry) {
+          setSelectedCountry(newCountry);
+        }
+        if (newSchoolId) {
+          setSelectedSchoolId(newSchoolId);
+        }
+      }
+      
+      setHasInitializedFromUrl(true);
+    } else {
+      setHasInitializedFromUrl(true);
+    }
+  }, [searchParams, schools, editPostId, hasInitializedFromUrl]);
 
   // 顯示最新頭貼/名字（不要只依賴 session）
   useEffect(() => {
@@ -118,6 +171,8 @@ function ReviewPostContent() {
             setLivingConvenience(post.ratings.livingConvenience || 0);
             setCourseLoading(post.ratings.courseLoading || 0);
             setCostOfLiving(post.ratings.costOfLiving || 0);
+            // 編輯模式下，標記已初始化，避免 URL 參數覆蓋
+            setHasInitializedFromUrl(true);
           } else {
             toast.error('無法載入貼文');
             router.push('/social');

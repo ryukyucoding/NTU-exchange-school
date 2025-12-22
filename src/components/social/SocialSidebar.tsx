@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutGrid, User } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
 
 function PostButton() {
@@ -139,7 +139,7 @@ export default function SocialSidebar() {
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"
             >
-              <div className="w-6 h-6 rounded-full bg-gray-300 mr-2"></div>
+              <LayoutGrid className="w-5 h-5 mr-2 text-gray-600" />
               所有看板
             </Button>
           </Link>
@@ -148,7 +148,7 @@ export default function SocialSidebar() {
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"
             >
-              <div className="w-6 h-6 rounded-full bg-gray-300 mr-2"></div>
+              <User className="w-5 h-5 mr-2 text-gray-600" />
               個人頁面
             </Button>
           </Link>

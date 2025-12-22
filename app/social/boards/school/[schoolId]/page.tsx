@@ -222,12 +222,12 @@ function SchoolBoardContent() {
                 </div>
 
                 {/* Rating display - 和贴文一样的排版 */}
-                {avgRatings.livingConvenience > 0 || avgRatings.costOfLiving > 0 || avgRatings.courseLoading > 0 ? (
-                  <div className="mb-4 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 flex-1">
-                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
-                        生活機能
-                      </span>
+                <div className="mb-4 mt-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                      生活機能
+                    </span>
+                    {avgRatings.livingConvenience > 0 ? (
                       <div className="flex items-center gap-1">
                         {Array.from({ length: 5 }, (_v, i) => (
                           <Star
@@ -236,11 +236,15 @@ function SchoolBoardContent() {
                           />
                         ))}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
-                        學習體驗
-                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">N/A</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                      學習體驗
+                    </span>
+                    {avgRatings.courseLoading > 0 ? (
                       <div className="flex items-center gap-1">
                         {Array.from({ length: 5 }, (_v, i) => (
                           <Star
@@ -249,27 +253,31 @@ function SchoolBoardContent() {
                           />
                         ))}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
-                        物價水準
-                      </span>
-                      {avgRatings.costOfLiving > 0 && (
-                        <button
-                          type="button"
-                          disabled
-                          className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
-                          style={{
-                            backgroundColor: 'rgba(141, 112, 81, 0.2)',
-                            letterSpacing: '0.1em',
-                          }}
-                        >
-                          {'$'.repeat(Math.round(avgRatings.costOfLiving))}
-                        </button>
-                      )}
-                    </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">N/A</span>
+                    )}
                   </div>
-                ) : null}
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                      物價水準
+                    </span>
+                    {avgRatings.costOfLiving > 0 ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
+                        style={{
+                          backgroundColor: 'rgba(141, 112, 81, 0.2)',
+                          letterSpacing: '0.1em',
+                        }}
+                      >
+                        {'$'.repeat(Math.round(avgRatings.costOfLiving))}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-400">N/A</span>
+                    )}
+                  </div>
+                </div>
 
                 {/* Sort tabs (text only) */}
                 <div className="mt-6 flex gap-12" style={{ fontFamily: "'Noto Sans TC', sans-serif", paddingLeft: '40px' }}>
