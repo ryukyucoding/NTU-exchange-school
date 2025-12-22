@@ -23,6 +23,8 @@ interface Draft {
   updatedAt: string;
   country?: string;
   schoolId?: string;
+  schools?: Array<{ id: string; country?: string }>; // 向後兼容舊的草稿格式
+  countries?: string[]; // 向後兼容舊的草稿格式
   hashtags?: string[];
   livingConvenience?: number;
   courseLoading?: number;

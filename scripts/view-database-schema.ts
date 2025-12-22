@@ -76,10 +76,16 @@ async function getTableSchema(tableName: string) {
     ORDER BY ordinal_position;
   `;
 
-  const { data, error } = await supabase.rpc('exec_sql', {
-    sql: query,
-    params: [tableName]
-  }).catch(async () => {
+  let data, error;
+
+  try {
+    const result = await supabase.rpc('exec_sql', {
+      sql: query,
+      params: [tableName]
+    });
+    data = result.data;
+    error = result.error;
+  } catch (rpcError) {
     // 如果 exec_sql 不存在，嘗試直接查詢
     const { data: directData, error: directError } = await supabase
       .from('information_schema.columns')
@@ -87,9 +93,10 @@ async function getTableSchema(tableName: string) {
       .eq('table_schema', 'public')
       .eq('table_name', tableName)
       .order('ordinal_position');
-    
-    return { data: directData, error: directError };
-  });
+
+    data = directData;
+    error = directError;
+  }
 
   if (error) {
     // 使用 SQL 查詢（需要 service role key）
@@ -278,7 +285,7 @@ async function main() {
   const tables = await getAllTables();
   
   console.log(`\n📋 找到 ${tables.length} 個表格：`);
-  tables.forEach((table, index) => {
+  tables.forEach((table: string, index: number) => {
     console.log(`   ${index + 1}. ${table}`);
   });
 

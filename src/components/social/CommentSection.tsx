@@ -71,8 +71,8 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
         const data = await res.json();
         if (cancelled) return;
         if (data?.success && data.user) {
-          setCurrentUserName(data.user.name || data.user.userID || session.user.name || 'User');
-          setCurrentUserImage(data.user.image || session.user.image || null);
+          setCurrentUserName(data.user.name || data.user.userID || session.user?.name || 'User');
+          setCurrentUserImage(data.user.image || session.user?.image || null);
         }
       } catch (error) {
         // Ignore; session fallback already set
