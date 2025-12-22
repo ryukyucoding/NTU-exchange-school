@@ -307,12 +307,12 @@ function WishlistContent() {
               <div className="flex-1 overflow-y-auto overscroll-contain space-y-4 pr-1">
                 {allWishlist.map((item, idx) => {
                   const inPreference = item.order !== null;
-                  return (
-                    <Card key={item.school.id} className="border-[#d6c3a1] bg-white shadow-sm">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start gap-3">
+                return (
+                  <Card key={item.school.id} className="border-[#d6c3a1] bg-white shadow-sm">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start gap-3">
                           <div className="min-w-[240px] max-w-[420px] flex-1">
-                            <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2">
                               <h3 className="text-lg font-semibold" style={{ color: '#333333' }}>{item.school.name_zh}</h3>
                             </div>
                             <p className="text-sm" style={{ color: '#333333' }}>{item.school.name_en}</p>
@@ -392,13 +392,13 @@ function WishlistContent() {
                             <Edit2 className="w-3 h-3 mr-1" />
                             備註
                           </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
+                  </div>
 
             {/* 右側：志願序（可獨立滾動；清空在底部置中） */}
             <div className="min-h-0 flex flex-col">
@@ -410,14 +410,14 @@ function WishlistContent() {
                 <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-4 min-h-0">
                   {preferences.length === 0 ? (
                     <p className="text-sm" style={{ color: '#666666' }}>尚未選擇志願，請從左側點擊「+」加入志願。</p>
-                  ) : (
-                    <div className="space-y-2">
+                ) : (
+                  <div className="space-y-2">
                       {preferences.slice(0, 30).map((item, index) => {
                         const isDragging = draggingId === item.school.id;
                         const isOver = dragOverId === item.school.id;
                         const isHovered = hoveredId === item.school.id;
-                        return (
-                          <div
+                  return (
+                    <div
                             key={item.school.id}
                             className={`flex items-center justify-between rounded-lg p-3 transition-colors ${
                               isDragging
@@ -427,37 +427,37 @@ function WishlistContent() {
                                 : isHovered
                                 ? 'bg-[#E8F0FE]'
                                 : 'bg-white'
-                            }`}
-                            draggable
-                            onDragStart={(e) => handleDragStart(item.school.id, e)}
-                            onDragOver={(e) => handleDragOver(e, item.school.id)}
-                            onDragEnd={handleDragEnd}
+                      }`}
+                      draggable
+                      onDragStart={(e) => handleDragStart(item.school.id, e)}
+                      onDragOver={(e) => handleDragOver(e, item.school.id)}
+                      onDragEnd={handleDragEnd}
                             onMouseEnter={() => setHoveredId(item.school.id)}
                             onMouseLeave={() => setHoveredId(null)}
-                          >
+                    >
                             <div className="flex items-center gap-3 flex-1">
                               <div className="w-8 h-8 rounded-full bg-[#e8ddc8] flex items-center justify-center font-semibold" style={{ color: '#333333' }}>
-                                {index + 1}
-                              </div>
+                          {index + 1}
+                        </div>
                               <div className="min-w-[130px] max-w-[440px] flex-1">
                                 <div className="font-semibold" style={{ color: '#333333' }}>{item.school.name_zh}</div>
                                 <div className="text-sm" style={{ color: '#333333' }}>{item.school.country}</div>
-                              </div>
-                            </div>
+                        </div>
+                      </div>
                             <div className={`flex items-center gap-1 transition-opacity ${isHovered || isDragging ? 'opacity-100' : 'opacity-0'}`}>
-                              <div
-                                className="cursor-grab active:cursor-grabbing p-2"
-                                title="拖曳調整志願序"
+                        <div
+                          className="cursor-grab active:cursor-grabbing p-2"
+                          title="拖曳調整志願序"
                                 style={{ color: '#666666' }}
-                              >
+                        >
                                 <GripVertical className="w-4 h-4" />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  );
+                })}
+                  </div>
+                )}
                 </div>
 
                 {preferences.length > 0 && (

@@ -29,48 +29,48 @@ function SocialContent() {
         }}
       >
         <div className="flex gap-2 pointer-events-auto" style={{ width: '25%' }}>
-          <Button
-            onClick={() => setFilter('all')}
-            style={{
-              borderRadius: '9999px',
-              boxShadow: 'none',
-              ...(filter === 'all'
-                ? {
-                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                    borderColor: '#8D7051',
-                    color: 'white',
-                  }
-                : {
-                    backgroundColor: 'transparent',
-                    borderColor: '#8D7051',
-                    color: '#8D7051',
-                  }),
-            }}
-            className="flex-1 text-xs py-1 border transition-colors shadow-none"
-          >
-            所有貼文
-          </Button>
-          <Button
-            onClick={() => setFilter('following')}
-            style={{
-              borderRadius: '9999px',
-              boxShadow: 'none',
-              ...(filter === 'following'
-                ? {
-                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                    borderColor: '#8D7051',
-                    color: 'white',
-                  }
-                : {
-                    backgroundColor: 'transparent',
-                    borderColor: '#8D7051',
-                    color: '#8D7051',
-                  }),
-            }}
-            className="flex-1 text-xs py-1 border transition-colors shadow-none"
-          >
-            追蹤中
-          </Button>
+              <Button
+                onClick={() => setFilter('all')}
+                style={{
+                  borderRadius: '9999px',
+                  boxShadow: 'none',
+                  ...(filter === 'all'
+                    ? {
+                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                        borderColor: '#8D7051',
+                        color: 'white',
+                      }
+                    : {
+                        backgroundColor: 'transparent',
+                        borderColor: '#8D7051',
+                        color: '#8D7051',
+                      }),
+                }}
+                className="flex-1 text-xs py-1 border transition-colors shadow-none"
+              >
+                所有貼文
+              </Button>
+              <Button
+                onClick={() => setFilter('following')}
+                style={{
+                  borderRadius: '9999px',
+                  boxShadow: 'none',
+                  ...(filter === 'following'
+                    ? {
+                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                        borderColor: '#8D7051',
+                        color: 'white',
+                      }
+                    : {
+                        backgroundColor: 'transparent',
+                        borderColor: '#8D7051',
+                        color: '#8D7051',
+                      }),
+                }}
+                className="flex-1 text-xs py-1 border transition-colors shadow-none"
+              >
+                追蹤中
+              </Button>
         </div>
       </div>
 
@@ -89,7 +89,7 @@ function SocialContent() {
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <SocialSidebar />
+              <SocialSidebar />
           </aside>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function SocialPage() {
   return (
     <RouteGuard>
       <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
-        <SocialContent />
+      <SocialContent />
       </Suspense>
     </RouteGuard>
   );

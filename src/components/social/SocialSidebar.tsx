@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,22 +10,50 @@ import PostTypeDialog from './PostTypeDialog';
 
 function PostButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [buttonPosition, setButtonPosition] = useState<{ top: number; left: number; width: number } | null>(null);
+
+  useEffect(() => {
+    if (dialogOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setButtonPosition({
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+  }, [dialogOpen]);
 
   return (
     <>
       <Button
+        ref={buttonRef}
         onClick={() => setDialogOpen(true)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
           borderRadius: '9999px',
-          backgroundColor: '#BAC7E5',
-          color: 'white',
+          backgroundColor: isHovered ? 'rgba(186, 199, 229, 0.9)' : '#BAC7E5',
+          color: '#333333',
+          boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
+          paddingTop: '16px',
+          paddingBottom: '16px',
+          fontSize: '16px',
+          letterSpacing: '0.05em',
+          border: isHovered ? '2px solid #8D7051' : '2px solid transparent',
+          transition: 'all 0.2s ease',
         }}
-        className="w-full hover:bg-[#BAC7E5]/90 border-0 shadow-none"
+        className="w-full"
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-5 h-5 mr-2" />
         發佈貼文
       </Button>
-      <PostTypeDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <PostTypeDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        position={buttonPosition}
+      />
     </>
   );
 }

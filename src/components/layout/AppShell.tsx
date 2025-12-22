@@ -40,15 +40,15 @@ export default function AppShell({ children }: AppShellProps) {
         <div className="h-full flex items-center justify-between px-4">
           {/* 左上角開關按鈕和 Logo */}
           <div className="pointer-events-auto flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
-              onClick={() => setOpen(!open)}
-              aria-label="開啟側邊選單"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
+            onClick={() => setOpen(!open)}
+            aria-label="開啟側邊選單"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
             {/* 在特定頁面顯示 Logo */}
             {pathname?.startsWith('/social') && (
               <Link href="/social" className="flex items-center hover:opacity-80 transition-opacity">
@@ -96,7 +96,7 @@ export default function AppShell({ children }: AppShellProps) {
           
           {/* 右上角按鈕區域 */}
           <div className="pointer-events-auto">
-            <UserMenu />
+          <UserMenu />
           </div>
         </div>
       </header>

@@ -409,10 +409,20 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                       />
                     )}
                     {activeTab === 'likes' && isOwnProfile && (
-                      <div className="text-sm text-gray-500">按讚功能開發中...</div>
+                      <PostList
+                        filter="all"
+                        sort="latest"
+                        variant="plain"
+                        liked={true}
+                      />
                     )}
                     {activeTab === 'bookmarks' && isOwnProfile && (
-                      <div className="text-sm text-gray-500">收藏功能開發中...</div>
+                      <PostList
+                        filter="all"
+                        sort="latest"
+                        variant="plain"
+                        bookmarked={true}
+                      />
                     )}
                   </div>
                 </div>

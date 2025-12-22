@@ -65,7 +65,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isReposted, setIsReposted] = useState(post.isReposted);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
 
   const isAuthor = session?.user && (session.user as { id: string }).id === post.author.id;
@@ -142,29 +142,34 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   };
 
   const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_v, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < rating ? 'fill-[#8D7051] text-[#8D7051]' : 'text-gray-300'}`}
-      />
-    ));
+    return (
+      <div className="flex items-center gap-1">
+        {Array.from({ length: 5 }, (_v, i) => (
+          <Star
+            key={i}
+            className={`h-4 w-4 ${i < rating ? 'fill-[#8D7051] text-[#8D7051]' : 'text-gray-300'}`}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderDollarSigns = (rating: number) => {
-    return Array.from({ length: 3 }, (_v, i) => (
+    // 改为和编辑时一样的样式：一个标签，里面显示对应数量的$符号
+    if (rating <= 0) return null;
+    return (
       <button
-        key={i}
         type="button"
         disabled
-        className={`px-2 py-0.5 rounded text-xs font-semibold transition-colors ${
-          i < rating
-            ? 'bg-[#8D7051] text-white'
-            : 'bg-gray-100 text-gray-400'
-        }`}
+        className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
+        style={{
+          backgroundColor: 'rgba(141, 112, 81, 0.2)',
+          letterSpacing: '0.1em',
+        }}
       >
-        {'$'.repeat(i + 1)}
+        {'$'.repeat(rating)}
       </button>
-    ));
+    );
   };
 
   // 清理並截斷內容 - 移除換行，單行顯示
@@ -301,25 +306,19 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
               生活機能
             </span>
-            <div className="flex items-center gap-1">
-              {renderStars(post.ratings.livingConvenience)}
-            </div>
+            {renderStars(post.ratings.livingConvenience)}
           </div>
           <div className="flex items-center gap-2 flex-1">
             <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
               學習體驗
             </span>
-            <div className="flex items-center gap-1">
-              {renderStars(post.ratings.courseLoading)}
-            </div>
+            {renderStars(post.ratings.courseLoading)}
           </div>
           <div className="flex items-center gap-2 flex-1">
             <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
               物價水準
             </span>
-            <div className="flex items-center gap-1">
-              {renderDollarSigns(post.ratings.costOfLiving)}
-            </div>
+            {renderDollarSigns(post.ratings.costOfLiving)}
           </div>
         </div>
       )}

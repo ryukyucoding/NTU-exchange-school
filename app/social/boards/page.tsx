@@ -73,28 +73,28 @@ function BoardsContent() {
           pointerEvents: 'none' // 让点击事件穿透
         }}
       >
-        <div
+            <div 
           className="flex items-center justify-center pointer-events-auto"
-          style={{
-            width: '96px',
-            height: '32px',
-            border: '1px solid #5A5A5A',
-            borderRadius: '24px',
+              style={{
+                width: '96px',
+                height: '32px',
+                border: '1px solid #5A5A5A',
+                borderRadius: '24px',
             boxSizing: 'border-box',
             backgroundColor: 'transparent',
-          }}
-        >
-          <h1 
-            className="text-sm font-semibold"
-            style={{ 
-              color: '#5A5A5A',
-              fontSize: '14px',
-              lineHeight: '20px',
-              fontFamily: "'Noto Sans TC', sans-serif"
-            }}
-          >
-            所有看板
-          </h1>
+              }}
+            >
+              <h1 
+                className="text-sm font-semibold"
+                style={{ 
+                  color: '#5A5A5A',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  fontFamily: "'Noto Sans TC', sans-serif"
+                }}
+              >
+                所有看板
+              </h1>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ function BoardsContent() {
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <SocialSidebar />
+              <SocialSidebar />
           </aside>
         </div>
       </div>

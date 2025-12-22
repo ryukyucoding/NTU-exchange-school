@@ -35,6 +35,7 @@ interface Post {
   commentCount: number;
   isLiked: boolean;
   isReposted: boolean;
+  isBookmarked?: boolean;
 }
 
 interface GeneralPostCardProps {
@@ -46,7 +47,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isReposted, setIsReposted] = useState(post.isReposted);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
 
@@ -304,10 +305,10 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           size="sm"
           onClick={handleBookmark}
           className="flex items-center gap-2 hover:bg-transparent group"
-          style={{ color: isBookmarked ? '#f59e0b' : '#5A5A5A' }}
+          style={{ color: isBookmarked ? '#8D7051' : '#5A5A5A' }}
         >
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
         </Button>
       </div>
