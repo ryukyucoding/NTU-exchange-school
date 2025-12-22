@@ -50,6 +50,7 @@ interface Post {
 interface PostListProps {
   filter: 'all' | 'following';
   boardId?: string | null;
+  authorId?: string | null; // Filter posts by author
   sort?: 'latest' | 'popular';
   variant?: 'card' | 'plain';
   filterType?: 'rating' | null; // 'rating' to show only posts with SchoolRating
@@ -58,6 +59,7 @@ interface PostListProps {
 export default function PostList({
   filter,
   boardId,
+  authorId,
   sort = 'latest',
   variant = 'card',
   filterType = null,
@@ -77,6 +79,9 @@ export default function PostList({
       });
       if (boardId) {
         params.append('boardId', boardId);
+      }
+      if (authorId) {
+        params.append('authorId', authorId);
       }
       if (filterType) {
         params.append('filterType', filterType);
@@ -152,10 +157,11 @@ export default function PostList({
   };
 
   useEffect(() => {
-    // 切換 filter/boardId/sort/filterType 時重置列表
+    // 切換 filter/boardId/authorId/sort/filterType 時重置列表
     console.log('[PostList] useEffect 觸發，重置並獲取貼文:', {
       filter,
       boardId,
+      authorId,
       sort,
       filterType,
     });
@@ -164,7 +170,7 @@ export default function PostList({
     setHasMore(true);
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, boardId, sort, filterType]);
+  }, [filter, boardId, authorId, sort, filterType]);
 
   const loadMore = () => {
     if (nextCursor && !loading) {

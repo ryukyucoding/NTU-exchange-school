@@ -1,8 +1,9 @@
 'use client';
 
-import { use, useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState, useRef } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -21,32 +22,42 @@ const tabItems = [
 
 export default function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const resolvedParams = use(params);
-  const userId = resolvedParams?.userId || 'UserName';
+  const userId = resolvedParams?.userId || '';
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState(tabItems[0].key);
-  const [profileName, setProfileName] = useState('UserName');
-  const [bio, setBio] = useState('哈囉你好嗎，衷心感謝。');
+  const [profileName, setProfileName] = useState('');
+  const [bio, setBio] = useState('');
   const [editOpen, setEditOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
+  const [postCount, setPostCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingBackground, setUploadingBackground] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
   const isOwnProfile = !!session?.user?.id && session.user.id === userId;
 
-  const displayName = useMemo(() => profileName, [profileName]);
+  const displayName = useMemo(() => profileName || '', [profileName]);
 
   useEffect(() => {
     let cancelled = false;
     const fetchUser = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/user/${userId}`);
         const data = await res.json();
         if (!cancelled && data?.success && data.user) {
-          setProfileName(data.user.name || data.user.userID || 'UserName');
+          setProfileName(data.user.name || data.user.userID || '');
+          setBio(data.user.bio || '');
           setAvatarUrl(data.user.image || null);
-        } else if (!cancelled) {
-          // fallback to a readable string if user not found
-          setProfileName(userId.replace(/-/g, ' '));
+          setBackgroundImageUrl(data.user.backgroundImage || null);
+          setPostCount(data.user.postCount || 0);
         }
-      } catch {
-        if (!cancelled) setProfileName(userId.replace(/-/g, ' '));
+      } catch (err) {
+        console.error('Error fetching user:', err);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     if (userId) fetchUser();
@@ -55,52 +66,262 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
     };
   }, [userId]);
 
-  return (
-    <RouteGuard>
-      <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-        {/* Topic Frame */}
-        <div className="sticky top-16 z-40 py-4 border-b border-transparent">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex justify-center">
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  width: '140px',
-                  height: '32px',
-                  border: '1px solid #5A5A5A',
-                  borderRadius: '24px',
-                  boxSizing: 'border-box',
-                  background: 'transparent',
-                }}
-              >
-                <h1
-                  className="text-sm font-semibold"
-                  style={{
-                    color: '#5A5A5A',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                  }}
-                >
-                  {displayName}
-                </h1>
-              </div>
-            </div>
+  // 压缩图片
+  const compressImage = (file: File, maxSizeMB: number = 2): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // 如果图片太大，先缩小尺寸（最大宽度或高度为1920px）
+          const maxDimension = 1920;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = (height / width) * maxDimension;
+              width = maxDimension;
+            } else {
+              width = (width / height) * maxDimension;
+              height = maxDimension;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('無法創建畫布'));
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // 尝试不同的质量，直到文件大小小于目标大小
+          let quality = 0.9;
+          const maxSizeBytes = maxSizeMB * 1024 * 1024;
+          
+          const tryCompress = () => {
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error('壓縮失敗'));
+                  return;
+                }
+                
+                if (blob.size <= maxSizeBytes || quality <= 0.1) {
+                  const compressedFile = new File(
+                    [blob],
+                    file.name.replace(/[/\\]/g, '_'),
+                    { type: 'image/jpeg' }
+                  );
+                  resolve(compressedFile);
+                } else {
+                  quality -= 0.1;
+                  tryCompress();
+                }
+              },
+              'image/jpeg',
+              quality
+            );
+          };
+          
+          tryCompress();
+        };
+        img.onerror = () => reject(new Error('無法載入圖片'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('讀取文件失敗'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // 上传图片
+  const handleImageUpload = async (file: File, type: 'avatar' | 'background') => {
+    if (!file.type.startsWith('image/')) {
+      alert('請選擇圖片檔案');
+      return;
+    }
+
+    if (type === 'avatar') {
+      setUploadingAvatar(true);
+    } else {
+      setUploadingBackground(true);
+    }
+
+    try {
+      // 压缩图片（目标大小 2MB）
+      let fileToUpload = file;
+      if (file.size > 2 * 1024 * 1024) {
+        try {
+          fileToUpload = await compressImage(file, 2);
+        } catch (compressError) {
+          console.error('圖片壓縮失敗:', compressError);
+          alert('圖片壓縮失敗，請嘗試較小的圖片');
+          if (type === 'avatar') {
+            setUploadingAvatar(false);
+          } else {
+            setUploadingBackground(false);
+          }
+          return;
+        }
+      }
+
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: '上傳失敗' }));
+        throw new Error(errorData.error || '上傳失敗');
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || '上傳失敗');
+      }
+
+      if (type === 'avatar') {
+        setAvatarUrl(data.url);
+      } else {
+        setBackgroundImageUrl(data.url);
+      }
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      alert('上傳失敗：' + (err instanceof Error ? err.message : '未知錯誤'));
+    } finally {
+      if (type === 'avatar') {
+        setUploadingAvatar(false);
+      } else {
+        setUploadingBackground(false);
+      }
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      const res = await fetch(`/api/user/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: profileName,
+          bio: bio,
+          image: avatarUrl,
+          backgroundImage: backgroundImageUrl,
+        }),
+      });
+      const data = await res.json();
+      if (data?.success) {
+        setEditOpen(false);
+        // 刷新页面数据
+        const refreshRes = await fetch(`/api/user/${userId}`);
+        const refreshData = await refreshRes.json();
+        if (refreshData?.success && refreshData.user) {
+          setProfileName(refreshData.user.name || refreshData.user.userID || '');
+          setBio(refreshData.user.bio || '');
+          setAvatarUrl(refreshData.user.image || null);
+          setBackgroundImageUrl(refreshData.user.backgroundImage || null);
+        }
+      } else {
+        console.error('Failed to update profile:', data.error);
+        alert('更新失敗：' + (data.error || '未知錯誤'));
+      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('更新失敗，請稍後再試');
+    }
+  };
+
+  if (loading) {
+    return (
+      <RouteGuard>
+        <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
           </div>
         </div>
+      </RouteGuard>
+    );
+  }
 
-        <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
-          <div className="flex gap-6 items-start justify-center">
+  if (!displayName) {
+    return (
+      <RouteGuard>
+        <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+          <div className="flex items-center justify-center py-12">
+            <p className="text-muted-foreground">找不到此用戶</p>
+          </div>
+        </div>
+      </RouteGuard>
+    );
+  }
+
+  return (
+    <RouteGuard>
+      {/* AppShell 在 /social/profile/[id] 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動 */}
+      <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+        {/* Topic Frame - 固定在 header 内部居中 */}
+        {displayName && (
+          <div 
+            className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
+            style={{ 
+              height: '64px', // header 的高度
+              pointerEvents: 'none' // 让点击事件穿透
+            }}
+          >
+            <div
+              className="flex items-center justify-center pointer-events-auto"
+              style={{
+                width: '140px',
+                height: '32px',
+                border: '1px solid #5A5A5A',
+                borderRadius: '24px',
+                boxSizing: 'border-box',
+                backgroundColor: 'transparent',
+              }}
+            >
+              <h1
+                className="text-sm font-semibold"
+                style={{
+                  color: '#5A5A5A',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  fontFamily: "'Noto Sans TC', sans-serif",
+                }}
+              >
+                {displayName}
+              </h1>
+            </div>
+          </div>
+        )}
+
+        <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+          <div className="flex gap-6 items-start justify-center h-full">
             {/* Left spacer (match boards layout) */}
             <aside className="hidden md:block w-64 flex-shrink-0" />
 
-            <main
-              className="w-[800px] flex-shrink-0"
-              style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}
-            >
+            {/* Main (ONLY scrollable area) */}
+            <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
               <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4">
                 <div className="relative">
-                  <div className="h-44 bg-[#BAC7E5] rounded-t-xl" />
+                  {backgroundImageUrl ? (
+                    <div 
+                      className="h-44 rounded-t-xl bg-cover bg-center"
+                      style={{ backgroundImage: `url(${backgroundImageUrl})` }}
+                    />
+                  ) : (
+                    <div className="h-44 bg-[#BAC7E5] rounded-t-xl" />
+                  )}
                   {/* avatar overlaps cover */}
                   <div className="absolute left-10 -bottom-12">
                     {avatarUrl ? (
@@ -124,7 +345,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
                     <div className="text-right text-gray-600">
                       <div className="text-sm">貼文數</div>
-                      <div className="text-xl font-semibold">23</div>
+                      <div className="text-xl font-semibold">{postCount}</div>
                       {isOwnProfile && (
                         <Button
                           onClick={() => setEditOpen(true)}
@@ -179,22 +400,28 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
                   {/* Posts content (continuous with the same white block) */}
                   <div className="mt-6">
-                    <div className="text-gray-400 text-sm mb-4">
-                      {activeTab === 'posts' && '顯示此帳號的貼文'}
-                      {activeTab === 'likes' && isOwnProfile && '顯示此帳號按讚的貼文'}
-                      {activeTab === 'bookmarks' && isOwnProfile && '顯示此帳號收藏的貼文'}
-                    </div>
-                    <div className="text-sm text-gray-500">目前尚無貼文顯示。</div>
+                    {activeTab === 'posts' && (
+                      <PostList
+                        filter="all"
+                        authorId={userId}
+                        sort="latest"
+                        variant="plain"
+                      />
+                    )}
+                    {activeTab === 'likes' && isOwnProfile && (
+                      <div className="text-sm text-gray-500">按讚功能開發中...</div>
+                    )}
+                    {activeTab === 'bookmarks' && isOwnProfile && (
+                      <div className="text-sm text-gray-500">收藏功能開發中...</div>
+                    )}
                   </div>
                 </div>
               </div>
             </main>
 
-            {/* Right sidebar (match boards layout) */}
+            {/* Right sidebar (fixed, does NOT scroll) */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="sticky" style={{ top: '6rem' }}>
-                <SocialSidebar />
-              </div>
+              <SocialSidebar />
             </aside>
           </div>
         </div>
@@ -208,45 +435,119 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
               編輯個人檔案
             </DialogTitle>
             <DialogDescription className="text-[#6b5b4c]">
-              你可以修改頭貼、背景圖片、名稱與自我介紹（目前為前端預覽，不會寫入資料庫）。
+              你可以修改頭貼、背景圖片、名稱與自我介紹。
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-sm font-medium text-[#4a3828]">背景圖片</div>
-              <input type="file" accept="image/*" className="w-full text-sm" />
-            </div>
-
-            <div className="space-y-1">
-              <div className="text-sm font-medium text-[#4a3828]">頭貼</div>
-              <input type="file" accept="image/*" className="w-full text-sm" />
-            </div>
-
+            {/* 名稱 - 最上面 */}
             <div className="space-y-1">
               <div className="text-sm font-medium text-[#4a3828]">名稱</div>
               <input
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
                 className="w-full rounded-md border border-[#d6c3a1] px-3 py-2 text-sm"
+                style={{ color: '#333333' }}
               />
             </div>
 
+            {/* 頭貼 */}
+            <div className="space-y-1">
+              <div className="text-sm font-medium text-[#4a3828]">頭貼</div>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleImageUpload(file, 'avatar');
+                  }
+                }}
+                className="hidden"
+              />
+              <div className="flex items-center gap-3">
+                {avatarUrl && (
+                  <img
+                    src={avatarUrl}
+                    alt="頭貼預覽"
+                    className="w-16 h-16 rounded-full object-cover border border-[#d6c3a1]"
+                  />
+                )}
+                <div className="flex-1" />
+                <Button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="text-sm"
+                  style={{ backgroundColor: '#8D7051', color: 'white', border: 'none' }}
+                >
+                  {uploadingAvatar ? '上傳中...' : '選擇圖片'}
+                </Button>
+              </div>
+            </div>
+
+            {/* 背景圖片 */}
+            <div className="space-y-1">
+              <div className="text-sm font-medium text-[#4a3828]">背景圖片</div>
+              <input
+                ref={backgroundInputRef}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleImageUpload(file, 'background');
+                  }
+                }}
+                className="hidden"
+              />
+              <div className="flex items-center gap-3">
+                {backgroundImageUrl && (
+                  <img
+                    src={backgroundImageUrl}
+                    alt="背景預覽"
+                    className="w-32 h-16 object-cover rounded border border-[#d6c3a1]"
+                  />
+                )}
+                <div className="flex-1" />
+                <Button
+                  type="button"
+                  onClick={() => backgroundInputRef.current?.click()}
+                  disabled={uploadingBackground}
+                  className="text-sm"
+                  style={{ backgroundColor: '#8D7051', color: 'white', border: 'none' }}
+                >
+                  {uploadingBackground ? '上傳中...' : '選擇圖片'}
+                </Button>
+              </div>
+            </div>
+
+            {/* 自我介紹 */}
             <div className="space-y-1">
               <div className="text-sm font-medium text-[#4a3828]">自我介紹</div>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 className="w-full min-h-[96px] rounded-md border border-[#d6c3a1] px-3 py-2 text-sm"
+                style={{ color: '#333333' }}
               />
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setEditOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setEditOpen(false)}
+                style={{
+                  backgroundColor: '#f7efe5',
+                  color: '#8D7051',
+                  borderColor: '#d6c3a1',
+                }}
+              >
                 取消
               </Button>
               <Button
-                onClick={() => setEditOpen(false)}
+                onClick={handleSaveProfile}
                 style={{ backgroundColor: '#8D7051', color: 'white' }}
               >
                 儲存

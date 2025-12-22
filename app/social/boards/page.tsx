@@ -63,49 +63,51 @@ function BoardsContent() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-      {/* Header section is handled by AppShell */}
-      
-      {/* Topic Frame: Title section - same style as posts page */}
-      <div className="sticky top-16 z-40 py-4 border-b border-transparent">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center">
-            <div 
-              className="flex items-center justify-center"
-              style={{
-                width: '96px',
-                height: '32px',
-                border: '1px solid #5A5A5A',
-                borderRadius: '24px',
-                boxSizing: 'border-box'
-              }}
-            >
-              <h1 
-                className="text-sm font-semibold"
-                style={{ 
-                  color: '#5A5A5A',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  fontFamily: "'Noto Sans TC', sans-serif"
-                }}
-              >
-                所有看板
-              </h1>
-            </div>
-          </div>
+    // AppShell 在 /social/boards 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
+    <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
+      {/* Topic Frame - 固定在 header 内部居中 */}
+      <div 
+        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
+        style={{ 
+          height: '64px', // header 的高度
+          pointerEvents: 'none' // 让点击事件穿透
+        }}
+      >
+        <div
+          className="flex items-center justify-center pointer-events-auto"
+          style={{
+            width: '96px',
+            height: '32px',
+            border: '1px solid #5A5A5A',
+            borderRadius: '24px',
+            boxSizing: 'border-box',
+            backgroundColor: 'transparent',
+          }}
+        >
+          <h1 
+            className="text-sm font-semibold"
+            style={{ 
+              color: '#5A5A5A',
+              fontSize: '14px',
+              lineHeight: '20px',
+              fontFamily: "'Noto Sans TC', sans-serif"
+            }}
+          >
+            所有看板
+          </h1>
         </div>
       </div>
 
       {/* Content Frame: Main content area with boards and sidebar */}
-      <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
-        <div className="flex gap-6 items-start justify-center">
+      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+        <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar - Empty but keeps layout structure */}
           <aside className="hidden md:block w-64 flex-shrink-0">
             {/* Empty sidebar to maintain three-column layout */}
           </aside>
 
-          {/* Main Content - Boards list (scrollable) */}
-          <main className="w-[800px] flex-shrink-0" style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}>
+          {/* Main Content - Boards list (ONLY scrollable area) */}
+          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
             <div className="space-y-4">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
@@ -158,11 +160,9 @@ function BoardsContent() {
             </div>
           </main>
 
-          {/* Right Sidebar Frame - Fixed */}
+          {/* Right Sidebar - Fixed (does NOT scroll) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky" style={{ top: '6rem' }}>
-              <SocialSidebar />
-            </div>
+            <SocialSidebar />
           </aside>
         </div>
       </div>

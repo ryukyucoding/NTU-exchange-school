@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -36,33 +37,64 @@ export default function AppShell({ children }: AppShellProps) {
         className="fixed top-0 left-0 right-0 h-16 z-50 pointer-events-none" 
         style={{ backgroundColor: 'unset', background: 'unset' }}
       >
-        <div 
-          className="h-full flex items-center justify-between px-4 header-inner pointer-events-auto" 
-          style={{ 
-            backgroundColor: 'unset', 
-            background: 'unset',
-            backgroundImage: 'none',
-            backgroundSize: 'initial',
-            backgroundPosition: 'initial',
-            backgroundRepeat: 'initial',
-            backgroundAttachment: 'initial',
-            backgroundOrigin: 'initial',
-            backgroundClip: 'initial'
-          }}
-        >
-          {/* 左上角開關按鈕 */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
-            onClick={() => setOpen(!open)}
-            aria-label="開啟側邊選單"
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
+        <div className="h-full flex items-center justify-between px-4">
+          {/* 左上角開關按鈕和 Logo */}
+          <div className="pointer-events-auto flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
+              onClick={() => setOpen(!open)}
+              aria-label="開啟側邊選單"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+            {/* 在特定頁面顯示 Logo */}
+            {pathname?.startsWith('/social') && (
+              <Link href="/social" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="社群 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
+            {pathname === '/table' && (
+              <Link href="/table" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="瀏覽學校 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
+            {pathname === '/wishlist' && (
+              <Link href="/wishlist" className="flex items-center hover:opacity-80 transition-opacity">
+                <Image
+                  src="/logo-social.png"
+                  alt="收藏學校 Logo"
+                  width={120}
+                  height={32}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </Link>
+            )}
+          </div>
+          
+          {/* 中間區域留空，給 topic/篩選按鈕使用 */}
+          <div className="flex-1" style={{ pointerEvents: 'none' }} />
           
           {/* 右上角按鈕區域 */}
-          <UserMenu />
+          <div className="pointer-events-auto">
+            <UserMenu />
+          </div>
         </div>
       </header>
 
