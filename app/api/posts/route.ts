@@ -1486,8 +1486,8 @@ export async function GET(req: NextRequest) {
     // 如果是收藏的貼文，按收藏時間排序（最新收藏的在最上面）
     if (bookmarked && userId && bookmarkedPostIdsOrdered.length > 0) {
       // 創建一個順序映射
-      const orderMap = new Map(bookmarkedPostIdsOrdered.map((id, index) => [id, index]));
-      postsWithStatus.sort((a, b) => {
+      const orderMap = new Map<string, number>(bookmarkedPostIdsOrdered.map((id: string, index: number) => [id, index]));
+      postsWithStatus.sort((a: { id: string }, b: { id: string }) => {
         const orderA = orderMap.get(a.id) ?? Infinity;
         const orderB = orderMap.get(b.id) ?? Infinity;
         return orderA - orderB;
