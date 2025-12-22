@@ -11,13 +11,13 @@ const defaultFilters: FilterState = {
   regions: [],
   countries: [],
   colleges: [],
+  applicationGroup: null,
   gradeRequirement: null,
   gpaMin: null,
   toeflMin: null,
   ieltsMin: null,
   toeicMin: null,
   quotaMin: null,
-  semesters: [],
   searchKeyword: '',
 };
 

@@ -27,10 +27,12 @@ export function cleanMarkdown(content: string): string {
   });
   
   // 移除粗體/斜體標記: **text** 或 *text* 或 __text__ 或 _text_
+  // 注意：只匹配真正的 Markdown 語法，避免誤匹配中文字符
   cleaned = cleaned.replace(/\*\*([^\*]+)\*\*/g, '$1');
   cleaned = cleaned.replace(/\*([^\*]+)\*/g, '$1');
   cleaned = cleaned.replace(/__([^_]+)__/g, '$1');
-  cleaned = cleaned.replace(/_([^_]+)_/g, '$1');
+  // 只匹配前後有空格、標點或行首尾的斜體標記，避免誤匹配中文字符
+  cleaned = cleaned.replace(/(^|\s|[\p{P}\p{S}])_([^_\n]+)_(\s|[\p{P}\p{S}]|$)/gu, '$1$2$3');
   
   // 移除標題標記: # ## ### 等
   cleaned = cleaned.replace(/^#{1,6}\s+/gm, '');

@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Edit } from 'lucide-react';
 import { cleanMarkdown, truncateLines } from '@/utils/markdown';
+import { markdownToHtml } from '@/lib/utils';
+import RepostPreview from './RepostPreview';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +38,22 @@ interface Post {
   isLiked: boolean;
   isReposted: boolean;
   isBookmarked?: boolean;
+  repostId?: string; // 轉發的原貼文 ID
+  originalPost?: { // 原貼文數據
+    id: string;
+    title: string;
+    content: string;
+    author: {
+      id: string;
+      name: string | null;
+      userID: string;
+      image?: string | null;
+    };
+    createdAt: string;
+    schools?: { id: string; name_zh: string; name_en: string; country: string }[];
+    countries?: string[];
+    hashtags?: string[];
+  };
 }
 
 interface GeneralPostCardProps {
@@ -68,18 +86,9 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
     }
   };
 
-  const handleRepost = async () => {
-    try {
-      const response = await fetch(`/api/posts/${post.id}/repost`, {
-        method: isReposted ? 'DELETE' : 'POST',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setIsReposted(!isReposted);
-      }
-    } catch (error) {
-      console.error('Error toggling repost:', error);
-    }
+  const handleRepost = () => {
+    // 跳轉到發文頁面並帶上 repostId 參數
+    router.push(`/social/post/general?repostId=${post.id}`);
   };
 
   const handleBookmark = async () => {
@@ -267,15 +276,35 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
         ))}
       </div>
 
-      {/* 文章內容 */}
-      <Link href={`/social/posts/${post.id}`}>
-        <p 
-          className="text-sm mb-4"
-          style={{ color: '#5A5A5A' }}
-        >
-          {truncatedContent}
-        </p>
-      </Link>
+      {/* 文章內容 - 如果有輸入內容，顯示在預覽框上方 */}
+      {post.content.trim() && post.repostId && post.originalPost && (
+        <div className="mb-4">
+          <div 
+            className="text-sm prose prose-sm max-w-none"
+            style={{ color: '#5A5A5A' }}
+            dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
+          />
+        </div>
+      )}
+      
+      {/* 轉發預覽框 */}
+      {post.repostId && post.originalPost && (
+        <div className="mb-4">
+          <RepostPreview originalPost={post.originalPost} />
+        </div>
+      )}
+      
+      {/* 如果沒有轉發，顯示正常內容 */}
+      {!post.repostId && (
+        <Link href={`/social/posts/${post.id}`}>
+          <p 
+            className="text-sm mb-4"
+            style={{ color: '#5A5A5A' }}
+          >
+            {truncatedContent}
+          </p>
+        </Link>
+      )}
 
       {/* 互動按鈕 */}
       <div className="flex items-center gap-6 pt-4">
@@ -309,10 +338,10 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           size="sm"
           onClick={handleRepost}
           className="flex items-center gap-2 hover:bg-transparent group"
-          style={{ color: isReposted ? '#10b981' : '#5A5A5A' }}
+          style={{ color: isReposted ? '#8D7051' : '#5A5A5A' }}
         >
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-            <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-green-500 text-green-500' : ''}`} />
+            <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
           <span className="text-base">{post.repostCount}</span>
         </Button>

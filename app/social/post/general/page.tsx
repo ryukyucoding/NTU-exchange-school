@@ -11,6 +11,7 @@ import MultiCountrySchoolSelect from '@/components/social/MultiCountrySchoolSele
 import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';
 import DraftList from '@/components/social/DraftList';
+import RepostPreview from '@/components/social/RepostPreview';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
 
@@ -27,6 +28,7 @@ interface Draft {
 
 function GeneralPostContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
@@ -171,12 +173,22 @@ function GeneralPostContent() {
     }
   };
 
+  const normalizeEditorText = (s: string) =>
+    (s || '').replace(/\u200B/g, '').replace(/\u00A0/g, ' ').trim();
+
+  const normalizedTitle = normalizeEditorText(title);
+  const normalizedContent = normalizeEditorText(content);
+
+  // 檢查是否符合發布條件（轉發可無內容，但一般貼文需有內容）
+  const canPublish = Boolean(normalizedTitle) && (Boolean(repostId) || Boolean(normalizedContent));
+
   const handleSubmit = async () => {
-    if (!title.trim()) {
+    if (!normalizedTitle) {
       toast.error('請輸入標題');
       return;
     }
-    if (!content.trim()) {
+    // 轉發時可以不輸入內容，但必須有標題
+    if (!repostId && !normalizedContent) {
       toast.error('請輸入內容');
       return;
     }
@@ -198,14 +210,15 @@ function GeneralPostContent() {
         },
         body: JSON.stringify({
           postId: draftId || undefined,
-          title: title.trim(),
-          content: content.trim(),
+          title: normalizedTitle,
+          content: normalizedContent, // 確保內容與送出按鈕判斷一致，避免漏字/空白造成錯判
           status: 'published',
           type: 'general',
           hashtags,
           schoolIds: selectedSchoolIds,
           countryIds: countryIds.length > 0 ? countryIds : undefined,
           countryNames: countryIds.length === 0 ? selectedCountries : undefined, // 向後兼容
+          repostId: repostId || undefined,
         }),
       });
 
@@ -326,10 +339,17 @@ function GeneralPostContent() {
 
                 {/* Content Section */}
                 <div className="mb-6 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
+                  {/* 轉發預覽框 - 顯示在輸入框上方 */}
+                  {repostId && originalPost && (
+                    <div className="mb-4">
+                      <RepostPreview originalPost={originalPost} />
+                    </div>
+                  )}
+                  {/* 輸入框 - 用戶可以在這裡輸入文字 */}
                   <SimpleRichTextEditor
                     value={content}
                     onChange={setContent}
-                    placeholder="輸入內容..."
+                    placeholder={repostId ? "說點什麼..." : "輸入內容..."}
                   />
                 </div>
 
@@ -376,13 +396,13 @@ function GeneralPostContent() {
                   )}
                   <Button
                     onClick={handleSubmit}
-                    disabled={isSubmitting || isSavingDraft}
+                    disabled={isSubmitting || isSavingDraft || !canPublish}
                     style={{
-                      backgroundColor: '#BAC7E5',
-                      color: 'white',
+                      backgroundColor: canPublish ? '#BAC7E5' : '#BAC7E5',
+                      color: canPublish ? '#5A5A5A' : 'white',
                       borderRadius: '9999px',
                     }}
-                    className="hover:bg-[#BAC7E5]/90"
+                    className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
                   >
                     {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>

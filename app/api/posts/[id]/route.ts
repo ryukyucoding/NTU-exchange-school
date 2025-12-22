@@ -151,6 +151,80 @@ export async function GET(
       courseLoading: (ratingsData.data as any[])[0].courseLoading,
     } : null;
 
+    // 如果貼文有 repostId，獲取原貼文數據
+    let originalPost = null;
+    if (post.repostId) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: originalPostData, error: originalPostError } = await (supabase as any)
+          .from('Post')
+          .select(`
+            id,
+            title,
+            content,
+            createdAt,
+            author:User!Post_authorId_fkey (
+              id,
+              name,
+              userID,
+              image,
+              email
+            )
+          `)
+          .eq('id', post.repostId)
+          .eq('status', 'published')
+          .is('deletedAt', null)
+          .maybeSingle();
+
+        if (!originalPostError && originalPostData) {
+          // 獲取原貼文的 hashtags, schools, countries
+          const [originalHashtagsResult, originalSchoolsResult] = await Promise.allSettled([
+            (supabase as any).from('Hashtag').select('postId, content').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
+            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
+          ]);
+
+          const originalHashtags = originalHashtagsResult.status === 'fulfilled' ? originalHashtagsResult.value.data || [] : [];
+          const originalSchools = originalSchoolsResult.status === 'fulfilled' ? originalSchoolsResult.value.data || [] : [];
+
+          const originalHashtagsList = originalHashtags.map((h: { content: string }) => h.content);
+          const originalSchoolsList: { id: string; name_zh: string; name_en: string; country: string }[] = [];
+          const originalCountriesList: string[] = [];
+
+          originalSchools.forEach((ps: { school: { id: string; name_zh: string; name_en: string; country: string } | null }) => {
+            if (ps.school) {
+              originalSchoolsList.push({
+                id: ps.school.id,
+                name_zh: ps.school.name_zh,
+                name_en: ps.school.name_en,
+                country: ps.school.country,
+              });
+              if (ps.school.country && !originalCountriesList.includes(ps.school.country)) {
+                originalCountriesList.push(ps.school.country);
+              }
+            }
+          });
+
+          originalPost = {
+            id: originalPostData.id,
+            title: originalPostData.title,
+            content: originalPostData.content,
+            author: originalPostData.author ? {
+              id: originalPostData.author.id,
+              name: originalPostData.author.name,
+              userID: originalPostData.author.userID,
+              image: originalPostData.author.image,
+            } : null,
+            createdAt: originalPostData.createdAt,
+            hashtags: originalHashtagsList,
+            schools: originalSchoolsList,
+            countries: originalCountriesList,
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching original post:', error);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       post: {
@@ -174,7 +248,8 @@ export async function GET(
         commentCount,
         isLiked,
         isReposted,
-        isBookmarked,
+        repostId: post.repostId || null,
+        originalPost: originalPost,
       },
     });
   } catch (error) {

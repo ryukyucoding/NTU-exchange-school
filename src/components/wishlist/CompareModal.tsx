@@ -88,15 +88,6 @@ export default function CompareModal({ schools, open, onClose }: CompareModalPro
               </tr>
 
               <tr className="border-b hover:bg-gray-50">
-                <td className="p-3 font-medium bg-gray-50 sticky left-0">開放學期</td>
-                {schools.map(school => (
-                  <td key={school.id} className="p-3">
-                    {school.semesters.join(', ')}
-                  </td>
-                ))}
-              </tr>
-
-              <tr className="border-b hover:bg-gray-50">
                 <td className="p-3 font-medium bg-gray-50 sticky left-0">學費</td>
                 {schools.map(school => (
                   <td key={school.id} className="p-3 text-center">

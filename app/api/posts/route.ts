@@ -97,41 +97,66 @@ export async function POST(req: NextRequest) {
       schoolIds = [],
       countryIds = [], // 國家 ID 陣列（優先使用）
       countryNames = [], // 國家名稱陣列（向後兼容，會轉換為 countryIds）
-      ratings
+      ratings,
+      repostId // 轉發的原貼文 ID
     } = await req.json();
 
     // 驗證必填欄位（草稿允許空標題和內容）
+    // 確保 content 是字符串類型
+    const contentStr = content !== null && content !== undefined ? String(content) : '';
+    const trimmedTitle = (title || '').trim() || '未命名草稿';
+    const trimmedContent = contentStr.trim();
+    
     if (status !== 'draft') {
-    if (!title || typeof title !== "string") {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      );
-    }
+      if (!title || typeof title !== "string") {
+        return NextResponse.json(
+          { error: "Title is required" },
+          { status: 400 }
+        );
+      }
 
-    if (!content || typeof content !== "string") {
-      return NextResponse.json(
-        { error: "Content is required" },
-        { status: 400 }
-      );
+      if (trimmedTitle.length === 0) {
+        return NextResponse.json(
+          { error: "Title cannot be empty" },
+          { status: 400 }
+        );
+      }
+
+      // 轉發時可以不輸入內容，但必須有標題
+      // 非轉發時必須有內容
+      if (!repostId) {
+        if (typeof content !== "string") {
+          return NextResponse.json(
+            { error: "Content is required" },
+            { status: 400 }
+          );
+        }
+        
+        if (trimmedContent.length === 0) {
+          return NextResponse.json(
+            { error: "Content cannot be empty" },
+            { status: 400 }
+          );
+        }
       }
     }
 
-    const trimmedTitle = (title || '').trim() || '未命名草稿';
-    const trimmedContent = (content || '').trim();
-    
-    if (status !== 'draft' && trimmedTitle.length === 0) {
-      return NextResponse.json(
-        { error: "Title cannot be empty" },
-        { status: 400 }
-      );
-    }
-
-    if (status !== 'draft' && trimmedContent.length === 0) {
-      return NextResponse.json(
-        { error: "Content cannot be empty" },
-        { status: 400 }
-      );
+    // 如果提供了 repostId，驗證原貼文是否存在
+    if (repostId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: originalPost, error: originalPostError } = await (supabase as any)
+        .from('Post')
+        .select('id')
+        .eq('id', repostId)
+        .eq('status', 'published')
+        .maybeSingle();
+      
+      if (originalPostError || !originalPost) {
+        return NextResponse.json(
+          { error: "Original post not found" },
+          { status: 404 }
+        );
+      }
     }
 
     // 如果提供了 postId，檢查該 post 是否存在且屬於當前用戶
@@ -207,6 +232,7 @@ export async function POST(req: NextRequest) {
           content: trimmedContent,
           status: status,
           type: postType,
+          repostId: repostId || null,
           updatedAt: new Date().toISOString(),
         })
         .eq('id', postId)
@@ -238,8 +264,9 @@ export async function POST(req: NextRequest) {
         title: trimmedTitle,
         content: trimmedContent,
         status: status,
-          type: postType,
+        type: postType,
         authorId: userId,
+        repostId: repostId || null,
         })
       .select()
       .single();
@@ -1448,9 +1475,91 @@ export async function GET(req: NextRequest) {
       ratingsByPostId.set(rating.postId, rating);
     });
 
+    // 批量獲取原貼文數據（對於有 repostId 的貼文）
+    const originalPostIds = new Set<string>();
+    posts.forEach((post: { repostId?: string }) => {
+      if (post.repostId) {
+        originalPostIds.add(post.repostId);
+      }
+    });
+
+    const originalPostsMap = new Map<string, any>();
+    if (originalPostIds.size > 0 && supabase) {
+      try {
+        const originalPostIdsArray = Array.from(originalPostIds);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: originalPostsData, error: originalPostsError } = await (supabase as any)
+          .from('Post')
+          .select(`
+            id,
+            title,
+            content,
+            createdAt,
+            author:User!Post_authorId_fkey (
+              id,
+              name,
+              userID,
+              image,
+              email
+            )
+          `)
+          .in('id', originalPostIdsArray)
+          .eq('status', 'published')
+          .is('deletedAt', null);
+
+        if (!originalPostsError && originalPostsData) {
+          // 獲取原貼文的 hashtags, schools, countries
+          const originalPostIdsForDetails = originalPostsData.map((p: { id: string }) => p.id);
+          const [originalHashtagsResult, originalSchoolsResult] = await Promise.allSettled([
+            (supabase as any).from('Hashtag').select('postId, content').in('postId', originalPostIdsForDetails).then((r: any) => r).catch(() => ({ data: [] })),
+            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').in('postId', originalPostIdsForDetails).then((r: any) => r).catch(() => ({ data: [] })),
+          ]);
+
+          const originalHashtags = originalHashtagsResult.status === 'fulfilled' ? originalHashtagsResult.value.data || [] : [];
+          const originalSchools = originalSchoolsResult.status === 'fulfilled' ? originalSchoolsResult.value.data || [] : [];
+
+          // 組織原貼文的 hashtags 和 schools
+          const originalHashtagsByPostId = new Map<string, string[]>();
+          originalHashtags.forEach((h: { postId: string; content: string }) => {
+            if (!originalHashtagsByPostId.has(h.postId)) {
+              originalHashtagsByPostId.set(h.postId, []);
+            }
+            originalHashtagsByPostId.get(h.postId)!.push(h.content);
+          });
+
+          const originalSchoolsByPostId = new Map<string, any[]>();
+          originalSchools.forEach((ps: { postId: string; school: any }) => {
+            if (ps.school) {
+              if (!originalSchoolsByPostId.has(ps.postId)) {
+                originalSchoolsByPostId.set(ps.postId, []);
+              }
+              originalSchoolsByPostId.get(ps.postId)!.push(ps.school);
+            }
+          });
+
+          // 組合原貼文數據
+          originalPostsData.forEach((originalPost: any) => {
+            const originalPostId = originalPost.id;
+            const originalPostHashtags = originalHashtagsByPostId.get(originalPostId) || [];
+            const originalPostSchools = originalSchoolsByPostId.get(originalPostId) || [];
+            const originalPostCountries = [...new Set(originalPostSchools.map((s: any) => s.country).filter(Boolean))];
+
+            originalPostsMap.set(originalPostId, {
+              ...originalPost,
+              hashtags: originalPostHashtags,
+              schools: originalPostSchools,
+              countries: originalPostCountries,
+            });
+          });
+        }
+      } catch (error) {
+        console.error('[GET /api/posts] 獲取原貼文數據失敗:', error);
+      }
+    }
+
     // 組合數據
     console.log('[GET /api/posts] 🔄 開始組合最終數據...');
-    const postsWithStatus = posts.map((post: { id: string; createdAt: string }) => {
+    const postsWithStatus = posts.map((post: { id: string; createdAt: string; repostId?: string }) => {
       const ratings = ratingsByPostId.get(post.id);
       const schools = schoolsByPostId.get(post.id) || [];
       const countries = countriesByPostId.get(post.id) || [];
@@ -1466,6 +1575,8 @@ export async function GET(req: NextRequest) {
         hashtags: hashtags,
       });
       
+      const originalPost = post.repostId ? originalPostsMap.get(post.repostId) : null;
+
       return {
         ...post,
         isLiked: userId ? userLikedPostIds.has(post.id) : false,
@@ -1480,14 +1591,15 @@ export async function GET(req: NextRequest) {
         photos: (photosByPostId.get(post.id) || []).sort((a, b) => a.order - b.order),
         ratings: ratings || null,
         postType: (post as { type?: string }).type === 'rating' ? 'review' : 'general',
+        originalPost: originalPost || null, // 原貼文數據
       };
     });
 
     // 如果是收藏的貼文，按收藏時間排序（最新收藏的在最上面）
     if (bookmarked && userId && bookmarkedPostIdsOrdered.length > 0) {
       // 創建一個順序映射
-      const orderMap = new Map(bookmarkedPostIdsOrdered.map((id, index) => [id, index]));
-      postsWithStatus.sort((a, b) => {
+      const orderMap = new Map<string, number>(bookmarkedPostIdsOrdered.map((id: string, index: number) => [id, index]));
+      postsWithStatus.sort((a: { id: string }, b: { id: string }) => {
         const orderA = orderMap.get(a.id) ?? Infinity;
         const orderB = orderMap.get(b.id) ?? Infinity;
         return orderA - orderB;

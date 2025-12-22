@@ -130,10 +130,10 @@ function CollapseButton({
       size="sm"
       className={`fixed ${top} right-4 z-20 transition-all duration-300 shadow-xl flex flex-col items-center py-4 px-3 min-h-[120px] ${
         isActive
-          ? 'bg-white/95 backdrop-blur-md border-2 border-white/50 text-gray-800 hover:bg-white shadow-2xl'
+          ? 'bg-white/50 backdrop-blur-md border-2 border-white/60 text-gray-800 hover:bg-white/60 hover:text-gray-900 shadow-2xl'
           : isHighZoom
-            ? 'bg-white/30 backdrop-blur-md border border-white/40 text-gray-800 hover:bg-white/40'
-            : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20'
+            ? 'bg-white/30 backdrop-blur-md border border-white/40 text-gray-800 hover:bg-white/40 hover:text-gray-900'
+            : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:text-white'
       }`}
       onClick={onClick}
     >

@@ -28,6 +28,8 @@ export default function SimpleRichTextEditor({
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
   const [isComposing, setIsComposing] = useState(false); // 處理中文輸入
+  // 用 ref 避免 closure 拿到舊的 isComposing，導致 compositionend 漏字或點太快發文拿到舊內容
+  const isComposingRef = useRef(false);
   const isUpdatingRef = useRef(false); // 標記是否正在從外部更新
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -168,35 +170,44 @@ export default function SimpleRichTextEditor({
     return () => window.removeEventListener('resize', syncStyles);
   }, [value]);
 
-  // 處理編輯器內容變化
-  const handleInput = useCallback(() => {
+  const updateHasContent = useCallback(() => {
     const editor = editorRef.current;
     if (!editor) return;
 
     // 檢查是否有內容（包括注音輸入時）
     const content = editor.innerText || editor.textContent || '';
-    const hasText = content.trim().length > 0 || 
-                    editor.innerHTML.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim().length > 0;
+    const hasText =
+      content.trim().length > 0 ||
+      editor.innerHTML
+        .replace(/<br\s*\/?>/gi, '')
+        .replace(/<[^>]+>/g, '')
+        .trim().length > 0;
     setHasContent(hasText);
+  }, []);
 
-    if (isComposing || isUpdatingRef.current) return; // 中文輸入時或外部更新時不處理
+  const flushMarkdownFromDom = useCallback(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const html = editor.innerHTML;
+    const markdown = htmlToMarkdown(html);
+    // 只在真的改變時才更新，避免無限循環
+    if (markdown !== value) {
+      onChange(markdown);
+    }
+  }, [value, onChange]);
 
-    // 使用 setTimeout 來避免在更新過程中觸發
-    setTimeout(() => {
-      if (isUpdatingRef.current) return; // 再次檢查
-      
-      const html = editor.innerHTML;
-      const markdown = htmlToMarkdown(html);
-      
-      // 只在真的改變時才更新，避免無限循環
-      if (markdown !== value) {
-        onChange(markdown);
-      }
-    }, 0);
-  }, [isComposing, value, onChange]);
+  // 處理編輯器內容變化
+  const handleInput = useCallback(() => {
+    updateHasContent();
+    // 中文輸入（composition）時先不要同步，等 compositionend 再一次性 flush，避免漏字
+    if (isComposingRef.current || isUpdatingRef.current) return;
+    // 不要用 setTimeout，避免「打完立刻按發送」時拿到舊內容
+    flushMarkdownFromDom();
+  }, [flushMarkdownFromDom, updateHasContent]);
 
   // 處理中文輸入
   const handleCompositionStart = () => {
+    isComposingRef.current = true;
     setIsComposing(true);
     // 檢查是否有內容
     const editor = editorRef.current;
@@ -209,8 +220,15 @@ export default function SimpleRichTextEditor({
   };
 
   const handleCompositionEnd = () => {
+    isComposingRef.current = false;
     setIsComposing(false);
-    handleInput();
+    // 等下一幀確保 DOM 已更新到最終輸入內容，再 flush（避免漏字）
+    requestAnimationFrame(() => {
+      updateHasContent();
+      if (!isUpdatingRef.current) {
+        flushMarkdownFromDom();
+      }
+    });
   };
 
   const updateToolbarPosition = () => {

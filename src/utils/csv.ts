@@ -63,21 +63,6 @@ function parseLanguageRequirement(langText: string): {
   return { toefl_ibt, ielts, toeic, other_language };
 }
 
-// 解析學期資訊
-function parseSemesters(calendarText: string): ('Fall' | 'Spring')[] {
-  if (!calendarText) return ['Fall', 'Spring'];
-  
-  const semesters: ('Fall' | 'Spring')[] = [];
-  if (calendarText.includes('Fall') || calendarText.includes('September') || calendarText.includes('第一學期')) {
-    semesters.push('Fall');
-  }
-  if (calendarText.includes('Spring') || calendarText.includes('Winter') || calendarText.includes('第二學期')) {
-    semesters.push('Spring');
-  }
-  
-  return semesters.length > 0 ? semesters : ['Fall', 'Spring'];
-}
-
 // 解析地區
 function parseRegion(country: string): 'Americas' | 'Europe' | 'Asia' | 'Oceania' | 'Africa' {
   const region = getRegionByCountry(country);
@@ -108,6 +93,7 @@ export async function loadSchools(): Promise<School[]> {
               name_en: row.name_en || '',
               country: row.country || '',
               country_en: row.country_en || '',
+              country_id: null,
               url: row.url || '',
               second_exchange_eligible: row.開放第二次出國交換之同學選填 === '是',
               application_group: row.申請組別 || '',
@@ -118,7 +104,7 @@ export async function loadSchools(): Promise<School[]> {
               quota: row.名額 || '',
               academic_calendar: row.學校年曆 || '',
               registration_fee: row.註冊繳費 || '',
-              accommodation_info: row.住宿資訊 || '',
+              accommodation_info: row.accommodation_info || row.住宿資訊 || '',
               notes: row.注意事項 || '',
               latitude: parseFloat(row.latitude) || 0,
               longitude: parseFloat(row.longitude) || 0,
@@ -129,7 +115,6 @@ export async function loadSchools(): Promise<School[]> {
               ielts: languageInfo.ielts,
               toeic: languageInfo.toeic,
               other_language: languageInfo.other_language,
-              semesters: parseSemesters(row.學校年曆 || ''),
               tuition: null, // 需要從其他欄位推斷
             } as School;
           });

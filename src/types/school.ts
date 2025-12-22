@@ -26,7 +26,6 @@ export interface School {
   ielts: number | null;
   toeic: number | null;
   other_language: string | null;
-  semesters: ('Fall' | 'Spring')[];
   tuition: 'Free' | 'Partial' | 'Self-funded' | null;
 }
 

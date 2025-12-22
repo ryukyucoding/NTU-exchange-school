@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_圖層_2" data-name="圖層 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 185.16 145.84">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8d7051;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="_圖層_1-2" data-name="圖層 1">
+    <g>
+      <path class="cls-1" d="M183.99,96.04C193.55,43.87,142.96,0,92.34,0S-6.32,43.46.68,96.04c5.15,38.69,66.89,50.66,93.41,49.75,24.25-.83,81.89-6,89.9-49.75Z"/>
+      <ellipse class="cls-2" cx="98.61" cy="94.89" rx="3.79" ry="5.71"/>
+      <ellipse class="cls-2" cx="119.77" cy="94.83" rx="3.79" ry="5.71"/>
+    </g>
+  </g>
+</svg>

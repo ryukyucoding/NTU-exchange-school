@@ -194,8 +194,24 @@ function ReviewPostContent() {
     }
   };
 
+  const normalizeEditorText = (s: string) =>
+    (s || '').replace(/\u200B/g, '').replace(/\u00A0/g, ' ').trim();
+
+  const normalizedTitle = normalizeEditorText(title);
+  const normalizedContent = normalizeEditorText(content);
+
+  // 檢查是否符合發布條件
+  const canPublish =
+    Boolean(normalizedTitle) &&
+    Boolean(selectedCountry) &&
+    Boolean(selectedSchoolId) &&
+    Boolean(normalizedContent) &&
+    Boolean(livingConvenience) &&
+    Boolean(courseLoading) &&
+    Boolean(costOfLiving);
+
   const handleSubmit = async () => {
-    if (!title.trim()) {
+    if (!normalizedTitle) {
       toast.error('請輸入標題');
       return;
     }
@@ -203,7 +219,7 @@ function ReviewPostContent() {
       toast.error('請選擇國家和學校');
       return;
     }
-    if (!content.trim()) {
+    if (!normalizedContent) {
       toast.error('請輸入內容');
       return;
     }
@@ -226,8 +242,8 @@ function ReviewPostContent() {
         },
         body: JSON.stringify({
           postId: draftId || undefined,
-          title: title.trim(),
-          content: content.trim(),
+          title: normalizedTitle,
+          content: normalizedContent,
           status: 'published',
           type: 'review',
           hashtags,
@@ -432,13 +448,13 @@ function ReviewPostContent() {
                   )}
                   <Button
                     onClick={handleSubmit}
-                    disabled={isSubmitting || isSavingDraft}
+                    disabled={isSubmitting || isSavingDraft || !canPublish}
                     style={{
-                      backgroundColor: '#BAC7E5',
-                      color: 'white',
+                      backgroundColor: canPublish ? '#BAC7E5' : '#BAC7E5',
+                      color: canPublish ? '#5A5A5A' : 'white',
                       borderRadius: '9999px',
                     }}
-                    className="hover:bg-[#BAC7E5]/90"
+                    className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
                   >
                     {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>
