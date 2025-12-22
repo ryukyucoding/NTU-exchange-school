@@ -142,7 +142,7 @@ export default function UserQualificationPanel({
   const grades = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Master1', 'Master2'];
   const APPLICATION_GROUP_ALL = '__all__';
   // 下拉選單只提供「單一組別」選項（例如：學校為「日語組/一般組」會在篩選邏輯中被拆成兩個組別匹配）
-  const applicationGroups = ['一般組', '英語組', '法語組', '德語組', '西語組', '日語組'];
+  const applicationGroups = ['一般組', '英語組', '法語組', '德語組', '西語組', '日語組', '中語組', '韓語組'];
   const safeApplicationGroupValue =
     filters.applicationGroup && applicationGroups.includes(filters.applicationGroup)
       ? filters.applicationGroup

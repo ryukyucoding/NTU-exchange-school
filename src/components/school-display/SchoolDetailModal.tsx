@@ -245,6 +245,16 @@ export default function SchoolDetailModal({
               <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>名額:</span>
               <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.quota}</span>
             </div>
+            <div>
+              <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>二次交換:</span>
+              <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>
+                {school.second_exchange_eligible ? (
+                  <span className="text-green-600">✓ 可申請</span>
+                ) : (
+                  <span className="text-red-600">✗ 不可申請</span>
+                )}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -291,10 +301,10 @@ export default function SchoolDetailModal({
 
             {school.language_requirement && (
               <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>語言要求:</span>
-                <p className={isWishlist ? 'mt-1 text-sm' : 'mt-1 text-sm text-white'}>
+                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>語言要求: </span>
+                <span className={isWishlist ? 'font-medium' : 'font-medium text-white'}>
                   {renderTextWithLinks(school.language_requirement, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </p>
+                </span>
               </div>
             )}
 
@@ -313,11 +323,6 @@ export default function SchoolDetailModal({
             其他資訊
           </h3>
           <div className="space-y-2 text-sm">
-            <div>
-              <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>名額:</span>
-              <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.quota}</span>
-            </div>
-
             {school.academic_calendar && (
               <div>
                 <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>學校年曆:</span>
@@ -506,7 +511,7 @@ export default function SchoolDetailModal({
               </div>
 
               {/* Row 2+: title + actions + rest */}
-              <div className="overflow-y-auto p-6 pt-0">
+              <div className="overflow-y-auto p-6 pt-2">
                 {renderContent()}
               </div>
             </div>
