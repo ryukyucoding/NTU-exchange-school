@@ -19,14 +19,14 @@ CREATE TABLE public.Account (
 );
 CREATE TABLE public.Board (
   id text NOT NULL,
-  type text NOT NULL CHECK (type = ANY (ARRAY['region'::text, 'school'::text])),
+  type text CHECK (type = ANY (ARRAY['country'::text, 'school'::text])),
   name text NOT NULL,
   slug text NOT NULL UNIQUE,
   country_id bigint,
   description text,
   createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updatedAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  schoolId bigint NOT NULL,
+  schoolId bigint,
   CONSTRAINT Board_pkey PRIMARY KEY (id),
   CONSTRAINT Board_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.Country(id),
   CONSTRAINT Board_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
@@ -131,17 +131,16 @@ CREATE TABLE public.Post (
   id text NOT NULL,
   content text NOT NULL,
   authorId text NOT NULL,
-  parentId text,
-  repostedPostId text,
+  repostId text,
   createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updatedAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deletedAt timestamp without time zone,
   title text NOT NULL DEFAULT ''::text,
   status text NOT NULL DEFAULT 'draft'::text CHECK (status = ANY (ARRAY['draft'::text, 'published'::text, 'deleted'::text])),
+  type text NOT NULL DEFAULT 'normal'::text CHECK (type = ANY (ARRAY['normal'::text, 'rating'::text])),
   CONSTRAINT Post_pkey PRIMARY KEY (id),
   CONSTRAINT Post_authorId_fkey FOREIGN KEY (authorId) REFERENCES public.User(id),
-  CONSTRAINT Post_parentId_fkey FOREIGN KEY (parentId) REFERENCES public.Post(id),
-  CONSTRAINT Post_repostedPostId_fkey FOREIGN KEY (repostedPostId) REFERENCES public.Post(id)
+  CONSTRAINT Post_repostId_fkey FOREIGN KEY (repostId) REFERENCES public.Post(id)
 );
 CREATE TABLE public.PostBoard (
   id text NOT NULL,
@@ -152,35 +151,6 @@ CREATE TABLE public.PostBoard (
   CONSTRAINT PostBoard_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
   CONSTRAINT PostBoard_boardId_fkey FOREIGN KEY (boardId) REFERENCES public.Board(id)
 );
-CREATE TABLE public.PostPhoto (
-  id text NOT NULL,
-  postId text NOT NULL,
-  url text NOT NULL,
-  photoId text NOT NULL UNIQUE,
-  order integer NOT NULL DEFAULT 0,
-  alt text,
-  createdAt timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT PostPhoto_pkey PRIMARY KEY (id),
-  CONSTRAINT PostPhoto_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id)
-);
-CREATE TABLE public.PostSchool (
-  id text NOT NULL,
-  postId text NOT NULL,
-  createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  schoolId bigint NOT NULL,
-  CONSTRAINT PostSchool_pkey PRIMARY KEY (id),
-  CONSTRAINT PostSchool_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
-  CONSTRAINT PostSchool_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
-);
-CREATE TABLE public.Repost (
-  id text NOT NULL,
-  userId text NOT NULL,
-  postId text NOT NULL,
-  createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT Repost_pkey PRIMARY KEY (id),
-  CONSTRAINT Repost_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id),
-  CONSTRAINT Repost_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id)
-);
 CREATE TABLE public.SchoolRating (
   postId text NOT NULL,
   livingConvenience integer NOT NULL CHECK ("livingConvenience" >= 1 AND "livingConvenience" <= 5),
@@ -189,6 +159,18 @@ CREATE TABLE public.SchoolRating (
   schoolId bigint NOT NULL,
   CONSTRAINT SchoolRating_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
   CONSTRAINT SchoolRating_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
+);
+CREATE TABLE public.SchoolWishList (
+  id text NOT NULL,
+  userId text NOT NULL,
+  schoolId bigint NOT NULL,
+  note text,
+  order integer,
+  createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT SchoolWishList_pkey PRIMARY KEY (id),
+  CONSTRAINT SchoolWishList_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id),
+  CONSTRAINT SchoolWishList_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
 );
 CREATE TABLE public.Session (
   id text NOT NULL,
@@ -222,6 +204,7 @@ CREATE TABLE public.UserQualification (
   toeic integer,
   createdAt timestamp with time zone NOT NULL DEFAULT now(),
   updatedAt timestamp with time zone NOT NULL DEFAULT now(),
+  applicationGroup text,
   CONSTRAINT UserQualification_pkey PRIMARY KEY (id),
   CONSTRAINT UserQualification_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id)
 );

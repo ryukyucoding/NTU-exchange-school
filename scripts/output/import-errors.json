@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-12-22T14:47:53.716Z",
+  "count": 16,
+  "errors": [
+    {
+      "directory": "13020",
+      "reason": "找不到學校: 成均館大學"
+    },
+    {
+      "directory": "13051",
+      "reason": "找不到學校: 匹茲堡大學"
+    },
+    {
+      "directory": "13098",
+      "reason": "找不到學校: 武漢大學"
+    },
+    {
+      "directory": "13104",
+      "reason": "找不到學校: 匹茲堡大學"
+    },
+    {
+      "directory": "13187",
+      "reason": "找不到學校: 新南威爾斯大學"
+    },
+    {
+      "directory": "13212",
+      "reason": "找不到學校: 斯克蘭頓大學"
+    },
+    {
+      "directory": "13283",
+      "reason": "找不到學校: 四川大學"
+    },
+    {
+      "directory": "13315",
+      "reason": "找不到學校: 武漢大學"
+    },
+    {
+      "directory": "13327",
+      "reason": "找不到學校: 成均館大學"
+    },
+    {
+      "directory": "13647",
+      "reason": "找不到學校: 成均館大學"
+    },
+    {
+      "directory": "13651",
+      "reason": "找不到學校: 新南威爾斯大學"
+    },
+    {
+      "directory": "13766",
+      "reason": "找不到學校: 格里菲斯大學"
+    },
+    {
+      "directory": "13811",
+      "reason": "建立 Post 失敗: unsupported Unicode escape sequence"
+    },
+    {
+      "directory": "13812",
+      "reason": "找不到學校: 浙江大學"
+    },
+    {
+      "directory": "13816",
+      "reason": "找不到學校: 浙江大學"
+    },
+    {
+      "directory": "13850",
+      "reason": "找不到學校: 汀肯大學"
+    }
+  ]
+}
