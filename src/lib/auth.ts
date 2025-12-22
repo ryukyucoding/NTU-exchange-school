@@ -62,6 +62,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             // 如果這個 OAuth 帳號已存在，允許登入
             if (existingAccount) {
               console.log("✅ [signIn] 找到現有帳號，允許登入");
+              console.log("📋 [signIn] existingAccount 結構:", JSON.stringify({
+                accountId: existingAccount.id,
+                userId: existingAccount.userId,
+                hasUser: !!existingAccount.User,
+                userFromAccount: existingAccount.User?.id || null,
+              }, null, 2));
+              
+              // 重要：設置 user.id 為資料庫中的 User.id，確保 NextAuth 使用正確的 ID
+              // 優先使用 existingAccount.User.id，如果沒有則使用 existingAccount.userId
+              const dbUserId = existingAccount.User?.id || existingAccount.userId;
+              if (dbUserId) {
+                user.id = dbUserId;
+                console.log("🔑 [signIn] 設置 user.id 為:", user.id);
+              } else {
+                console.error("❌ [signIn] 無法從 existingAccount 獲取 userId");
+              }
               return true;
             }
 

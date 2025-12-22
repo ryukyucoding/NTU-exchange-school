@@ -197,11 +197,14 @@ export default function SchoolDetailModal({
             size="sm"
             className={
               isWishlist
-                ? 'bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
-                : 'bg-white/10 text-white hover:bg-white/20 hover:text-white'
+                ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
+                : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
             }
           >
-            <Link href={`/social/boards/school/${school.id}`}>去討論！</Link>
+            <Link href={`/social/boards/school/${school.id}`} className="flex items-center gap-2">
+              <img src="/tangyuan-1.svg" alt="Logo" className="w-4 h-4" />
+              討論
+            </Link>
           </Button>
 
           <Button
@@ -213,8 +216,8 @@ export default function SchoolDetailModal({
             }}
             className={
               isWishlist
-                ? 'bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
-                : 'bg-white/10 text-white hover:bg-white/20 hover:text-white'
+                ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
+                : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
             }
           >
             <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : (isWishlist ? 'text-[#8a7a63]' : '')}`} />
@@ -434,8 +437,8 @@ export default function SchoolDetailModal({
             onClick={onClose}
             className={
               isWishlist
-                ? 'absolute left-4 top-4 z-10 rounded-md p-2 text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
-                : 'absolute left-4 top-4 z-10 rounded-md p-2 text-white/80 hover:bg-white/20 hover:text-white focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                ? 'absolute left-4 top-4 z-10 rounded-md p-2 text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                : 'absolute left-4 top-4 z-10 rounded-md p-2 text-white/80 border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
             }
           >
             <svg
@@ -487,8 +490,8 @@ export default function SchoolDetailModal({
                   onClick={onClose}
                   className={
                     isWishlist
-                      ? 'rounded-md p-2 text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
-                      : 'rounded-md p-2 text-white/80 hover:bg-white/20 hover:text-white focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                      ? 'rounded-md p-2 text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                      : 'rounded-md p-2 text-white/80 border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
                   }
                 >
                   <svg
