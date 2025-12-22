@@ -247,12 +247,12 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // 刪除舊的關聯資料
+      // 刪除舊的關聯資料（但保留 PostBoard，因為會在後面重新建立）
       await Promise.all([
-        supabase.from('Hashtag').delete().eq('postId', postId),
-        supabase.from('PostPhoto').delete().eq('postId', postId),
-        supabase.from('SchoolRating').delete().eq('postId', postId),
-        supabase.from('PostBoard').delete().eq('postId', postId),
+        (supabase as any).from('Hashtag').delete().eq('postId', postId),
+        (supabase as any).from('PostPhoto').delete().eq('postId', postId),
+        (supabase as any).from('SchoolRating').delete().eq('postId', postId),
+        (supabase as any).from('PostBoard').delete().eq('postId', postId),
       ]);
     } else {
       // 創建新 post
@@ -464,8 +464,22 @@ export async function POST(req: NextRequest) {
     }
     
     // 3. 建立 PostBoard 關聯（去重，避免重複）
+    // 注意：無論是草稿還是已發布的貼文，都需要建立 PostBoard 關聯
     const uniqueBoardIds = [...new Set(boardIds)];
     if (uniqueBoardIds.length > 0) {
+      // 如果是更新，先刪除現有的 PostBoard 關聯（已在上面刪除，這裡確保）
+      // 但為了安全起見，再次檢查並刪除
+      if (isUpdate) {
+        try {
+          await (supabase as any)
+            .from('PostBoard')
+            .delete()
+            .eq('postId', postId);
+        } catch (error) {
+          console.error("Error deleting old PostBoard relations:", error);
+        }
+      }
+      
       const postBoardInserts = uniqueBoardIds.map((boardId: string) => ({
         id: crypto.randomUUID(),
         postId: postId,
@@ -481,8 +495,10 @@ export async function POST(req: NextRequest) {
         console.error("Error creating post-board relations:", postBoardError);
         // 不影響貼文建立，只記錄錯誤
       } else {
-        console.log(`[POST /api/posts] 成功建立 ${postBoardInserts.length} 個 PostBoard 關聯`);
+        console.log(`[POST /api/posts] 成功建立 ${postBoardInserts.length} 個 PostBoard 關聯 (status: ${status}, isUpdate: ${isUpdate})`);
       }
+    } else {
+      console.log(`[POST /api/posts] 沒有 boardIds，跳過 PostBoard 關聯建立 (status: ${status})`);
     }
 
     // 獲取完整的貼文資料（包含作者資訊）
@@ -666,26 +682,6 @@ export async function GET(req: NextRequest) {
       }
 
       // 通過 PostBoard 表查詢該看板的貼文
-      console.log('[GET /api/posts] 🔍 開始查詢 PostBoard，boardId:', boardId, '類型:', typeof boardId);
-      
-      // 先查詢所有PostBoard數據看看有什麼
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: allPostBoardData, error: allPostBoardError } = await (supabase as any)
-        .from('PostBoard')
-        .select('*')
-        .limit(10);
-      
-      console.log('[GET /api/posts] 📋 PostBoard 表所有數據（前10筆）:', {
-        count: allPostBoardData?.length || 0,
-        error: allPostBoardError ? { message: allPostBoardError.message, code: allPostBoardError.code } : null,
-        sampleData: allPostBoardData?.slice(0, 5).map((p: { id: string; postId: string; boardId: string }) => ({
-          id: p.id,
-          postId: p.postId,
-          boardId: p.boardId,
-          boardIdType: typeof p.boardId,
-        })) || [],
-      });
-      
       // 查詢特定boardId的PostBoard
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: postBoardData, error: postBoardError } = await (supabase as any)
@@ -693,26 +689,8 @@ export async function GET(req: NextRequest) {
         .select('*')
         .eq('boardId', boardId);
 
-      console.log('[GET /api/posts] 🔍 PostBoard 查詢結果（boardId=' + boardId + '）:', {
-        postBoardDataCount: postBoardData?.length || 0,
-        postBoardError: postBoardError ? { 
-          message: postBoardError.message, 
-          code: postBoardError.code,
-          details: postBoardError.details,
-          hint: postBoardError.hint,
-        } : null,
-        postBoardData: postBoardData || [],
-        samplePostIds: postBoardData?.slice(0, 5).map((p: { postId: string }) => p.postId) || [],
-      });
-
       if (postBoardError) {
-        console.error('[GET /api/posts] ❌ PostBoard 查詢錯誤:', {
-          error: postBoardError,
-          message: postBoardError.message,
-          code: postBoardError.code,
-          details: postBoardError.details,
-          hint: postBoardError.hint,
-        });
+        console.error('[GET /api/posts] ❌ PostBoard 查詢錯誤:', postBoardError);
         return NextResponse.json({
           success: true,
           posts: [],
@@ -721,11 +699,6 @@ export async function GET(req: NextRequest) {
       }
 
       if (!postBoardData || postBoardData.length === 0) {
-        console.log('[GET /api/posts] ⚠️ PostBoard 沒有數據（查詢成功但結果為空）', {
-          boardId,
-          boardIdType: typeof boardId,
-          queryResult: postBoardData,
-        });
         return NextResponse.json({
           success: true,
           posts: [],
@@ -735,17 +708,14 @@ export async function GET(req: NextRequest) {
 
       const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
       filterPostIds = postIds;
-      console.log('[GET /api/posts] ✅ 成功從 PostBoard 獲取 postIds:', {
-        count: postIds.length,
-        sampleIds: postIds.slice(0, 5),
-        allPostIds: postIds,
-      });
-    } else {
+    } else if (filter !== "drafts") {
+      // 只有在非草稿查詢時才顯示這個 log
       console.log('[GET /api/posts] 沒有 boardId，將查詢所有 Posts');
     }
 
     // 如果是草稿查詢，只返回當前用戶的草稿
     if (filter === "drafts") {
+      console.log('[GET /api/posts] 開始處理草稿查詢');
       if (!userId) {
         return NextResponse.json({
           success: true,
@@ -794,14 +764,154 @@ export async function GET(req: NextRequest) {
 
       // 如果是review類型，只返回有評分的貼文；如果是general類型，只返回沒有評分的貼文
       const postIds = (drafts as { id: string }[]).map((d) => d.id);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: ratingsData } = await (supabase as any)
-        .from('SchoolRating')
-        .select('postId')
-        .in('postId', postIds)
-        .catch(() => ({ data: [] }));
+      
+      // 使用 try-catch 而不是 .catch()，因為 Supabase query builder 不返回 Promise
+      let ratingsData: { data: any[] | null } = { data: [] };
+      if (postIds.length > 0) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result = await (supabase as any)
+            .from('SchoolRating')
+            .select('postId')
+            .in('postId', postIds);
+          ratingsData = result;
+        } catch (error) {
+          console.error('[GET /api/posts] Error fetching ratings:', error);
+          ratingsData = { data: [] };
+        }
+      }
 
-      const ratedPostIds = new Set((ratingsData || []).map((r: { postId: string }) => r.postId));
+      const ratedPostIds = new Set((ratingsData.data || []).map((r: { postId: string }) => r.postId));
+
+      // 批量獲取草稿的相關資料
+      // 使用 Promise.allSettled 和 try-catch 來處理錯誤
+      const fetchHashtags = async () => {
+        try {
+          if (postIds.length === 0) return { data: [] };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result = await (supabase as any)
+            .from('Hashtag')
+            .select('postId, content')
+            .in('postId', postIds);
+          return result;
+        } catch (error) {
+          console.error('[GET /api/posts] Error fetching hashtags:', error);
+          return { data: [] };
+        }
+      };
+      
+      const fetchSchools = async () => {
+        try {
+          if (postIds.length === 0) return { data: [] };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result = await (supabase as any)
+            .from('PostSchool')
+            .select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)')
+            .in('postId', postIds);
+          return result;
+        } catch (error) {
+          console.error('[GET /api/posts] Error fetching schools:', error);
+          return { data: [] };
+        }
+      };
+      
+      const fetchPostBoards = async () => {
+        try {
+          if (postIds.length === 0) return { data: [] };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result = await (supabase as any)
+            .from('PostBoard')
+            .select('postId, board:Board!PostBoard_boardId_fkey(country_id, Country:country_id(id, name))')
+            .in('postId', postIds);
+          return result;
+        } catch (error) {
+          console.error('[GET /api/posts] Error fetching post boards:', error);
+          return { data: [] };
+        }
+      };
+      
+      const [hashtagsResult, schoolsResult, postBoardResult] = await Promise.allSettled([
+        fetchHashtags(),
+        fetchSchools(),
+        fetchPostBoards(),
+      ]);
+
+      const hashtagsData = hashtagsResult.status === 'fulfilled' ? hashtagsResult.value : { data: [] };
+      const schoolsData = schoolsResult.status === 'fulfilled' ? schoolsResult.value : { data: [] };
+      const postBoardData = postBoardResult.status === 'fulfilled' ? postBoardResult.value : { data: [] };
+
+      console.log('[GET /api/posts] 草稿相關資料查詢結果:', {
+        postIds,
+        hashtagsCount: hashtagsData.data?.length || 0,
+        schoolsCount: schoolsData.data?.length || 0,
+        postBoardsCount: postBoardData.data?.length || 0,
+        hashtagsData: hashtagsData.data?.slice(0, 3) || [],
+        schoolsData: schoolsData.data?.slice(0, 3) || [],
+        postBoardData: postBoardData.data?.slice(0, 3) || [],
+      });
+
+      // 組織資料
+      const draftHashtagsMap = new Map<string, string[]>();
+      const draftSchoolsMap = new Map<string, { id: string; name_zh: string; name_en: string; country: string }[]>();
+      const draftCountriesMap = new Map<string, string[]>();
+
+      (hashtagsData.data || []).forEach((h: { postId: string; content: string }) => {
+        if (!draftHashtagsMap.has(h.postId)) {
+          draftHashtagsMap.set(h.postId, []);
+        }
+        draftHashtagsMap.get(h.postId)!.push(h.content);
+      });
+
+      (schoolsData.data || []).forEach((ps: { postId: string; school: { id: string; name_zh: string; name_en: string; country: string } | null }) => {
+        console.log('[GET /api/posts] 處理 PostSchool 數據:', {
+          postId: ps.postId,
+          hasSchool: !!ps.school,
+          school: ps.school,
+        });
+        if (ps.school) {
+          if (!draftSchoolsMap.has(ps.postId)) {
+            draftSchoolsMap.set(ps.postId, []);
+          }
+          draftSchoolsMap.get(ps.postId)!.push(ps.school);
+          if (!draftCountriesMap.has(ps.postId)) {
+            draftCountriesMap.set(ps.postId, []);
+          }
+          const countryList = draftCountriesMap.get(ps.postId)!;
+          if (ps.school.country && !countryList.includes(ps.school.country)) {
+            countryList.push(ps.school.country);
+            console.log('[GET /api/posts] 從學校添加國家:', {
+              postId: ps.postId,
+              country: ps.school.country,
+              currentCountries: countryList,
+            });
+          }
+        }
+      });
+
+      (postBoardData.data || []).forEach((pb: { postId: string; board: { Country: { name: string } | null } | null }) => {
+        if (pb.board?.Country?.name) {
+          if (!draftCountriesMap.has(pb.postId)) {
+            draftCountriesMap.set(pb.postId, []);
+          }
+          const countryList = draftCountriesMap.get(pb.postId)!;
+          if (!countryList.includes(pb.board.Country.name)) {
+            countryList.push(pb.board.Country.name);
+          }
+        }
+      });
+      
+      console.log('[GET /api/posts] 草稿資料組織完成:', {
+        draftSchoolsMap: Array.from(draftSchoolsMap.entries()).map(([id, schools]) => ({
+          postId: id,
+          schoolsCount: schools.length,
+          schools,
+        })),
+        draftCountriesMap: Array.from(draftCountriesMap.entries()).map(([id, countries]) => ({
+          postId: id,
+          countriesCount: countries.length,
+          countries,
+        })),
+      });
 
       let filteredDrafts = drafts;
       if (type === 'review') {
@@ -810,12 +920,41 @@ export async function GET(req: NextRequest) {
         filteredDrafts = (drafts as { id: string }[]).filter((d) => !ratedPostIds.has(d.id));
       }
 
+      const finalDrafts = filteredDrafts.map((post: any) => {
+        const postId = post.id;
+        const schools = draftSchoolsMap.get(postId) || [];
+        const countries = draftCountriesMap.get(postId) || [];
+        console.log('[GET /api/posts] 準備返回草稿:', {
+          postId,
+          title: post.title,
+          schools,
+          countries,
+          hashtags: draftHashtagsMap.get(postId) || [],
+        });
+        return {
+          ...post,
+          type: ratedPostIds.has(postId) ? 'review' : 'general',
+          hashtags: draftHashtagsMap.get(postId) || [],
+          schools,
+          countries,
+        };
+      });
+      
+      console.log('[GET /api/posts] 返回草稿列表:', {
+        count: finalDrafts.length,
+        drafts: finalDrafts.map((d: any) => ({
+          id: d.id,
+          title: d.title,
+          schoolsCount: d.schools?.length || 0,
+          countriesCount: d.countries?.length || 0,
+          schools: d.schools,
+          countries: d.countries,
+        })),
+      });
+      
       return NextResponse.json({
         success: true,
-        posts: filteredDrafts.map((post: { id: string }) => ({
-          ...post,
-          type: ratedPostIds.has(post.id) ? 'review' : 'general',
-        })),
+        posts: finalDrafts,
         nextCursor: null,
       });
     }
@@ -1212,14 +1351,7 @@ export async function GET(req: NextRequest) {
           }),
           // 從 PostBoard -> Board 獲取版名（name）和類型（type）
           // 統一邏輯：通過 PostBoard 找到該貼文對應的所有版，然後根據 Board 的 type 和 name 來顯示標籤
-          (supabase as any).from('PostBoard').select('postId, board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)').in('postId', postIds).then((r: any) => {
-            console.log('[GET /api/posts] 📋 PostBoard 查詢結果:', {
-              count: r.data?.length || 0,
-              error: r.error,
-              sampleData: r.data?.slice(0, 3) || [],
-            });
-            return r;
-          }).catch((e: any) => {
+          (supabase as any).from('PostBoard').select('postId, board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)').in('postId', postIds).then((r: any) => r).catch((e: any) => {
             console.error('[GET /api/posts] ❌ PostBoard 查詢失敗:', e);
             return { data: [], error: e };
           }),
@@ -1240,15 +1372,6 @@ export async function GET(req: NextRequest) {
         schoolsData = results[7].status === 'fulfilled' ? results[7].value : { data: [] };
         ratingsData = results[8].status === 'fulfilled' ? results[8].value : { data: [] };
 
-        console.log('[GET /api/posts] ✅ 批量查詢完成:', {
-          likesCount: likesData.data?.length || 0,
-          repostsCount: repostsData.data?.length || 0,
-          commentsCount: commentsData.data?.length || 0,
-          hashtagsCount: hashtagsData.data?.length || 0,
-          photosCount: photosData.data?.length || 0,
-          postBoardsCount: schoolsData.data?.length || 0,
-          ratingsCount: ratingsData.data?.length || 0,
-        });
       } catch (err) {
         console.error('[GET /api/posts] ❌ 批量查詢發生錯誤:', err);
         // 繼續執行，使用空數據
@@ -1312,11 +1435,6 @@ export async function GET(req: NextRequest) {
     // 統一邏輯：從 PostBoard -> Board 獲取版名（name）
     // 根據 Board 的 type 來判斷是國家版還是學校版
     // type='country' -> 國家標籤，type='school' -> 學校標籤
-    console.log('[GET /api/posts] 📋 開始處理 PostBoard 數據:', {
-      schoolsDataCount: schoolsData.data?.length || 0,
-      schoolsDataError: (schoolsData as any).error,
-      sampleData: schoolsData.data?.slice(0, 3) || [],
-    });
 
     // 收集所有需要查詢的 schoolId
     const schoolIdsToFetch = new Set<string | number>();
@@ -1338,16 +1456,6 @@ export async function GET(req: NextRequest) {
         country_id: number | null;
       } | null 
     }) => {
-      console.log('[GET /api/posts] 🔍 處理 PostBoard 記錄:', {
-        postId: pb.postId,
-        board: pb.board ? {
-          id: pb.board.id,
-          name: pb.board.name,
-          type: pb.board.type,
-          schoolId: pb.board.schoolId,
-          country_id: pb.board.country_id,
-        } : null,
-      });
 
       if (pb.board && pb.board.name) {
         if (!boardDataByPostId.has(pb.postId)) {
@@ -1366,12 +1474,6 @@ export async function GET(req: NextRequest) {
           schoolIdsToFetch.add(pb.board.schoolId);
         }
       }
-    });
-
-    console.log('[GET /api/posts] 📊 處理後的 boardDataByPostId:', {
-      postIds: Array.from(boardDataByPostId.keys()),
-      boardDataCount: Array.from(boardDataByPostId.values()).reduce((sum, arr) => sum + arr.length, 0),
-      schoolIdsToFetch: Array.from(schoolIdsToFetch),
     });
 
     // 批量查詢學校完整信息
@@ -1427,7 +1529,6 @@ export async function GET(req: NextRequest) {
             // 如果有學校完整信息，使用它；否則使用 Board.name
             if (boardData.schoolId && schoolsInfoMap.has(boardData.schoolId)) {
               const schoolInfo = schoolsInfoMap.get(boardData.schoolId)!;
-              console.log(`[GET /api/posts]     ✅ 添加學校（完整信息）:`, schoolInfo);
               existingSchools.push(schoolInfo);
             } else {
               // 使用 Board.name 作為學校名稱
@@ -1437,11 +1538,8 @@ export async function GET(req: NextRequest) {
                 name_en: boardData.boardName,
                 country: '',
               };
-              console.log(`[GET /api/posts]     ✅ 添加學校（使用 Board.name）:`, schoolInfo);
               existingSchools.push(schoolInfo);
             }
-          } else {
-            console.log(`[GET /api/posts]     ⏭️  學校已存在，跳過`);
           }
         }
         
@@ -1453,23 +1551,12 @@ export async function GET(req: NextRequest) {
           // 使用 Board.name 作為國家名稱
           const countryList = countriesByPostId.get(postId)!;
           if (!countryList.includes(boardData.boardName)) {
-            console.log(`[GET /api/posts]     ✅ 添加國家: ${boardData.boardName}`);
             countryList.push(boardData.boardName);
-          } else {
-            console.log(`[GET /api/posts]     ⏭️  國家已存在，跳過`);
           }
         }
       });
     });
 
-    console.log('[GET /api/posts] 📊 處理完成後的統計:', {
-      schoolsByPostId: Object.fromEntries(
-        Array.from(schoolsByPostId.entries()).map(([id, schools]) => [id, schools.length])
-      ),
-      countriesByPostId: Object.fromEntries(
-        Array.from(countriesByPostId.entries()).map(([id, countries]) => [id, countries.length])
-      ),
-    });
 
     (ratingsData.data || []).forEach((rating: { postId: string; livingConvenience: number; costOfLiving: number; courseLoading: number }) => {
       ratingsByPostId.set(rating.postId, rating);

@@ -135,7 +135,7 @@ export async function GET(
       .eq('postId', postId);
 
     if (postBoardError) {
-      console.warn('Error fetching PostBoard data:', postBoardError);
+      console.warn(`[GET /api/posts/${postId}] Error fetching PostBoard data:`, postBoardError);
     }
 
     const boardRows = (postBoardRows || []) as Array<{
@@ -179,7 +179,7 @@ export async function GET(
         .in('id', Array.from(schoolIdsFromBoards));
 
       if (boardSchoolsError) {
-        console.warn('Error fetching schools for Board.schoolId:', boardSchoolsError);
+        console.warn(`[GET /api/posts/${postId}] Error fetching schools for Board.schoolId:`, boardSchoolsError);
       }
 
       (boardSchools || []).forEach((s: { id: string | number; name_zh: string; name_en: string; country: string }) => {
@@ -197,7 +197,6 @@ export async function GET(
         }
       });
     }
-
     const ratings = (ratingsData.data || []).length > 0 ? {
       schoolId: (ratingsData.data as any[])[0].schoolId,
       livingConvenience: (ratingsData.data as any[])[0].livingConvenience,

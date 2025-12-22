@@ -151,21 +151,11 @@ function PostDetailContentInner() {
     }
   };
 
-  const handleRepost = async () => {
+  const handleRepost = () => {
     if (!post) return;
-    
-    try {
-      const response = await fetch(`/api/posts/${post.id}/repost`, {
-        method: isReposted ? 'DELETE' : 'POST',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setIsReposted(!isReposted);
-        setRepostCount(isReposted ? repostCount - 1 : repostCount + 1);
-      }
-    } catch (error) {
-      console.error('Error toggling repost:', error);
-    }
+    // 跳轉到發文頁面並帶上 repostId 參數，記錄當前頁面作為 return
+    const currentUrl = window.location.pathname + window.location.search;
+    router.push(`/social/post/general?repostId=${post.id}&return=${encodeURIComponent(currentUrl)}`);
   };
 
   const handleBookmark = async () => {
@@ -218,7 +208,14 @@ function PostDetailContentInner() {
       const data = await response.json();
       if (data.success) {
         toast.success('貼文已刪除');
-        router.push('/social');
+        // 如果有 return URL，返回該頁面並刷新；否則返回社群主頁並刷新
+        if (returnUrl && returnUrl !== window.location.pathname + window.location.search) {
+          router.push(returnUrl);
+          setTimeout(() => router.refresh(), 100);
+        } else {
+          router.push('/social');
+          setTimeout(() => router.refresh(), 100);
+        }
       } else {
         toast.error(data.error || '刪除失敗');
       }

@@ -9,13 +9,14 @@ export async function GET(_req: NextRequest) {
   try {
     const supabase = getSupabaseServer();
 
-    // 先查询所有已发布的贴文的 id
+    // 先查询所有已发布的贴文的 id（限制數量以避免 HeadersOverflowError）
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: publishedPosts, error: postsError } = await (supabase as any)
       .from('Post')
       .select('id')
       .eq('status', 'published')
-      .is('deletedAt', null);
+      .is('deletedAt', null)
+      .limit(1000); // 限制查詢數量
 
     if (postsError) {
       console.error('Error fetching published posts:', postsError);
@@ -35,19 +36,34 @@ export async function GET(_req: NextRequest) {
     const postIds = (publishedPosts as { id: string }[]).map((p) => p.id);
 
     // 查询这些贴文的所有标签
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: hashtags, error: hashtagsError } = await (supabase as any)
-      .from('Hashtag')
-      .select('content')
-      .in('postId', postIds);
-
-    if (hashtagsError) {
-      console.error('Error fetching hashtags:', hashtagsError);
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch hashtags' },
-        { status: 500 }
-      );
+    // 如果 postIds 太多，分批查詢以避免 HeadersOverflowError
+    let allHashtags: { content: string }[] = [];
+    const batchSize = 500;
+    
+    for (let i = 0; i < postIds.length; i += batchSize) {
+      const batch = postIds.slice(i, i + batchSize);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: hashtags, error: hashtagsError } = await (supabase as any)
+          .from('Hashtag')
+          .select('content')
+          .in('postId', batch);
+        
+        if (hashtagsError) {
+          console.error(`Error fetching hashtags batch ${i / batchSize + 1}:`, hashtagsError);
+          continue; // 跳過這個批次，繼續處理其他批次
+        }
+        
+        if (hashtags) {
+          allHashtags = allHashtags.concat(hashtags);
+        }
+      } catch (error) {
+        console.error(`Error fetching hashtags batch ${i / batchSize + 1}:`, error);
+        continue; // 跳過這個批次
+      }
     }
+    
+    const hashtags = allHashtags;
 
     // 统计每个标签的使用次数
     const tagCounts = new Map<string, number>();

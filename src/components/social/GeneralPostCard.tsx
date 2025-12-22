@@ -97,8 +97,9 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
   };
 
   const handleRepost = () => {
-    // 跳轉到發文頁面並帶上 repostId 參數
-    router.push(`/social/post/general?repostId=${post.id}`);
+    // 跳轉到發文頁面並帶上 repostId 參數，記錄當前頁面作為 return
+    const currentUrl = window.location.pathname + window.location.search;
+    router.push(`/social/post/general?repostId=${post.id}&return=${encodeURIComponent(currentUrl)}`);
   };
 
   const handleBookmark = async () => {
@@ -130,7 +131,8 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
       });
       const data = await response.json();
       if (data.success) {
-        router.refresh();
+        // 強制刷新頁面
+        window.location.reload();
       } else {
         alert(data.error || '刪除失敗');
       }

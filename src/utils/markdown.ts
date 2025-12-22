@@ -6,6 +6,25 @@ export function cleanMarkdown(content: string): string {
   
   let cleaned = content;
   
+  // 先移除所有 HTML 標籤（包括嵌套的標籤），但保留文字內容
+  // 使用遞迴方式處理嵌套標籤
+  let changed = true;
+  while (changed) {
+    const before = cleaned;
+    // 移除所有 HTML 標籤，但保留文字內容
+    cleaned = cleaned.replace(/<[^>]+>/g, '');
+    changed = before !== cleaned;
+  }
+  
+  // 處理 HTML 實體編碼
+  cleaned = cleaned.replace(/&amp;/g, '&');
+  cleaned = cleaned.replace(/&lt;/g, '<');
+  cleaned = cleaned.replace(/&gt;/g, '>');
+  cleaned = cleaned.replace(/&nbsp;/g, ' ');
+  cleaned = cleaned.replace(/&quot;/g, '"');
+  cleaned = cleaned.replace(/&#39;/g, "'");
+  cleaned = cleaned.replace(/&apos;/g, "'");
+  
   // 移除圖片標記: ![alt](url) 或 ![](url)
   cleaned = cleaned.replace(/!\[([^\]]*)\]\([^\)]+\)/g, '');
   
@@ -15,11 +34,6 @@ export function cleanMarkdown(content: string): string {
   
   // 處理沒有文字的連結: [](url) -> 移除整個連結
   cleaned = cleaned.replace(/\[\]\([^\)]+\)/g, '');
-  
-  // 處理 HTML 實體編碼的連結（如 &amp;）
-  cleaned = cleaned.replace(/&amp;/g, '&');
-  cleaned = cleaned.replace(/&lt;/g, '<');
-  cleaned = cleaned.replace(/&gt;/g, '>');
   
   // 再次處理可能遺漏的連結格式
   cleaned = cleaned.replace(/\[([^\]]*)\]\([^\)]+\)/g, (match, text) => {

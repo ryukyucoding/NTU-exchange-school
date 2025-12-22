@@ -38,8 +38,11 @@ function ReviewPostContent() {
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
   const editPostId = searchParams.get('edit');
-  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
-  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
+  // 編輯時：如果有 return 參數就用它（這是編輯前的頁面）
+  // 發布時：記錄當前頁面（發文前的頁面）
+  const returnUrl = editPostId 
+    ? (searchParams.get('return') || '/social')
+    : (searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social'));
 
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
   const [currentUserName, setCurrentUserName] = useState<string>('userName');
@@ -154,8 +157,15 @@ function ReviewPostContent() {
     if (editPostId) {
       const loadPost = async () => {
         try {
+          console.log('[ReviewPostPage] 開始載入編輯貼文:', { editPostId });
           const response = await fetch(`/api/posts/${editPostId}`);
           const data = await response.json();
+          console.log('[ReviewPostPage] API 回應:', {
+            success: data.success,
+            hasPost: !!data.post,
+            hasBoards: !!(data.post?.boards && Array.isArray(data.post.boards) && data.post.boards.length > 0),
+            boards: data.post?.boards,
+          });
           if (data.success && data.post) {
             const post = data.post;
             // 檢查是否為作者
@@ -175,8 +185,56 @@ function ReviewPostContent() {
             setTitle(post.title || '');
             setContent(post.content || '');
             setHashtags(post.hashtags || []);
-            setSelectedSchoolId(post.schools?.[0]?.id || null);
-            setSelectedCountry(post.schools?.[0]?.country || null);
+            
+            // 從 PostBoard -> Board 獲取版信息，根據 type 設置國家和學校
+            let selectedSchoolId: string | null = null;
+            let selectedCountry: string | null = null;
+            
+            if (post.boards && Array.isArray(post.boards) && post.boards.length > 0) {
+              // 根據 Board 的 type 來設置
+              post.boards.forEach((board: { name: string; type: 'country' | 'school'; schoolId?: string | null }) => {
+                if (board.type === 'country') {
+                  // type 是 country，把 name 放到國家欄位
+                  if (!selectedCountry) {
+                    selectedCountry = board.name;
+                  }
+                } else if (board.type === 'school') {
+                  // type 是 school，根據 schoolId 或 name 找到對應的學校
+                  if (board.schoolId) {
+                    // 優先使用 schoolId，轉換為字符串（因為 schools 的 id 是 string）
+                    const schoolIdStr = String(board.schoolId);
+                    if (!selectedSchoolId) {
+                      selectedSchoolId = schoolIdStr;
+                    }
+                    // 同時從 schools 中找到對應的國家
+                    const school = schools.find(s => s.id === schoolIdStr);
+                    if (school && school.country && !selectedCountry) {
+                      selectedCountry = school.country;
+                    }
+                  } else {
+                    // 如果沒有 schoolId，嘗試根據 name 找到學校
+                    const school = schools.find(s => 
+                      s.name_zh === board.name || s.name_en === board.name
+                    );
+                    if (school) {
+                      if (!selectedSchoolId) {
+                        selectedSchoolId = school.id;
+                      }
+                      if (school.country && !selectedCountry) {
+                        selectedCountry = school.country;
+                      }
+                    }
+                  }
+                }
+              });
+            } else {
+              // 如果沒有 boards 信息，使用舊的方式（向後兼容）
+              selectedSchoolId = post.schools?.[0]?.id || null;
+              selectedCountry = post.schools?.[0]?.country || null;
+            }
+            
+            setSelectedSchoolId(selectedSchoolId);
+            setSelectedCountry(selectedCountry);
             setLivingConvenience(post.ratings.livingConvenience || 0);
             setCourseLoading(post.ratings.courseLoading || 0);
             setCostOfLiving(post.ratings.costOfLiving || 0);
@@ -196,14 +254,77 @@ function ReviewPostContent() {
       };
       loadPost();
     }
-  }, [editPostId, session, router]);
+  }, [editPostId, session, router, schools]);
 
-  const handleLoadDraft = (draft: Draft) => {
+  const handleLoadDraft = async (draft: Draft) => {
     setDraftId(draft.id);
     setTitle(draft.title || '');
     setContent(draft.content || '');
-    setSelectedCountry(draft.country || null);
-    setSelectedSchoolId(draft.schoolId || null);
+    
+    // 嘗試從 PostBoard 獲取 Board 信息
+    let selectedSchoolId: string | null = null;
+    let selectedCountry: string | null = null;
+    
+    try {
+      const response = await fetch(`/api/posts/${draft.id}`);
+      const data = await response.json();
+      if (data.success && data.post && data.post.boards && Array.isArray(data.post.boards) && data.post.boards.length > 0) {
+        // 使用 Board 信息
+        data.post.boards.forEach((board: { name: string; type: 'country' | 'school'; schoolId?: string | null }) => {
+          if (board.type === 'country') {
+            if (!selectedCountry) {
+              selectedCountry = board.name;
+            }
+          } else if (board.type === 'school') {
+            if (board.schoolId) {
+              // 轉換為字符串（因為 schools 的 id 是 string）
+              const schoolIdStr = String(board.schoolId);
+              if (!selectedSchoolId) {
+                selectedSchoolId = schoolIdStr;
+              }
+              const school = schools.find(s => s.id === schoolIdStr);
+              if (school && school.country && !selectedCountry) {
+                selectedCountry = school.country;
+              }
+            } else {
+              const school = schools.find(s => 
+                s.name_zh === board.name || s.name_en === board.name
+              );
+              if (school) {
+                if (!selectedSchoolId) {
+                  selectedSchoolId = school.id;
+                }
+                if (school.country && !selectedCountry) {
+                  selectedCountry = school.country;
+                }
+              }
+            }
+          }
+        });
+      } else {
+        // 如果沒有 Board 信息，使用舊的方式
+        if (draft.schools && draft.schools.length > 0) {
+          selectedSchoolId = draft.schools[0].id;
+          selectedCountry = draft.schools[0].country || draft.countries?.[0] || draft.country || null;
+        } else {
+          selectedSchoolId = draft.schoolId || null;
+          selectedCountry = draft.country || null;
+        }
+      }
+    } catch (error) {
+      console.error('[ReviewPostPage] Error loading draft boards:', error);
+      // 如果獲取失敗，使用舊的方式
+      if (draft.schools && draft.schools.length > 0) {
+        selectedSchoolId = draft.schools[0].id;
+        selectedCountry = draft.schools[0].country || draft.countries?.[0] || draft.country || null;
+      } else {
+        selectedSchoolId = draft.schoolId || null;
+        selectedCountry = draft.country || null;
+      }
+    }
+    
+    setSelectedSchoolId(selectedSchoolId);
+    setSelectedCountry(selectedCountry);
     setHashtags(draft.hashtags || []);
     setLivingConvenience(draft.livingConvenience || 0);
     setCourseLoading(draft.courseLoading || 0);
@@ -248,6 +369,7 @@ function ReviewPostContent() {
       if (data.success) {
         setDraftId(data.post.id);
         toast.success('草稿已儲存');
+        router.push(returnUrl);
       } else {
         toast.error(data.error || '儲存失敗');
       }
@@ -526,9 +648,9 @@ function ReviewPostContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Drafts */}
+          {/* Right Sidebar - Drafts (編輯時為空) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <DraftList type="review" onLoadDraft={handleLoadDraft} />
+            {!editPostId && <DraftList type="review" onLoadDraft={handleLoadDraft} />}
           </aside>
         </div>
       </div>

@@ -90,14 +90,17 @@ export default function PostTypeDialog({ open, onOpenChange, position }: PostTyp
     if (boardInfo?.schoolId) {
       params.append('schoolId', boardInfo.schoolId);
     }
+    // 記錄當前頁面作為返回 URL
+    const currentUrl = typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social';
+    params.append('return', currentUrl);
     
-    const path = params.toString() ? `${basePath}?${params.toString()}` : basePath;
+    const pathWithReturn = params.toString() ? `${basePath}?${params.toString()}` : basePath;
     
     // 先關閉對話框
     onOpenChange(false);
     // 等待一個 tick 確保對話框關閉動畫完成，然後導航
     await new Promise(resolve => setTimeout(resolve, 100));
-    router.push(path);
+    router.push(pathWithReturn);
   };
 
   if (!open || !position) return null;

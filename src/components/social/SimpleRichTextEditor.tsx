@@ -201,8 +201,12 @@ export default function SimpleRichTextEditor({
     updateHasContent();
     // 中文輸入（composition）時先不要同步，等 compositionend 再一次性 flush，避免漏字
     if (isComposingRef.current || isUpdatingRef.current) return;
-    // 不要用 setTimeout，避免「打完立刻按發送」時拿到舊內容
-    flushMarkdownFromDom();
+    // 使用 requestAnimationFrame 確保 DOM 更新完成後再轉換
+    requestAnimationFrame(() => {
+      if (!isComposingRef.current && !isUpdatingRef.current) {
+        flushMarkdownFromDom();
+      }
+    });
   }, [flushMarkdownFromDom, updateHasContent]);
 
   // 處理中文輸入
@@ -548,22 +552,57 @@ export default function SimpleRichTextEditor({
         }
         case 'normal': {
           // 正常大小不需要標籤，移除現有格式
-          const span = document.createElement('span');
-          span.textContent = selectedText;
+          // 提取純文字內容，移除所有格式標籤
+          const tempDiv = document.createElement('div');
+          tempDiv.appendChild(range.cloneContents());
+          const plainText = tempDiv.textContent || tempDiv.innerText || '';
           range.deleteContents();
-          range.insertNode(span);
+          const textNode = document.createTextNode(plainText);
+          range.insertNode(textNode);
+          // 將游標移到插入的文字之後
+          range.setStartAfter(textNode);
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
           return;
         }
         default:
           return;
       }
 
-      // 刪除選取的文字並插入格式化的文字
-      // 使用 span 而不是 div，避免換行
-      range.deleteContents();
-      const span = document.createElement('span');
-      span.innerHTML = tag + selectedText + closingTag;
-      range.insertNode(span);
+      // 提取選取範圍的內容（包括現有的 HTML 結構）
+      const contents = range.extractContents();
+      
+      // 創建新的格式化元素
+      const formattedElement = document.createElement('span');
+      
+      // 如果選取的內容包含現有的格式化標籤，需要保留它們
+      // 先將內容放入臨時容器
+      const tempContainer = document.createElement('div');
+      tempContainer.appendChild(contents);
+      
+      // 獲取 HTML 內容（保留現有格式）
+      const existingHtml = tempContainer.innerHTML;
+      
+      // 如果現有內容已經是純文字或簡單結構，直接包裹
+      // 否則需要更仔細地處理嵌套結構
+      if (existingHtml.trim() === selectedText || !existingHtml.match(/<(small|big|strong|b|h[1-3])/i)) {
+        // 簡單情況：直接包裹文字
+        formattedElement.innerHTML = tag + selectedText + closingTag;
+      } else {
+        // 複雜情況：需要保留現有格式並添加新的字體大小標籤
+        // 先包裹整個現有 HTML 結構
+        formattedElement.innerHTML = tag + existingHtml + closingTag;
+      }
+      
+      // 插入格式化後的元素
+      range.insertNode(formattedElement);
+      
+      // 將游標移到插入的元素之後
+      range.setStartAfter(formattedElement);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
     });
   };
 

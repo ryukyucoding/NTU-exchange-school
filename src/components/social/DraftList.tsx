@@ -11,6 +11,12 @@ interface Draft {
   content: string;
   type: 'general' | 'review';
   updatedAt: string;
+  schools?: { id: string; name_zh: string; name_en: string; country: string }[];
+  countries?: string[];
+  hashtags?: string[];
+  schoolId?: string;
+  country?: string;
+  repostId?: string;
 }
 
 interface DraftListProps {
@@ -38,7 +44,7 @@ export default function DraftList({ type, onLoadDraft }: DraftListProps) {
           setDrafts(data.posts || []);
         }
       } catch (error) {
-        console.error('Error fetching drafts:', error);
+        console.error('[DraftList] Error fetching drafts:', error);
       } finally {
         setLoading(false);
       }
@@ -69,18 +75,17 @@ export default function DraftList({ type, onLoadDraft }: DraftListProps) {
     <Card className="p-4 bg-white border-0 shadow-none">
       <h3 className="font-semibold mb-3 text-gray-800">草稿</h3>
       <div className="space-y-3">
-        {drafts.map((draft, index) => (
+        {drafts.map((draft) => (
           <div
             key={draft.id}
-            className="p-3 border border-gray-200 rounded-lg hover:border-gray-300 cursor-pointer transition-colors"
+            className="group p-3 border border-gray-200 rounded-lg hover:border-gray-300 cursor-pointer transition-colors"
             onClick={() => onLoadDraft(draft)}
           >
-            <div className="flex items-start justify-between mb-2">
-              <div className="font-medium text-sm">草稿 {index + 1}</div>
-              <Pencil className="w-4 h-4 text-gray-400" />
-            </div>
-            <div className="text-sm text-gray-600 line-clamp-2">
-              {draft.title || draft.content.substring(0, 50) || '預覽預覽預覽文字歐歐歐歐'}
+            <div className="flex items-start justify-between gap-2">
+              <div className="text-sm text-gray-600 line-clamp-2 flex-1">
+                {draft.title || draft.content.substring(0, 50) || '未命名草稿'}
+              </div>
+              <Pencil className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
             </div>
           </div>
         ))}

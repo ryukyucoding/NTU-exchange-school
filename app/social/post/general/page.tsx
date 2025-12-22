@@ -24,6 +24,9 @@ interface Draft {
   country?: string;
   schoolId?: string;
   hashtags?: string[];
+  repostId?: string;
+  schools?: { id: string; name_zh: string; name_en: string; country: string }[];
+  countries?: string[];
 }
 
 function GeneralPostContent() {
@@ -33,8 +36,9 @@ function GeneralPostContent() {
   const { schools } = useSchoolContext();
   const editPostId = searchParams.get('edit');
   const repostId = searchParams.get('repostId');
-  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
-  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
+  // 編輯時：如果有 return 參數就用它（這是編輯前的頁面）
+  // 發布/轉發時：如果有 return 參數就用它，否則預設為 /social（社群主頁）
+  const returnUrl = searchParams.get('return') || '/social';
 
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
   const [currentUserName, setCurrentUserName] = useState<string>('userName');
@@ -51,6 +55,7 @@ function GeneralPostContent() {
   const [loading, setLoading] = useState(!!editPostId);
   const [originalPost, setOriginalPost] = useState<any>(null);
   const [hasInitializedFromUrl, setHasInitializedFromUrl] = useState(false);
+  const [currentRepostId, setCurrentRepostId] = useState<string | null>(repostId);
 
   // 從 URL 參數預填國家/學校（只在非編輯模式下執行一次）
   useEffect(() => {
@@ -135,12 +140,13 @@ function GeneralPostContent() {
     };
   }, [sessionUserId, session?.user]);
 
-  // 載入要轉發的原貼文資料
+  // 載入要轉發的原貼文資料（從 URL 參數或編輯的貼文中）
   useEffect(() => {
-    if (repostId) {
+    const repostIdToLoad = currentRepostId || repostId;
+    if (repostIdToLoad) {
       const loadOriginalPost = async () => {
         try {
-          const response = await fetch(`/api/posts/${repostId}`);
+          const response = await fetch(`/api/posts/${repostIdToLoad}`);
           const data = await response.json();
           if (data.success && data.post) {
             setOriginalPost(data.post);
@@ -156,15 +162,29 @@ function GeneralPostContent() {
       };
       loadOriginalPost();
     }
-  }, [repostId, router]);
+  }, [currentRepostId, repostId, router]);
 
   // 載入要編輯的貼文資料
   useEffect(() => {
     if (editPostId) {
       const loadPost = async () => {
         try {
+          console.log('[GeneralPostPage] 開始載入編輯貼文:', { editPostId });
           const response = await fetch(`/api/posts/${editPostId}`);
           const data = await response.json();
+          console.log('[GeneralPostPage] API 回應:', {
+            success: data.success,
+            hasPost: !!data.post,
+            hasBoards: !!(data.post?.boards && Array.isArray(data.post.boards) && data.post.boards.length > 0),
+            boards: data.post?.boards,
+            postData: data.post ? {
+              id: data.post.id,
+              title: data.post.title,
+              schools: data.post.schools,
+              countries: data.post.countries,
+              hashtags: data.post.hashtags,
+            } : null,
+          });
           if (data.success && data.post) {
             const post = data.post;
             // 檢查是否為作者
@@ -178,19 +198,66 @@ function GeneralPostContent() {
             setTitle(post.title || '');
             setContent(post.content || '');
             setHashtags(post.hashtags || []);
-            setSelectedSchoolIds(post.schools?.map((s: { id: string }) => s.id) || []);
-            setSelectedCountries(post.countries || []);
-            // 如果是轉發貼文，載入原貼文
-            if (post.repostId) {
-              try {
-                const repostResponse = await fetch(`/api/posts/${post.repostId}`);
-                const repostData = await repostResponse.json();
-                if (repostData.success && repostData.post) {
-                  setOriginalPost(repostData.post);
+            
+            // 從 PostBoard -> Board 獲取版信息，根據 type 設置國家和學校
+            let schoolIds: string[] = [];
+            let countries: string[] = [];
+            
+            if (post.boards && Array.isArray(post.boards) && post.boards.length > 0) {
+              // 根據 Board 的 type 來設置
+              post.boards.forEach((board: { name: string; type: 'country' | 'school'; schoolId?: string | null }) => {
+                if (board.type === 'country') {
+                  // type 是 country，把 name 放到國家欄位
+                  if (!countries.includes(board.name)) {
+                    countries.push(board.name);
+                  }
+                } else if (board.type === 'school') {
+                  // type 是 school，根據 schoolId 或 name 找到對應的學校
+                  if (board.schoolId) {
+                    // 優先使用 schoolId，轉換為字符串（因為 schools 的 id 是 string）
+                    const schoolIdStr = String(board.schoolId);
+                    if (!schoolIds.includes(schoolIdStr)) {
+                      schoolIds.push(schoolIdStr);
+                    }
+                    // 同時從 schools 中找到對應的國家
+                    const school = schools.find(s => s.id === schoolIdStr);
+                    if (school && school.country && !countries.includes(school.country)) {
+                      countries.push(school.country);
+                    }
+                  } else {
+                    // 如果沒有 schoolId，嘗試根據 name 找到學校
+                    const school = schools.find(s => 
+                      s.name_zh === board.name || s.name_en === board.name
+                    );
+                    if (school) {
+                      if (!schoolIds.includes(school.id)) {
+                        schoolIds.push(school.id);
+                      }
+                      if (school.country && !countries.includes(school.country)) {
+                        countries.push(school.country);
+                      }
+                    }
+                  }
                 }
-              } catch (error) {
-                console.error('Error loading original post for repost:', error);
-              }
+              });
+            } else {
+              // 如果沒有 boards 信息，使用舊的方式（向後兼容）
+              schoolIds = post.schools?.map((s: { id: string }) => s.id) || [];
+              countries = post.countries || [];
+            }
+            
+            console.log('[GeneralPostPage] 設置學校和國家:', {
+              schoolIds,
+              countries,
+              boards: post.boards,
+              schoolsData: post.schools,
+              countriesData: post.countries,
+            });
+            setSelectedSchoolIds(schoolIds);
+            setSelectedCountries(countries);
+            // 如果是轉發貼文，設置 repostId 以便載入原貼文
+            if (post.repostId) {
+              setCurrentRepostId(post.repostId);
             }
             // 編輯模式下，標記已初始化，避免 URL 參數覆蓋
             setHasInitializedFromUrl(true);
@@ -199,7 +266,7 @@ function GeneralPostContent() {
             router.push('/social');
           }
         } catch (error) {
-          console.error('Error loading post:', error);
+          console.error('[GeneralPostPage] Error loading post:', error);
           toast.error('載入失敗');
           router.push('/social');
         } finally {
@@ -210,15 +277,134 @@ function GeneralPostContent() {
     } else {
       setLoading(false);
     }
-  }, [editPostId, session, router]);
+  }, [editPostId, session, router, schools]);
 
-  const handleLoadDraft = (draft: Draft) => {
+  const handleLoadDraft = async (draft: Draft) => {
+    console.log('[GeneralPostPage] 開始載入草稿:', {
+      draftId: draft.id,
+      draftTitle: draft.title,
+      draftSchools: draft.schools,
+      draftCountries: draft.countries,
+      draftSchoolId: draft.schoolId,
+      draftCountry: draft.country,
+      draftHashtags: draft.hashtags,
+    });
     setDraftId(draft.id);
     setTitle(draft.title || '');
     setContent(draft.content || '');
-    setSelectedCountries(draft.country ? [draft.country] : []);
-    setSelectedSchoolIds(draft.schoolId ? [draft.schoolId] : []);
+    
+    // 嘗試從 PostBoard 獲取 Board 信息
+    let schoolIds: string[] = [];
+    let countries: string[] = [];
+    
+    try {
+      const response = await fetch(`/api/posts/${draft.id}`);
+      const data = await response.json();
+      if (data.success && data.post && data.post.boards && Array.isArray(data.post.boards) && data.post.boards.length > 0) {
+        // 使用 Board 信息
+        data.post.boards.forEach((board: { name: string; type: 'country' | 'school'; schoolId?: string | null }) => {
+          if (board.type === 'country') {
+            if (!countries.includes(board.name)) {
+              countries.push(board.name);
+            }
+          } else if (board.type === 'school') {
+            if (board.schoolId) {
+              // 轉換為字符串（因為 schools 的 id 是 string）
+              const schoolIdStr = String(board.schoolId);
+              if (!schoolIds.includes(schoolIdStr)) {
+                schoolIds.push(schoolIdStr);
+              }
+              const school = schools.find(s => s.id === schoolIdStr);
+              if (school && school.country && !countries.includes(school.country)) {
+                countries.push(school.country);
+              }
+            } else {
+              const school = schools.find(s => 
+                s.name_zh === board.name || s.name_en === board.name
+              );
+              if (school) {
+                if (!schoolIds.includes(school.id)) {
+                  schoolIds.push(school.id);
+                }
+                if (school.country && !countries.includes(school.country)) {
+                  countries.push(school.country);
+                }
+              }
+            }
+          }
+        });
+        console.log('[GeneralPostPage] 從 Board 設置草稿的學校和國家:', {
+          schoolIds,
+          countries,
+          boards: data.post.boards,
+        });
+      } else {
+        // 如果沒有 Board 信息，使用舊的方式
+        if (draft.schools && draft.schools.length > 0) {
+          schoolIds = draft.schools.map(s => s.id);
+          if (draft.countries && draft.countries.length > 0) {
+            countries = draft.countries;
+          } else {
+            const countriesFromSchools = draft.schools.map(s => s.country).filter(Boolean);
+            countries = [...new Set(countriesFromSchools)];
+          }
+        } else if (draft.schoolId) {
+          schoolIds = [draft.schoolId];
+          countries = draft.country ? [draft.country] : [];
+        } else {
+          schoolIds = [];
+          if (draft.countries && draft.countries.length > 0) {
+            countries = draft.countries;
+          } else {
+            countries = draft.country ? [draft.country] : [];
+          }
+        }
+        console.log('[GeneralPostPage] 設置草稿的學校和國家（舊方式）:', {
+          schoolIds,
+          countries,
+          source: draft.schools ? 'schools array' : draft.schoolId ? 'schoolId' : 'countries/country',
+        });
+      }
+    } catch (error) {
+      console.error('[GeneralPostPage] Error loading draft boards:', error);
+      // 如果獲取失敗，使用舊的方式
+      if (draft.schools && draft.schools.length > 0) {
+        schoolIds = draft.schools.map(s => s.id);
+        if (draft.countries && draft.countries.length > 0) {
+          countries = draft.countries;
+        } else {
+          const countriesFromSchools = draft.schools.map(s => s.country).filter(Boolean);
+          countries = [...new Set(countriesFromSchools)];
+        }
+      } else if (draft.schoolId) {
+        schoolIds = [draft.schoolId];
+        countries = draft.country ? [draft.country] : [];
+      } else {
+        schoolIds = [];
+        if (draft.countries && draft.countries.length > 0) {
+          countries = draft.countries;
+        } else {
+          countries = draft.country ? [draft.country] : [];
+        }
+      }
+    }
+    
+    setSelectedSchoolIds(schoolIds);
+    setSelectedCountries(countries);
     setHashtags(draft.hashtags || []);
+    // 如果是轉發貼文，載入原貼文
+    if (draft.repostId) {
+      setCurrentRepostId(draft.repostId);
+      try {
+        const repostResponse = await fetch(`/api/posts/${draft.repostId}`);
+        const repostData = await repostResponse.json();
+        if (repostData.success && repostData.post) {
+          setOriginalPost(repostData.post);
+        }
+      } catch (error) {
+        console.error('Error loading original post for draft:', error);
+      }
+    }
     toast.success('草稿已載入');
   };
 
@@ -256,6 +442,7 @@ function GeneralPostContent() {
       if (data.success) {
         setDraftId(data.post.id);
         toast.success('草稿已儲存');
+        router.push(returnUrl);
       } else {
         toast.error(data.error || '儲存失敗');
       }
@@ -274,7 +461,7 @@ function GeneralPostContent() {
   const normalizedContent = normalizeEditorText(content);
 
   // 檢查是否符合發布條件（轉發可無內容，但一般貼文需有內容）
-  const canPublish = Boolean(normalizedTitle) && (Boolean(repostId) || Boolean(normalizedContent));
+  const canPublish = Boolean(normalizedTitle) && (Boolean(currentRepostId || repostId) || Boolean(normalizedContent));
 
   const handleSubmit = async () => {
     if (!normalizedTitle) {
@@ -282,7 +469,7 @@ function GeneralPostContent() {
       return;
     }
     // 轉發時可以不輸入內容，但必須有標題
-    if (!repostId && !normalizedContent) {
+    if (!(currentRepostId || repostId) && !normalizedContent) {
       toast.error('請輸入內容');
       return;
     }
@@ -312,7 +499,7 @@ function GeneralPostContent() {
           schoolIds: selectedSchoolIds,
           countryIds: countryIds.length > 0 ? countryIds : undefined,
           countryNames: countryIds.length === 0 ? selectedCountries : undefined, // 向後兼容
-          repostId: repostId || undefined,
+          repostId: (currentRepostId || repostId) || undefined,
         }),
       });
 
@@ -431,7 +618,7 @@ function GeneralPostContent() {
                 {/* Content Section */}
                 <div className="mb-6 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
                   {/* 轉發預覽框 - 顯示在輸入框上方 */}
-                  {repostId && originalPost && (
+                  {(currentRepostId || repostId) && originalPost && (
                     <div className="mb-4">
                       <RepostPreview originalPost={originalPost} />
                     </div>
@@ -440,7 +627,7 @@ function GeneralPostContent() {
                   <SimpleRichTextEditor
                     value={content}
                     onChange={setContent}
-                    placeholder={repostId ? "說點什麼..." : "輸入內容..."}
+                    placeholder={(currentRepostId || repostId) ? "說點什麼..." : "輸入內容..."}
                   />
                 </div>
 
@@ -503,9 +690,9 @@ function GeneralPostContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Drafts */}
+          {/* Right Sidebar - Drafts (編輯時為空) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <DraftList type="general" onLoadDraft={handleLoadDraft} />
+            {!editPostId && <DraftList type="general" onLoadDraft={handleLoadDraft} />}
           </aside>
         </div>
       </div>

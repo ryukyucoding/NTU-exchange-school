@@ -62,11 +62,24 @@ export function markdownToHtml(markdown: string): string {
   // 轉換連結 [text](url) - 只處理有文字的連結
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
   
-  // 轉換 HTML 標籤（如果有的話）
-  html = html.replace(/<small>(.+?)<\/small>/g, '<small style="font-size: 0.875em;">$1</small>');
-  html = html.replace(/<big>(.+?)<\/big>/g, '<big style="font-size: 1.25em;">$1</big>');
+  // 轉換 HTML 標籤（如果有的話）- 必須在換行處理之前
+  // 處理字體大小標籤（支援嵌套）
+  html = html.replace(/<small>([\s\S]*?)<\/small>/g, (match, content) => {
+    // 先處理內容中的其他標籤
+    const processedContent = content
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
+    return `<small style="font-size: 0.875em;">${processedContent}</small>`;
+  });
+  html = html.replace(/<big>([\s\S]*?)<\/big>/g, (match, content) => {
+    // 先處理內容中的其他標籤
+    const processedContent = content
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
+    return `<big style="font-size: 1.25em;">${processedContent}</big>`;
+  });
   
-  // 轉換換行
+  // 轉換換行（必須在最後處理，避免影響其他標籤）
   html = html.replace(/\n/g, '<br>');
   
   return html;
@@ -81,7 +94,57 @@ export function htmlToMarkdown(html: string): string {
   let markdown = html;
   
   // 先處理換行，避免影響其他標籤的匹配
+  // 將 <br> 和 <br/> 轉換為換行符號（必須在處理 div/p 之前）
   markdown = markdown.replace(/<br\s*\/?>/gi, '\n');
+  
+  // 處理空段落和空 div（可能包含換行或空白）
+  markdown = markdown.replace(/<p[^>]*>\s*<\/p>/gi, '\n');
+  markdown = markdown.replace(/<div[^>]*>\s*<\/div>/gi, '\n');
+  
+  // 處理只包含 <br> 的段落或 div（單個換行的情況）- 此時 <br> 已經被轉換為 \n
+  // 使用更寬鬆的匹配，允許空白字符
+  markdown = markdown.replace(/<(p|div)[^>]*>[\s\n]*\n[\s\n]*<\/(p|div)>/gi, '\n');
+  
+  // 處理所有塊級元素的結束標籤（產生換行）- 必須在處理開始標籤之前
+  markdown = markdown.replace(/<\/(p|div|h[1-6])>/gi, '\n');
+  
+  // 處理段落和 div 開始標籤（移除標籤但保留內容）
+  markdown = markdown.replace(/<p[^>]*>/gi, '');
+  markdown = markdown.replace(/<div[^>]*>/gi, '');
+  
+  // 先處理字體大小標籤（必須在最前面處理，避免被其他標籤處理影響）
+  // 使用遞迴方式處理嵌套的字體大小標籤
+  let changed = true;
+  while (changed) {
+    const before = markdown;
+    markdown = markdown.replace(/<small[^>]*>([\s\S]*?)<\/small>/gi, (match, content) => {
+      // 先處理內容中的嵌套標籤（除了 small 和 big）
+      let processedContent = content
+        .replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**')
+        .replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, '**$1**')
+        .replace(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
+        .replace(/<img[^>]+src="([^"]+)"[^>]*(?:alt="([^"]*)")?[^>]*>/gi, '![$2]($1)')
+        .replace(/<h1>([\s\S]*?)<\/h1>/gi, '# $1')
+        .replace(/<h2>([\s\S]*?)<\/h2>/gi, '## $1')
+        .replace(/<h3>([\s\S]*?)<\/h3>/gi, '### $1')
+        .replace(/<[^>]+>/g, ''); // 移除其他 HTML 標籤
+      return `<small>${processedContent}</small>`;
+    });
+    markdown = markdown.replace(/<big[^>]*>([\s\S]*?)<\/big>/gi, (match, content) => {
+      // 先處理內容中的嵌套標籤（除了 small 和 big）
+      let processedContent = content
+        .replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**')
+        .replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, '**$1**')
+        .replace(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
+        .replace(/<img[^>]+src="([^"]+)"[^>]*(?:alt="([^"]*)")?[^>]*>/gi, '![$2]($1)')
+        .replace(/<h1>([\s\S]*?)<\/h1>/gi, '# $1')
+        .replace(/<h2>([\s\S]*?)<\/h2>/gi, '## $1')
+        .replace(/<h3>([\s\S]*?)<\/h3>/gi, '### $1')
+        .replace(/<[^>]+>/g, ''); // 移除其他 HTML 標籤
+      return `<big>${processedContent}</big>`;
+    });
+    changed = before !== markdown;
+  }
   
   // 轉換標題
   markdown = markdown.replace(/<h1>(.+?)<\/h1>/gi, '# $1\n');
@@ -124,30 +187,20 @@ export function htmlToMarkdown(html: string): string {
     return `![${alt || ''}](${url})`;
   });
   
-  // 轉換 HTML 標籤
-  markdown = markdown.replace(/<small[^>]*>(.+?)<\/small>/gi, (match, content) => {
-    const cleanContent = content.replace(/<[^>]+>/g, '');
-    return `<small>${cleanContent}</small>`;
-  });
-  markdown = markdown.replace(/<big[^>]*>(.+?)<\/big>/gi, (match, content) => {
-    const cleanContent = content.replace(/<[^>]+>/g, '');
-    return `<big>${cleanContent}</big>`;
-  });
-  
-  // 處理段落標籤
-  markdown = markdown.replace(/<\/p>/gi, '\n');
-  markdown = markdown.replace(/<p[^>]*>/gi, '');
-  
-  // 處理 div 標籤（contentEditable 中按 Enter 可能產生 div）
-  markdown = markdown.replace(/<\/div>/gi, '\n');
-  markdown = markdown.replace(/<div[^>]*>/gi, '');
-  
-  // 移除其他 HTML 標籤但保留文字內容
-  markdown = markdown.replace(/<[^>]+>/g, '');
+  // 移除其他 HTML 標籤但保留文字內容（但保留 <small> 和 <big>）
+  markdown = markdown.replace(/<(?!small|big|\/small|\/big)[^>]+>/g, '');
   
   // 清理多餘的換行和空白
-  markdown = markdown.replace(/\n{3,}/g, '\n\n');
-  markdown = markdown.replace(/[ \t]+\n/g, '\n'); // 移除行尾空白
+  // 先移除行尾空白（在換行前的空格和 tab）
+  markdown = markdown.replace(/[ \t]+\n/g, '\n');
   
-  return markdown.trim();
+  // 清理連續的換行（保留最多兩個連續換行）
+  markdown = markdown.replace(/\n{3,}/g, '\n\n');
+  
+  // 確保單個換行被保留：將換行前後的空白標準化
+  // 將 " \n" 或 "\n " 標準化為 "\n"，但保留換行本身
+  markdown = markdown.replace(/([^\n])[ \t]*\n[ \t]*([^\n])/g, '$1\n$2');
+  
+  // 不要 trim，保留開頭和結尾的換行（如果有的話）
+  return markdown;
 }
