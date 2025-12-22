@@ -14,18 +14,7 @@ import { CheckCircle2, Download, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
-
-interface WishlistItem {
-  school: {
-    id: string;
-    name_zh: string;
-    name_en: string;
-    country: string;
-  };
-  priority: number;
-  note: string;
-  addedAt: string;
-}
+import type { WishlistItem } from '@/contexts/WishlistContext';
 
 interface ApplicationSummaryProps {
   preferences: string[];

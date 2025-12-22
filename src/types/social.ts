@@ -25,6 +25,7 @@ export interface Post {
   photos?: PostPhoto[];
   ratings?: SchoolRating;
   schools?: School[];
+  countries?: string[]; // API may return a derived country list for convenience
   postType: 'general' | 'review'; // 前端顯示類型（基於 type 推斷）
   likeCount: number;
   repostCount: number;
@@ -33,6 +34,9 @@ export interface Post {
   isReposted: boolean;
   isBookmarked?: boolean;
 }
+
+// Convenience type for UI components that require author to be present
+export type PostWithAuthor = Post & { author: NonNullable<Post['author']> };
 
 export interface PostPhoto {
   id: string;

@@ -53,11 +53,14 @@ export function markdownToHtml(markdown: string): string {
   // 轉換粗體 **text**
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   
-  // 轉換連結 [text](url)
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
-  
-  // 轉換圖片 ![alt](url)
+  // 先轉換圖片 ![alt](url) - 必須在處理連結之前，避免被誤移除
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />');
+  
+  // 移除空連結 [](url) - 沒有文字的普通連結（不包含圖片，因為圖片已經被轉換了）
+  html = html.replace(/\[\]\([^)]+\)/g, '');
+  
+  // 轉換連結 [text](url) - 只處理有文字的連結
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: underline;">$1</a>');
   
   // 轉換 HTML 標籤（如果有的話）
   html = html.replace(/<small>(.+?)<\/small>/g, '<small style="font-size: 0.875em;">$1</small>');

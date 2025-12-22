@@ -4,48 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import GeneralPostCard from './GeneralPostCard';
 import SchoolReviewPostCard from './SchoolReviewPostCard';
-
-interface Author {
-  id: string;
-  name: string | null;
-  image: string | null;
-}
-
-interface Photo {
-  id: string;
-  url: string;
-}
-
-interface Ratings {
-  schoolId: string;
-  livingConvenience: number;
-  costOfLiving: number;
-  courseLoading: number;
-}
-
-interface School {
-  id: string;
-  name_zh: string;
-  name_en: string;
-}
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author: Author;
-  createdAt: string;
-  hashtags?: string[];
-  photos?: Photo[];
-  ratings?: Ratings;
-  postType: 'general' | 'review';
-  schools?: School[];
-  likeCount: number;
-  repostCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  isReposted: boolean;
-}
+import type { PostWithAuthor as Post } from '@/types/social';
 
 interface PostListProps {
   filter: 'all' | 'following';
