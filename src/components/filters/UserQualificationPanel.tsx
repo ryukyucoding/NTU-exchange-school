@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useUserContext } from '@/contexts/UserContext';
 import { useFilters } from '@/contexts/FilterContext';
@@ -27,6 +27,16 @@ export default function UserQualificationPanel({
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
 
+  // 當 user.applicationGroup 從資料庫載入時，同步到 filters
+  useEffect(() => {
+    if (user.applicationGroup !== null && filters.applicationGroup !== user.applicationGroup) {
+      updateFilters({ applicationGroup: user.applicationGroup });
+    } else if (user.applicationGroup === null && filters.applicationGroup !== null) {
+      // 如果 user.applicationGroup 被清除，也清除 filters
+      updateFilters({ applicationGroup: null });
+    }
+  }, [user.applicationGroup]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleApplyFilter = async () => {
     const hasAnyQualification =
       user.college !== null ||
@@ -34,11 +44,10 @@ export default function UserQualificationPanel({
       user.gpa !== null ||
       user.toefl !== null ||
       user.ielts !== null ||
-      user.toeic !== null;
+      user.toeic !== null ||
+      filters.applicationGroup !== null;
 
-    const hasAnyNonQualificationFilter = filters.applicationGroup !== null;
-
-    if (!hasAnyQualification && !hasAnyNonQualificationFilter) {
+    if (!hasAnyQualification) {
       toast('請先設定至少一項篩選條件', { icon: 'ℹ️' });
       return;
     }
@@ -55,29 +64,26 @@ export default function UserQualificationPanel({
       return;
     }
 
-    // 如果已登入且使用者有填寫資格，保存到資料庫
-    // （像申請組別這種一般篩選不需要保存，避免資料表不相容）
-    if (!hasAnyQualification) {
-      toast.success('已套用篩選');
-      if (onApply) {
-        setTimeout(() => {
-          onApply();
-        }, 300);
-      }
-      return;
-    }
-
+    // 如果已登入，保存到資料庫
     setIsSaving(true);
     try {
       const response = await fetch('/api/user/qualification', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
+        body: JSON.stringify({
+          ...user,
+          applicationGroup: filters.applicationGroup,
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
+          // 更新 user state 中的 applicationGroup
+          setUser({
+            ...user,
+            applicationGroup: filters.applicationGroup,
+          });
           toast.success('已套用資格篩選並保存');
           // 自動收起面板
           if (onApply) {
@@ -104,6 +110,21 @@ export default function UserQualificationPanel({
   const handleClearFilter = async () => {
     resetUser();
     updateFilters({ applicationGroup: null });
+    // 如果已登入，也清除資料庫中的 applicationGroup
+    if (session) {
+      try {
+        await fetch('/api/user/qualification', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...user,
+            applicationGroup: null,
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to clear applicationGroup:', error);
+      }
+    }
     toast.success('已清除所有篩選條件');
     // 自動收起面板
     if (onApply) {

@@ -244,6 +244,7 @@ export default function MapView({ schools }: MapViewProps) {
   const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
   const [detailSchool, setDetailSchool] = useState<SchoolWithMatch | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [hoveredMarkerId, setHoveredMarkerId] = useState<string | null>(null);
   const { setZoomLevel } = useMapZoom();
   const isHighZoom = useMapBackgroundBrightness(3);
 
@@ -354,6 +355,7 @@ export default function MapView({ schools }: MapViewProps) {
       >
         {schoolsWithCoordinates.map(school => {
           const markerColor = getMarkerColor(school.application_group);
+          const isHovered = hoveredMarkerId === school.id;
           return (
             <Marker
               key={school.id}
@@ -366,16 +368,24 @@ export default function MapView({ schools }: MapViewProps) {
                   setDetailSchool(school);
                 }
               }}
+              style={{
+                zIndex: isHovered ? 9999 : 0
+              }}
             >
-              <div className="cursor-pointer group" data-map-marker="true">
-                <div 
+              <div
+                className="cursor-pointer group relative"
+                data-map-marker="true"
+                onMouseEnter={() => setHoveredMarkerId(school.id)}
+                onMouseLeave={() => setHoveredMarkerId(null)}
+              >
+                <div
                   className="w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center transition-transform group-hover:scale-110"
                   style={{ backgroundColor: markerColor }}
                 >
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
-                {/* 大學名稱標籤 */}
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-[100]">
+                {/* 大學名稱標籤 - 顯示在 marker 上方 */}
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   {school.name_zh}
                 </div>
               </div>

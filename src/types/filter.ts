@@ -19,4 +19,5 @@ export interface UserQualification {
   toefl: number | null;
   ielts: number | null;
   toeic: number | null;
+  applicationGroup: string | null;
 }
