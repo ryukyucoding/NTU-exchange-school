@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import RouteGuard from '@/components/auth/RouteGuard';
+import FeatureTour from '@/components/onboarding/FeatureTour';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
@@ -101,7 +102,8 @@ export default function SocialPage() {
   return (
     <RouteGuard>
       <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
-      <SocialContent />
+        <SocialContent />
+        <FeatureTour tourType="social" />
       </Suspense>
     </RouteGuard>
   );

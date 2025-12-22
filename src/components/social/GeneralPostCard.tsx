@@ -166,19 +166,21 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
   return (
     <Card className="p-6 bg-white border-0 shadow-none">
       {/* 作者資訊行 */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
-          {post.author?.image && (
-            <img
-              src={post.author.image}
-              alt={post.author.name || 'User'}
-              className="w-full h-full rounded-full object-cover"
-            />
-          )}
-        </div>
+      <div className="flex items-center gap-3 mb-4" onClick={(e) => e.stopPropagation()}>
+        <Link href={`/social/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
+          <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
+            {post.author?.image && (
+              <img
+                src={post.author.image}
+                alt={post.author.name || 'User'}
+                className="w-full h-full rounded-full object-cover"
+              />
+            )}
+          </div>
+        </Link>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Link href={`/social/profile/${post.author.id}`}>
+            <Link href={`/social/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
               <span className="text-sm font-semibold hover:underline" style={{ color: '#5A5A5A' }}>
                 {post.author.name || post.author.userID || 'Unknown User'}
               </span>
@@ -214,15 +216,37 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
         )}
       </div>
 
-      {/* 標題 */}
-      <Link href={`/social/posts/${post.id}`}>
-        <h3 className="text-2xl font-semibold mb-3 hover:underline" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
-          {post.title}
-        </h3>
-      </Link>
+      {/* 可點擊的標題區域 */}
+      {!post.repostId ? (
+        <Link 
+          href={`/social/posts/${post.id}`}
+          className="block cursor-pointer mb-4"
+          style={{ textDecoration: 'none' }}
+        >
+          <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
+            {post.title}
+          </h3>
+          <p 
+            className="text-sm"
+            style={{ color: '#5A5A5A' }}
+          >
+            {truncatedContent}
+          </p>
+        </Link>
+      ) : (
+        <Link 
+          href={`/social/posts/${post.id}`}
+          className="block cursor-pointer"
+          style={{ textDecoration: 'none' }}
+        >
+          <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
+            {post.title}
+          </h3>
+        </Link>
+      )}
 
       {/* 國家和學校標籤 */}
-      <div className="flex flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
         {/* 優先使用 boards 陣列生成連結（正確的連結格式） */}
         {post.boards && post.boards.length > 0 ? (
           <>
@@ -244,6 +268,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
                   }}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {board.name}
                 </Link>
@@ -266,6 +291,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
                   }}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {board.name}
                 </Link>
@@ -290,6 +316,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
                 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 {country}
               </Link>
@@ -310,6 +337,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
                 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 {school.name_zh || school.name_en}
               </Link>
@@ -333,6 +361,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(141, 112, 81, 0.34)';
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {tag}
           </Link>
@@ -341,36 +370,29 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
 
       {/* 文章內容 - 如果有輸入內容，顯示在預覽框上方 */}
       {post.content.trim() && post.repostId && post.originalPost && (
-        <div className="mb-4">
+        <Link 
+          href={`/social/posts/${post.id}`}
+          className="block cursor-pointer mb-4"
+          style={{ textDecoration: 'none' }}
+        >
           <div 
             className="text-sm prose prose-sm max-w-none"
             style={{ color: '#5A5A5A' }}
             dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
           />
-        </div>
+        </Link>
       )}
       
       {/* 轉發預覽框 */}
       {post.repostId && post.originalPost && (
-        <div className="mb-4">
+        <div className="mb-4" onClick={(e) => e.stopPropagation()}>
           <RepostPreview originalPost={post.originalPost} />
         </div>
       )}
       
-      {/* 如果沒有轉發，顯示正常內容 */}
-      {!post.repostId && (
-        <Link href={`/social/posts/${post.id}`}>
-          <p 
-            className="text-sm mb-4"
-            style={{ color: '#5A5A5A' }}
-          >
-            {truncatedContent}
-          </p>
-        </Link>
-      )}
 
       {/* 互動按鈕 */}
-      <div className="flex items-center gap-6 pt-4">
+      <div className="flex items-center gap-6 pt-4" onClick={(e) => e.stopPropagation()}>
         <Button
           variant="ghost"
           size="sm"

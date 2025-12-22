@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Plus, Minus, GripVertical, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import RouteGuard from '@/components/auth/RouteGuard';
+import FeatureTour from '@/components/onboarding/FeatureTour';
 import {
   Dialog,
   DialogContent,
@@ -301,7 +302,7 @@ function WishlistContent() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 overflow-hidden min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 overflow-hidden min-h-0" data-tour-step="wishlist-features">
             {/* 左側：收藏清單（可獨立滾動） */}
             <div className="lg:col-span-2 min-h-0 flex flex-col">
               <div className="flex-1 overflow-y-auto overscroll-contain space-y-4 pr-1">
@@ -541,6 +542,7 @@ export default function WishlistPage() {
   return (
     <RouteGuard>
       <WishlistContent />
+      <FeatureTour tourType="wishlist" />
     </RouteGuard>
   );
 }

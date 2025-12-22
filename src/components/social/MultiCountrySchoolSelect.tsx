@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 
@@ -32,15 +32,53 @@ export default function MultiCountrySchoolSelect({
   const [schoolInput, setSchoolInput] = useState('');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
+  const [allCountries, setAllCountries] = useState<string[]>([]);
 
-  // 獲取所有國家列表
+  // 從 API 獲取所有國家列表
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const res = await fetch('/api/boards/countries');
+        const data = await res.json();
+        if (data?.success && data.countriesByRegion) {
+          // 從所有地區中提取國家名稱
+          const countrySet = new Set<string>();
+          Object.values(data.countriesByRegion).forEach((regionCountries: any) => {
+            if (Array.isArray(regionCountries)) {
+              regionCountries.forEach((country: { country_zh: string }) => {
+                if (country.country_zh) {
+                  countrySet.add(country.country_zh);
+                }
+              });
+            }
+          });
+          setAllCountries(Array.from(countrySet).sort());
+        }
+      } catch (err) {
+        console.error('Error fetching countries:', err);
+        // 如果API失敗，回退到從schools中提取
+        const countrySet = new Set<string>();
+        schools.forEach(school => {
+          if (school.country) countrySet.add(school.country);
+        });
+        setAllCountries(Array.from(countrySet).sort());
+      }
+    };
+    fetchCountries();
+  }, [schools]);
+
+  // 獲取所有國家列表（優先使用API獲取的，否則使用從schools提取的）
   const countries = useMemo(() => {
+    if (allCountries.length > 0) {
+      return allCountries;
+    }
+    // 回退：從schools中提取
     const countrySet = new Set<string>();
     schools.forEach(school => {
-      countrySet.add(school.country);
+      if (school.country) countrySet.add(school.country);
     });
     return Array.from(countrySet).sort();
-  }, [schools]);
+  }, [allCountries, schools]);
 
   // 根據選擇的國家過濾學校（只顯示所選國家內的學校）
   const filteredSchools = useMemo(() => {
@@ -52,10 +90,10 @@ export default function MultiCountrySchoolSelect({
 
   // 根據輸入過濾國家
   const filteredCountries = useMemo(() => {
-    if (!countryInput.trim()) return countries.slice(0, 10);
-    return countries
-      .filter(country => country.includes(countryInput.trim()))
-      .slice(0, 10);
+    if (!countryInput.trim()) return countries;
+    return countries.filter(country => 
+      country.toLowerCase().includes(countryInput.trim().toLowerCase())
+    );
   }, [countryInput, countries]);
 
   // 根據輸入過濾學校

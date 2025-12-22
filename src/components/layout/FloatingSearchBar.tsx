@@ -105,6 +105,7 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
       <div
         className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-auto"
         onClick={handleSearchBarClick}
+        data-tour-step="search"
       >
         <div
           className={

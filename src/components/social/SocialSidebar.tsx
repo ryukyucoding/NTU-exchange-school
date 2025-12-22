@@ -32,6 +32,7 @@ function PostButton() {
         onClick={() => setDialogOpen(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        data-tour-step="social-post"
         style={{
           borderRadius: '9999px',
           backgroundColor: isHovered ? 'rgba(186, 199, 229, 0.9)' : '#BAC7E5',
@@ -134,7 +135,7 @@ export default function SocialSidebar() {
       {/* Navigation */}
       <Card className="p-4 bg-white border-0 shadow-none">
         <nav className="flex flex-col gap-2">
-          <Link href="/social/boards">
+          <Link href="/social/boards" data-tour-step="social-boards">
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-700"

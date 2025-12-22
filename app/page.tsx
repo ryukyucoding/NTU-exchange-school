@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import { useFilters } from '@/contexts/FilterContext';
 import { useUserContext } from '@/contexts/UserContext';
@@ -9,7 +10,7 @@ import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
 import MapView from '@/components/views/MapView';
-import WelcomeDialog from '@/components/onboarding/WelcomeDialog';
+import FeatureTour from '@/components/onboarding/FeatureTour';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,6 +22,17 @@ function UnifiedPanelManager() {
   const { panels, expandPanel, collapsePanel, isAnyPanelOpen } = panelManager;
   const { isUsingQualificationFilter } = useUserContext();
   const isHighZoom = useMapBackgroundBrightness(3);
+
+  // 监听打开资格面板的事件（用于导览）
+  useEffect(() => {
+    const handleOpenQualificationPanel = () => {
+      expandPanel('user');
+    };
+    window.addEventListener('openQualificationPanel', handleOpenQualificationPanel);
+    return () => {
+      window.removeEventListener('openQualificationPanel', handleOpenQualificationPanel);
+    };
+  }, [expandPanel]);
 
   return (
     <>
@@ -99,6 +111,7 @@ function UnifiedPanelManager() {
                 onClick={() => expandPanel('user')}
                 isActive={isUsingQualificationFilter}
                 isHighZoom={isHighZoom}
+                data-tour-step="qualification"
               />
             </motion.div>
 
@@ -117,12 +130,14 @@ function CollapseButton({
   onClick,
   isActive = false,
   isHighZoom = false,
+  ...props
 }: {
   top: string;
   text: string;
   onClick: () => void;
   isActive?: boolean;
   isHighZoom?: boolean;
+  [key: string]: unknown;
 }) {
   return (
     <Button
@@ -136,6 +151,7 @@ function CollapseButton({
             : 'bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:text-white'
       }`}
       onClick={onClick}
+      {...props}
     >
       <ChevronLeft className="w-4 h-4 mb-2" />
       <span className="text-xs leading-tight" dangerouslySetInnerHTML={{ __html: text }} />
@@ -169,7 +185,9 @@ function MainContent() {
 
       <UnifiedPanelManager />
 
-      <MapView schools={filteredSchools} />
+      <div data-tour-step="map">
+        <MapView schools={filteredSchools} />
+      </div>
     </div>
   );
 }
@@ -178,7 +196,7 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
       <MainContent />
-      <WelcomeDialog />
+      <FeatureTour tourType="home" />
     </div>
   );
 }

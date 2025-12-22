@@ -146,19 +146,21 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   return (
     <Card className="p-6 bg-white border-0 shadow-none">
       {/* 作者資訊行 */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
-          {post.author?.image && (
-            <img
-              src={post.author.image}
-              alt={post.author.name || 'User'}
-              className="w-full h-full rounded-full object-cover"
-            />
-          )}
-        </div>
+      <div className="flex items-center gap-3 mb-4" onClick={(e) => e.stopPropagation()}>
+        <Link href={`/social/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
+          <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
+            {post.author?.image && (
+              <img
+                src={post.author.image}
+                alt={post.author.name || 'User'}
+                className="w-full h-full rounded-full object-cover"
+              />
+            )}
+          </div>
+        </Link>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Link href={`/social/profile/${post.author.id}`}>
+            <Link href={`/social/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
               <span className="text-sm font-semibold hover:underline" style={{ color: '#5A5A5A' }}>
                 {post.author.name || 'Unknown User'}
               </span>
@@ -194,15 +196,25 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         )}
       </div>
 
-      {/* 標題 */}
-      <Link href={`/social/posts/${post.id}`}>
-        <h3 className="text-2xl font-semibold mb-3 hover:underline" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
+      {/* 可點擊的標題和內容區域 */}
+      <Link 
+        href={`/social/posts/${post.id}`}
+        className="block cursor-pointer mb-4"
+        style={{ textDecoration: 'none' }}
+      >
+        <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
           {post.title}
         </h3>
+        <p 
+          className="text-sm"
+          style={{ color: '#5A5A5A' }}
+        >
+          {truncatedContent}
+        </p>
       </Link>
 
       {/* 國家和學校標籤 */}
-      <div className="flex flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
         {countries.map((country, index) => (
           <Link
             key={`country-${index}`}
@@ -219,6 +231,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {country}
           </Link>
@@ -239,6 +252,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {school.name_zh || school.name_en}
           </Link>
@@ -260,6 +274,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(141, 112, 81, 0.34)';
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             {tag}
           </Link>
@@ -268,7 +283,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
 
       {/* 評分指標 */}
       {post.ratings && (
-        <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="mb-4 flex items-center justify-between gap-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2 flex-1">
             <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
               生活機能
@@ -290,18 +305,8 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         </div>
       )}
 
-      {/* 文章內容 */}
-      <Link href={`/social/posts/${post.id}`}>
-        <p 
-          className="text-sm mb-4"
-          style={{ color: '#5A5A5A' }}
-        >
-          {truncatedContent}
-        </p>
-      </Link>
-
       {/* 互動按鈕 */}
-      <div className="flex items-center gap-6 pt-4">
+      <div className="flex items-center gap-6 pt-4" onClick={(e) => e.stopPropagation()}>
         <Button
           variant="ghost"
           size="sm"
