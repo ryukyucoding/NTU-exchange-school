@@ -36,33 +36,27 @@ export default function AppShell({ children }: AppShellProps) {
         className="fixed top-0 left-0 right-0 h-16 z-50 pointer-events-none" 
         style={{ backgroundColor: 'unset', background: 'unset' }}
       >
-        <div 
-          className="h-full flex items-center justify-between px-4 header-inner pointer-events-auto" 
-          style={{ 
-            backgroundColor: 'unset', 
-            background: 'unset',
-            backgroundImage: 'none',
-            backgroundSize: 'initial',
-            backgroundPosition: 'initial',
-            backgroundRepeat: 'initial',
-            backgroundAttachment: 'initial',
-            backgroundOrigin: 'initial',
-            backgroundClip: 'initial'
-          }}
-        >
+        <div className="h-full flex items-center justify-between px-4">
           {/* 左上角開關按鈕 */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
-            onClick={() => setOpen(!open)}
-            aria-label="開啟側邊選單"
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
+          <div className="pointer-events-auto">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white border border-[#b08a63] text-[#4a3828] hover:bg-[#f7efe5]"
+              onClick={() => setOpen(!open)}
+              aria-label="開啟側邊選單"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </div>
+          
+          {/* 中間區域留空，給 topic/篩選按鈕使用 */}
+          <div className="flex-1" style={{ pointerEvents: 'none' }} />
           
           {/* 右上角按鈕區域 */}
-          <UserMenu />
+          <div className="pointer-events-auto">
+            <UserMenu />
+          </div>
         </div>
       </header>
 

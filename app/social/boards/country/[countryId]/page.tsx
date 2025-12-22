@@ -196,35 +196,40 @@ function CountryBoardContent() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-      {/* Topic Frame */}
-      <div className="sticky top-16 z-40 py-4 border-b border-transparent">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center">
-            <div
-              className="flex items-center justify-center"
+      {/* Topic Frame - 固定在 header 内部居中 */}
+      {boardTitle && (
+        <div 
+          className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
+          style={{ 
+            height: '64px', // header 的高度
+            pointerEvents: 'none' // 让点击事件穿透
+          }}
+        >
+          <div
+            className="flex items-center justify-center pointer-events-auto"
+            style={{
+              width: '140px',
+              height: '32px',
+              border: '1px solid #5A5A5A',
+              borderRadius: '24px',
+              boxSizing: 'border-box',
+              backgroundColor: 'transparent',
+            }}
+          >
+            <h1
+              className="text-sm font-semibold"
               style={{
-                width: '140px',
-                height: '32px',
-                border: '1px solid #5A5A5A',
-                borderRadius: '24px',
-                boxSizing: 'border-box',
+                color: '#5A5A5A',
+                fontSize: '14px',
+                lineHeight: '20px',
+                fontFamily: "'Noto Sans TC', sans-serif",
               }}
             >
-              <h1
-                className="text-sm font-semibold"
-                style={{
-                  color: '#5A5A5A',
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  fontFamily: "'Noto Sans TC', sans-serif",
-                }}
-              >
-                {boardTitle}
-              </h1>
-            </div>
+              {boardTitle}
+            </h1>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Content Frame */}
       <div className="max-w-7xl mx-auto px-4 pb-6 pt-4">
@@ -233,10 +238,7 @@ function CountryBoardContent() {
           <aside className="hidden md:block w-64 flex-shrink-0" />
 
           {/* Main */}
-          <main
-            className="w-[800px] flex-shrink-0"
-            style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}
-          >
+          <main className="w-[800px] flex-shrink-0">
             {loading || !countryInfo ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">

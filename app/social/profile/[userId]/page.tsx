@@ -58,34 +58,36 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   return (
     <RouteGuard>
       <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-        {/* Topic Frame */}
-        <div className="sticky top-16 z-40 py-4 border-b border-transparent">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex justify-center">
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  width: '140px',
-                  height: '32px',
-                  border: '1px solid #5A5A5A',
-                  borderRadius: '24px',
-                  boxSizing: 'border-box',
-                  background: 'transparent',
-                }}
-              >
-                <h1
-                  className="text-sm font-semibold"
-                  style={{
-                    color: '#5A5A5A',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    fontFamily: "'Noto Sans TC', sans-serif",
-                  }}
-                >
-                  {displayName}
-                </h1>
-              </div>
-            </div>
+        {/* Topic Frame - 固定在 header 内部居中 */}
+        <div 
+          className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
+          style={{ 
+            height: '64px', // header 的高度
+            pointerEvents: 'none' // 让点击事件穿透
+          }}
+        >
+          <div
+            className="flex items-center justify-center pointer-events-auto"
+            style={{
+              width: '140px',
+              height: '32px',
+              border: '1px solid #5A5A5A',
+              borderRadius: '24px',
+              boxSizing: 'border-box',
+              backgroundColor: 'transparent',
+            }}
+          >
+            <h1
+              className="text-sm font-semibold"
+              style={{
+                color: '#5A5A5A',
+                fontSize: '14px',
+                lineHeight: '20px',
+                fontFamily: "'Noto Sans TC', sans-serif",
+              }}
+            >
+              {displayName}
+            </h1>
           </div>
         </div>
 
@@ -94,10 +96,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
             {/* Left spacer (match boards layout) */}
             <aside className="hidden md:block w-64 flex-shrink-0" />
 
-            <main
-              className="w-[800px] flex-shrink-0"
-              style={{ maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto' }}
-            >
+            <main className="w-[800px] flex-shrink-0">
               <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4">
                 <div className="relative">
                   <div className="h-44 bg-[#BAC7E5] rounded-t-xl" />
