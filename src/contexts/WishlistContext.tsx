@@ -1,111 +1,231 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { SchoolWithMatch } from '@/types/school';
 import toast from 'react-hot-toast';
 
 interface WishlistItem {
   school: SchoolWithMatch;
-  priority: number; // 1-5 星
   note: string;
+  order: number | null;
   addedAt: string;
 }
 
 interface WishlistContextType {
   wishlist: WishlistItem[];
-  addToWishlist: (school: SchoolWithMatch) => void;
-  removeFromWishlist: (schoolId: string) => void;
-  updateWishlistItem: (schoolId: string, updates: Partial<WishlistItem>) => void;
+  loading: boolean;
+  addToWishlist: (school: SchoolWithMatch, note?: string) => Promise<void>;
+  removeFromWishlist: (schoolId: string) => Promise<void>;
+  updateWishlistItem: (schoolId: string, updates: { note?: string; order?: number | null }) => Promise<void>;
   isInWishlist: (schoolId: string) => boolean;
-  reorderWishlist: (fromIndex: number, toIndex: number) => void;
-  clearWishlist: () => void;
+  getPreferences: () => WishlistItem[]; // 返回order不为null的项目，按order排序
+  reorderPreferences: (updates: { schoolId: string; order: number }[]) => Promise<void>; // 批量更新order
+  clearWishlist: () => Promise<void>;
+  refreshWishlist: () => Promise<void>; // 手动刷新
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
-  const [isClient, setIsClient] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [schoolsMap, setSchoolsMap] = useState<Map<string, SchoolWithMatch>>(new Map());
 
-  // 初始化：只在客戶端載入 localStorage
+  // 加载所有学校数据（用于匹配wishlist中的schoolId）
   useEffect(() => {
-    setIsClient(true);
-    const saved = localStorage.getItem('wishlist');
-    if (saved) {
+    const loadSchools = async () => {
       try {
-        setWishlist(JSON.parse(saved));
+        const response = await fetch('/api/schools');
+        const data = await response.json();
+        if (data.success && data.schools) {
+          const map = new Map<string, SchoolWithMatch>();
+          data.schools.forEach((school: SchoolWithMatch) => {
+            map.set(school.id, school);
+          });
+          setSchoolsMap(map);
+        }
       } catch (error) {
-        console.error('Failed to parse wishlist:', error);
+        console.error('Failed to load schools:', error);
       }
-    }
+    };
+    loadSchools();
   }, []);
 
-  // 保存到 localStorage（只在客戶端）
-  useEffect(() => {
-    if (isClient) {
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  // 从API加载wishlist数据
+  const loadWishlist = async () => {
+    if (status === 'loading') return;
+    if (!session?.user) {
+      setWishlist([]);
+      setLoading(false);
+      return;
     }
-  }, [wishlist, isClient]);
 
-  const addToWishlist = (school: SchoolWithMatch) => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/wishlist');
+      const data = await response.json();
+      
+      if (data.success && data.wishlist) {
+        // 匹配学校数据
+        const items: WishlistItem[] = data.wishlist
+          .map((item: { schoolId: string; note: string | null; order: number | null; createdAt: string }) => {
+            const school = schoolsMap.get(item.schoolId);
+            if (!school) return null;
+            return {
+              school,
+              note: item.note || '',
+              order: item.order,
+              addedAt: item.createdAt,
+            };
+          })
+          .filter((item: WishlistItem | null) => item !== null) as WishlistItem[];
+        
+        setWishlist(items);
+      }
+    } catch (error) {
+      console.error('Failed to load wishlist:', error);
+      toast.error('載入收藏清單失敗');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 当session或schoolsMap变化时重新加载
+  useEffect(() => {
+    if (schoolsMap.size > 0) {
+      loadWishlist();
+    }
+  }, [session, status, schoolsMap.size]);
+
+  const addToWishlist = async (school: SchoolWithMatch, note?: string) => {
     if (wishlist.some(item => item.school.id === school.id)) {
       toast.error('此學校已在收藏清單中');
       return;
     }
 
-    const newItem: WishlistItem = {
-      school,
-      priority: 3,
-      note: '',
-      addedAt: new Date().toISOString(),
-    };
+    try {
+      const response = await fetch('/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schoolId: school.id, note: note || '' }),
+      });
 
-    setWishlist(prev => [...prev, newItem]);
-    toast.success(`已將 ${school.name_zh} 加入收藏`);
-  };
-
-  const removeFromWishlist = (schoolId: string) => {
-    const school = wishlist.find(item => item.school.id === schoolId);
-    setWishlist(prev => prev.filter(item => item.school.id !== schoolId));
-    if (school) {
-      toast.success(`已移除 ${school.school.name_zh}`);
+      const data = await response.json();
+      if (data.success) {
+        await loadWishlist();
+        toast.success(`已將 ${school.name_zh} 加入收藏`);
+      } else {
+        toast.error(data.error || '加入收藏失敗');
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      toast.error('加入收藏失敗');
     }
   };
 
-  const updateWishlistItem = (schoolId: string, updates: Partial<WishlistItem>) => {
-    setWishlist(prev =>
-      prev.map(item =>
-        item.school.id === schoolId ? { ...item, ...updates } : item
-      )
-    );
+  const removeFromWishlist = async (schoolId: string) => {
+    const school = wishlist.find(item => item.school.id === schoolId);
+    try {
+      const response = await fetch(`/api/wishlist?schoolId=${schoolId}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadWishlist();
+        if (school) {
+          toast.success(`已移除 ${school.school.name_zh}`);
+        }
+      } else {
+        toast.error(data.error || '移除收藏失敗');
+      }
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      toast.error('移除收藏失敗');
+    }
+  };
+
+  const updateWishlistItem = async (schoolId: string, updates: { note?: string; order?: number | null }) => {
+    try {
+      const response = await fetch('/api/wishlist', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schoolId, ...updates }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadWishlist();
+      } else {
+        toast.error(data.error || '更新失敗');
+      }
+    } catch (error) {
+      console.error('Error updating wishlist item:', error);
+      toast.error('更新失敗');
+    }
   };
 
   const isInWishlist = (schoolId: string) => {
     return wishlist.some(item => item.school.id === schoolId);
   };
 
-  const reorderWishlist = (fromIndex: number, toIndex: number) => {
-    setWishlist(prev => {
-      const newList = [...prev];
-      const [removed] = newList.splice(fromIndex, 1);
-      newList.splice(toIndex, 0, removed);
-      return newList;
-    });
+  const getPreferences = () => {
+    return wishlist
+      .filter(item => item.order !== null)
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
   };
 
-  const clearWishlist = () => {
-    setWishlist([]);
-    toast.success('已清空收藏清單');
+  const reorderPreferences = async (updates: { schoolId: string; order: number }[]) => {
+    try {
+      const response = await fetch('/api/wishlist', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadWishlist();
+      } else {
+        toast.error(data.error || '更新順序失敗');
+      }
+    } catch (error) {
+      console.error('Error reordering preferences:', error);
+      toast.error('更新順序失敗');
+    }
   };
+
+  const clearWishlist = async () => {
+    // 删除所有收藏
+    const deletePromises = wishlist.map(item =>
+      fetch(`/api/wishlist?schoolId=${item.school.id}`, { method: 'DELETE' })
+    );
+    
+    try {
+      await Promise.all(deletePromises);
+      await loadWishlist();
+      toast.success('已清空收藏清單');
+    } catch (error) {
+      console.error('Error clearing wishlist:', error);
+      toast.error('清空收藏清單失敗');
+    }
+  };
+
+  const refreshWishlist = loadWishlist;
 
   return (
     <WishlistContext.Provider
       value={{
         wishlist,
+        loading,
         addToWishlist,
         removeFromWishlist,
         updateWishlistItem,
         isInWishlist,
-        reorderWishlist,
+        getPreferences,
+        reorderPreferences,
         clearWishlist,
+        refreshWishlist,
       }}
     >
       {children}

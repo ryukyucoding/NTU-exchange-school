@@ -57,8 +57,9 @@ export default function AppShell({ children }: AppShellProps) {
                   alt="社群 Logo"
                   width={120}
                   height={32}
-                  className="h-8 w-auto"
+                  style={{ width: 'auto', height: '2rem' }}
                   priority
+                  unoptimized
                 />
               </Link>
             )}
@@ -69,8 +70,9 @@ export default function AppShell({ children }: AppShellProps) {
                   alt="瀏覽學校 Logo"
                   width={120}
                   height={32}
-                  className="h-8 w-auto"
+                  style={{ width: 'auto', height: '2rem' }}
                   priority
+                  unoptimized
                 />
               </Link>
             )}
@@ -81,8 +83,9 @@ export default function AppShell({ children }: AppShellProps) {
                   alt="收藏學校 Logo"
                   width={120}
                   height={32}
-                  className="h-8 w-auto"
+                  style={{ width: 'auto', height: '2rem' }}
                   priority
+                  unoptimized
                 />
               </Link>
             )}
