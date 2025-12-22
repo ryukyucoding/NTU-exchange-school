@@ -1,17 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import SocialSidebar from '@/components/social/SocialSidebar';
-import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign } from 'lucide-react';
+import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Author {
   id: string;
@@ -56,11 +62,13 @@ interface Post {
   isReposted: boolean;
 }
 
-function PostDetailContent() {
+function PostDetailContentInner() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const postId = params.postId as string;
+  const returnUrl = searchParams.get('return');
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,6 +77,7 @@ function PostDetailContent() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [repostCount, setRepostCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -81,8 +90,10 @@ function PostDetailContent() {
           setPost(data.post);
           setIsLiked(data.post.isLiked || false);
           setIsReposted(data.post.isReposted || false);
+          setIsBookmarked(data.post.isBookmarked || false);
           setLikeCount(data.post.likeCount || 0);
           setRepostCount(data.post.repostCount || 0);
+          setCommentCount(data.post.commentCount || 0);
         } else {
           toast.error('貼文不存在');
           router.push('/social');
@@ -148,6 +159,50 @@ function PostDetailContent() {
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error);
+    }
+  };
+
+  const handleCommentAdded = async () => {
+    // 刷新贴文数据以获取最新的评论数
+    try {
+      const response = await fetch(`/api/posts/${postId}`);
+      const data = await response.json();
+      if (data.success && data.post) {
+        setCommentCount(data.post.commentCount || 0);
+      }
+    } catch (error) {
+      console.error('Error refreshing comment count:', error);
+    }
+  };
+
+  const isAuthor = session?.user && post && (session.user as { id: string }).id === post.author.id;
+
+  const handleEdit = () => {
+    if (!post) return;
+    // 根據貼文類型導航到對應的編輯頁面，並記錄當前頁面作為返回 URL
+    const postType = post.ratings ? 'review' : 'general';
+    const currentUrl = window.location.pathname + window.location.search;
+    router.push(`/social/post/${postType}?edit=${post.id}&return=${encodeURIComponent(currentUrl)}`);
+  };
+
+  const handleDelete = async () => {
+    if (!post) return;
+    if (!confirm('確定要刪除這篇貼文嗎？')) return;
+    
+    try {
+      const response = await fetch(`/api/posts/${post.id}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success('貼文已刪除');
+        router.push('/social');
+      } else {
+        toast.error(data.error || '刪除失敗');
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast.error('刪除失敗，請稍後再試');
     }
   };
 
@@ -256,13 +311,14 @@ function PostDetailContent() {
   `;
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4]">
+    // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
+    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
       {/* Title Frame - 固定在 header 内部居中 */}
-      <div 
+      <div
         className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
+        style={{
           height: '64px', // header 的高度
-          pointerEvents: 'none' // 让点击事件穿透
+          pointerEvents: 'none', // 让点击事件穿透
         }}
       >
         <div
@@ -293,26 +349,60 @@ function PostDetailContent() {
         </div>
       </div>
 
-      <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col pt-0">
-        <div className="max-w-[1400px] mx-auto px-2 flex-1 overflow-hidden flex gap-6 items-start justify-center h-full">
-            {/* Left Sidebar - Empty but keeps layout structure */}
-            <aside className="hidden md:block w-64 flex-shrink-0">
-              {/* Empty sidebar to maintain three-column layout */}
-            </aside>
+      {/* Content Frame: Main content area with post detail and sidebar */}
+      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+        <div className="flex gap-6 items-start justify-center h-full">
+          {/* Left Sidebar - Empty but keeps layout structure */}
+          <aside className="hidden md:block w-64 flex-shrink-0">
+            {/* Empty sidebar to maintain three-column layout */}
+          </aside>
 
-            {/* Main Content - Posts (ONLY scrollable area) */}
+          {/* Main Content - Posts (ONLY scrollable area) */}
             <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
               <div className="space-y-4 bg-white p-4 rounded-lg">
-                  {/* Back Button */}
-                  <Button
-                    variant="ghost"
-                    onClick={() => router.back()}
-                    className="mb-4 flex items-center gap-2 hover:bg-gray-100"
-                    style={{ color: '#5A5A5A' }}
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    返回
-                  </Button>
+                  {/* Back Button and Edit/Delete Menu */}
+                  <div className="flex items-center justify-between mb-4">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        if (returnUrl) {
+                          router.push(returnUrl);
+                        } else {
+                          router.back();
+                        }
+                      }}
+                      className="flex items-center gap-2 hover:bg-gray-100"
+                      style={{ color: '#5A5A5A' }}
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      返回
+                    </Button>
+                    {isAuthor && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100">
+                            <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-white border-gray-200">
+                          <DropdownMenuItem
+                            onClick={handleEdit}
+                            className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            編輯貼文
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={handleDelete}
+                            className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            刪除貼文
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
 
                   {/* Post Card */}
                   <Card className="rounded-xl text-card-foreground p-6 bg-white border-0 shadow-none">
@@ -477,7 +567,7 @@ function PostDetailContent() {
                         <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
                           <MessageCircle className="h-5 w-5" />
                         </div>
-                        <span className="text-base">{post.commentCount}</span>
+                        <span className="text-base">{commentCount}</span>
                       </Button>
                       <Button
                         variant="ghost"
@@ -496,10 +586,10 @@ function PostDetailContent() {
                         size="sm"
                         onClick={handleBookmark}
                         className="flex items-center gap-2 hover:bg-transparent group"
-                        style={{ color: isBookmarked ? '#f59e0b' : '#5A5A5A' }}
+                        style={{ color: isBookmarked ? '#8D7051' : '#5A5A5A' }}
                       >
                         <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-                          <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                          <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
                         </div>
                       </Button>
                     </div>
@@ -509,17 +599,25 @@ function PostDetailContent() {
                   <div className="border-b border-gray-200" />
 
                   {/* Comment Section */}
-                  <CommentSection postId={post.id} />
+                  <CommentSection postId={post.id} onCommentAdded={handleCommentAdded} />
               </div>
             </main>
 
-            {/* Right Sidebar */}
-            <aside className="hidden lg:block w-64 flex-shrink-0">
-              <SocialSidebar />
-            </aside>
-          </div>
+          {/* Right Sidebar - Fixed (does NOT scroll) */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <SocialSidebar />
+          </aside>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PostDetailContent() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+      <PostDetailContentInner />
+    </Suspense>
   );
 }
 

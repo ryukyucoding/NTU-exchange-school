@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Edit } from 'lucide-react';
 import { cleanMarkdown, truncateLines } from '@/utils/markdown';
 import {
   DropdownMenu,
@@ -96,6 +96,12 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
     }
   };
 
+  const handleEdit = () => {
+    // 導航到編輯頁面（general 類型），並記錄當前頁面作為返回 URL
+    const currentUrl = window.location.pathname + window.location.search;
+    router.push(`/social/post/general?edit=${post.id}&return=${encodeURIComponent(currentUrl)}`);
+  };
+
   const handleDelete = async () => {
     if (!confirm('確定要刪除這篇貼文嗎？')) return;
     
@@ -165,12 +171,22 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
         {isAuthor && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100">
                 <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleDelete} className="text-red-600">
+            <DropdownMenuContent align="end" className="bg-white border-gray-200">
+              <DropdownMenuItem
+                onClick={handleEdit}
+                className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                編輯貼文
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleDelete}
+                className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
                 刪除貼文
               </DropdownMenuItem>

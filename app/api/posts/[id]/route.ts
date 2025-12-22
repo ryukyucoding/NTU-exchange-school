@@ -69,12 +69,13 @@ export async function GET(
     }
 
     // 批量獲取相關數據
-    const [likesResult, repostsResult, commentsResult, userLikesResult, userRepostsResult, hashtagsResult, photosResult, schoolsResult, ratingsResult] = await Promise.allSettled([
+    const [likesResult, repostsResult, commentsResult, userLikesResult, userRepostsResult, userBookmarksResult, hashtagsResult, photosResult, schoolsResult, ratingsResult] = await Promise.allSettled([
       (supabase as any).from('Like').select('postId').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('Post').select('repostId').eq('repostId', postId).eq('status', 'published').not('repostId', 'is', null).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('Comment').select('postId').eq('postId', postId).is('deletedAt', null).then((r: any) => r).catch(() => ({ data: [] })),
       userId ? (supabase as any).from('Like').select('postId').eq('userId', userId).eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
       userId ? (supabase as any).from('Post').select('repostId').eq('authorId', userId).eq('repostId', postId).eq('status', 'published').not('repostId', 'is', null).then((r: any) => r).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
+      userId ? (supabase as any).from('Bookmark').select('postId').eq('userId', userId).eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
       (supabase as any).from('Hashtag').select('postId, content').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('PostPhoto').select('*').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('PostSchool').select('schoolId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
@@ -86,6 +87,7 @@ export async function GET(
     const commentsData = commentsResult.status === 'fulfilled' ? commentsResult.value : { data: [] };
     const userLikes = userLikesResult.status === 'fulfilled' ? userLikesResult.value : { data: [] };
     const userReposts = userRepostsResult.status === 'fulfilled' ? userRepostsResult.value : { data: [] };
+    const userBookmarks = userBookmarksResult.status === 'fulfilled' ? userBookmarksResult.value : { data: [] };
     const hashtagsData = hashtagsResult.status === 'fulfilled' ? hashtagsResult.value : { data: [] };
     const photosData = photosResult.status === 'fulfilled' ? photosResult.value : { data: [] };
     const schoolsData = schoolsResult.status === 'fulfilled' ? schoolsResult.value : { data: [] };
@@ -97,6 +99,7 @@ export async function GET(
     const commentCount = (commentsData.data || []).length;
     const isLiked = userId ? (userLikes.data || []).length > 0 : false;
     const isReposted = userId ? (userReposts.data || []).length > 0 : false;
+    const isBookmarked = userId ? (userBookmarks.data || []).length > 0 : false;
 
     const hashtags = (hashtagsData.data || []).map((h: { content: string }) => h.content);
     const photos = (photosData.data || []).sort((a: { order: number }, b: { order: number }) => a.order - b.order).map((photo: { url: string; alt?: string }) => ({
@@ -171,10 +174,103 @@ export async function GET(
         commentCount,
         isLiked,
         isReposted,
+        isBookmarked,
       },
     });
   } catch (error) {
     console.error("Error in GET /api/posts/[id]:", error);
+    return NextResponse.json(
+      { success: false, error: "伺服器錯誤" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/posts/[id]
+ * 刪除貼文（軟刪除：更新 status 為 'deleted'）
+ */
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const postId = id;
+    const session = await auth();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, error: "請先登入" },
+        { status: 401 }
+      );
+    }
+    
+    const userId = (session.user as { id: string }).id;
+    const supabase = getSupabaseServer();
+
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: "資料庫未配置" },
+        { status: 500 }
+      );
+    }
+
+    // 檢查貼文是否存在且屬於當前用戶
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: post, error: fetchError } = await (supabase as any)
+      .from('Post')
+      .select('id, authorId')
+      .eq('id', postId)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error("Error fetching post:", fetchError);
+      return NextResponse.json(
+        { success: false, error: "無法獲取貼文" },
+        { status: 500 }
+      );
+    }
+
+    if (!post) {
+      return NextResponse.json(
+        { success: false, error: "貼文不存在" },
+        { status: 404 }
+      );
+    }
+
+    if (post.authorId !== userId) {
+      return NextResponse.json(
+        { success: false, error: "無權限刪除此貼文" },
+        { status: 403 }
+      );
+    }
+
+    // 軟刪除：更新 status 為 'deleted'，並設置 deletedAt
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: deleteError } = await (supabase as any)
+      .from('Post')
+      .update({
+        status: 'deleted',
+        deletedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      .eq('id', postId);
+
+    if (deleteError) {
+      console.error("Error deleting post:", deleteError);
+      return NextResponse.json(
+        { success: false, error: "刪除失敗" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "貼文已刪除",
+    });
+  } catch (error) {
+    console.error("Error in DELETE /api/posts/[id]:", error);
     return NextResponse.json(
       { success: false, error: "伺服器錯誤" },
       { status: 500 }
