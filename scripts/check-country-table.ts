@@ -1,4 +1,5 @@
 /**
+/**
  * 檢查資料庫中的 country 相關表結構
  */
 import { readFileSync } from 'fs';
