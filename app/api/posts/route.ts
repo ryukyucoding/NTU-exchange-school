@@ -1543,12 +1543,21 @@ export async function GET(req: NextRequest) {
             const originalPostHashtags = originalHashtagsByPostId.get(originalPostId) || [];
             const originalPostSchools = originalSchoolsByPostId.get(originalPostId) || [];
             const originalPostCountries = [...new Set(originalPostSchools.map((s: any) => s.country).filter(Boolean))];
+            // 獲取原貼文的 boards
+            const originalPostBoards = (boardDataByPostId.get(originalPostId) || []).map((boardData) => ({
+              id: boardData.boardId,
+              name: boardData.boardName,
+              type: boardData.boardType || (boardData.schoolId ? 'school' : 'country'),
+              country_id: boardData.country_id,
+              schoolId: boardData.schoolId,
+            }));
 
             originalPostsMap.set(originalPostId, {
               ...originalPost,
               hashtags: originalPostHashtags,
               schools: originalPostSchools,
               countries: originalPostCountries,
+              boards: originalPostBoards, // 新增：原貼文的 boards
             });
           });
         }
@@ -1564,6 +1573,13 @@ export async function GET(req: NextRequest) {
       const schools = schoolsByPostId.get(post.id) || [];
       const countries = countriesByPostId.get(post.id) || [];
       const hashtags = hashtagsByPostId.get(post.id) || [];
+      const boards = (boardDataByPostId.get(post.id) || []).map((boardData) => ({
+        id: boardData.boardId,
+        name: boardData.boardName,
+        type: boardData.boardType || (boardData.schoolId ? 'school' : 'country'),
+        country_id: boardData.country_id,
+        schoolId: boardData.schoolId,
+      }));
       
       console.log(`[GET /api/posts] 📄 組合貼文 ${post.id}:`, {
         title: (post as { title?: string }).title,
@@ -1573,6 +1589,8 @@ export async function GET(req: NextRequest) {
         countries: countries,
         hashtagsCount: hashtags.length,
         hashtags: hashtags,
+        boardsCount: boards.length,
+        boards: boards,
       });
       
       const originalPost = post.repostId ? originalPostsMap.get(post.repostId) : null;
@@ -1588,6 +1606,7 @@ export async function GET(req: NextRequest) {
         schools: schools,
         countries: countries, // 添加國家列表
         hashtags: hashtags,
+        boards: boards, // 新增：boards 陣列
         photos: (photosByPostId.get(post.id) || []).sort((a, b) => a.order - b.order),
         ratings: ratings || null,
         postType: (post as { type?: string }).type === 'rating' ? 'review' : 'general',

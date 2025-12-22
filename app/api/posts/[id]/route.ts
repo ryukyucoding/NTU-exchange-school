@@ -122,24 +122,78 @@ export async function GET(
       }
     });
 
-    // 獲取國家信息（如果有PostBoard關聯）
-    let postBoardData: { data: any[] | null; error: any } = { data: [], error: null };
-    try {
-      const result = await (supabase as any)
-        .from('PostBoard')
-        .select('board:Board!PostBoard_boardId_fkey(country_id, Country:country_id(id, name))')
-        .eq('postId', postId);
-      postBoardData = result;
-    } catch (error) {
-      console.warn('Error fetching PostBoard data:', error);
-      postBoardData = { data: [], error };
+    // 從 PostBoard -> Board 獲取「國家版 / 學校版」，並統一填入 countries / schools
+    // 注意：這裡不要做太複雜的 nested join（不同環境 Supabase relationship 可能不一致）
+    // 直接用 Board 的 type/name/schoolId/country_id，並在需要時額外查 schools，確保詳情頁一定能顯示版面標籤
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: postBoardRows, error: postBoardError } = await (supabase as any)
+      .from('PostBoard')
+      .select('board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)')
+      .eq('postId', postId);
+
+    if (postBoardError) {
+      console.warn('Error fetching PostBoard data:', postBoardError);
     }
 
-    (postBoardData.data || []).forEach((pb: { board: { Country: { name: string } | null } | null }) => {
-      if (pb.board?.Country?.name && !countries.includes(pb.board.Country.name)) {
-        countries.push(pb.board.Country.name);
+    const boardRows = (postBoardRows || []) as Array<{
+      board: { id: string; name: string; type: 'country' | 'school' | null; schoolId: number | null; country_id: number | null } | null;
+    }>;
+
+    // 收集 boards 資訊（用於生成正確的連結）
+    const boards: Array<{ id: string; name: string; type: 'country' | 'school'; country_id: number | null; schoolId: number | null }> = [];
+    const schoolIdsFromBoards = new Set<number>();
+
+    boardRows.forEach(({ board }) => {
+      if (!board || !board.type) return;
+
+      // 收集 board 資訊
+      boards.push({
+        id: board.id,
+        name: board.name,
+        type: board.type,
+        country_id: board.country_id,
+        schoolId: board.schoolId,
+      });
+
+      if (board.type === 'country') {
+        // 國家版：使用 Board.name 作為顯示文字
+        const countryName = board.name;
+        if (countryName && !countries.includes(countryName)) {
+          countries.push(countryName);
+        }
+      }
+
+      if (board.type === 'school' && board.schoolId) {
+        schoolIdsFromBoards.add(board.schoolId);
       }
     });
+
+    if (schoolIdsFromBoards.size > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: boardSchools, error: boardSchoolsError } = await (supabase as any)
+        .from('schools')
+        .select('id, name_zh, name_en, country')
+        .in('id', Array.from(schoolIdsFromBoards));
+
+      if (boardSchoolsError) {
+        console.warn('Error fetching schools for Board.schoolId:', boardSchoolsError);
+      }
+
+      (boardSchools || []).forEach((s: { id: string | number; name_zh: string; name_en: string; country: string }) => {
+        const schoolIdStr = String(s.id);
+        if (!schools.some((x) => String(x.id) === schoolIdStr)) {
+          schools.push({
+            id: schoolIdStr,
+            name_zh: s.name_zh,
+            name_en: s.name_en,
+            country: s.country,
+          });
+        }
+        if (s.country && !countries.includes(s.country)) {
+          countries.push(s.country);
+        }
+      });
+    }
 
     const ratings = (ratingsData.data || []).length > 0 ? {
       schoolId: (ratingsData.data as any[])[0].schoolId,
@@ -174,14 +228,17 @@ export async function GET(
           .maybeSingle();
 
         if (!originalPostError && originalPostData) {
-          // 獲取原貼文的 hashtags, schools, countries
-          const [originalHashtagsResult, originalSchoolsResult] = await Promise.allSettled([
+          // 獲取原貼文的 hashtags / schools / boards（讓原貼文預覽也能顯示版面）
+          const [originalHashtagsResult, originalSchoolsResult, originalBoardsResult] = await Promise.allSettled([
             (supabase as any).from('Hashtag').select('postId, content').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
             (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
+            // 只取 Board 的基本欄位，避免 nested join 造成資料為空
+            (supabase as any).from('PostBoard').select('board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
           ]);
 
           const originalHashtags = originalHashtagsResult.status === 'fulfilled' ? originalHashtagsResult.value.data || [] : [];
           const originalSchools = originalSchoolsResult.status === 'fulfilled' ? originalSchoolsResult.value.data || [] : [];
+          const originalBoards = originalBoardsResult.status === 'fulfilled' ? originalBoardsResult.value.data || [] : [];
 
           const originalHashtagsList = originalHashtags.map((h: { content: string }) => h.content);
           const originalSchoolsList: { id: string; name_zh: string; name_en: string; country: string }[] = [];
@@ -201,6 +258,57 @@ export async function GET(
             }
           });
 
+          // 補齊原貼文的 PostBoard（國家版/學校版）
+          const originalBoardsList: Array<{ id: string; name: string; type: 'country' | 'school'; country_id: number | null; schoolId: number | null }> = [];
+          const originalSchoolIdsFromBoards = new Set<number>();
+          (originalBoards || []).forEach((pb: any) => {
+            const board = pb?.board;
+            if (!board || !board.type) return;
+            
+            // 收集原貼文的 board 資訊
+            originalBoardsList.push({
+              id: board.id,
+              name: board.name,
+              type: board.type,
+              country_id: board.country_id,
+              schoolId: board.schoolId,
+            });
+            
+            if (board.type === 'country') {
+              const countryName = board.name;
+              if (countryName && !originalCountriesList.includes(countryName)) {
+                originalCountriesList.push(countryName);
+              }
+              return;
+            }
+            if (board.type === 'school' && board.schoolId) {
+              originalSchoolIdsFromBoards.add(board.schoolId);
+            }
+          });
+
+          if (originalSchoolIdsFromBoards.size > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: originalBoardSchools } = await (supabase as any)
+              .from('schools')
+              .select('id, name_zh, name_en, country')
+              .in('id', Array.from(originalSchoolIdsFromBoards));
+
+            (originalBoardSchools || []).forEach((s: any) => {
+              const schoolIdStr = String(s.id);
+              if (!originalSchoolsList.some((x) => String(x.id) === schoolIdStr)) {
+                originalSchoolsList.push({
+                  id: schoolIdStr,
+                  name_zh: s.name_zh,
+                  name_en: s.name_en,
+                  country: s.country,
+                });
+              }
+              if (s.country && !originalCountriesList.includes(s.country)) {
+                originalCountriesList.push(s.country);
+              }
+            });
+          }
+
           originalPost = {
             id: originalPostData.id,
             title: originalPostData.title,
@@ -215,6 +323,7 @@ export async function GET(
             hashtags: originalHashtagsList,
             schools: originalSchoolsList,
             countries: originalCountriesList,
+            boards: originalBoardsList, // 新增：原貼文的 boards 陣列
           };
         }
       } catch (error) {
@@ -239,6 +348,7 @@ export async function GET(
         photos,
         schools,
         countries,
+        boards, // 新增：返回 boards 陣列，包含 boardId, type, name, country_id, schoolId
         ratings,
         likeCount,
         repostCount,

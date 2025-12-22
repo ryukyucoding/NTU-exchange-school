@@ -413,8 +413,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder="回覆這則評論..."
-              className="mb-2 bg-white"
-              style={{ color: '#5A5A5A', backgroundColor: 'white' }}
+              className="mb-2 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              style={{ color: '#5A5A5A', backgroundColor: '#F4F4F4' }}
               rows={3}
             />
             <div className="flex justify-end gap-2">
@@ -532,8 +532,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                 <Textarea
                   value=""
                   placeholder="寫下你的評論..."
-                  className="bg-white resize-none"
-                  style={{ color: '#5A5A5A', backgroundColor: 'white' }}
+                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
+                  style={{ color: '#5A5A5A', backgroundColor: '#F4F4F4' }}
                   rows={1}
                   readOnly
                   onFocus={(e) => {
@@ -564,8 +564,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="寫下你的評論..."
-                  className="mb-2 bg-white"
-                  style={{ color: '#5A5A5A', backgroundColor: 'white' }}
+                  className="mb-2 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  style={{ color: '#5A5A5A', backgroundColor: '#F4F4F4' }}
                   rows={1}
                   autoFocus
                 />
@@ -727,8 +727,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                                   value={replyContent}
                                   onChange={(e) => setReplyContent(e.target.value)}
                                   placeholder="回覆這則評論..."
-                                  className="mb-2 bg-white"
-                                  style={{ color: '#5A5A5A', backgroundColor: 'white' }}
+                                  className="mb-2 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                  style={{ color: '#5A5A5A', backgroundColor: '#F4F4F4' }}
                                   rows={2}
                                 />
                                 <div className="flex justify-end gap-2">
@@ -789,8 +789,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
                         placeholder="回覆這則評論..."
-                        className="mb-2 bg-white"
-                        style={{ color: '#5A5A5A', backgroundColor: 'white' }}
+                        className="mb-2 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        style={{ color: '#5A5A5A', backgroundColor: '#F4F4F4' }}
                         rows={2}
                       />
                       <div className="flex justify-end gap-2">

@@ -34,6 +34,14 @@ interface School {
   country: string;
 }
 
+interface Board {
+  id: string;
+  name: string;
+  type: 'country' | 'school';
+  country_id: number | null;
+  schoolId: number | null;
+}
+
 interface Post {
   id: string;
   title: string;
@@ -50,6 +58,7 @@ interface Post {
   };
   schools?: School[];
   countries?: string[];
+  boards?: Board[]; // 新增：boards 陣列
   likeCount: number;
   repostCount: number;
   commentCount: number;
@@ -65,6 +74,7 @@ interface Post {
     schools?: School[];
     countries?: string[];
     hashtags?: string[];
+    boards?: Board[]; // 新增：原貼文的 boards
   };
 }
 
@@ -359,46 +369,99 @@ function PostDetailContent() {
 
                     {/* Country, School, Hashtags */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {countries.map((country, index) => (
-                        <Link
-                          key={`country-${index}`}
-                          href={`/social/boards/country/by-name?name=${encodeURIComponent(country)}`}
-                          className="px-3 py-1.5 rounded-full text-sm transition-colors"
-                          style={{
-                            backgroundColor: 'rgba(186, 199, 229, 0.41)',
-                            border: '1px solid #BAC7E5',
-                            color: '#5A5A5A',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
-                          }}
-                        >
-                          {country}
-                        </Link>
-                      ))}
-                      {post.schools && post.schools.map((school, index) => (
-                        <Link
-                          key={`school-${index}`}
-                          href={`/social/boards/school/${school.id}`}
-                          className="px-3 py-1.5 rounded-full text-sm transition-colors"
-                          style={{
-                            backgroundColor: 'rgba(186, 199, 229, 0.41)',
-                            border: '1px solid #BAC7E5',
-                            color: '#5A5A5A',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
-                          }}
-                        >
-                          {school.name_zh || school.name_en}
-                        </Link>
-                      ))}
+                      {/* 優先使用 boards 陣列生成連結（正確的連結格式） */}
+                      {post.boards && post.boards.length > 0 ? (
+                        <>
+                          {post.boards
+                            .filter((board) => board.type === 'country')
+                            .map((board, index) => (
+                              <Link
+                                key={`board-country-${board.id}-${index}`}
+                                href={`/social/boards/country/${board.country_id}`}
+                                className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                                style={{
+                                  backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                                  border: '1px solid #BAC7E5',
+                                  color: '#5A5A5A',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                                }}
+                              >
+                                {board.name}
+                              </Link>
+                            ))}
+                          {post.boards
+                            .filter((board) => board.type === 'school')
+                            .map((board, index) => (
+                              <Link
+                                key={`board-school-${board.id}-${index}`}
+                                href={`/social/boards/school/${board.schoolId}`}
+                                className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                                style={{
+                                  backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                                  border: '1px solid #BAC7E5',
+                                  color: '#5A5A5A',
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                                }}
+                              >
+                                {board.name}
+                              </Link>
+                            ))}
+                        </>
+                      ) : (
+                        <>
+                          {/* Fallback：如果沒有 boards，使用舊的 countries/schools 陣列 */}
+                          {countries.map((country, index) => (
+                            <Link
+                              key={`country-${index}`}
+                              href={`/social/boards/country/by-name?name=${encodeURIComponent(country)}`}
+                              className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                              style={{
+                                backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                                border: '1px solid #BAC7E5',
+                                color: '#5A5A5A',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                              }}
+                            >
+                              {country}
+                            </Link>
+                          ))}
+                          {post.schools && post.schools.map((school, index) => (
+                            <Link
+                              key={`school-${index}`}
+                              href={`/social/boards/school/${school.id}`}
+                              className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                              style={{
+                                backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                                border: '1px solid #BAC7E5',
+                                color: '#5A5A5A',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                              }}
+                            >
+                              {school.name_zh || school.name_en}
+                            </Link>
+                          ))}
+                        </>
+                      )}
                       {post.hashtags && post.hashtags.map((tag, index) => (
                         <Link
                           key={`tag-${index}`}
