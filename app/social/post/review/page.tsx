@@ -127,8 +127,17 @@ function ReviewPostContent() {
         const data = await res.json();
         if (cancelled) return;
         if (data?.success && data.user) {
-          setCurrentUserName(data.user.name || data.user.userID || session.user.name || 'userName');
-          setCurrentUserImage(data.user.image || session.user.image || null);
+          setCurrentUserName(
+            data.user.name ||
+            data.user.userID ||
+            session?.user?.name ||
+            'userName'
+          );
+          setCurrentUserImage(
+            data.user.image ||
+            session?.user?.image ||
+            null
+          );
         }
       } catch (error) {
         console.error('Error fetching current user profile:', error);
