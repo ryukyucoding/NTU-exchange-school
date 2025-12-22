@@ -3,6 +3,26 @@ import { FilterState } from '@/types/filter';
 
 export function applyFilters(schools: School[], filters: FilterState): School[] {
   return schools.filter(school => {
+    // 申請組別篩選
+    if (filters.applicationGroup) {
+      const normalize = (s: string) => s.replace(/\s+/g, '').trim();
+      const splitGroups = (s: string) =>
+        normalize(s)
+          .split(/[／/]/)
+          .map(part => part.trim())
+          .filter(Boolean);
+
+      const selectedGroups = splitGroups(filters.applicationGroup);
+      const schoolGroups = splitGroups(school.application_group || '');
+
+      // 如果學校沒有標註組別，視為不符合任何「指定組別」篩選
+      if (schoolGroups.length === 0) return false;
+
+      // 任一組別命中即可（例如：學校 =「日語組/一般組」，選「日語組」或「一般組」都會出現）
+      const matches = selectedGroups.some(g => schoolGroups.includes(g));
+      if (!matches) return false;
+    }
+
     // 地區篩選
     if (filters.regions.length > 0 && !filters.regions.includes(school.region)) {
       return false;
@@ -72,12 +92,6 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
         const quotaNum = parseInt(quotaMatch[1], 10);
         if (!isNaN(quotaNum) && quotaNum < filters.quotaMin) return false;
       }
-    }
-
-    // 學期篩選
-    if (filters.semesters.length > 0) {
-      const hasMatchingSemester = school.semesters.some(s => filters.semesters.includes(s));
-      if (!hasMatchingSemester) return false;
     }
 
     // 關鍵字搜尋

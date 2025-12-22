@@ -174,10 +174,10 @@ export async function PUT(req: NextRequest) {
     }
 
     // 驗證 grade（只有當 grade 不是 null 且不是 undefined 時才驗證）
-    const validGrades = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+    const validGrades = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Master1', 'Master2'];
     if (grade !== null && grade !== undefined && !validGrades.includes(grade)) {
       return NextResponse.json(
-        { error: "年級必須是 Freshman, Sophomore, Junior 或 Senior" },
+        { error: "年級必須是 Freshman, Sophomore, Junior, Senior, Master1 或 Master2" },
         { status: 400 }
       );
     }

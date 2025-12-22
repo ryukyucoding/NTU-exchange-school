@@ -26,8 +26,8 @@ export const GRADES = [
   'Sophomore',
   'Junior',
   'Senior',
+  'Master1',
+  'Master2',
 ] as const;
-
-export const SEMESTERS = ['Fall', 'Spring'] as const;
 
 export const TUITION_OPTIONS = ['Free', 'Partial', 'Self-funded'] as const;

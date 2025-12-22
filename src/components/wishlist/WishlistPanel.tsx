@@ -27,7 +27,6 @@ interface WishlistItem {
     ielts: number | null;
     toeic: number | null;
     quota: string | null;
-    semesters: string[];
     url: string;
   };
   note: string;
@@ -83,7 +82,6 @@ export default function WishlistPanel() {
         content += '\n';
       }
       content += `  名額: ${item.school.quota}\n`;
-      content += `  開放學期: ${item.school.semesters.join(', ')}\n`;
       content += `  官網: ${item.school.url}\n`;
       if (item.note) {
         content += `  個人備註: ${item.note}\n`;

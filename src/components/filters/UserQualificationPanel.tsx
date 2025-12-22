@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useUserContext } from '@/contexts/UserContext';
+import { useFilters } from '@/contexts/FilterContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,7 @@ export default function UserQualificationPanel({
   variant = 'glass',
 }: UserQualificationPanelProps) {
   const { user, setUser, resetUser } = useUserContext();
+  const { filters, updateFilters } = useFilters();
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -34,8 +36,10 @@ export default function UserQualificationPanel({
       user.ielts !== null ||
       user.toeic !== null;
 
-    if (!hasAnyQualification) {
-      toast('請先填寫至少一項資格', { icon: 'ℹ️' });
+    const hasAnyNonQualificationFilter = filters.applicationGroup !== null;
+
+    if (!hasAnyQualification && !hasAnyNonQualificationFilter) {
+      toast('請先設定至少一項篩選條件', { icon: 'ℹ️' });
       return;
     }
 
@@ -51,7 +55,18 @@ export default function UserQualificationPanel({
       return;
     }
 
-    // 如果已登入，保存到資料庫
+    // 如果已登入且使用者有填寫資格，保存到資料庫
+    // （像申請組別這種一般篩選不需要保存，避免資料表不相容）
+    if (!hasAnyQualification) {
+      toast.success('已套用篩選');
+      if (onApply) {
+        setTimeout(() => {
+          onApply();
+        }, 300);
+      }
+      return;
+    }
+
     setIsSaving(true);
     try {
       const response = await fetch('/api/user/qualification', {
@@ -88,6 +103,7 @@ export default function UserQualificationPanel({
 
   const handleClearFilter = async () => {
     resetUser();
+    updateFilters({ applicationGroup: null });
     toast.success('已清除所有篩選條件');
     // 自動收起面板
     if (onApply) {
@@ -102,124 +118,208 @@ export default function UserQualificationPanel({
     '生農學院', '管理學院', '公衛學院', '電資學院', '法律學院', '生科學院'
   ];
 
-  const grades = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+  const grades = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Master1', 'Master2'];
+  const APPLICATION_GROUP_ALL = '__all__';
+  // 下拉選單只提供「單一組別」選項（例如：學校為「日語組/一般組」會在篩選邏輯中被拆成兩個組別匹配）
+  const applicationGroups = ['一般組', '英語組', '法語組', '德語組', '西語組', '日語組'];
+  const safeApplicationGroupValue =
+    filters.applicationGroup && applicationGroups.includes(filters.applicationGroup)
+      ? filters.applicationGroup
+      : APPLICATION_GROUP_ALL;
 
   return (
     <div className="w-full space-y-4">
-        {/* 學院選擇 */}
-        <div>
-          <Label
-            htmlFor="college"
-            className={`font-medium transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-            }`}
+      {/* 年級選擇 */}
+      <div>
+        <Label
+          htmlFor="grade"
+          className={`font-medium transition-all duration-300 ${
+            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
+          }`}
+        >
+          年級
+        </Label>
+        <Select
+          value={user.grade || ''}
+          onValueChange={(value: string) =>
+            setUser({
+              ...user,
+              grade: value as 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | 'Master1' | 'Master2' | null
+            })
+          }
+        >
+          <SelectTrigger
+            id="grade"
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
+                : `transition-all duration-300 ${
+                    isHighZoom
+                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
+                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+                  }`
+            }
           >
-            學院
-          </Label>
-          <Select
-            value={user.college || ''}
-            onValueChange={(value) => setUser({ ...user, college: value })}
+            <SelectValue placeholder="請選擇年級" />
+          </SelectTrigger>
+          <SelectContent
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1]'
+                : `backdrop-blur-md transition-all duration-300 ${
+                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
+                  }`
+            }
           >
-            <SelectTrigger
-              id="college"
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
-                  : `transition-all duration-300 ${
-                      isHighZoom
-                        ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
-                        : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
-                    }`
-              }
-            >
-              <SelectValue placeholder="請選擇學院" />
-            </SelectTrigger>
-            <SelectContent
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1]'
-                  : `backdrop-blur-md transition-all duration-300 ${
-                      isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
-                    }`
-              }
-            >
-              {colleges.map(college => (
-                <SelectItem 
-                  key={college} 
-                  value={college} 
-                  className={
-                    variant === 'wishlist'
-                      ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                      : `transition-all duration-300 ${
-                          isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                        }`
-                  }
-                >
-                  {college}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            {grades.map(grade => (
+              <SelectItem
+                key={grade}
+                value={grade}
+                className={
+                  variant === 'wishlist'
+                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
+                    : `transition-all duration-300 ${
+                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
+                      }`
+                }
+              >
+                {grade === 'Freshman' && '大一'}
+                {grade === 'Sophomore' && '大二'}
+                {grade === 'Junior' && '大三'}
+                {grade === 'Senior' && '大四'}
+                  {grade === 'Master1' && '碩一'}
+                  {grade === 'Master2' && '碩二'}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-        {/* 年級選擇 */}
-        <div>
-          <Label
-            htmlFor="grade"
-            className={`font-medium transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-            }`}
+      {/* 學院選擇 */}
+      <div>
+        <Label
+          htmlFor="college"
+          className={`font-medium transition-all duration-300 ${
+            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
+          }`}
+        >
+          學院
+        </Label>
+        <Select
+          value={user.college || ''}
+          onValueChange={(value) => setUser({ ...user, college: value })}
+        >
+          <SelectTrigger
+            id="college"
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
+                : `transition-all duration-300 ${
+                    isHighZoom
+                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
+                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+                  }`
+            }
           >
-            年級
-          </Label>
-          <Select
-            value={user.grade || ''}
-            onValueChange={(value: string) => setUser({ ...user, grade: value as 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | null })}
+            <SelectValue placeholder="請選擇學院" />
+          </SelectTrigger>
+          <SelectContent
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1]'
+                : `backdrop-blur-md transition-all duration-300 ${
+                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
+                  }`
+            }
           >
-            <SelectTrigger
-              id="grade"
+            {colleges.map(college => (
+              <SelectItem
+                key={college}
+                value={college}
+                className={
+                  variant === 'wishlist'
+                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
+                    : `transition-all duration-300 ${
+                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
+                      }`
+                }
+              >
+                {college}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* 申請組別篩選 */}
+      <div>
+        <Label
+          htmlFor="application-group"
+          className={`font-medium transition-all duration-300 ${
+            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
+          }`}
+        >
+          申請組別
+        </Label>
+        <Select
+          value={safeApplicationGroupValue}
+          onValueChange={(value) =>
+            updateFilters({ applicationGroup: value === APPLICATION_GROUP_ALL ? null : value })
+          }
+        >
+          <SelectTrigger
+            id="application-group"
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
+                : `transition-all duration-300 ${
+                    isHighZoom
+                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
+                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+                  }`
+            }
+          >
+            <SelectValue placeholder="不限" />
+          </SelectTrigger>
+          <SelectContent
+            className={
+              variant === 'wishlist'
+                ? 'bg-white border-[#d6c3a1]'
+                : `backdrop-blur-md transition-all duration-300 ${
+                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
+                  }`
+            }
+          >
+            <SelectItem
+              value={APPLICATION_GROUP_ALL}
               className={
                 variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
+                  ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
                   : `transition-all duration-300 ${
-                      isHighZoom
-                        ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
-                        : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
+                      isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
                     }`
               }
             >
-              <SelectValue placeholder="請選擇年級" />
-            </SelectTrigger>
-            <SelectContent
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1]'
-                  : `backdrop-blur-md transition-all duration-300 ${
-                      isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
-                    }`
-              }
-            >
-              {grades.map(grade => (
-                <SelectItem 
-                  key={grade} 
-                  value={grade} 
-                  className={
-                    variant === 'wishlist'
-                      ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                      : `transition-all duration-300 ${
-                          isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                        }`
-                  }
-                >
-                  {grade === 'Freshman' && '大一'}
-                  {grade === 'Sophomore' && '大二'}
-                  {grade === 'Junior' && '大三'}
-                  {grade === 'Senior' && '大四'}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              不限
+            </SelectItem>
+            {applicationGroups.map(group => (
+              <SelectItem
+                key={group}
+                value={group}
+                className={
+                  variant === 'wishlist'
+                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
+                    : `transition-all duration-300 ${
+                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
+                      }`
+                }
+              >
+                {group}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
         {/* GPA 輸入 */}
         <div>

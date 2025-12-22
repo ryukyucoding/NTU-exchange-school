@@ -9,6 +9,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useState, useCallback, useEffect } from 'react';
 import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import { useMapZoom } from '@/contexts/MapZoomContext';
+import SchoolDetailModal from '@/components/school-display/SchoolDetailModal';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapViewProps {
@@ -33,10 +34,12 @@ function getMarkerColor(applicationGroup: string): string {
 // 內部組件：用於獲取地圖實例並計算 Popup 位置
 function PopupWithDynamicPosition({ 
   school, 
-  onClose 
+  onClose,
+  onOpenDetails,
 }: { 
   school: SchoolWithMatch; 
   onClose: () => void;
+  onOpenDetails: (school: SchoolWithMatch) => void;
 }) {
   const { current: map } = useMap();
   const [popupAnchor, setPopupAnchor] = useState<'top' | 'bottom'>('bottom');
@@ -137,7 +140,7 @@ function PopupWithDynamicPosition({
         padding: 0
       }}
     >
-      <PopupContent school={school} onClose={onClose} />
+      <PopupContent school={school} onClose={onClose} onOpenDetails={onOpenDetails} />
     </Popup>
   );
 }
@@ -145,17 +148,19 @@ function PopupWithDynamicPosition({
 // Popup 內容組件
 function PopupContent({ 
   school, 
-  onClose 
+  onClose,
+  onOpenDetails,
 }: { 
   school: SchoolWithMatch; 
   onClose: () => void;
+  onOpenDetails: (school: SchoolWithMatch) => void;
 }) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const [showDetails, setShowDetails] = useState(false);
+  const inWishlist = isInWishlist(school.id);
 
   return (
     <div
-      className="backdrop-blur-md rounded-lg shadow-2xl p-4 relative w-80 flex flex-col"
+      className="backdrop-blur-md rounded-lg shadow-2xl p-4 relative w-80 flex flex-col pointer-events-auto"
       style={{
         // 若 CSS 變數沒載入，fallback 回一個「有點藍」的半透明色，避免變透明
         backgroundColor: 'var(--map-popup-bg, rgba(9, 47, 83, 0.72))',
@@ -169,7 +174,6 @@ function PopupContent({
         className="absolute top-2 right-2 text-white/70 hover:text-white hover:bg-white/20"
         onClick={() => {
           onClose();
-          setShowDetails(false);
         }}
       >
         <X className="w-4 h-4" />
@@ -194,82 +198,33 @@ function PopupContent({
         </div>
 
         <Button
-          variant={isInWishlist(school.id) ? "default" : "outline"}
+          variant="ghost"
           size="icon"
-          className="ml-2 flex-shrink-0"
+          className="ml-2 flex-shrink-0 !bg-transparent !shadow-none !text-white/80 border border-transparent transition-colors duration-200 ease-out hover:!bg-white/20 hover:!text-white hover:border-white/35 focus-visible:!bg-white/20 focus-visible:!text-white focus-visible:border-white/35"
           onClick={() => {
-            if (isInWishlist(school.id)) {
+            if (inWishlist) {
               removeFromWishlist(school.id);
             } else {
               addToWishlist(school);
             }
           }}
         >
-          <Heart className={isInWishlist(school.id) ? "fill-current" : ""} />
+          <Heart
+            className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : 'text-white/80'}`}
+          />
         </Button>
       </div>
-
-      {/* 詳細資料區域 */}
-      {showDetails && (
-        <div className="mb-4 space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span className="text-white/70">申請組別:</span>
-            <span className="font-medium text-white text-right">
-              {school.application_group || '無限制'}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-white/70">年級限制:</span>
-            <span className="font-medium text-white text-right">
-              {school.grade_requirement || '無限制'}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-white/70">GPA 要求:</span>
-            <span className="font-medium text-white text-right">
-              {school.gpa_min ? `${school.gpa_min} 以上` : '無限制'}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-white/70">學院限制:</span>
-            <span className="font-medium text-white text-right">
-              {school.restricted_colleges && school.restricted_colleges !== '無' && school.restricted_colleges.trim() !== ''
-                ? school.restricted_colleges 
-                : '無限制'}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-white/70">語言要求:</span>
-            <span className="font-medium text-white text-right">
-              {(() => {
-                const requirements = [];
-                if (school.toefl_ibt) requirements.push(`TOEFL ${school.toefl_ibt}`);
-                if (school.ielts) requirements.push(`IELTS ${school.ielts}`);
-                if (school.toeic) requirements.push(`TOEIC ${school.toeic}`);
-                return requirements.length > 0 ? requirements.join(' / ') : '無限制';
-              })()}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-white/70">名額:</span>
-            <span className="font-medium text-white text-right">
-              {school.quota || '未提供'}
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* 按鈕區域 */}
       <div className="flex gap-2 pt-3 border-t border-white/20">
         <Button
           variant="outline"
           className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
-          onClick={() => setShowDetails(!showDetails)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenDetails(school);
+            onClose();
+          }}
         >
           <Info className="w-4 h-4 mr-2" />
           詳細資訊
@@ -289,6 +244,8 @@ function PopupContent({
 
 export default function MapView({ schools }: MapViewProps) {
   const [selectedSchool, setSelectedSchool] = useState<SchoolWithMatch | null>(null);
+  const [detailSchool, setDetailSchool] = useState<SchoolWithMatch | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const { setZoomLevel } = useMapZoom();
   const isHighZoom = useMapBackgroundBrightness(3);
 
@@ -428,9 +385,24 @@ export default function MapView({ schools }: MapViewProps) {
           <PopupWithDynamicPosition
             school={selectedSchool}
             onClose={() => setSelectedSchool(null)}
+            onOpenDetails={(s) => {
+              setDetailSchool(s);
+              setIsDetailOpen(true);
+            }}
           />
         )}
       </Map>
+
+      <SchoolDetailModal
+        school={detailSchool}
+        open={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setDetailSchool(null);
+        }}
+        variant="wishlist"
+        presentation="side"
+      />
     </div>
   );
 }
