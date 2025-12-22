@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
@@ -34,8 +34,16 @@ interface Draft {
 
 function ReviewPostContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
+  const editPostId = searchParams.get('edit');
+  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
+  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
+
+  const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
+  const [currentUserName, setCurrentUserName] = useState<string>('userName');
+  const [currentUserImage, setCurrentUserImage] = useState<string | null>(null);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -48,6 +56,83 @@ function ReviewPostContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [loading, setLoading] = useState(!!editPostId);
+
+  // 顯示最新頭貼/名字（不要只依賴 session）
+  useEffect(() => {
+    if (!session?.user) return;
+
+    setCurrentUserName(session.user.name || 'userName');
+    setCurrentUserImage(session.user.image || null);
+
+    if (!sessionUserId) return;
+
+    let cancelled = false;
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await fetch(`/api/user/${sessionUserId}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (data?.success && data.user) {
+          setCurrentUserName(data.user.name || data.user.userID || session.user.name || 'userName');
+          setCurrentUserImage(data.user.image || session.user.image || null);
+        }
+      } catch (error) {
+        console.error('Error fetching current user profile:', error);
+      }
+    };
+    fetchCurrentUser();
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionUserId, session?.user]);
+
+  // 載入要編輯的貼文資料
+  useEffect(() => {
+    if (editPostId) {
+      const loadPost = async () => {
+        try {
+          const response = await fetch(`/api/posts/${editPostId}`);
+          const data = await response.json();
+          if (data.success && data.post) {
+            const post = data.post;
+            // 檢查是否為作者
+            const userId = session?.user ? (session.user as { id: string }).id : null;
+            if (post.author.id !== userId) {
+              toast.error('無權限編輯此貼文');
+              router.push('/social');
+              return;
+            }
+            // 檢查是否有評分（必須是 review 類型）
+            if (!post.ratings) {
+              toast.error('此貼文不是學校心得類型');
+              router.push('/social');
+              return;
+            }
+            setDraftId(post.id);
+            setTitle(post.title || '');
+            setContent(post.content || '');
+            setHashtags(post.hashtags || []);
+            setSelectedSchoolId(post.schools?.[0]?.id || null);
+            setSelectedCountry(post.schools?.[0]?.country || null);
+            setLivingConvenience(post.ratings.livingConvenience || 0);
+            setCourseLoading(post.ratings.courseLoading || 0);
+            setCostOfLiving(post.ratings.costOfLiving || 0);
+          } else {
+            toast.error('無法載入貼文');
+            router.push('/social');
+          }
+        } catch (error) {
+          console.error('Error loading post:', error);
+          toast.error('載入失敗');
+          router.push('/social');
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadPost();
+    }
+  }, [editPostId, session, router]);
 
   const handleLoadDraft = (draft: Draft) => {
     setDraftId(draft.id);
@@ -178,8 +263,9 @@ function ReviewPostContent() {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('貼文發布成功！');
-        router.push('/social');
+        toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
+        // 無論是編輯還是發布，都帶上 return 參數
+        router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
       } else {
         toast.error(data.error || '發布失敗');
       }
@@ -190,6 +276,14 @@ function ReviewPostContent() {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] flex items-center justify-center">
+        <div className="text-gray-500">載入中...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
@@ -245,9 +339,17 @@ function ReviewPostContent() {
 
                 {/* User Info */}
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+                    {currentUserImage && (
+                      <img
+                        src={currentUserImage}
+                        alt={currentUserName || 'userName'}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
                   <div className="text-sm" style={{ color: '#5A5A5A' }}>
-                    <span className="font-semibold">{session?.user?.name || 'userName'}</span>
+                    <span className="font-semibold">{currentUserName || 'userName'}</span>
                     <span className="mx-2">·</span>
                     <span>{new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
                   </div>
@@ -308,20 +410,40 @@ function ReviewPostContent() {
 
                 {/* Submit Buttons */}
                 <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={handleSaveDraft}
-                    disabled={isSavingDraft || isSubmitting}
-                    variant="outline"
-                    style={{
-                      borderColor: '#5A5A5A',
-                      color: '#5A5A5A',
-                      borderRadius: '9999px',
-                      backgroundColor: 'transparent',
-                    }}
-                    className="hover:bg-gray-50"
-                  >
-                    {isSavingDraft ? '儲存中...' : '儲存草稿'}
-                  </Button>
+                  {editPostId ? (
+                    <Button
+                      onClick={() => {
+                        if (!confirm('確定要捨棄變更嗎？')) return;
+                        router.push(returnUrl);
+                      }}
+                      disabled={isSubmitting}
+                      variant="outline"
+                      style={{
+                        borderColor: '#ef4444',
+                        color: '#ef4444',
+                        borderRadius: '9999px',
+                        backgroundColor: 'transparent',
+                      }}
+                      className="hover:bg-gray-50"
+                    >
+                      捨棄變更
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSaveDraft}
+                      disabled={isSavingDraft || isSubmitting}
+                      variant="outline"
+                      style={{
+                        borderColor: '#5A5A5A',
+                        color: '#5A5A5A',
+                        borderRadius: '9999px',
+                        backgroundColor: 'transparent',
+                      }}
+                      className="hover:bg-gray-50"
+                    >
+                      {isSavingDraft ? '儲存中...' : '儲存草稿'}
+                    </Button>
+                  )}
                   <Button
                     onClick={handleSubmit}
                     disabled={isSubmitting || isSavingDraft || !canPublish}
@@ -332,7 +454,7 @@ function ReviewPostContent() {
                     }}
                     className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
                   >
-                    {isSubmitting ? '發布中...' : '發佈貼文'}
+                    {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>
                 </div>
                 </div>
@@ -353,7 +475,9 @@ function ReviewPostContent() {
 export default function ReviewPostPage() {
   return (
     <RouteGuard>
-      <ReviewPostContent />
+      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+        <ReviewPostContent />
+      </Suspense>
     </RouteGuard>
   );
 }

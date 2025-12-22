@@ -31,9 +31,10 @@ interface Comment {
 
 interface CommentSectionProps {
   postId: string;
+  onCommentAdded?: () => void;
 }
 
-export default function CommentSection({ postId }: CommentSectionProps) {
+export default function CommentSection({ postId, onCommentAdded }: CommentSectionProps) {
   const { data: session } = useSession();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,42 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   const [loadingReplies, setLoadingReplies] = useState<Set<string>>(new Set());
   const [isCommentExpanded, setIsCommentExpanded] = useState(false);
   const [commentLikes, setCommentLikes] = useState<Map<string, { count: number; isLiked: boolean }>>(new Map());
+
+  const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
+  const [currentUserName, setCurrentUserName] = useState<string>('User');
+  const [currentUserImage, setCurrentUserImage] = useState<string | null>(null);
+
+  // 確保「留言輸入框」顯示的是最新的名字/頭貼（不要只依賴 session，因為 session 可能尚未刷新）
+  useEffect(() => {
+    if (!session?.user) return;
+
+    // Fallback: session
+    setCurrentUserName(session.user.name || 'User');
+    setCurrentUserImage(session.user.image || null);
+
+    if (!sessionUserId) return;
+
+    let cancelled = false;
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await fetch(`/api/user/${sessionUserId}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (data?.success && data.user) {
+          setCurrentUserName(data.user.name || data.user.userID || session.user.name || 'User');
+          setCurrentUserImage(data.user.image || session.user.image || null);
+        }
+      } catch (error) {
+        // Ignore; session fallback already set
+        console.error('Error fetching current user profile:', error);
+      }
+    };
+    fetchCurrentUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionUserId, session?.user?.name, session?.user?.image, session?.user]);
 
   useEffect(() => {
     fetchComments();
@@ -137,6 +174,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
         setIsCommentExpanded(false);
         toast.success('評論發布成功');
         fetchComments();
+        // 通知父组件刷新评论数
+        onCommentAdded?.();
       } else {
         toast.error(data.error || '發布失敗');
       }
@@ -204,6 +243,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
           // 刷新頂層評論列表（更新childCount）
           fetchComments();
         }
+        // 通知父组件刷新评论数
+        onCommentAdded?.();
       } else {
         toast.error(data.error || '發布失敗');
       }
@@ -516,16 +557,16 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             >
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
-                  {(session.user as { image?: string | null })?.image && (
+                  {currentUserImage && (
                     <img
-                      src={(session.user as { image?: string | null }).image || ''}
-                      alt={session.user.name || 'User'}
+                      src={currentUserImage}
+                      alt={currentUserName || 'User'}
                       className="w-full h-full rounded-full object-cover"
                     />
                   )}
                 </div>
                 <span className="text-sm font-semibold" style={{ color: '#5A5A5A' }}>
-                  {session.user.name || (session.user as { id?: string })?.id || 'User'}
+                  {currentUserName || 'User'}
                 </span>
               </div>
               <div>
@@ -547,16 +588,16 @@ export default function CommentSection({ postId }: CommentSectionProps) {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0">
-                  {(session.user as { image?: string | null })?.image && (
+                  {currentUserImage && (
                     <img
-                      src={(session.user as { image?: string | null }).image || ''}
-                      alt={session.user.name || 'User'}
+                      src={currentUserImage}
+                      alt={currentUserName || 'User'}
                       className="w-full h-full rounded-full object-cover"
                     />
                   )}
                 </div>
                 <span className="text-sm font-semibold" style={{ color: '#5A5A5A' }}>
-                  {session.user.name || (session.user as { id?: string })?.id || 'User'}
+                  {currentUserName || 'User'}
                 </span>
               </div>
               <div>

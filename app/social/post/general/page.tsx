@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -31,6 +31,14 @@ function GeneralPostContent() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
+  const editPostId = searchParams.get('edit');
+  const repostId = searchParams.get('repostId');
+  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
+  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
+
+  const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
+  const [currentUserName, setCurrentUserName] = useState<string>('userName');
+  const [currentUserImage, setCurrentUserImage] = useState<string | null>(null);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -40,38 +48,114 @@ function GeneralPostContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
-  const [repostId, setRepostId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(!!editPostId);
   const [originalPost, setOriginalPost] = useState<any>(null);
-  const [loadingOriginalPost, setLoadingOriginalPost] = useState(false);
 
-  // 從 URL 參數讀取 repostId 並獲取原貼文
+  // 顯示最新頭貼/名字（不要只依賴 session）
   useEffect(() => {
-    const repostIdParam = searchParams.get('repostId');
-    if (repostIdParam) {
-      setRepostId(repostIdParam);
-      fetchOriginalPost(repostIdParam);
-    }
-  }, [searchParams]);
+    if (!session?.user) return;
 
-  const fetchOriginalPost = async (postId: string) => {
-    setLoadingOriginalPost(true);
-    try {
-      const response = await fetch(`/api/posts/${postId}`);
-      const data = await response.json();
-      if (data.success && data.post) {
-        setOriginalPost(data.post);
-      } else {
-        toast.error('無法載入原貼文');
-        setRepostId(null);
+    const sessionName = session.user?.name || 'userName';
+    const sessionImage = session.user?.image || null;
+    setCurrentUserName(sessionName);
+    setCurrentUserImage(sessionImage);
+
+    if (!sessionUserId) return;
+
+    let cancelled = false;
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await fetch(`/api/user/${sessionUserId}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (data?.success && data.user) {
+          setCurrentUserName(data.user.name || data.user.userID || sessionName);
+          setCurrentUserImage(data.user.image || sessionImage);
+        }
+      } catch (error) {
+        console.error('Error fetching current user profile:', error);
       }
-    } catch (error) {
-      console.error('Error fetching original post:', error);
-      toast.error('載入原貼文失敗');
-      setRepostId(null);
-    } finally {
-      setLoadingOriginalPost(false);
+    };
+    fetchCurrentUser();
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionUserId, session?.user]);
+
+  // 載入要轉發的原貼文資料
+  useEffect(() => {
+    if (repostId) {
+      const loadOriginalPost = async () => {
+        try {
+          const response = await fetch(`/api/posts/${repostId}`);
+          const data = await response.json();
+          if (data.success && data.post) {
+            setOriginalPost(data.post);
+          } else {
+            toast.error('無法載入原貼文');
+            router.push('/social');
+          }
+        } catch (error) {
+          console.error('Error loading original post:', error);
+          toast.error('載入失敗');
+          router.push('/social');
+        }
+      };
+      loadOriginalPost();
     }
-  };
+  }, [repostId, router]);
+
+  // 載入要編輯的貼文資料
+  useEffect(() => {
+    if (editPostId) {
+      const loadPost = async () => {
+        try {
+          const response = await fetch(`/api/posts/${editPostId}`);
+          const data = await response.json();
+          if (data.success && data.post) {
+            const post = data.post;
+            // 檢查是否為作者
+            const userId = session?.user ? (session.user as { id: string }).id : null;
+            if (post.author.id !== userId) {
+              toast.error('無權限編輯此貼文');
+              router.push('/social');
+              return;
+            }
+            setDraftId(post.id);
+            setTitle(post.title || '');
+            setContent(post.content || '');
+            setHashtags(post.hashtags || []);
+            setSelectedSchoolIds(post.schools?.map((s: { id: string }) => s.id) || []);
+            setSelectedCountries(post.countries || []);
+            // 如果是轉發貼文，載入原貼文
+            if (post.repostId) {
+              try {
+                const repostResponse = await fetch(`/api/posts/${post.repostId}`);
+                const repostData = await repostResponse.json();
+                if (repostData.success && repostData.post) {
+                  setOriginalPost(repostData.post);
+                }
+              } catch (error) {
+                console.error('Error loading original post for repost:', error);
+              }
+            }
+          } else {
+            toast.error('無法載入貼文');
+            router.push('/social');
+          }
+        } catch (error) {
+          console.error('Error loading post:', error);
+          toast.error('載入失敗');
+          router.push('/social');
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadPost();
+    } else {
+      setLoading(false);
+    }
+  }, [editPostId, session, router]);
 
   const handleLoadDraft = (draft: Draft) => {
     setDraftId(draft.id);
@@ -180,8 +264,9 @@ function GeneralPostContent() {
       const data = await response.json();
 
       if (data.success) {
-        toast.success('貼文發布成功！');
-        router.push('/social');
+        toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
+        // 無論是編輯還是發布，都帶上 return 參數
+        router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
       } else {
         toast.error(data.error || '發布失敗');
       }
@@ -192,6 +277,14 @@ function GeneralPostContent() {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] flex items-center justify-center">
+        <div className="text-gray-500">載入中...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
@@ -247,9 +340,17 @@ function GeneralPostContent() {
 
                 {/* User Info */}
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+                    {currentUserImage && (
+                      <img
+                        src={currentUserImage}
+                        alt={currentUserName || 'userName'}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
                   <div className="text-sm" style={{ color: '#5A5A5A' }}>
-                    <span className="font-semibold">{session?.user?.name || 'userName'}</span>
+                    <span className="font-semibold">{currentUserName || 'userName'}</span>
                     <span className="mx-2">·</span>
                     <span>{new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
                   </div>
@@ -295,20 +396,40 @@ function GeneralPostContent() {
 
                 {/* Submit Buttons */}
                 <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={handleSaveDraft}
-                    disabled={isSavingDraft || isSubmitting}
-                    variant="outline"
-                    style={{
-                      borderColor: '#5A5A5A',
-                      color: '#5A5A5A',
-                      borderRadius: '9999px',
-                      backgroundColor: 'transparent',
-                    }}
-                    className="hover:bg-gray-50"
-                  >
-                    {isSavingDraft ? '儲存中...' : '儲存草稿'}
-                  </Button>
+                  {editPostId ? (
+                    <Button
+                      onClick={() => {
+                        if (!confirm('確定要捨棄變更嗎？')) return;
+                        router.push(returnUrl);
+                      }}
+                      disabled={isSubmitting}
+                      variant="outline"
+                      style={{
+                        borderColor: '#ef4444',
+                        color: '#ef4444',
+                        borderRadius: '9999px',
+                        backgroundColor: 'transparent',
+                      }}
+                      className="hover:bg-gray-50"
+                    >
+                      捨棄變更
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSaveDraft}
+                      disabled={isSavingDraft || isSubmitting}
+                      variant="outline"
+                      style={{
+                        borderColor: '#5A5A5A',
+                        color: '#5A5A5A',
+                        borderRadius: '9999px',
+                        backgroundColor: 'transparent',
+                      }}
+                      className="hover:bg-gray-50"
+                    >
+                      {isSavingDraft ? '儲存中...' : '儲存草稿'}
+                    </Button>
+                  )}
                   <Button
                     onClick={handleSubmit}
                     disabled={isSubmitting || isSavingDraft || !canPublish}
@@ -319,7 +440,7 @@ function GeneralPostContent() {
                     }}
                     className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
                   >
-                    {isSubmitting ? '發布中...' : '發佈貼文'}
+                    {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>
                 </div>
                 </div>
@@ -340,7 +461,9 @@ function GeneralPostContent() {
 export default function GeneralPostPage() {
   return (
     <RouteGuard>
-      <GeneralPostContent />
+      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+        <GeneralPostContent />
+      </Suspense>
     </RouteGuard>
   );
 }

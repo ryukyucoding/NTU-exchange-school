@@ -26,8 +26,10 @@ function getMarkerColor(applicationGroup: string): string {
     '日語組': '#8B5CF6',      // 紫色
     '日語組/一般組': '#EC4899', // 粉色
     '英語組': '#06B6D4',      // 青色
+    '中語組': '#F97316',      // 橘紅色
+    '韓語組': '#84CC16',      // 黃綠色
   };
-  
+
   return groupColors[applicationGroup] || '#6B7280'; // 預設灰色
 }
 
@@ -307,6 +309,10 @@ export default function MapView({ schools }: MapViewProps) {
             <span className="drop-shadow-md">一般組</span>
           </div>
           <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#06B6D4' }}></div>
+            <span className="drop-shadow-md">英語組</span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#EF4444' }}></div>
             <span className="drop-shadow-md">法語組</span>
           </div>
@@ -321,6 +327,14 @@ export default function MapView({ schools }: MapViewProps) {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#8B5CF6' }}></div>
             <span className="drop-shadow-md">日語組</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#F97316' }}></div>
+            <span className="drop-shadow-md">中語組</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#84CC16' }}></div>
+            <span className="drop-shadow-md">韓語組</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#EC4899' }}></div>
