@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import PostList from '@/components/social/PostList';
@@ -188,7 +189,19 @@ function SchoolBoardContent() {
                     <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
                     {school && (
                       <p className="text-gray-500 mt-2">
-                        {school.name_en} {school.country}
+                        {school.name_en}
+                        {school.country && school.country_id && (
+                          <>
+                            {' ・ '}
+                            <Link
+                              href={`/social/boards/country/${school.country_id}`}
+                              className="hover:underline text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                              {school.country}
+                            </Link>
+                          </>
+                        )}
+                        {school.country && !school.country_id && ` ・ ${school.country}`}
                       </p>
                     )}
                   </div>
@@ -293,7 +306,7 @@ function SchoolBoardContent() {
                     className="text-sm font-semibold"
                     style={{ color: sort === 'latest' ? '#5A5A5A' : '#A6A6A6' }}
                   >
-                    全部
+                    最新
                   </button>
                   <button
                     onClick={() => setSort('rating')}

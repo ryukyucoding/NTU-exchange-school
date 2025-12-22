@@ -1642,8 +1642,9 @@ export async function GET(req: NextRequest) {
 
     if (sort === "popular") {
       finalPosts = [...postsWithStatus].sort((a, b) => {
-        const aScore = (a.likeCount || 0) + (a.commentCount || 0) + (a.repostCount || 0);
-        const bScore = (b.likeCount || 0) + (b.commentCount || 0) + (b.repostCount || 0);
+        // 熱門排序：按照「按讚＋留言數」由高到低排序
+        const aScore = (a.likeCount || 0) + (a.commentCount || 0);
+        const bScore = (b.likeCount || 0) + (b.commentCount || 0);
         if (bScore !== aScore) return bScore - aScore;
         // 分數相同時，以時間新舊做次排序
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
