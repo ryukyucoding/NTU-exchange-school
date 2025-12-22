@@ -180,7 +180,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
 
       {/* 標題 */}
       <Link href={`/social/posts/${post.id}`}>
-        <h3 className="text-xl font-semibold mb-3 hover:underline" style={{ color: '#5A5A5A' }}>
+        <h3 className="text-2xl font-semibold mb-3 hover:underline" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
           {post.title}
         </h3>
       </Link>
@@ -191,7 +191,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <Link
             key={`country-${index}`}
             href={`/social/boards/country/by-name?name=${encodeURIComponent(country)}`}
-            className="px-1.5 py-0.5 rounded-full text-xs transition-colors"
+            className="px-3 py-1.5 rounded-full text-sm transition-colors"
             style={{
               backgroundColor: 'rgba(186, 199, 229, 0.41)',
               border: '1px solid #BAC7E5',
@@ -211,7 +211,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <Link
             key={`school-${index}`}
             href={`/social/boards/school/${school.id}`}
-            className="px-1.5 py-0.5 rounded-full text-xs transition-colors"
+            className="px-3 py-1.5 rounded-full text-sm transition-colors"
             style={{
               backgroundColor: 'rgba(186, 199, 229, 0.41)',
               border: '1px solid #BAC7E5',
@@ -232,7 +232,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <Link
             key={`tag-${index}`}
             href={`/social?hashtag=${encodeURIComponent(tag)}`}
-            className="px-1.5 py-0.5 rounded-full text-xs transition-colors"
+            className="px-3 py-1.5 rounded-full text-sm transition-colors"
             style={{
               backgroundColor: 'rgba(141, 112, 81, 0.34)',
               border: '1px solid #8D7051',
@@ -266,41 +266,49 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           variant="ghost"
           size="sm"
           onClick={handleLike}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-transparent group"
           style={{ color: '#5A5A5A' }}
         >
-          <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-          <span>{likeCount}</span>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
+            <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+          </div>
+          <span className="text-base">{likeCount}</span>
         </Button>
         <Link href={`/social/posts/${post.id}`}>
           <Button 
             variant="ghost" 
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-transparent group"
             style={{ color: '#5A5A5A' }}
           >
-            <MessageCircle className="h-5 w-5" />
-            <span>{post.commentCount}</span>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
+              <MessageCircle className="h-5 w-5" />
+            </div>
+            <span className="text-base">{post.commentCount}</span>
           </Button>
         </Link>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleRepost}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-transparent group"
           style={{ color: isReposted ? '#10b981' : '#5A5A5A' }}
         >
-          <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-green-500 text-green-500' : ''}`} />
-          <span>{post.repostCount}</span>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
+            <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-green-500 text-green-500' : ''}`} />
+          </div>
+          <span className="text-base">{post.repostCount}</span>
         </Button>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleBookmark}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-transparent group"
           style={{ color: isBookmarked ? '#f59e0b' : '#5A5A5A' }}
         >
-          <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
+            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          </div>
         </Button>
       </div>
     </Card>

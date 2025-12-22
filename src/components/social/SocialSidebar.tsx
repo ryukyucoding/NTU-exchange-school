@@ -163,16 +163,13 @@ export default function SocialSidebar() {
         ) : popularTags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {popularTags.map((tag, index) => (
-              <button
+              <Link
                 key={index}
+                href={`/social?hashtag=${encodeURIComponent(tag)}`}
                 className="px-3 py-1 text-sm rounded-full border border-[#d6c3a1] bg-[#f7efe5] text-[#8D7051] hover:bg-[#f0e6d6] transition-colors"
-                onClick={() => {
-                  // 可以添加点击标签后的行为，比如跳转到该标签的页面
-                  window.location.href = `/social?hashtag=${encodeURIComponent(tag)}`;
-                }}
               >
-                {tag}
-              </button>
+                #{tag}
+              </Link>
             ))}
           </div>
         ) : (
