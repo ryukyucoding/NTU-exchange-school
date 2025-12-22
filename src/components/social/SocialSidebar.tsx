@@ -43,6 +43,8 @@ export default function SocialSidebar() {
   const { data: session } = useSession();
   const [followedBoards, setFollowedBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
+  const [popularTags, setPopularTags] = useState<string[]>([]);
+  const [tagsLoading, setTagsLoading] = useState(true);
 
   useEffect(() => {
     const fetchFollowedBoards = async () => {
@@ -78,6 +80,26 @@ export default function SocialSidebar() {
       window.removeEventListener('boardFollowChanged', handleBoardFollowChanged);
     };
   }, [session]);
+
+  // 获取热门标签
+  useEffect(() => {
+    const fetchPopularTags = async () => {
+      try {
+        const response = await fetch('/api/hashtags/popular');
+        const data = await response.json();
+        
+        if (data.success) {
+          setPopularTags(data.tags || []);
+        }
+      } catch (error) {
+        console.error('Error fetching popular tags:', error instanceof Error ? error.message : String(error));
+      } finally {
+        setTagsLoading(false);
+      }
+    };
+
+    fetchPopularTags();
+  }, []);
 
   return (
     <div className="w-64 flex flex-col gap-4 h-full">
@@ -130,6 +152,31 @@ export default function SocialSidebar() {
           </div>
         ) : (
           <div className="text-sm text-gray-400">尚無追蹤中看板</div>
+        )}
+      </Card>
+
+      {/* Popular Topics */}
+      <Card className="p-4 bg-white border-0 shadow-none">
+        <h3 className="font-semibold mb-3 text-gray-800">熱門話題</h3>
+        {tagsLoading ? (
+          <div className="text-sm text-gray-400">載入中...</div>
+        ) : popularTags.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {popularTags.map((tag, index) => (
+              <button
+                key={index}
+                className="px-3 py-1 text-sm rounded-full border border-[#d6c3a1] bg-[#f7efe5] text-[#8D7051] hover:bg-[#f0e6d6] transition-colors"
+                onClick={() => {
+                  // 可以添加点击标签后的行为，比如跳转到该标签的页面
+                  window.location.href = `/social?hashtag=${encodeURIComponent(tag)}`;
+                }}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-400">尚無熱門話題</div>
         )}
       </Card>
 

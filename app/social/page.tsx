@@ -1,13 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 
 function SocialContent() {
+  const searchParams = useSearchParams();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
+  const [hashtag, setHashtag] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hashtagParam = searchParams.get('hashtag');
+    setHashtag(hashtagParam);
+  }, [searchParams]);
 
   return (
     // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
@@ -76,7 +84,7 @@ function SocialContent() {
 
           {/* Main Content - Posts (ONLY scrollable area) */}
           <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
-            <PostList filter={filter} />
+            <PostList filter={filter} hashtag={hashtag} />
           </main>
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
@@ -92,7 +100,9 @@ function SocialContent() {
 export default function SocialPage() {
   return (
     <RouteGuard>
-      <SocialContent />
+      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+        <SocialContent />
+      </Suspense>
     </RouteGuard>
   );
 }

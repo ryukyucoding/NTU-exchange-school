@@ -54,6 +54,7 @@ interface PostListProps {
   sort?: 'latest' | 'popular';
   variant?: 'card' | 'plain';
   filterType?: 'rating' | null; // 'rating' to show only posts with SchoolRating
+  hashtag?: string | null; // Filter posts by hashtag
 }
 
 export default function PostList({
@@ -63,6 +64,7 @@ export default function PostList({
   sort = 'latest',
   variant = 'card',
   filterType = null,
+  hashtag = null,
 }: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,6 +87,9 @@ export default function PostList({
       }
       if (filterType) {
         params.append('filterType', filterType);
+      }
+      if (hashtag) {
+        params.append('hashtag', hashtag);
       }
       if (cursor) {
         params.append('cursor', cursor);
@@ -157,20 +162,21 @@ export default function PostList({
   };
 
   useEffect(() => {
-    // 切換 filter/boardId/authorId/sort/filterType 時重置列表
+    // 切換 filter/boardId/authorId/sort/filterType/hashtag 時重置列表
     console.log('[PostList] useEffect 觸發，重置並獲取貼文:', {
       filter,
       boardId,
       authorId,
       sort,
       filterType,
+      hashtag,
     });
     setPosts([]);
     setNextCursor(null);
     setHasMore(true);
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, boardId, authorId, sort, filterType]);
+  }, [filter, boardId, authorId, sort, filterType, hashtag]);
 
   const loadMore = () => {
     if (nextCursor && !loading) {
