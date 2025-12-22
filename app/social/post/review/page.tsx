@@ -38,7 +38,8 @@ function ReviewPostContent() {
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
   const editPostId = searchParams.get('edit');
-  const returnUrl = searchParams.get('return') || '/social';
+  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
+  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
 
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
   const [currentUserName, setCurrentUserName] = useState<string>('userName');
@@ -263,11 +264,8 @@ function ReviewPostContent() {
 
       if (data.success) {
         toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
-        if (editPostId) {
-          router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
-        } else {
-          router.push(`/social/posts/${data.post.id}`);
-        }
+        // 無論是編輯還是發布，都帶上 return 參數
+        router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
       } else {
         toast.error(data.error || '發布失敗');
       }

@@ -138,6 +138,10 @@ export function htmlToMarkdown(html: string): string {
   markdown = markdown.replace(/<\/p>/gi, '\n');
   markdown = markdown.replace(/<p[^>]*>/gi, '');
   
+  // 處理 div 標籤（contentEditable 中按 Enter 可能產生 div）
+  markdown = markdown.replace(/<\/div>/gi, '\n');
+  markdown = markdown.replace(/<div[^>]*>/gi, '');
+  
   // 移除其他 HTML 標籤但保留文字內容
   markdown = markdown.replace(/<[^>]+>/g, '');
   

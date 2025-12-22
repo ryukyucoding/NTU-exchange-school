@@ -29,11 +29,12 @@ interface Draft {
 function GeneralPostContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
   const editPostId = searchParams.get('edit');
-  const returnUrl = searchParams.get('return') || '/social';
+  const repostId = searchParams.get('repostId');
+  // 如果有 return 參數就用它，否則記錄當前頁面（發文前的頁面）
+  const returnUrl = searchParams.get('return') || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '/social');
 
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
   const [currentUserName, setCurrentUserName] = useState<string>('userName');
@@ -48,6 +49,7 @@ function GeneralPostContent() {
   const [draftId, setDraftId] = useState<string | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [loading, setLoading] = useState(!!editPostId);
+  const [originalPost, setOriginalPost] = useState<any>(null);
 
   // 顯示最新頭貼/名字（不要只依賴 session）
   useEffect(() => {
@@ -80,6 +82,29 @@ function GeneralPostContent() {
     };
   }, [sessionUserId, session?.user]);
 
+  // 載入要轉發的原貼文資料
+  useEffect(() => {
+    if (repostId) {
+      const loadOriginalPost = async () => {
+        try {
+          const response = await fetch(`/api/posts/${repostId}`);
+          const data = await response.json();
+          if (data.success && data.post) {
+            setOriginalPost(data.post);
+          } else {
+            toast.error('無法載入原貼文');
+            router.push('/social');
+          }
+        } catch (error) {
+          console.error('Error loading original post:', error);
+          toast.error('載入失敗');
+          router.push('/social');
+        }
+      };
+      loadOriginalPost();
+    }
+  }, [repostId, router]);
+
   // 載入要編輯的貼文資料
   useEffect(() => {
     if (editPostId) {
@@ -102,6 +127,18 @@ function GeneralPostContent() {
             setHashtags(post.hashtags || []);
             setSelectedSchoolIds(post.schools?.map((s: { id: string }) => s.id) || []);
             setSelectedCountries(post.countries || []);
+            // 如果是轉發貼文，載入原貼文
+            if (post.repostId) {
+              try {
+                const repostResponse = await fetch(`/api/posts/${post.repostId}`);
+                const repostData = await repostResponse.json();
+                if (repostData.success && repostData.post) {
+                  setOriginalPost(repostData.post);
+                }
+              } catch (error) {
+                console.error('Error loading original post for repost:', error);
+              }
+            }
           } else {
             toast.error('無法載入貼文');
             router.push('/social');
@@ -115,6 +152,8 @@ function GeneralPostContent() {
         }
       };
       loadPost();
+    } else {
+      setLoading(false);
     }
   }, [editPostId, session, router]);
 
@@ -226,11 +265,8 @@ function GeneralPostContent() {
 
       if (data.success) {
         toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
-        if (editPostId) {
-          router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
-        } else {
-          router.push(`/social/posts/${data.post.id}`);
-        }
+        // 無論是編輯還是發布，都帶上 return 參數
+        router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
       } else {
         toast.error(data.error || '發布失敗');
       }
