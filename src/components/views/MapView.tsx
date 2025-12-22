@@ -197,10 +197,8 @@ function PopupContent({
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="ml-2 flex-shrink-0 !bg-transparent !shadow-none !text-white/80 border border-transparent transition-colors duration-200 ease-out hover:!bg-white/20 hover:!text-white hover:border-white/35 focus-visible:!bg-white/20 focus-visible:!text-white focus-visible:border-white/35"
+        <button
+          className="ml-2 flex-shrink-0 h-9 w-9 inline-flex items-center justify-center rounded-md bg-transparent shadow-none text-white/80 border border-transparent transition-all duration-200 ease-out hover:bg-white/40 hover:text-white hover:border-white/50 active:bg-white/40 focus-visible:bg-white/40 focus-visible:text-white focus-visible:border-white/50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
           onClick={() => {
             if (inWishlist) {
               removeFromWishlist(school.id);
@@ -212,7 +210,7 @@ function PopupContent({
           <Heart
             className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : 'text-white/80'}`}
           />
-        </Button>
+        </button>
       </div>
 
       {/* 按鈕區域 */}
@@ -363,9 +361,13 @@ export default function MapView({ schools }: MapViewProps) {
               latitude={school.latitude}
               onClick={() => {
                 setSelectedSchool(school);
+                // If side detail panel is open, update it to the new school without closing/re-opening.
+                if (isDetailOpen) {
+                  setDetailSchool(school);
+                }
               }}
             >
-              <div className="cursor-pointer group">
+              <div className="cursor-pointer group" data-map-marker="true">
                 <div 
                   className="w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center transition-transform group-hover:scale-110"
                   style={{ backgroundColor: markerColor }}

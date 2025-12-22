@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink, Heart } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
 import PanelOverlay from '@/components/layout/PanelOverlay';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -110,6 +110,57 @@ export default function SchoolDetailModal({
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const isWishlist = variant === 'wishlist';
   const isSide = presentation === 'side';
+  const sidePanelRef = useRef<HTMLDivElement | null>(null);
+
+  // Side panel: allow map interactions; only close on real "click outside" (not drag/zoom, not marker click).
+  useEffect(() => {
+    if (!open || !isSide) return;
+
+    const state = {
+      down: false,
+      startX: 0,
+      startY: 0,
+      target: null as EventTarget | null,
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      const panel = sidePanelRef.current;
+      const target = e.target as HTMLElement | null;
+      if (!panel || !target) return;
+
+      // If click inside panel, ignore.
+      if (panel.contains(target)) return;
+
+      // If clicking a marker, don't close (should open new popup / update selection).
+      if (target.closest?.('[data-map-marker=\"true\"]')) return;
+
+      state.down = true;
+      state.startX = e.clientX;
+      state.startY = e.clientY;
+      state.target = e.target;
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+      if (!state.down) return;
+      state.down = false;
+
+      const dx = Math.abs(e.clientX - state.startX);
+      const dy = Math.abs(e.clientY - state.startY);
+      const isClick = dx < 6 && dy < 6;
+      if (!isClick) return; // drag -> do nothing
+
+      // click outside panel (and not on marker) -> close
+      onClose();
+    };
+
+    // capture=true so we can measure drag before React handlers run
+    window.addEventListener('pointerdown', onPointerDown, true);
+    window.addEventListener('pointerup', onPointerUp, true);
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown, true);
+      window.removeEventListener('pointerup', onPointerUp, true);
+    };
+  }, [open, isSide, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -344,12 +395,14 @@ export default function SchoolDetailModal({
       panelType="wishlist"
       variant={isWishlist ? 'wishlist' : 'glass'}
       zIndex={isSide ? 80 : 40}
-      overlayStyle={isSide ? 'subtle' : 'default'}
+      overlayStyle={isSide ? 'none' : 'default'}
       contentAnimation={isSide ? 'none' : 'default'}
+      closeOnBackdropClick={!isSide}
     >
       {isSide ? (
         // Side panel mode: 右側滑入
         <motion.div
+          ref={sidePanelRef}
           className={
             isWishlist
               ? 'fixed right-0 top-0 bottom-0 h-full bg-white border border-[#d6c3a1] shadow-xl overflow-hidden text-[#4a3828]'

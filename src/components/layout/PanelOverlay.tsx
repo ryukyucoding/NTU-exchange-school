@@ -13,6 +13,7 @@ interface PanelOverlayProps {
   zIndex?: number;
   overlayStyle?: 'default' | 'subtle' | 'none';
   contentAnimation?: 'default' | 'none';
+  closeOnBackdropClick?: boolean;
 }
 
 export default function PanelOverlay({
@@ -24,6 +25,7 @@ export default function PanelOverlay({
   zIndex = 40,
   overlayStyle = 'default',
   contentAnimation = 'default',
+  closeOnBackdropClick = true,
 }: PanelOverlayProps) {
   const overlayClass =
     overlayStyle === 'none'
@@ -51,15 +53,17 @@ export default function PanelOverlay({
           )}
 
           {/* 可點擊的遮罩層 */}
-          <motion.div
-            className="fixed inset-0 pointer-events-auto"
-            onClick={onClose}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            style={{ zIndex: zIndex + 5, background: 'transparent' }}
-          />
+          {closeOnBackdropClick && (
+            <motion.div
+              className="fixed inset-0 pointer-events-auto"
+              onClick={onClose}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              style={{ zIndex: zIndex + 5, background: 'transparent' }}
+            />
+          )}
 
           {/* 面板內容 */}
           <motion.div
