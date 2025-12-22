@@ -10,6 +10,7 @@ import SocialSidebar from '@/components/social/SocialSidebar';
 import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign } from 'lucide-react';
 import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
+import RepostPreview from '@/components/social/RepostPreview';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -54,6 +55,17 @@ interface Post {
   commentCount: number;
   isLiked: boolean;
   isReposted: boolean;
+  repostId?: string;
+  originalPost?: {
+    id: string;
+    title: string;
+    content: string;
+    author: Author;
+    createdAt: string;
+    schools?: School[];
+    countries?: string[];
+    hashtags?: string[];
+  };
 }
 
 function PostDetailContent() {
@@ -439,6 +451,13 @@ function PostDetailContent() {
                       </div>
                     )}
 
+                    {/* 轉發預覽框 - 顯示在內容之前 */}
+                    {post.repostId && post.originalPost && (
+                      <div className="mb-6">
+                        <RepostPreview originalPost={post.originalPost} />
+                      </div>
+                    )}
+
                     {/* Content */}
                     <div 
                       className="mb-4 prose prose-sm max-w-none" 
@@ -484,10 +503,10 @@ function PostDetailContent() {
                         size="sm"
                         onClick={handleRepost}
                         className="flex items-center gap-2 hover:bg-transparent group"
-                        style={{ color: isReposted ? '#10b981' : '#5A5A5A' }}
+                        style={{ color: isReposted ? '#8D7051' : '#5A5A5A' }}
                       >
                         <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-                          <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-green-500 text-green-500' : ''}`} />
+                          <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
                         </div>
                         <span className="text-base">{repostCount}</span>
                       </Button>

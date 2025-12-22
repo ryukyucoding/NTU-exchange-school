@@ -314,7 +314,7 @@ export default function UserMenu() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
             <DropdownMenuItem 
-              className="text-[#4a3828] hover:bg-[#f7efe5] cursor-pointer"
+              className="text-[#4a3828] hover:bg-[#f7efe5] focus:bg-[#f7efe5] focus:text-[#4a3828] cursor-pointer"
               onClick={() => setShowSettingsDialog(true)}
             >
             <Settings className="mr-2 h-4 w-4" />
@@ -322,7 +322,7 @@ export default function UserMenu() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-red-600 hover:bg-red-50 cursor-pointer"
+            className="text-red-600 hover:bg-[#f7efe5] focus:bg-[#f7efe5] focus:text-red-600 cursor-pointer"
             onClick={() => signOut({ callbackUrl: '/' })}
           >
             <LogOut className="mr-2 h-4 w-4" />

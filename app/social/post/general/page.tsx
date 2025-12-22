@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import MultiCountrySchoolSelect from '@/components/social/MultiCountrySchoolSele
 import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';
 import DraftList from '@/components/social/DraftList';
+import RepostPreview from '@/components/social/RepostPreview';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
 
@@ -27,6 +28,7 @@ interface Draft {
 
 function GeneralPostContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { schools } = useSchoolContext();
 
@@ -38,6 +40,38 @@ function GeneralPostContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [repostId, setRepostId] = useState<string | null>(null);
+  const [originalPost, setOriginalPost] = useState<any>(null);
+  const [loadingOriginalPost, setLoadingOriginalPost] = useState(false);
+
+  // 從 URL 參數讀取 repostId 並獲取原貼文
+  useEffect(() => {
+    const repostIdParam = searchParams.get('repostId');
+    if (repostIdParam) {
+      setRepostId(repostIdParam);
+      fetchOriginalPost(repostIdParam);
+    }
+  }, [searchParams]);
+
+  const fetchOriginalPost = async (postId: string) => {
+    setLoadingOriginalPost(true);
+    try {
+      const response = await fetch(`/api/posts/${postId}`);
+      const data = await response.json();
+      if (data.success && data.post) {
+        setOriginalPost(data.post);
+      } else {
+        toast.error('無法載入原貼文');
+        setRepostId(null);
+      }
+    } catch (error) {
+      console.error('Error fetching original post:', error);
+      toast.error('載入原貼文失敗');
+      setRepostId(null);
+    } finally {
+      setLoadingOriginalPost(false);
+    }
+  };
 
   const handleLoadDraft = (draft: Draft) => {
     setDraftId(draft.id);
@@ -94,12 +128,22 @@ function GeneralPostContent() {
     }
   };
 
+  const normalizeEditorText = (s: string) =>
+    (s || '').replace(/\u200B/g, '').replace(/\u00A0/g, ' ').trim();
+
+  const normalizedTitle = normalizeEditorText(title);
+  const normalizedContent = normalizeEditorText(content);
+
+  // 檢查是否符合發布條件（轉發可無內容，但一般貼文需有內容）
+  const canPublish = Boolean(normalizedTitle) && (Boolean(repostId) || Boolean(normalizedContent));
+
   const handleSubmit = async () => {
-    if (!title.trim()) {
+    if (!normalizedTitle) {
       toast.error('請輸入標題');
       return;
     }
-    if (!content.trim()) {
+    // 轉發時可以不輸入內容，但必須有標題
+    if (!repostId && !normalizedContent) {
       toast.error('請輸入內容');
       return;
     }
@@ -121,14 +165,15 @@ function GeneralPostContent() {
         },
         body: JSON.stringify({
           postId: draftId || undefined,
-          title: title.trim(),
-          content: content.trim(),
+          title: normalizedTitle,
+          content: normalizedContent, // 確保內容與送出按鈕判斷一致，避免漏字/空白造成錯判
           status: 'published',
           type: 'general',
           hashtags,
           schoolIds: selectedSchoolIds,
           countryIds: countryIds.length > 0 ? countryIds : undefined,
           countryNames: countryIds.length === 0 ? selectedCountries : undefined, // 向後兼容
+          repostId: repostId || undefined,
         }),
       });
 
@@ -229,10 +274,17 @@ function GeneralPostContent() {
 
                 {/* Content Section */}
                 <div className="mb-6 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
+                  {/* 轉發預覽框 - 顯示在輸入框上方 */}
+                  {repostId && originalPost && (
+                    <div className="mb-4">
+                      <RepostPreview originalPost={originalPost} />
+                    </div>
+                  )}
+                  {/* 輸入框 - 用戶可以在這裡輸入文字 */}
                   <SimpleRichTextEditor
                     value={content}
                     onChange={setContent}
-                    placeholder="輸入內容..."
+                    placeholder={repostId ? "說點什麼..." : "輸入內容..."}
                   />
                 </div>
 
@@ -259,13 +311,13 @@ function GeneralPostContent() {
                   </Button>
                   <Button
                     onClick={handleSubmit}
-                    disabled={isSubmitting || isSavingDraft}
+                    disabled={isSubmitting || isSavingDraft || !canPublish}
                     style={{
-                      backgroundColor: '#BAC7E5',
-                      color: 'white',
+                      backgroundColor: canPublish ? '#BAC7E5' : '#BAC7E5',
+                      color: canPublish ? '#5A5A5A' : 'white',
                       borderRadius: '9999px',
                     }}
-                    className="hover:bg-[#BAC7E5]/90"
+                    className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
                   >
                     {isSubmitting ? '發布中...' : '發佈貼文'}
                   </Button>
