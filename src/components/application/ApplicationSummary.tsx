@@ -95,7 +95,6 @@ export default function ApplicationSummary({
         content += '\n';
       }
       content += `  名額: ${school.quota}\n`;
-      content += `  開放學期: ${school.semesters.join(', ')}\n`;
       content += `  官網: ${school.url}\n`;
       if (item.note) {
         content += `  個人備註: ${item.note}\n`;
@@ -273,10 +272,6 @@ export default function ApplicationSummary({
                             </span>
                           </div>
                         )}
-                        <div className="col-span-2">
-                          <span className="text-gray-400">開放學期: </span>
-                          <span className="font-medium text-white">{school.semesters.join(', ')}</span>
-                        </div>
                       </div>
 
                       {item.note && (

@@ -10,31 +10,164 @@ const GRADE_LEVEL: Record<string, number> = {
   'Sophomore': 2,
   'Junior': 3,
   'Senior': 4,
+  'Master1': 5,
+  'Master2': 6,
 };
 
-// 從文字中提取最低年級要求
-// 返回值：0=不限, 1-4=大一到大四, 999=只接受研究生(碩博)
-function extractMinGradeLevel(gradeText: string): number {
-  if (!gradeText || gradeText === '不限') return 0;
+function splitApplicationGroups(s: string): string[] {
+  return (s || '')
+    .replace(/\s+/g, '')
+    .trim()
+    .split(/[／/]/)
+    .map(x => x.trim())
+    .filter(Boolean);
+}
 
-  // 檢查是否有提到研究生
-  const hasMaster = gradeText.includes('碩一') || gradeText.includes('碩');
-  const hasPhd = gradeText.includes('博一') || gradeText.includes('博');
-  const hasUndergrad = gradeText.includes('大一') || gradeText.includes('大二') ||
-                       gradeText.includes('大三') || gradeText.includes('大四');
+function pickGradeRequirementClauses(
+  raw: string,
+  schoolApplicationGroup: string,
+  selectedApplicationGroup: string | null
+): string[] {
+  const text = (raw || '').trim();
+  if (!text) return [];
 
-  // 如果只提到碩博，沒有提到大學部，表示不接受大學部學生
-  if ((hasMaster || hasPhd) && !hasUndergrad) {
-    return 999; // 特殊值表示只接受研究生
+  // 支援格式：
+  // - 日語組：...；一般組：...
+  // - SBE：...；FPN：...；UCM：...
+  const parts = text.split(/[；;]/).map(p => p.trim()).filter(Boolean);
+  const kv = new Map<string, string>();
+  for (const p of parts) {
+    const m = p.match(/^([^：:]+)[：:](.+)$/);
+    if (m) kv.set(m[1].trim(), m[2].trim());
   }
 
-  // 檢查大學部最低年級
-  if (gradeText.includes('大四')) return 4;
-  if (gradeText.includes('大三')) return 3;
-  if (gradeText.includes('大二')) return 2;
-  if (gradeText.includes('大一')) return 1;
+  // 非分段格式：整句當一條規則
+  if (kv.size === 0) return [text];
 
-  return 0;
+  const targets = selectedApplicationGroup
+    ? splitApplicationGroups(selectedApplicationGroup)
+    : splitApplicationGroups(schoolApplicationGroup);
+
+  const picked: string[] = [];
+  for (const t of targets) {
+    const clause = kv.get(t);
+    if (clause) picked.push(clause);
+  }
+
+  // 如果找不到對應的分段，就退回「任一分段符合就算符合」
+  return picked.length > 0 ? picked : Array.from(kv.values());
+}
+
+type GradeRule = {
+  allowUndergrad: boolean;
+  allowMaster: boolean;
+  undergradMin: number | null;
+  undergradSet: Set<number> | null;
+  masterMin: number | null;
+  masterSet: Set<number> | null;
+};
+
+function cnDigitToNum(ch: string): number | null {
+  if (ch === '一') return 1;
+  if (ch === '二') return 2;
+  if (ch === '三') return 3;
+  if (ch === '四') return 4;
+  if (ch === '五') return 5;
+  return null;
+}
+
+function parseSingleClauseToRule(rawClause: string): GradeRule {
+  // Normalize
+  let text = (rawClause || '').replace(/\s+/g, '').trim();
+  text = text.replace(/學生$/u, '');
+  // 這些描述不影響「碩一/碩二」判斷，先移除避免干擾
+  text = text.replace(/（?不含博士生）?/gu, '').replace(/\\(不含博士生\\)/gu, '');
+
+  if (!text || text === '不限') {
+    return {
+      allowUndergrad: true,
+      allowMaster: true,
+      undergradMin: null,
+      undergradSet: null,
+      masterMin: null,
+      masterSet: null,
+    };
+  }
+
+  const undergradOnly =
+    text.includes('僅限大學部') || text.includes('僅限大學') || text.includes('僅限學士');
+  const masterOnly =
+    text.includes('僅限研究生') || text.includes('僅限碩士') || text.includes('僅限研究所');
+
+  // Undergrad min: 大X以上
+  let undergradMin: number | null = null;
+  const ugMinMatch = text.match(/大([一二三四五])以上/u);
+  if (ugMinMatch) {
+    undergradMin = cnDigitToNum(ugMinMatch[1]);
+  }
+
+  // Undergrad set: 大一/大二/...（只處理「列舉」；若是「大二以上」就不應視為列舉）
+  const undergradSet = new Set<number>();
+  for (const m of text.matchAll(/大([一二三四五])(?!以上)/gu)) {
+    const n = cnDigitToNum(m[1]);
+    if (n) undergradSet.add(n);
+  }
+
+  // Master min: 碩X以上
+  let masterMin: number | null = null;
+  const msMinMatch = text.match(/碩([一二])以上/u);
+  if (msMinMatch) {
+    const n = cnDigitToNum(msMinMatch[1]);
+    if (n) masterMin = 4 + n; // Master1=5, Master2=6
+  }
+
+  // Master set: 碩一/碩二（只處理「列舉」；若是「碩一以上」就不應視為列舉）
+  const masterSet = new Set<number>();
+  if (/碩一(?!以上)/u.test(text)) masterSet.add(5);
+  if (/碩二(?!以上)/u.test(text)) masterSet.add(6);
+
+  const masterMentioned = text.includes('碩') || text.includes('研究生') || text.includes('研究所');
+
+  // allow inference from full-column patterns (observed in CSV):
+  // - 若沒提到碩/研究生，通常代表只限大學部（例如：大二/大三學生）
+  // - 若同時寫出大學部與碩士（例如：大二以上/碩一以上/...）→ 雙軌允許
+  const hasUndergrad = undergradMin !== null || undergradSet.size > 0;
+  const hasMaster = masterMin !== null || masterSet.size > 0 || masterMentioned;
+
+  const allowMaster =
+    undergradOnly ? false : masterOnly ? true : hasMaster;
+  const allowUndergrad =
+    masterOnly ? false : undergradOnly ? true : hasUndergrad;
+
+  return {
+    allowUndergrad,
+    allowMaster,
+    undergradMin,
+    undergradSet: undergradSet.size > 0 ? undergradSet : null,
+    masterMin: masterMentioned && masterMin === null && masterSet.size === 0 ? 5 : masterMin,
+    masterSet: masterSet.size > 0 ? masterSet : null,
+  };
+}
+
+function matchesGradeRule(rule: GradeRule, userGradeLevel: number): boolean {
+  const isUndergrad = userGradeLevel <= 4;
+  const isMaster = userGradeLevel >= 5;
+
+  if (isUndergrad) {
+    if (!rule.allowUndergrad) return false;
+    if (rule.undergradSet) return rule.undergradSet.has(userGradeLevel);
+    if (rule.undergradMin !== null) return userGradeLevel >= rule.undergradMin;
+    return true;
+  }
+
+  if (isMaster) {
+    if (!rule.allowMaster) return false;
+    if (rule.masterSet) return rule.masterSet.has(userGradeLevel);
+    if (rule.masterMin !== null) return userGradeLevel >= rule.masterMin;
+    return true;
+  }
+
+  return true;
 }
 
 export function useFilteredSchools(
@@ -68,16 +201,17 @@ export function useFilteredSchools(
         // 年級限制：如果使用者年級低於學校要求，則過濾掉
         if (userQualification.grade && school.grade_requirement) {
           const userGradeLevel = GRADE_LEVEL[userQualification.grade];
-          const minGradeLevel = extractMinGradeLevel(school.grade_requirement);
 
-          // 如果學校只接受研究生(999)，大學部學生無法申請
-          if (minGradeLevel === 999) {
-            return false;
-          }
+          const clauses = pickGradeRequirementClauses(
+            school.grade_requirement,
+            school.application_group,
+            filters.applicationGroup
+          );
 
-          // 如果學校有大學部年級限制，檢查使用者年級是否符合
-          if (minGradeLevel > 0 && userGradeLevel < minGradeLevel) {
-            return false;
+          // 沒有可解析內容就不擋（避免把資料壞掉時全部篩掉）
+          if (clauses.length > 0) {
+            const ok = clauses.some(clause => matchesGradeRule(parseSingleClauseToRule(clause), userGradeLevel));
+            if (!ok) return false;
           }
         }
 

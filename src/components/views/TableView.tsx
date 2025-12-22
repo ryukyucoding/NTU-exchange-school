@@ -116,7 +116,7 @@ export default function TableView({ schools }: TableViewProps) {
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[60px] text-[#6b5b4c] text-center">地區</TableHead>
+              <TableHead className="w-[80px] text-[#6b5b4c] text-center">地區</TableHead>
               <TableHead className="w-[100px] text-[#6b5b4c] text-center">申請組別</TableHead>
               <TableHead className="w-[120px] text-[#6b5b4c] text-center">年級限制</TableHead>
               <TableHead className="w-[80px] text-center">
@@ -152,12 +152,25 @@ export default function TableView({ schools }: TableViewProps) {
               const inWishlist = isInWishlist(school.id);
 
               return (
-                <TableRow key={school.id} className="border-[#e8ddc8] hover:bg-[#f5ede1] transition-colors">
+                <TableRow
+                  key={school.id}
+                  className="border-[#e8ddc8] hover:bg-[#f5ede1] transition-colors cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedSchool(school)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedSchool(school);
+                    }
+                  }}
+                >
                   <TableCell className="text-center">
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (inWishlist) {
                           removeFromWishlist(school.id);
                         } else {
@@ -232,7 +245,10 @@ export default function TableView({ schools }: TableViewProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setSelectedSchool(school)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedSchool(school);
+                      }}
                       className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <Info className="w-4 h-4" />
@@ -242,7 +258,10 @@ export default function TableView({ schools }: TableViewProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => window.open(school.url, '_blank')}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(school.url, '_blank');
+                      }}
                       className="bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                     >
                       <ExternalLink className="w-4 h-4" />

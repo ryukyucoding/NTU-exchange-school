@@ -47,7 +47,7 @@ export async function GET(_req: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: qualification, error } = await (supabase as any)
       .from('UserQualification')
-      .select('college, grade, gpa, toefl, ielts, toeic')
+      .select('college, grade, gpa, toefl, ielts, toeic, applicationGroup')
       .eq('userId', userId)
       .maybeSingle();
 
@@ -70,6 +70,7 @@ export async function GET(_req: NextRequest) {
           toefl: null,
           ielts: null,
           toeic: null,
+          applicationGroup: null,
         },
       });
     }
@@ -83,6 +84,7 @@ export async function GET(_req: NextRequest) {
         toefl: qualification.toefl || null,
         ielts: qualification.ielts ? parseFloat(qualification.ielts.toString()) : null,
         toeic: qualification.toeic || null,
+        applicationGroup: qualification.applicationGroup || null,
       },
     });
   } catch (error: unknown) {
@@ -138,7 +140,7 @@ export async function PUT(req: NextRequest) {
     const qualification = await req.json();
 
     // 驗證數據
-    const { college, grade, gpa, toefl, ielts, toeic } = qualification;
+    const { college, grade, gpa, toefl, ielts, toeic, applicationGroup } = qualification;
 
     // 所有字段都可以為 null，只驗證非 null 值的範圍
     // 驗證 GPA 範圍（只有當 gpa 不是 null 且不是 undefined 時才驗證）
@@ -174,10 +176,19 @@ export async function PUT(req: NextRequest) {
     }
 
     // 驗證 grade（只有當 grade 不是 null 且不是 undefined 時才驗證）
-    const validGrades = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+    const validGrades = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Master1', 'Master2'];
     if (grade !== null && grade !== undefined && !validGrades.includes(grade)) {
       return NextResponse.json(
-        { error: "年級必須是 Freshman, Sophomore, Junior 或 Senior" },
+        { error: "年級必須是 Freshman, Sophomore, Junior, Senior, Master1 或 Master2" },
+        { status: 400 }
+      );
+    }
+
+    // 驗證 applicationGroup（只有當 applicationGroup 不是 null 且不是 undefined 時才驗證）
+    const validApplicationGroups = ['一般組', '英語組', '法語組', '德語組', '西語組', '日語組'];
+    if (applicationGroup !== null && applicationGroup !== undefined && !validApplicationGroups.includes(applicationGroup)) {
+      return NextResponse.json(
+        { error: "申請組別必須是一般組、英語組、法語組、德語組、西語組或日語組" },
         { status: 400 }
       );
     }
@@ -206,10 +217,11 @@ export async function PUT(req: NextRequest) {
           toefl: toefl !== null ? toefl : null,
           ielts: ielts !== null ? ielts : null,
           toeic: toeic !== null ? toeic : null,
+          applicationGroup: applicationGroup || null,
           updatedAt: new Date().toISOString(),
         })
         .eq('userId', userId)
-        .select('college, grade, gpa, toefl, ielts, toeic')
+        .select('college, grade, gpa, toefl, ielts, toeic, applicationGroup')
         .single();
 
       if (error) {
@@ -240,8 +252,9 @@ export async function PUT(req: NextRequest) {
           toefl: toefl !== null ? toefl : null,
           ielts: ielts !== null ? ielts : null,
           toeic: toeic !== null ? toeic : null,
+          applicationGroup: applicationGroup || null,
         })
-        .select('college, grade, gpa, toefl, ielts, toeic')
+        .select('college, grade, gpa, toefl, ielts, toeic, applicationGroup')
         .single();
 
       if (error) {
@@ -256,6 +269,7 @@ export async function PUT(req: NextRequest) {
           toefl: toefl !== null ? toefl : null,
           ielts: ielts !== null ? ielts : null,
           toeic: toeic !== null ? toeic : null,
+          applicationGroup: applicationGroup || null,
         });
         return NextResponse.json(
           { 
@@ -278,6 +292,7 @@ export async function PUT(req: NextRequest) {
         toefl: result?.toefl || null,
         ielts: result?.ielts ? parseFloat(result.ielts.toString()) : null,
         toeic: result?.toeic || null,
+        applicationGroup: result?.applicationGroup || null,
       },
     });
   } catch (error: unknown) {
