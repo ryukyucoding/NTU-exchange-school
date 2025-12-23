@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
@@ -14,6 +15,7 @@ export default function HashtagInput({ hashtags, onChange }: HashtagInputProps) 
   const [inputValue, setInputValue] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isComposing, setIsComposing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 獲取所有現有的hashtags（從API）
@@ -44,17 +46,34 @@ export default function HashtagInput({ hashtags, onChange }: HashtagInputProps) 
   }, [inputValue, hashtags]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // 在中文輸入期間不處理 Enter 鍵，避免干擾輸入法
+    if (isComposing) return;
+
     if (e.key === 'Enter' && inputValue.trim()) {
       e.preventDefault();
+      e.stopPropagation();
+
       const tag = inputValue.trim();
       if (!hashtags.includes(tag)) {
         onChange([...hashtags, tag]);
-        setInputValue('');
-        setShowSuggestions(false);
+
+        // 使用 flushSync 確保狀態更新立即生效
+        flushSync(() => {
+          setInputValue('');
+          setShowSuggestions(false);
+        });
       }
     } else if (e.key === 'Escape') {
       setShowSuggestions(false);
     }
+  };
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
   };
 
   const handleSelectSuggestion = (tag: string) => {
@@ -104,6 +123,8 @@ export default function HashtagInput({ hashtags, onChange }: HashtagInputProps) 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             onFocus={() => {
               if (inputValue.trim() && suggestions.length > 0) {
                 setShowSuggestions(true);
