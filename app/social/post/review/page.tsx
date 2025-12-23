@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -12,6 +12,7 @@ import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';
 import RatingInput from '@/components/social/RatingInput';
 import DraftList from '@/components/social/DraftList';
+import UnsavedChangesDialog from '@/components/social/UnsavedChangesDialog';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
 
@@ -63,6 +64,23 @@ function ReviewPostContent() {
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [loading, setLoading] = useState(!!editPostId);
   const [hasInitializedFromUrl, setHasInitializedFromUrl] = useState(false);
+  
+  // 未儲存變更檢測
+  const [initialValues, setInitialValues] = useState<{
+    title: string;
+    content: string;
+    selectedCountry: string | null;
+    selectedSchoolId: string | null;
+    hashtags: string[];
+    livingConvenience: number;
+    courseLoading: number;
+    costOfLiving: number;
+  } | null>(null);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const [allowNavigation, setAllowNavigation] = useState(false);
+  const [entryPage, setEntryPage] = useState<string | null>(null); // 記錄進入發布貼文頁面的上一頁
+  const hasPushedHistoryRef = useRef(false);
 
   // 從 URL 參數預填國家/學校（只在非編輯模式下執行一次）
   useEffect(() => {
@@ -108,13 +126,78 @@ function ReviewPostContent() {
         if (newSchoolId) {
           setSelectedSchoolId(newSchoolId);
         }
+        // 更新初始值，包含預填的值
+        setInitialValues({
+          title: '',
+          content: '',
+          selectedCountry: newCountry,
+          selectedSchoolId: newSchoolId,
+          hashtags: [],
+          livingConvenience: 0,
+          courseLoading: 0,
+          costOfLiving: 0,
+        });
+      } else {
+        // 如果沒有預填值，設置空初始值
+        setInitialValues({
+          title: '',
+          content: '',
+          selectedCountry: null,
+          selectedSchoolId: null,
+          hashtags: [],
+          livingConvenience: 0,
+          courseLoading: 0,
+          costOfLiving: 0,
+        });
       }
       
       setHasInitializedFromUrl(true);
     } else {
       setHasInitializedFromUrl(true);
+      // 如果沒有 URL 參數，設置空初始值
+      if (!initialValues) {
+        setInitialValues({
+          title: '',
+          content: '',
+          selectedCountry: null,
+          selectedSchoolId: null,
+          hashtags: [],
+          livingConvenience: 0,
+          courseLoading: 0,
+          costOfLiving: 0,
+        });
+      }
     }
   }, [searchParams, schools, editPostId, hasInitializedFromUrl]);
+
+  // 記錄進入發布貼文頁面的上一頁
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !entryPage) {
+      // 優先使用 URL 參數中的 return，如果沒有則使用 document.referrer 或 sessionStorage
+      const returnParam = searchParams.get('return');
+      if (returnParam) {
+        setEntryPage(returnParam);
+        sessionStorage.setItem('postPageReferrer', returnParam);
+      } else if (!editPostId) {
+        // 只有在非編輯模式下才記錄 referrer（編輯模式應該使用 return 參數）
+        // SPA 導航時 document.referrer 可能為空，因此優先使用全域追蹤的 lastUrl
+        const referrer =
+          sessionStorage.getItem('lastUrl') ||
+          document.referrer ||
+          sessionStorage.getItem('postPageReferrer') ||
+          '/social';
+        setEntryPage(referrer);
+        sessionStorage.setItem('postPageReferrer', referrer);
+      } else {
+        // 編輯模式下，如果沒有 return 參數，使用 sessionStorage 或默認值
+        const storedReferrer =
+          sessionStorage.getItem('lastUrl') ||
+          sessionStorage.getItem('postPageReferrer') ||
+          '/social';
+        setEntryPage(storedReferrer);
+      }
+    }
+  }, [entryPage, editPostId, searchParams]);
 
   // 顯示最新頭貼/名字（不要只依賴 session）
   useEffect(() => {
@@ -240,6 +323,17 @@ function ReviewPostContent() {
             setLivingConvenience(post.ratings.livingConvenience || 0);
             setCourseLoading(post.ratings.courseLoading || 0);
             setCostOfLiving(post.ratings.costOfLiving || 0);
+            // 設置初始值用於變更檢測
+            setInitialValues({
+              title: post.title || '',
+              content: post.content || '',
+              selectedCountry,
+              selectedSchoolId,
+              hashtags: post.hashtags || [],
+              livingConvenience: post.ratings.livingConvenience || 0,
+              courseLoading: post.ratings.courseLoading || 0,
+              costOfLiving: post.ratings.costOfLiving || 0,
+            });
             // 編輯模式下，標記已初始化，避免 URL 參數覆蓋
             setHasInitializedFromUrl(true);
           } else {
@@ -255,8 +349,97 @@ function ReviewPostContent() {
         }
       };
       loadPost();
+    } else {
+      setLoading(false);
+      // 非編輯模式下，初始值會在 URL 參數預填的 useEffect 中設置
+      // 這裡不設置，避免覆蓋 URL 參數預填的值
     }
   }, [editPostId, session, router, schools]);
+
+  // 檢測是否有未儲存的變更
+  const normalizeEditorText = (s: string) =>
+    (s || '').replace(/\u200B/g, '').replace(/\u00A0/g, ' ').trim();
+
+  const hasUnsavedChanges = () => {
+    if (!initialValues) return false;
+    
+    const normalizedTitle = normalizeEditorText(title);
+    const normalizedContent = normalizeEditorText(content);
+    const normalizedInitialTitle = normalizeEditorText(initialValues.title);
+    const normalizedInitialContent = normalizeEditorText(initialValues.content);
+    
+    return (
+      normalizedTitle !== normalizedInitialTitle ||
+      normalizedContent !== normalizedInitialContent ||
+      selectedCountry !== initialValues.selectedCountry ||
+      selectedSchoolId !== initialValues.selectedSchoolId ||
+      JSON.stringify(hashtags.sort()) !== JSON.stringify(initialValues.hashtags.sort()) ||
+      livingConvenience !== initialValues.livingConvenience ||
+      courseLoading !== initialValues.courseLoading ||
+      costOfLiving !== initialValues.costOfLiving
+    );
+  };
+
+  // 攔截瀏覽器關閉/刷新
+  useEffect(() => {
+    if (!initialValues || allowNavigation) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges()) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [initialValues, allowNavigation, title, content, selectedCountry, selectedSchoolId, hashtags, livingConvenience, courseLoading, costOfLiving]);
+
+  // 攔截瀏覽器返回按鈕
+  useEffect(() => {
+    if (!initialValues || allowNavigation) return;
+
+    const currentUrl = window.location.pathname + window.location.search;
+    const targetUrl = entryPage || returnUrl;
+    const safeTargetUrl = targetUrl && targetUrl !== currentUrl ? targetUrl : '/social';
+
+    // 檢查是否有未儲存變更（每次進入「未儲存狀態」只 pushState 一次，避免歷史堆疊）
+    const hasChangesNow = hasUnsavedChanges();
+    if (hasChangesNow && !hasPushedHistoryRef.current) {
+      window.history.pushState({ __editor_guard: true }, '', window.location.href);
+      hasPushedHistoryRef.current = true;
+    }
+    if (!hasChangesNow) {
+      hasPushedHistoryRef.current = false;
+    }
+
+    const handlePopState = (e: PopStateEvent) => {
+      // 再次檢查是否有變更（因為狀態可能已經改變）
+      if (hasUnsavedChanges()) {
+        e.preventDefault();
+        // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+        setPendingNavigation(safeTargetUrl);
+        setShowUnsavedDialog(true);
+        // 推回當前狀態
+        window.history.pushState({ __editor_guard: true }, '', window.location.href);
+        hasPushedHistoryRef.current = true;
+      } else {
+        // 沒有未儲存變更：確保能離開編輯頁，回到進入編輯前的頁面
+        setAllowNavigation(true);
+        router.replace(safeTargetUrl);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [initialValues, allowNavigation, returnUrl, entryPage, title, content, selectedCountry, selectedSchoolId, hashtags, livingConvenience, courseLoading, costOfLiving, router]);
 
   const handleLoadDraft = async (draft: Draft) => {
     setDraftId(draft.id);
@@ -331,6 +514,19 @@ function ReviewPostContent() {
     setLivingConvenience(draft.livingConvenience || 0);
     setCourseLoading(draft.courseLoading || 0);
     setCostOfLiving(draft.costOfLiving || 0);
+    // 更新初始值
+    setInitialValues({
+      title: draft.title || '',
+      content: draft.content || '',
+      selectedCountry,
+      selectedSchoolId,
+      hashtags: draft.hashtags || [],
+      livingConvenience: draft.livingConvenience || 0,
+      courseLoading: draft.courseLoading || 0,
+      costOfLiving: draft.costOfLiving || 0,
+    });
+    // 載入草稿後，重置 allowNavigation，確保變更檢測正常工作
+    setAllowNavigation(false);
     toast.success('草稿已載入');
   };
 
@@ -370,8 +566,22 @@ function ReviewPostContent() {
 
       if (data.success) {
         setDraftId(data.post.id);
+        // 更新初始值，標記為已儲存
+        setInitialValues({
+          title: title.trim() || '未命名草稿',
+          content: content.trim() || '',
+          selectedCountry,
+          selectedSchoolId,
+          hashtags,
+          livingConvenience,
+          courseLoading,
+          costOfLiving,
+        });
         toast.success('草稿已儲存');
-        router.push(returnUrl);
+        setAllowNavigation(true);
+        // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+        const targetUrl = entryPage || returnUrl;
+        router.push(targetUrl);
       } else {
         toast.error(data.error || '儲存失敗');
       }
@@ -383,8 +593,87 @@ function ReviewPostContent() {
     }
   };
 
-  const normalizeEditorText = (s: string) =>
-    (s || '').replace(/\u200B/g, '').replace(/\u00A0/g, ' ').trim();
+  const handleSaveDraftFromDialog = async () => {
+    setIsSavingDraft(true);
+    try {
+      // 根據選中的國家名稱，從 schools 中找到對應的 country_id
+      const countryId = selectedCountry
+        ? schools.find(s => s.country === selectedCountry)?.country_id
+        : undefined;
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          postId: draftId || undefined,
+          title: title.trim() || '未命名草稿',
+          content: content.trim() || '',
+          status: 'draft',
+          type: 'review',
+          hashtags,
+          schoolIds: selectedSchoolId ? [selectedSchoolId] : [],
+          countryIds: countryId ? [countryId] : undefined,
+          countryNames: !countryId && selectedCountry ? [selectedCountry] : undefined, // 向後兼容
+          ratings: (livingConvenience && courseLoading && costOfLiving) ? {
+            schoolId: selectedSchoolId,
+            livingConvenience,
+            courseLoading,
+            costOfLiving,
+          } : undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setDraftId(data.post.id);
+        // 更新初始值，標記為已儲存
+        setInitialValues({
+          title: title.trim() || '未命名草稿',
+          content: content.trim() || '',
+          selectedCountry,
+          selectedSchoolId,
+          hashtags,
+          livingConvenience,
+          courseLoading,
+          costOfLiving,
+        });
+        toast.success('草稿已儲存');
+        setShowUnsavedDialog(false);
+        setAllowNavigation(true);
+        if (pendingNavigation) {
+          router.push(pendingNavigation);
+          setPendingNavigation(null);
+        } else {
+          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+          const targetUrl = entryPage || returnUrl;
+          router.push(targetUrl);
+        }
+      } else {
+        toast.error(data.error || '儲存失敗');
+      }
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      toast.error('儲存失敗，請稍後再試');
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    setShowUnsavedDialog(false);
+    setAllowNavigation(true);
+    if (pendingNavigation) {
+      router.push(pendingNavigation);
+      setPendingNavigation(null);
+    } else {
+      // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+      const targetUrl = entryPage || returnUrl;
+      router.push(targetUrl);
+    }
+  };
 
   const normalizedTitle = normalizeEditorText(title);
   const normalizedContent = normalizeEditorText(content);
@@ -451,6 +740,7 @@ function ReviewPostContent() {
       const data = await response.json();
 
       if (data.success) {
+        setAllowNavigation(true);
         toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
         // 無論是編輯還是發布，都帶上 return 參數
         router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
@@ -601,10 +891,19 @@ function ReviewPostContent() {
                   {editPostId ? (
                     <Button
                       onClick={() => {
-                        if (!confirm('確定要捨棄變更嗎？')) return;
-                        router.push(returnUrl);
+                        if (hasUnsavedChanges()) {
+                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+                          const targetUrl = entryPage || returnUrl;
+                          setPendingNavigation(targetUrl);
+                          setShowUnsavedDialog(true);
+                        } else {
+                          setAllowNavigation(true);
+                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
+                          const targetUrl = entryPage || returnUrl;
+                          router.push(targetUrl);
+                        }
                       }}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isSavingDraft}
                       variant="outline"
                       style={{
                         borderColor: '#ef4444',
@@ -618,7 +917,7 @@ function ReviewPostContent() {
                     </Button>
                   ) : (
                     <Button
-                      onClick={handleSaveDraft}
+                      onClick={() => handleSaveDraft()}
                       disabled={isSavingDraft || isSubmitting}
                       variant="outline"
                       style={{
@@ -650,12 +949,27 @@ function ReviewPostContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Drafts (編輯時為空) */}
+          {/* Right Sidebar - Drafts (編輯時也顯示) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            {!editPostId && <DraftList type="review" onLoadDraft={handleLoadDraft} />}
+            <DraftList type="review" onLoadDraft={handleLoadDraft} />
           </aside>
         </div>
       </div>
+      
+      {/* 未儲存變更確認對話框 */}
+      <UnsavedChangesDialog
+        open={showUnsavedDialog}
+        onOpenChange={setShowUnsavedDialog}
+        onDiscard={handleDiscardChanges}
+        onSaveDraft={handleSaveDraftFromDialog}
+        isSavingDraft={isSavingDraft}
+        isEditMode={!!editPostId}
+        onUpdate={() => {
+          setShowUnsavedDialog(false);
+          handleSubmit();
+        }}
+        isUpdating={isSubmitting}
+      />
     </div>
   );
 }

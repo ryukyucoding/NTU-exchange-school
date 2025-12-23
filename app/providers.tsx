@@ -9,6 +9,7 @@ import { UserProvider } from '@/contexts/UserContext';
 import { MapZoomProvider } from '@/contexts/MapZoomContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import NavigationReferrerTracker from '@/components/NavigationReferrerTracker';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <FilterProvider>
               <WishlistProvider>
                 <MapZoomProvider>
+                  <NavigationReferrerTracker />
                   {children}
                   <Toaster position="top-right" />
                 </MapZoomProvider>

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 interface Draft {
   id: string;
@@ -53,6 +54,29 @@ export default function DraftList({ type, onLoadDraft }: DraftListProps) {
     fetchDrafts();
   }, [session, type]);
 
+  const handleDeleteDraft = async (e: React.MouseEvent, draftId: string) => {
+    e.stopPropagation(); // 阻止觸發載入草稿
+    if (!confirm('確定要刪除此草稿嗎？')) return;
+
+    try {
+      const response = await fetch(`/api/posts/${draftId}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success('草稿已刪除');
+        // 重新載入草稿列表
+        setDrafts(drafts.filter(d => d.id !== draftId));
+      } else {
+        toast.error(data.error || '刪除失敗');
+      }
+    } catch (error) {
+      console.error('[DraftList] Error deleting draft:', error);
+      toast.error('刪除失敗，請稍後再試');
+    }
+  };
+
   if (loading) {
     return (
       <Card className="p-4 bg-white border-0 shadow-none">
@@ -85,7 +109,13 @@ export default function DraftList({ type, onLoadDraft }: DraftListProps) {
               <div className="text-sm text-gray-600 line-clamp-2 flex-1">
                 {draft.title || draft.content.substring(0, 50) || '未命名草稿'}
               </div>
-              <Pencil className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                <Pencil className="w-4 h-4 text-gray-400" />
+                <Trash2 
+                  className="w-4 h-4 text-red-500 hover:text-red-700" 
+                  onClick={(e) => handleDeleteDraft(e, draft.id)}
+                />
+              </div>
             </div>
           </div>
         ))}
