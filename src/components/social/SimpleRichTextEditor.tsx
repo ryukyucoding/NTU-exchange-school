@@ -205,6 +205,8 @@ export default function SimpleRichTextEditor({
     requestAnimationFrame(() => {
       if (!isComposingRef.current && !isUpdatingRef.current) {
         flushMarkdownFromDom();
+        // 輸入內容後更新游標位置
+        updateCursorPosition();
       }
     });
   }, [flushMarkdownFromDom, updateHasContent]);
@@ -231,6 +233,8 @@ export default function SimpleRichTextEditor({
       updateHasContent();
       if (!isUpdatingRef.current) {
         flushMarkdownFromDom();
+        // 中文輸入結束後更新游標位置
+        updateCursorPosition();
       }
     });
   };
@@ -328,60 +332,58 @@ export default function SimpleRichTextEditor({
       }
     }
 
-    // 偵測是否為空行
-    try {
-      let isLineEmpty = false;
-      const container = range.startContainer;
-      
-      // 1. 如果容器是編輯器本身（通常是全空狀態）
-      if (container === editor) {
-        isLineEmpty = editor.textContent?.trim().length === 0;
-      } 
-      // 2. 如果容器是元素（如 <div><br></div>）
-      else if (container.nodeType === Node.ELEMENT_NODE) {
-        const element = container as Element;
-        isLineEmpty = element.textContent?.trim().length === 0;
-      }
-      // 3. 如果容器是文字節點
-      else if (container.nodeType === Node.TEXT_NODE) {
-        const text = container.textContent || '';
-        // 檢查該文字節點所在的塊級元素
-        const block = (container as Node).parentElement;
-        if (block && block !== editor) {
-          isLineEmpty = block.textContent?.trim().length === 0;
-        } else {
-          isLineEmpty = text.trim().length === 0;
-        }
-      }
+    // 如果仍然沒有有效的游標位置，創建一個臨時的 span 來獲取位置
+    if (!cursorRect || cursorRect.width === 0 || cursorRect.height === 0) {
+      try {
+        // 在游標位置插入一個零寬度的 span 元素來獲取精確位置
+        const marker = document.createElement('span');
+        marker.innerHTML = '\u200B'; // 零寬度空格
+        marker.style.position = 'absolute';
+        marker.style.visibility = 'hidden';
+        marker.style.pointerEvents = 'none';
 
-      if (isLineEmpty) {
+        range.insertNode(marker);
+        cursorRect = marker.getBoundingClientRect();
+        marker.remove();
+      } catch (_e) {
+        // 如果還是失敗，使用編輯器的邊界
         const editorRect = editor.getBoundingClientRect();
-        let buttonTop: number;
-
-        if (cursorRect && cursorRect.height > 0) {
-          buttonTop = cursorRect.top + (cursorRect.height / 2) - 12; // 居中對齊
-        } else {
-          // 備用方案：根據游標前的內容估算
-          const preRange = range.cloneRange();
-          preRange.selectNodeContents(editor);
-          preRange.setEnd(range.startContainer, range.startOffset);
-          const lineNumber = (preRange.toString().match(/\n/g) || []).length;
-          const lineHeight = parseFloat(window.getComputedStyle(editor).lineHeight) || 24;
-          buttonTop = editorRect.top + 8 + (lineNumber * lineHeight);
-        }
-
-        setPlusButtonPosition({
-          top: buttonTop,
-          left: editorRect.left - 32,
-        });
-        setShowPlusButton(true);
-        return;
+        cursorRect = new DOMRect(editorRect.left + 16, editorRect.top + 16, 0, 20);
       }
-    } catch (e) {
-      console.error('Error in updateCursorPosition:', e instanceof Error ? e.message : String(e));
     }
 
-    setShowPlusButton(false);
+    // 總是顯示加號按鈕，並根據游標位置計算正確的行位置
+    try {
+      const editorRect = editor.getBoundingClientRect();
+      let buttonTop: number;
+
+      if (cursorRect && cursorRect.height > 0) {
+        // 使用游標位置的中心點作為按鈕位置
+        buttonTop = cursorRect.top + (cursorRect.height / 2) - 12; // 居中對齊
+      } else {
+        // 備用方案：根據游標前的內容估算行號
+        const preRange = range.cloneRange();
+        preRange.selectNodeContents(editor);
+        preRange.setEnd(range.startContainer, range.startOffset);
+        const lineNumber = (preRange.toString().match(/\n/g) || []).length;
+        const lineHeight = parseFloat(window.getComputedStyle(editor).lineHeight) || 28; // 使用更準確的行高
+        buttonTop = editorRect.top + 8 + (lineNumber * lineHeight);
+      }
+
+      // 確保按鈕位置在編輯器範圍內
+      const minTop = editorRect.top + 8;
+      const maxTop = editorRect.bottom - 24; // 按鈕高度24px
+      buttonTop = Math.max(minTop, Math.min(buttonTop, maxTop));
+
+      setPlusButtonPosition({
+        top: buttonTop,
+        left: editorRect.left - 32,
+      });
+      setShowPlusButton(true);
+    } catch (e) {
+      console.error('Error in updateCursorPosition:', e instanceof Error ? e.message : String(e));
+      setShowPlusButton(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -415,7 +417,8 @@ export default function SimpleRichTextEditor({
         if (e.key === 'Backspace' || e.key === 'Delete') {
           setTimeout(handleInput, 0);
         }
-        
+
+        // 對於所有按鍵事件都更新游標位置，確保加號按鈕跟隨
         requestAnimationFrame(() => {
           updateCursorPosition();
         });
@@ -737,10 +740,12 @@ export default function SimpleRichTextEditor({
   const handleImageUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) {
       toast.error('請選擇圖片檔案');
+      setIsUploading(false); // 重置上傳狀態
       return;
     }
 
-    setIsUploading(true);
+    // 注意：isUploading 已經在按鈕點擊時設置為 true
+    // setIsUploading(true);
     try {
       // 壓縮圖片（目標大小 5MB）
       let fileToUpload = file;
@@ -830,6 +835,11 @@ export default function SimpleRichTextEditor({
       }
       
       applyFormat(() => {
+        // 先在游標位置插入一個換行，讓圖片從新行開始
+        const lineBreak = document.createElement('br');
+        range.insertNode(lineBreak);
+
+        // 然後插入圖片
         const img = document.createElement('img');
         img.src = data.url;
         img.alt = '';
@@ -838,21 +848,27 @@ export default function SimpleRichTextEditor({
         img.style.display = 'block';
         img.style.margin = '1rem auto'; // 居中顯示
         img.style.cursor = 'pointer';
-        
-        // 在游標位置插入圖片
-        range.insertNode(img);
-        
-        // 在圖片後插入一個空行，方便繼續輸入
-        const br = document.createElement('br');
-        const p = document.createElement('p');
-        p.appendChild(br);
-        img.after(p);
-        
-        // 將游標移到新行
-        range.setStartAfter(br);
-        range.collapse(true);
+
+        // 在換行後插入圖片
+        const newRange = document.createRange();
+        newRange.setStartAfter(lineBreak);
+        newRange.collapse(true);
+
+        newRange.insertNode(img);
+
+        // 在圖片後再插入一個換行
+        const afterBreak = document.createElement('br');
+        const newRange2 = document.createRange();
+        newRange2.setStartAfter(img);
+        newRange2.collapse(true);
+        newRange2.insertNode(afterBreak);
+
+        // 將游標移到圖片後面的新行
+        const finalRange = document.createRange();
+        finalRange.setStartAfter(afterBreak);
+        finalRange.collapse(true);
         selection.removeAllRanges();
-        selection.addRange(range);
+        selection.addRange(finalRange);
       });
 
       // 更新內容
@@ -875,6 +891,9 @@ export default function SimpleRichTextEditor({
     const file = e.target.files?.[0];
     if (file) {
       handleImageUpload(file);
+    } else {
+      // 如果沒有選擇文件，重置上傳狀態
+      setIsUploading(false);
     }
     // 重置 input，允許重複選擇同一檔案
     if (fileInputRef.current) {
@@ -883,7 +902,17 @@ export default function SimpleRichTextEditor({
   };
 
   return (
-    <div className="rounded-lg overflow-hidden relative bg-white">
+    <>
+      {/* 隱藏的文件輸入元素 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
+      <div className="rounded-lg overflow-hidden relative bg-white">
       {/* Editor - contentEditable div */}
       <div
         ref={editorRef}
@@ -891,6 +920,12 @@ export default function SimpleRichTextEditor({
         onInput={handleInput}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
+        onFocus={() => {
+          // 獲得焦點時顯示加號按鈕
+          requestAnimationFrame(() => {
+            updateCursorPosition();
+          });
+        }}
         onClick={() => {
           // 點擊編輯器時更新游標位置
           requestAnimationFrame(() => {
@@ -905,7 +940,10 @@ export default function SimpleRichTextEditor({
           setTimeout(() => {
             setShowToolbar(false);
             setShowPlusButton(false);
-            setShowImageMenu(false);
+            // 如果正在上傳，不要關閉圖片菜單
+            if (!isUploading) {
+              setShowImageMenu(false);
+            }
           }, 200);
         }}
         className="min-h-[300px] resize-none border-0 focus:ring-0 bg-white px-3 py-2 text-sm"
@@ -1032,7 +1070,10 @@ export default function SimpleRichTextEditor({
               className="fixed inset-0 z-[10000]"
               style={{ backgroundColor: 'transparent' }}
               onClick={() => {
-                setShowImageMenu(false);
+                // 如果正在上傳，不要關閉菜單
+                if (!isUploading) {
+                  setShowImageMenu(false);
+                }
               }}
             />
           )}
@@ -1074,30 +1115,30 @@ export default function SimpleRichTextEditor({
                   e.stopPropagation();
                 }}
               >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
+                <div
+                  className="h-6 w-6 p-0 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 flex items-center justify-center ml-1 cursor-pointer"
                   onClick={() => {
-                    fileInputRef.current?.click();
+                    // 立即設置上傳狀態，顯示轉圈動畫
+                    setIsUploading(true);
+
+                    // 保存當前游標位置，供圖片上傳使用
+                    const selection = window.getSelection();
+                    if (selection && selection.rangeCount > 0) {
+                      plusButtonClickRangeRef.current = selection.getRangeAt(0).cloneRange();
+                    }
+
+                    // 打開文件選擇器
+                    if (fileInputRef.current) {
+                      fileInputRef.current.click();
+                    }
                   }}
-                  disabled={isUploading}
-                  className="h-6 w-6 p-0 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 flex items-center justify-center ml-1"
-                  title="上傳圖片"
                 >
                   {isUploading ? (
                     <div className="h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
                   ) : (
                     <ImageIcon className="h-3.5 w-3.5" style={{ color: '#5A5A5A' }} />
                   )}
-                </Button>
+                </div>
               </div>
             )}
           </div>
@@ -1217,5 +1258,6 @@ export default function SimpleRichTextEditor({
         document.body
       )}
     </div>
+    </>
   );
 }
