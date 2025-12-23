@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { createBoardNewPostNotifications } from "@/lib/notifications";
 
 /**
  * POST /api/posts
@@ -499,6 +500,17 @@ export async function POST(req: NextRequest) {
       }
     } else {
       console.log(`[POST /api/posts] 沒有 boardIds，跳過 PostBoard 關聯建立 (status: ${status})`);
+    }
+
+    // 如果是新發布的貼文（非草稿、非更新），通知追蹤這些看板的用戶
+    if (status === 'published' && !isUpdate && uniqueBoardIds.length > 0) {
+      try {
+        await createBoardNewPostNotifications(postId, uniqueBoardIds, userId);
+        console.log(`[POST /api/posts] 已發送板新貼文通知給追蹤者`);
+      } catch (notifError) {
+        console.error('[POST /api/posts] 發送板新貼文通知失敗:', notifError);
+        // 通知失敗不影響貼文創建
+      }
     }
 
     // 獲取完整的貼文資料（包含作者資訊）

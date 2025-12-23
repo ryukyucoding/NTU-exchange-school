@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Star, DollarSign, Edit } from 'lucide-react';
 import { cleanMarkdown, truncateLines } from '@/utils/markdown';
+import { usePostUpdates } from '@/hooks/usePostUpdates';
+import { formatDate } from '@/utils/date';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +28,16 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isReposted, setIsReposted] = useState(post.isReposted);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
-  const [likeCount, setLikeCount] = useState(post.likeCount);
+
+  // 使用即時更新 hook
+  const { likeCount, commentCount, repostCount, updateCounts } = usePostUpdates({
+    postId: post.id,
+    initialCounts: {
+      likeCount: post.likeCount,
+      commentCount: post.commentCount,
+      repostCount: post.repostCount,
+    },
+  });
 
   const isAuthor = session?.user && (session.user as { id: string }).id === post.author.id;
 
@@ -38,7 +49,8 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
       const data = await response.json();
       if (data.success) {
         setIsLiked(!isLiked);
-        setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+        // 使用 hook 的 updateCounts 方法來同步本地狀態
+        updateCounts({ likeCount: data.likeCount });
       }
     } catch (error) {
       console.error('Error toggling like:', error instanceof Error ? error.message : String(error));
@@ -91,14 +103,6 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
 
   const renderStars = (rating: number) => {
     return (
@@ -331,7 +335,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
               <MessageCircle className="h-5 w-5" />
             </div>
-            <span className="text-base">{post.commentCount}</span>
+            <span className="text-base">{commentCount}</span>
           </Button>
         </Link>
         <Button
@@ -344,7 +348,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
             <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
-          <span className="text-base">{post.repostCount}</span>
+          <span className="text-base">{repostCount}</span>
         </Button>
         <Button
           variant="ghost"

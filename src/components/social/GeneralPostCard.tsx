@@ -10,6 +10,8 @@ import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Edit }
 import { cleanMarkdown, truncateLines } from '@/utils/markdown';
 import { markdownToHtml } from '@/lib/utils';
 import RepostPreview from './RepostPreview';
+import { usePostUpdates } from '@/hooks/usePostUpdates';
+import { formatDate } from '@/utils/date';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -76,8 +78,17 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isReposted, setIsReposted] = useState(post.isReposted);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
-  const [likeCount, setLikeCount] = useState(post.likeCount);
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
+
+  // 使用即時更新 hook
+  const { likeCount, commentCount, repostCount, updateCounts } = usePostUpdates({
+    postId: post.id,
+    initialCounts: {
+      likeCount: post.likeCount,
+      commentCount: post.commentCount,
+      repostCount: post.repostCount,
+    },
+  });
 
   const isAuthor = session?.user && (session.user as { id: string }).id === post.author.id;
 
@@ -89,7 +100,8 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
       const data = await response.json();
       if (data.success) {
         setIsLiked(!isLiked);
-        setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+        // 使用 hook 的 updateCounts 方法來同步本地狀態
+        updateCounts({ likeCount: data.likeCount });
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -142,14 +154,6 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
 
   // 清理並截斷內容 - 移除換行，單行顯示
   const cleanedContent = cleanMarkdown(post.content).replace(/\n/g, ' ').trim();
@@ -408,8 +412,8 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <span className="text-base">{likeCount}</span>
         </Button>
         <Link href={`/social/posts/${post.id}`}>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="sm"
             className="flex items-center gap-2 hover:bg-transparent group"
             style={{ color: '#5A5A5A' }}
@@ -417,7 +421,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
             <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
               <MessageCircle className="h-5 w-5" />
             </div>
-            <span className="text-base">{post.commentCount}</span>
+            <span className="text-base">{commentCount}</span>
           </Button>
         </Link>
         <Button
@@ -430,7 +434,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
             <Repeat2 className={`h-5 w-5 ${isReposted ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
-          <span className="text-base">{post.repostCount}</span>
+          <span className="text-base">{repostCount}</span>
         </Button>
         <Button
           variant="ghost"

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { createNotification } from "@/lib/notifications";
 
 /**
  * POST /api/posts/[id]/bookmark
@@ -31,11 +32,11 @@ export async function POST(
 
     const supabase = getSupabaseServer();
 
-    // 檢查貼文是否存在
+    // 檢查貼文是否存在並獲取作者 ID
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: post, error: postError } = await (supabase as any)
       .from('Post')
-      .select('id')
+      .select('id, authorId')
       .eq('id', postId)
       .single();
 
@@ -81,6 +82,16 @@ export async function POST(
         { error: "Failed to bookmark post" },
         { status: 500 }
       );
+    }
+
+    // 創建通知（通知貼文作者）
+    if (post.authorId) {
+      await createNotification({
+        userId: post.authorId,
+        type: 'post_bookmark',
+        actorId: userId,
+        postId: postId,
+      });
     }
 
     return NextResponse.json({

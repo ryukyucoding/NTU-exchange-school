@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { createNotification } from "@/lib/notifications";
+import { pushPostUpdate } from "@/lib/pusher";
 
 /**
  * POST /api/posts/[id]/repost
@@ -89,6 +91,28 @@ export async function POST(
       );
     }
 
+    // 創建通知（通知原貼文作者）
+    if (originalPost.authorId) {
+      await createNotification({
+        userId: originalPost.authorId,
+        type: 'post_repost',
+        actorId: userId,
+        postId: postId,
+      });
+    }
+
+    // 獲取最新的轉發數量並推送即時更新
+    const { count: repostCount } = await (supabase as any)
+      .from('Post')
+      .select('*', { count: 'exact', head: true })
+      .eq('repostId', postId)
+      .eq('status', 'published');
+
+    await pushPostUpdate(postId, {
+      type: 'repost',
+      repostCount: repostCount || 0,
+    });
+
     return NextResponse.json({
       success: true,
       reposted: true,
@@ -148,6 +172,18 @@ export async function DELETE(
         { status: 500 }
       );
     }
+
+    // 獲取最新的轉發數量並推送即時更新
+    const { count: repostCount } = await (supabase as any)
+      .from('Post')
+      .select('*', { count: 'exact', head: true })
+      .eq('repostId', postId)
+      .eq('status', 'published');
+
+    await pushPostUpdate(postId, {
+      type: 'repost',
+      repostCount: repostCount || 0,
+    });
 
     return NextResponse.json({
       success: true,

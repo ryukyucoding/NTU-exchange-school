@@ -116,12 +116,14 @@ CREATE TABLE public.Notification (
   id text NOT NULL,
   userId text NOT NULL,
   type text NOT NULL CHECK (type = ANY (ARRAY['comment_reply'::text, 'like'::text, 'comment_like'::text])),
-  actorId text NOT NULL,
+  actorId text,
   postId text,
   commentId text,
   read boolean NOT NULL DEFAULT false,
   createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  boardId text,
   CONSTRAINT Notification_pkey PRIMARY KEY (id),
+  CONSTRAINT Notification_boardId_fkey FOREIGN KEY (boardId) REFERENCES public.Board(id),
   CONSTRAINT Notification_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id),
   CONSTRAINT Notification_actorId_fkey FOREIGN KEY (actorId) REFERENCES public.User(id),
   CONSTRAINT Notification_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
@@ -151,17 +153,6 @@ CREATE TABLE public.PostBoard (
   CONSTRAINT PostBoard_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
   CONSTRAINT PostBoard_boardId_fkey FOREIGN KEY (boardId) REFERENCES public.Board(id)
 );
-CREATE TABLE public.PostPhoto (
-  id text NOT NULL,
-  postId text NOT NULL,
-  url text NOT NULL,
-  photoId text NOT NULL UNIQUE,
-  order integer NOT NULL DEFAULT 0,
-  alt text,
-  createdAt timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT PostPhoto_pkey PRIMARY KEY (id),
-  CONSTRAINT PostPhoto_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id)
-);
 CREATE TABLE public.SchoolRating (
   postId text NOT NULL,
   livingConvenience integer NOT NULL CHECK ("livingConvenience" >= 1 AND "livingConvenience" <= 5),
@@ -170,6 +161,18 @@ CREATE TABLE public.SchoolRating (
   schoolId bigint NOT NULL,
   CONSTRAINT SchoolRating_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
   CONSTRAINT SchoolRating_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
+);
+CREATE TABLE public.SchoolWishList (
+  id text NOT NULL,
+  userId text NOT NULL,
+  schoolId bigint NOT NULL,
+  note text,
+  order integer,
+  createdAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT SchoolWishList_pkey PRIMARY KEY (id),
+  CONSTRAINT SchoolWishList_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id),
+  CONSTRAINT SchoolWishList_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id)
 );
 CREATE TABLE public.Session (
   id text NOT NULL,
@@ -203,6 +206,7 @@ CREATE TABLE public.UserQualification (
   toeic integer,
   createdAt timestamp with time zone NOT NULL DEFAULT now(),
   updatedAt timestamp with time zone NOT NULL DEFAULT now(),
+  applicationGroup text,
   CONSTRAINT UserQualification_pkey PRIMARY KEY (id),
   CONSTRAINT UserQualification_userId_fkey FOREIGN KEY (userId) REFERENCES public.User(id)
 );
