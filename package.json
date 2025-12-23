@@ -9,7 +9,9 @@
     "lint": "next lint",
     "import-data": "tsx scripts/import-to-supabase.ts",
     "test-db": "tsx scripts/test-supabase-connection.ts",
-    "create-boards": "tsx scripts/create-boards.ts"
+    "create-boards": "tsx scripts/create-boards.ts",
+    "migrate-images": "cd scraper/experiences && python migrate_images_to_cloudinary.py",
+    "migrate-images-dry-run": "cd scraper/experiences && python migrate_images_to_cloudinary.py --dry-run"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

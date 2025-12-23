@@ -222,14 +222,14 @@ function ReviewPostContent() {
           setCurrentUserImage(data.user.image || null);
         } else {
           // 如果 API 失败，才使用 session 作为 fallback
-          setCurrentUserName(session.user.name || 'userName');
-          setCurrentUserImage(session.user.image || null);
+          setCurrentUserName(session.user?.name || 'userName');
+          setCurrentUserImage(session.user?.image || null);
         }
       } catch (error) {
         console.error('Error fetching current user profile:', error);
         // API 失败时使用 session 作为 fallback
-        setCurrentUserName(session.user.name || 'userName');
-        setCurrentUserImage(session.user.image || null);
+        setCurrentUserName(session.user?.name || 'userName');
+        setCurrentUserImage(session.user?.image || null);
       }
     };
     fetchCurrentUser();

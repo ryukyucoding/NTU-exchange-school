@@ -37,7 +37,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
-  const mainContentRef = useRef<HTMLMainElement>(null);
+  const mainContentRef = useRef<HTMLElement>(null);
   const isOwnProfile = !!session?.user?.id && session.user.id === userId;
 
   const displayName = useMemo(() => profileName || '', [profileName]);
