@@ -127,7 +127,7 @@ export default function RepostPreview({ originalPost, onClick }: RepostPreviewPr
                 color: '#5A5A5A',
               }}
             >
-              {tag}
+              #{tag}
             </span>
           ))}
         </div>

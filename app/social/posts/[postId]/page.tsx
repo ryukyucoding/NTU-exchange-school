@@ -566,7 +566,7 @@ function PostDetailContentInner() {
                             e.currentTarget.style.backgroundColor = 'rgba(141, 112, 81, 0.34)';
                           }}
                         >
-                          {tag}
+                          #{tag}
                         </Link>
                       ))}
                     </div>

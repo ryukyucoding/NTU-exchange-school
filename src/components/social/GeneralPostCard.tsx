@@ -365,7 +365,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {tag}
+            #{tag}
           </Link>
         ))}
       </div>

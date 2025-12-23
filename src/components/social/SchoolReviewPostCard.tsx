@@ -278,7 +278,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {tag}
+            #{tag}
           </Link>
         ))}
       </div>
