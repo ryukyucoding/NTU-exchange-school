@@ -190,12 +190,6 @@ function GeneralPostContent() {
   // 顯示最新頭貼/名字（不要只依賴 session）
   useEffect(() => {
     if (!session?.user) return;
-
-    const sessionName = session.user?.name || 'userName';
-    const sessionImage = session.user?.image || null;
-    setCurrentUserName(sessionName);
-    setCurrentUserImage(sessionImage);
-
     if (!sessionUserId) return;
 
     let cancelled = false;
@@ -205,11 +199,19 @@ function GeneralPostContent() {
         const data = await res.json();
         if (cancelled) return;
         if (data?.success && data.user) {
-          setCurrentUserName(data.user.name || data.user.userID || sessionName);
-          setCurrentUserImage(data.user.image || sessionImage);
+          // 只使用 API 返回的数据，不使用 session 数据
+          setCurrentUserName(data.user.name || data.user.userID || 'userName');
+          setCurrentUserImage(data.user.image || null);
+        } else {
+          // 如果 API 失败，才使用 session 作为 fallback
+          setCurrentUserName(session.user?.name || 'userName');
+          setCurrentUserImage(session.user?.image || null);
         }
       } catch (error) {
         console.error('Error fetching current user profile:', error);
+        // API 失败时使用 session 作为 fallback
+        setCurrentUserName(session.user?.name || 'userName');
+        setCurrentUserImage(session.user?.image || null);
       }
     };
     fetchCurrentUser();

@@ -58,11 +58,6 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
   // 確保「留言輸入框」顯示的是最新的名字/頭貼（不要只依賴 session，因為 session 可能尚未刷新）
   useEffect(() => {
     if (!session?.user) return;
-
-    // Fallback: session
-    setCurrentUserName(session.user.name || 'User');
-    setCurrentUserImage(session.user.image || null);
-
     if (!sessionUserId) return;
 
     let cancelled = false;
@@ -72,12 +67,19 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
         const data = await res.json();
         if (cancelled) return;
         if (data?.success && data.user) {
-          setCurrentUserName(data.user.name || data.user.userID || session.user?.name || 'User');
-          setCurrentUserImage(data.user.image || session.user?.image || null);
+          // 只使用 API 返回的数据，不使用 session 数据
+          setCurrentUserName(data.user.name || data.user.userID || 'User');
+          setCurrentUserImage(data.user.image || null);
+        } else {
+          // 如果 API 失败，才使用 session 作为 fallback
+          setCurrentUserName(session.user.name || 'User');
+          setCurrentUserImage(session.user.image || null);
         }
       } catch (error) {
-        // Ignore; session fallback already set
         console.error('Error fetching current user profile:', error);
+        // API 失败时使用 session 作为 fallback
+        setCurrentUserName(session.user.name || 'User');
+        setCurrentUserImage(session.user.image || null);
       }
     };
     fetchCurrentUser();
