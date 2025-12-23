@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import GeneralPostCard from './GeneralPostCard';
 import SchoolReviewPostCard from './SchoolReviewPostCard';
 import type { PostWithAuthor as Post } from '@/types/social';
@@ -33,6 +32,7 @@ export default function PostList({
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   const fetchPosts = async (cursor?: string) => {
     try {
@@ -93,11 +93,38 @@ export default function PostList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, boardId, authorId, sort, filterType, hashtag, bookmarked, liked]);
 
-  const loadMore = () => {
-    if (nextCursor && !loading) {
+  const loadMore = useCallback(() => {
+    if (nextCursor && !loading && hasMore) {
       fetchPosts(nextCursor);
     }
-  };
+  }, [nextCursor, loading, hasMore]);
+
+  // 使用 Intersection Observer 來檢測是否滾動到底部
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // 當觀察的元素進入視口時（即滾動到底部）
+        if (entries[0].isIntersecting && hasMore && !loading && nextCursor) {
+          loadMore();
+        }
+      },
+      {
+        // 當元素距離視口底部 100px 時就觸發
+        rootMargin: '100px',
+      }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasMore, loading, nextCursor, loadMore]);
 
   const containerClassName =
     variant === 'plain' ? 'space-y-4' : 'space-y-4 bg-white p-4 rounded-lg';
@@ -137,10 +164,13 @@ export default function PostList({
         );
       })}
       {hasMore && sort === 'latest' && (
-        <div className="flex justify-center pt-4">
-          <Button onClick={loadMore} disabled={loading} variant="outline">
-            {loading ? '載入中...' : '載入更多'}
-          </Button>
+        <div ref={observerTarget} className="flex justify-center pt-4">
+          {loading && (
+            <div className="flex items-center justify-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400"></div>
+              <span className="ml-2 text-sm text-gray-500">載入中...</span>
+            </div>
+          )}
         </div>
       )}
     </div>

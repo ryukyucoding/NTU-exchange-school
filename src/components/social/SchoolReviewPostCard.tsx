@@ -202,21 +202,15 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
         )}
       </div>
 
-      {/* 可點擊的標題和內容區域 */}
+      {/* 可點擊的標題區域 */}
       <Link 
         href={`/social/posts/${post.id}`}
-        className="block cursor-pointer mb-4"
+        className="block cursor-pointer"
         style={{ textDecoration: 'none' }}
       >
         <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
           {post.title}
         </h3>
-        <p 
-          className="text-sm"
-          style={{ color: '#5A5A5A' }}
-        >
-          {truncatedContent}
-        </p>
       </Link>
 
       {/* 國家和學校標籤 */}
@@ -310,6 +304,20 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
           </div>
         </div>
       )}
+
+      {/* 可點擊的內文區域 */}
+      <Link 
+        href={`/social/posts/${post.id}`}
+        className="block cursor-pointer mb-4"
+        style={{ textDecoration: 'none' }}
+      >
+        <p 
+          className="text-sm"
+          style={{ color: '#5A5A5A' }}
+        >
+          {truncatedContent}
+        </p>
+      </Link>
 
       {/* 互動按鈕 */}
       <div className="flex items-center gap-6 pt-4" onClick={(e) => e.stopPropagation()}>

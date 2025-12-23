@@ -224,14 +224,16 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
 
       {/* 可點擊的標題區域 */}
       {!post.repostId ? (
-        <Link 
-          href={`/social/posts/${post.id}`}
-          className="block cursor-pointer mb-4"
-          style={{ textDecoration: 'none' }}
-        >
-          <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
-            {post.title}
-          </h3>
+        <>
+          <Link 
+            href={`/social/posts/${post.id}`}
+            className="block cursor-pointer"
+            style={{ textDecoration: 'none' }}
+          >
+            <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
+              {post.title}
+            </h3>
+          </Link>
           {/* 國家和學校標籤 */}
           <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
             {/* 優先使用 boards 陣列生成連結（正確的連結格式） */}
@@ -354,13 +356,19 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
               </Link>
             ))}
           </div>
-          <p 
-            className="text-sm"
-            style={{ color: '#5A5A5A' }}
+          <Link 
+            href={`/social/posts/${post.id}`}
+            className="block cursor-pointer mb-4"
+            style={{ textDecoration: 'none' }}
           >
-            {truncatedContent}
-          </p>
-        </Link>
+            <p 
+              className="text-sm"
+              style={{ color: '#5A5A5A' }}
+            >
+              {truncatedContent}
+            </p>
+          </Link>
+        </>
       ) : (
         <Link 
           href={`/social/posts/${post.id}`}
