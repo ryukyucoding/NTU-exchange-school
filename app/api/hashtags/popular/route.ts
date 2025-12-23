@@ -60,15 +60,15 @@ export async function GET(_req: NextRequest) {
       if (allHashtagsError) {
         // 如果查询所有hashtag失败，回退到分批查询
         const batchSize = 100;
-        for (let i = 0; i < postIds.length; i += batchSize) {
-          const batch = postIds.slice(i, i + batchSize);
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { data: hashtags, error: hashtagsError } = await (supabase as any)
-              .from('Hashtag')
+    for (let i = 0; i < postIds.length; i += batchSize) {
+      const batch = postIds.slice(i, i + batchSize);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: hashtags, error: hashtagsError } = await (supabase as any)
+          .from('Hashtag')
               .select('content, postId')
-              .in('postId', batch);
-            
+          .in('postId', batch);
+        
             if (!hashtagsError && hashtags) {
               allHashtags = allHashtags.concat(hashtags);
             }
@@ -95,9 +95,9 @@ export async function GET(_req: NextRequest) {
             .in('postId', batch);
           
           if (!hashtagsError && hashtags) {
-            allHashtags = allHashtags.concat(hashtags);
-          }
-        } catch (error) {
+          allHashtags = allHashtags.concat(hashtags);
+        }
+      } catch (error) {
           // 继续处理下一批次
         }
       }
@@ -108,7 +108,7 @@ export async function GET(_req: NextRequest) {
     (allHashtags || []).forEach((item: { content: string }) => {
       const tag = item.content;
       if (tag && typeof tag === 'string' && tag.trim().length > 0) {
-        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+      tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
       }
     });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ function BoardsContent() {
     Oceania: [],
   });
   const [_loading, setLoading] = useState(true);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -49,6 +50,23 @@ function BoardsContent() {
     };
 
     fetchCountries();
+  }, []);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    updateMinWidth();
+    window.addEventListener('resize', updateMinWidth);
+    return () => window.removeEventListener('resize', updateMinWidth);
   }, []);
 
   const toggleRegion = (region: string) => {
@@ -112,14 +130,14 @@ function BoardsContent() {
           </aside>
 
           {/* Main Content - Boards list (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
-            <div className="space-y-4">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="space-y-4 w-full min-w-full">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
                 const countries = countriesByRegion[region.value] || [];
 
                 return (
-                  <Card key={region.value} className="p-4 bg-white border-0 shadow-none">
+                  <Card key={region.value} className="p-4 bg-white border-0 shadow-none w-full">
                     <button
                       onClick={() => toggleRegion(region.value)}
                       className="w-full flex items-center justify-between mb-2 hover:bg-gray-50 p-2 rounded transition-colors"

@@ -37,6 +37,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
+  const mainContentRef = useRef<HTMLMainElement>(null);
   const isOwnProfile = !!session?.user?.id && session.user.id === userId;
 
   const displayName = useMemo(() => profileName || '', [profileName]);
@@ -66,6 +67,23 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
       cancelled = true;
     };
   }, [userId]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    updateMinWidth();
+    window.addEventListener('resize', updateMinWidth);
+    return () => window.removeEventListener('resize', updateMinWidth);
+  }, []);
 
   // 压缩图片
   const compressImage = (file: File, maxSizeMB: number = 2): Promise<File> => {
@@ -316,8 +334,8 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
             <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
             {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
-            <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
-              <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4">
+            <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+              <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4 w-full">
                 <div className="relative">
                   {backgroundImageUrl ? (
                     <div 

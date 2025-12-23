@@ -81,12 +81,12 @@ function SocialContent() {
         {/* Layout: flex on all screens, mx-auto centers content on mobile when sidebars are hidden */}
         <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="md:w-16 lg:w-64 flex-shrink-0">
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
             {/* Empty sidebar to maintain three-column layout */}
           </aside>
 
           {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
+          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
             <PostList filter={filter} hashtag={hashtag} />
           </main>
 
