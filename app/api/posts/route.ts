@@ -1514,17 +1514,8 @@ export async function GET(req: NextRequest) {
     }
 
     // 處理每個貼文的版信息
-    console.log('[GET /api/posts] 🔄 開始處理每個貼文的版信息...');
     boardDataByPostId.forEach((boards, postId) => {
-      console.log(`[GET /api/posts] 📝 處理貼文 ${postId}，有 ${boards.length} 個版`);
-      boards.forEach((boardData, index) => {
-        console.log(`[GET /api/posts]   - 版 ${index + 1}:`, {
-          boardId: boardData.boardId,
-          boardName: boardData.boardName,
-          boardType: boardData.boardType,
-          schoolId: boardData.schoolId,
-          country_id: boardData.country_id,
-        });
+      boards.forEach((boardData) => {
 
         // 學校版：type='school' 或 schoolId 不為 null
         if (boardData.boardType === 'school' || boardData.schoolId) {
@@ -1666,7 +1657,6 @@ export async function GET(req: NextRequest) {
     }
 
     // 組合數據
-    console.log('[GET /api/posts] 🔄 開始組合最終數據...');
     const postsWithStatus = posts.map((post: { id: string; createdAt: string; repostId?: string }) => {
       const ratings = ratingsByPostId.get(post.id);
       const schools = schoolsByPostId.get(post.id) || [];
@@ -1679,18 +1669,6 @@ export async function GET(req: NextRequest) {
         country_id: boardData.country_id,
         schoolId: boardData.schoolId,
       }));
-      
-      console.log(`[GET /api/posts] 📄 組合貼文 ${post.id}:`, {
-        title: (post as { title?: string }).title,
-        schoolsCount: schools.length,
-        schools: schools,
-        countriesCount: countries.length,
-        countries: countries,
-        hashtagsCount: hashtags.length,
-        hashtags: hashtags,
-        boardsCount: boards.length,
-        boards: boards,
-      });
       
       const originalPost = post.repostId ? originalPostsMap.get(post.repostId) : null;
 
@@ -1728,16 +1706,7 @@ export async function GET(req: NextRequest) {
     let finalPosts = postsWithStatus;
     let nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;
 
-    console.log('[GET /api/posts] 排序前貼文:', {
-      count: finalPosts.length,
-      samplePosts: finalPosts.slice(0, 3).map((p: { id: string; title: string; postType?: string; author?: unknown }) => ({
-        id: p.id,
-        title: p.title,
-        postType: p.postType,
-        hasAuthor: !!p.author,
-        authorType: p.author ? typeof p.author : 'none',
-      })),
-    });
+    console.log(`[GET /api/posts] 找到 ${finalPosts.length} 篇貼文`);
 
     if (sort === "popular") {
       finalPosts = [...postsWithStatus].sort((a, b) => {
@@ -1751,24 +1720,7 @@ export async function GET(req: NextRequest) {
       nextCursor = null;
     }
 
-    console.log('[GET /api/posts] 準備返回數據:', {
-      success: true,
-      postsCount: finalPosts.length,
-      nextCursor,
-      firstPost: finalPosts[0] ? {
-        id: finalPosts[0].id,
-        title: finalPosts[0].title,
-        postType: finalPosts[0].postType,
-        hasAuthor: !!finalPosts[0].author,
-        author: finalPosts[0].author ? {
-          id: (finalPosts[0].author as { id?: string }).id,
-          name: (finalPosts[0].author as { name?: string }).name,
-        } : null,
-        likeCount: finalPosts[0].likeCount,
-        repostCount: finalPosts[0].repostCount,
-        commentCount: finalPosts[0].commentCount,
-      } : null,
-    });
+    console.log(`[GET /api/posts] 返回 ${finalPosts.length} 篇貼文`);
 
     const responseData = {
       success: true,
@@ -1776,12 +1728,6 @@ export async function GET(req: NextRequest) {
       nextCursor,
     };
 
-    console.log('[GET /api/posts] 返回響應數據結構:', {
-      success: responseData.success,
-      postsLength: responseData.posts?.length || 0,
-      nextCursor: responseData.nextCursor,
-      postsIsArray: Array.isArray(responseData.posts),
-    });
 
     return NextResponse.json(responseData);
   } catch (error: unknown) {

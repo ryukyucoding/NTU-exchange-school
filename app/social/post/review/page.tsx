@@ -782,7 +782,7 @@ function ReviewPostContent() {
               borderRadius: '9999px'
             }}
           >
-            發布貼文
+            {editPostId && title ? title : '發布貼文'}
           </div>
         </div>
       </div>
@@ -949,9 +949,11 @@ function ReviewPostContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Drafts (編輯時也顯示) */}
+          {/* Right Sidebar - Drafts (編輯時隱藏) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <DraftList type="review" onLoadDraft={handleLoadDraft} />
+            {!editPostId && (
+              <DraftList type="review" onLoadDraft={handleLoadDraft} />
+            )}
           </aside>
         </div>
       </div>

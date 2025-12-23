@@ -232,6 +232,128 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           <h3 className="text-2xl font-semibold mb-3" style={{ color: '#5A5A5A', letterSpacing: '0.05em' }}>
             {post.title}
           </h3>
+          {/* 國家和學校標籤 */}
+          <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
+            {/* 優先使用 boards 陣列生成連結（正確的連結格式） */}
+            {post.boards && post.boards.length > 0 ? (
+              <>
+                {post.boards
+                  .filter((board) => board.type === 'country' && board.country_id !== null)
+                  .map((board, index) => (
+                    <Link
+                      key={`board-country-${board.id}-${index}`}
+                      href={`/social/boards/country/${board.country_id}`}
+                      className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                      style={{
+                        backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                        border: '1px solid #BAC7E5',
+                        color: '#5A5A5A',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {board.name}
+                    </Link>
+                  ))}
+                {post.boards
+                  .filter((board) => board.type === 'school' && board.schoolId !== null)
+                  .map((board, index) => (
+                    <Link
+                      key={`board-school-${board.id}-${index}`}
+                      href={`/social/boards/school/${board.schoolId}`}
+                      className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                      style={{
+                        backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                        border: '1px solid #BAC7E5',
+                        color: '#5A5A5A',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {board.name}
+                    </Link>
+                  ))}
+              </>
+            ) : (
+              <>
+                {/* Fallback：如果沒有 boards，使用舊的 countries/schools 陣列 */}
+                {countries.map((country, index) => (
+                  <Link
+                    key={`country-${index}`}
+                    href={`/social/boards/country/by-name?name=${encodeURIComponent(country)}`}
+                    className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                    style={{
+                      backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                      border: '1px solid #BAC7E5',
+                      color: '#5A5A5A',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {country}
+                  </Link>
+                ))}
+                {post.schools && post.schools.map((school, index) => (
+                  <Link
+                    key={`school-${index}`}
+                    href={`/social/boards/school/${school.id}`}
+                    className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                    style={{
+                      backgroundColor: 'rgba(186, 199, 229, 0.41)',
+                      border: '1px solid #BAC7E5',
+                      color: '#5A5A5A',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.5)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(186, 199, 229, 0.41)';
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {school.name_zh || school.name_en}
+                  </Link>
+                ))}
+              </>
+            )}
+            {/* Hashtags */}
+            {post.hashtags && post.hashtags.map((tag, index) => (
+              <Link
+                key={`tag-${index}`}
+                href={`/social?hashtag=${encodeURIComponent(tag)}`}
+                className="px-3 py-1.5 rounded-full text-sm transition-colors"
+                style={{
+                  backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                  border: '1px solid #8D7051',
+                  color: '#5A5A5A',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(141, 112, 81, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(141, 112, 81, 0.34)';
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
           <p 
             className="text-sm"
             style={{ color: '#5A5A5A' }}
@@ -251,8 +373,9 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
         </Link>
       )}
 
-      {/* 國家和學校標籤 */}
-      <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
+      {/* 國家和學校標籤（僅在轉發貼文時顯示在外部） */}
+      {post.repostId && (
+        <div className="flex flex-wrap gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
         {/* 優先使用 boards 陣列生成連結（正確的連結格式） */}
         {post.boards && post.boards.length > 0 ? (
           <>
@@ -373,6 +496,7 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
           </Link>
         ))}
       </div>
+      )}
 
       {/* 文章內容 - 如果有輸入內容，顯示在預覽框上方 */}
       {post.content.trim() && post.repostId && post.originalPost && (
