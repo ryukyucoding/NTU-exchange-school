@@ -82,6 +82,7 @@ function ReviewPostContent() {
   const [allowNavigation, setAllowNavigation] = useState(false);
   const [entryPage, setEntryPage] = useState<string | null>(null); // 記錄進入發布貼文頁面的上一頁
   const hasPushedHistoryRef = useRef(false);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   // 從 URL 參數預填國家/學校（只在非編輯模式下執行一次）
   useEffect(() => {
@@ -795,8 +796,8 @@ function ReviewPostContent() {
           <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
           {/* Main Content - Scrollable, can shrink to keep right sidebar visible */}
-          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-full">
 
               {/* White Card Container */}
               <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px]" style={{ borderColor: 'white' }}>

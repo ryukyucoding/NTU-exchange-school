@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import RouteGuard from '@/components/auth/RouteGuard';
 import FeatureTour from '@/components/onboarding/FeatureTour';
@@ -13,11 +13,29 @@ function SocialContent() {
   const searchParams = useSearchParams();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
   const [hashtag, setHashtag] = useState<string | null>(null);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const hashtagParam = searchParams.get('hashtag');
     setHashtag(hashtagParam);
   }, [searchParams]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    updateMinWidth();
+    window.addEventListener('resize', updateMinWidth);
+    return () => window.removeEventListener('resize', updateMinWidth);
+  }, []);
 
   return (
     // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
@@ -86,8 +104,10 @@ function SocialContent() {
           </aside>
 
           {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-full">
             <PostList filter={filter} hashtag={hashtag} />
+            </div>
           </main>
 
           {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}

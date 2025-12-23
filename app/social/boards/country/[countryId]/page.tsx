@@ -99,6 +99,7 @@ function CountryBoardContent() {
   }, [schools, countryId, schoolsLoading]);
 
   const schoolScrollRef = useRef<HTMLDivElement>(null);
+  const mainContentRef = useRef<HTMLElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
@@ -167,6 +168,34 @@ function CountryBoardContent() {
       cancelled = true;
     };
   }, [countryId, session]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    // 使用 requestAnimationFrame 确保在 DOM 渲染后执行
+    const rafId = requestAnimationFrame(() => {
+      updateMinWidth();
+      // 如果第一次执行时 ref 还没有设置，再试一次
+      if (!mainContentRef.current) {
+        setTimeout(updateMinWidth, 0);
+      }
+    });
+    
+    window.addEventListener('resize', updateMinWidth);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateMinWidth);
+    };
+  }, []);
 
   // 獲取學校評分
   useEffect(() => {
@@ -272,7 +301,8 @@ function CountryBoardContent() {
           <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
           {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-full">
             {loading || !countryInfo ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -442,6 +472,7 @@ function CountryBoardContent() {
             </Card>
             </>
             )}
+            </div>
           </main>
 
           {/* Right Sidebar (fixed, does NOT scroll) */}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -54,6 +54,7 @@ function SchoolBoardContent() {
     postCount: 0,
   });
   const [isFollowing, setIsFollowing] = useState(false);
+  const mainContentRef = useRef<HTMLElement>(null);
   const [avgRatings, setAvgRatings] = useState<{
     livingConvenience: number;
     costOfLiving: number;
@@ -99,6 +100,34 @@ function SchoolBoardContent() {
       cancelled = true;
     };
   }, [schoolId, session]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    // 使用 requestAnimationFrame 确保在 DOM 渲染后执行
+    const rafId = requestAnimationFrame(() => {
+      updateMinWidth();
+      // 如果第一次执行时 ref 还没有设置，再试一次
+      if (!mainContentRef.current) {
+        setTimeout(updateMinWidth, 0);
+      }
+    });
+    
+    window.addEventListener('resize', updateMinWidth);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateMinWidth);
+    };
+  }, []);
 
   const handleFollowToggle = async () => {
     if (!boardId || !session?.user) return;
@@ -175,7 +204,8 @@ function SchoolBoardContent() {
           <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
           {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-full">
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -343,6 +373,7 @@ function SchoolBoardContent() {
             </Card>
             </>
             )}
+            </div>
           </main>
 
           {/* Right Sidebar (fixed, does NOT scroll) */}

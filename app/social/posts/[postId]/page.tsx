@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -101,6 +101,7 @@ function PostDetailContentInner() {
   const [likeCount, setLikeCount] = useState(0);
   const [repostCount, setRepostCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -134,6 +135,23 @@ function PostDetailContentInner() {
       fetchPost();
     }
   }, [postId, router]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    updateMinWidth();
+    window.addEventListener('resize', updateMinWidth);
+    return () => window.removeEventListener('resize', updateMinWidth);
+  }, []);
 
   const handleLike = async () => {
     if (!post) return;
@@ -387,7 +405,8 @@ function PostDetailContentInner() {
           </aside>
 
           {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-            <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+              <div className="w-full min-w-full">
               <div className="space-y-4 bg-white p-4 rounded-lg">
                   {/* Back Button and Edit/Delete Menu */}
                   <div className="flex items-center justify-between mb-4">
@@ -689,6 +708,7 @@ function PostDetailContentInner() {
 
                   {/* Comment Section */}
                   <CommentSection postId={post.id} onCommentAdded={handleCommentAdded} />
+              </div>
               </div>
             </main>
 

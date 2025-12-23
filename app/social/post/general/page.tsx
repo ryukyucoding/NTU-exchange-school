@@ -74,6 +74,7 @@ function GeneralPostContent() {
   const [pendingDraftLoad, setPendingDraftLoad] = useState<Draft | null>(null);
   const [entryPage, setEntryPage] = useState<string | null>(null); // 記錄進入發布貼文頁面的上一頁
   const hasPushedHistoryRef = useRef(false);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   // 記錄進入發布貼文頁面的上一頁
   useEffect(() => {
@@ -216,6 +217,23 @@ function GeneralPostContent() {
       cancelled = true;
     };
   }, [sessionUserId, session?.user]);
+
+  // 设置主内容区的最小宽度
+  useEffect(() => {
+    const updateMinWidth = () => {
+      if (mainContentRef.current) {
+        if (window.innerWidth >= 1024) {
+          mainContentRef.current.style.minWidth = '500px';
+        } else {
+          mainContentRef.current.style.minWidth = '800px';
+        }
+      }
+    };
+    
+    updateMinWidth();
+    window.addEventListener('resize', updateMinWidth);
+    return () => window.removeEventListener('resize', updateMinWidth);
+  }, []);
 
   // 載入要轉發的原貼文資料（從 URL 參數或編輯的貼文中）
   useEffect(() => {
@@ -830,8 +848,8 @@ function GeneralPostContent() {
           <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
           {/* Main Content - Scrollable, can shrink to keep right sidebar visible */}
-          <main style={{ flex: '0 1 800px', minWidth: '500px', maxWidth: '800px', flexBasis: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full">
+          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-full">
 
               {/* White Card Container */}
               <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px]" style={{ borderColor: 'white' }}>
