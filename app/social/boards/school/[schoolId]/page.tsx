@@ -11,7 +11,8 @@ import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSchoolContext } from '@/contexts/SchoolContext';
-import { Star } from 'lucide-react';
+import { Star, Info } from 'lucide-react';
+import SchoolDetailModal from '@/components/school-display/SchoolDetailModal';
 
 type SortMode = 'popular' | 'latest' | 'rating';
 
@@ -66,6 +67,7 @@ function SchoolBoardContent() {
   });
   const [sort, setSort] = useState<SortMode>('popular');
   const [loading, setLoading] = useState(true);
+  const [showSchoolDetail, setShowSchoolDetail] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -221,7 +223,19 @@ function SchoolBoardContent() {
               <div className="bg-white p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0 max-w-[540px]">
-                    <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
+                      {school && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setShowSchoolDetail(true)}
+                          className="h-9 w-9 bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
+                        >
+                          <Info className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                     {school && (
                       <p className="text-gray-500 mt-2">
                         {school.name_en}
@@ -385,6 +399,17 @@ function SchoolBoardContent() {
 
       {/* Bottom Navigation - Only visible on screens smaller than lg */}
       <SocialBottomNav />
+
+      {/* School Detail Modal */}
+      {school && (
+        <SchoolDetailModal
+          school={school}
+          open={showSchoolDetail}
+          onClose={() => setShowSchoolDetail(false)}
+          variant="wishlist"
+          showDiscussButton={false}
+        />
+      )}
     </div>
   );
 }

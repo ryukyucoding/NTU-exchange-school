@@ -98,6 +98,7 @@ interface SchoolDetailModalProps {
   onClose: () => void;
   variant?: 'wishlist' | 'default';
   presentation?: 'modal' | 'side';
+  showDiscussButton?: boolean;
 }
 
 export default function SchoolDetailModal({
@@ -106,6 +107,7 @@ export default function SchoolDetailModal({
   onClose,
   variant = 'wishlist',
   presentation = 'modal',
+  showDiscussButton = true,
 }: SchoolDetailModalProps) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const isWishlist = variant === 'wishlist';
@@ -191,21 +193,23 @@ export default function SchoolDetailModal({
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className={
-              isWishlist
-                ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
-                : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
-            }
-          >
-            <Link href={`/social/boards/school/${school.id}`} className="flex items-center gap-2">
-              <img src="/tangyuan-1.svg" alt="Logo" className="w-4 h-4" />
-              討論
-            </Link>
-          </Button>
+          {showDiscussButton && (
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className={
+                isWishlist
+                  ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
+                  : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
+              }
+            >
+              <Link href={`/social/boards/school/${school.id}`} className="flex items-center gap-2">
+                <img src="/tangyuan-1.svg" alt="Logo" className="w-4 h-4" />
+                討論
+              </Link>
+            </Button>
+          )}
 
           <Button
             variant="ghost"
