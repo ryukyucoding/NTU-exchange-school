@@ -1,50 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import NotificationList from '@/components/notifications/NotificationList';
-import { usePusher } from '@/hooks/usePusher';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export default function NotificationButton() {
-  const { data: session } = useSession();
-  const [hasUnread, setHasUnread] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  // 檢查未讀通知
-  const checkUnread = useCallback(async () => {
-    try {
-      const res = await fetch('/api/notifications/unread-count');
-      if (res.ok) {
-        const data = await res.json();
-        setHasUnread(data.hasUnread);
-      }
-    } catch (error) {
-      console.error('Error checking unread notifications:', error);
-    }
-  }, [setHasUnread]);
-
-  // 處理 Pusher 即時通知
-  const handleNewNotification = useCallback(() => {
-    console.log('[NotificationButton] New notification received from Pusher');
-    setHasUnread(true);
-    // 可以在這裡添加音效或動畫
-  }, [setHasUnread]);
-
-  // 訂閱 Pusher 即時通知
-  usePusher({
-    userId: session?.user?.id,
-    onNewNotification: handleNewNotification,
-  });
-
-  // 輪詢檢查未讀通知（作為備援，每 5 分鐘一次）
-  useEffect(() => {
-    checkUnread();
-    const interval = setInterval(checkUnread, 5 * 60 * 1000); // 5 分鐘
-    return () => clearInterval(interval);
-  }, [checkUnread]);
+  const { hasUnread, setHasUnread } = useNotifications();
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

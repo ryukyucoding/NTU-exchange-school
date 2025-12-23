@@ -1,20 +1,20 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import GeneralPostCard from './GeneralPostCard';
 import SchoolReviewPostCard from './SchoolReviewPostCard';
-import type { PostWithAuthor as Post } from '@/types/social';
+import { usePosts } from '@/hooks/usePosts';
 
 interface PostListProps {
   filter: 'all' | 'following';
   boardId?: string | null;
-  authorId?: string | null; // Filter posts by author
+  authorId?: string | null;
   sort?: 'latest' | 'popular';
   variant?: 'card' | 'plain';
-  filterType?: 'rating' | null; // 'rating' to show only posts with SchoolRating
-  hashtag?: string | null; // Filter posts by hashtag
-  bookmarked?: boolean; // Filter posts by bookmarked
-  liked?: boolean; // Filter posts by liked
+  filterType?: 'rating' | null;
+  hashtag?: string | null;
+  bookmarked?: boolean;
+  liked?: boolean;
 }
 
 export default function PostList({
@@ -28,88 +28,29 @@ export default function PostList({
   bookmarked = false,
   liked = false,
 }: PostListProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  const fetchPosts = async (cursor?: string) => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        filter,
-        limit: '20',
-        sort,
-      });
-      if (boardId) {
-        params.append('boardId', boardId);
-      }
-      if (authorId) {
-        params.append('authorId', authorId);
-      }
-      if (filterType) {
-        params.append('filterType', filterType);
-      }
-      if (hashtag) {
-        params.append('hashtag', hashtag);
-      }
-      if (bookmarked) {
-        params.append('bookmarked', 'true');
-      }
-      if (liked) {
-        params.append('liked', 'true');
-      }
-      if (cursor) {
-        params.append('cursor', cursor);
-      }
-
-      const url = `/api/posts?${params.toString()}`;
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.success) {
-        if (cursor) {
-          setPosts((prev) => [...prev, ...data.posts]);
-        } else {
-          setPosts(data.posts);
-        }
-        setNextCursor(data.nextCursor);
-        setHasMore(data.nextCursor !== null);
-      }
-    } catch (error) {
-      console.error('[PostList] 獲取貼文時發生錯誤:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // 切換 filter/boardId/authorId/sort/filterType/hashtag/bookmarked/liked 時重置列表
-    setPosts([]);
-    setNextCursor(null);
-    setHasMore(true);
-    fetchPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, boardId, authorId, sort, filterType, hashtag, bookmarked, liked]);
-
-  const loadMore = useCallback(() => {
-    if (nextCursor && !loading && hasMore) {
-      fetchPosts(nextCursor);
-    }
-  }, [nextCursor, loading, hasMore]);
+  // 使用自定義 hook 來管理貼文資料
+  const { posts, loading, hasMore, loadMore } = usePosts({
+    filter,
+    boardId,
+    authorId,
+    sort,
+    filterType,
+    hashtag,
+    bookmarked,
+    liked,
+  });
 
   // 使用 Intersection Observer 來檢測是否滾動到底部
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // 當觀察的元素進入視口時（即滾動到底部）
-        if (entries[0].isIntersecting && hasMore && !loading && nextCursor) {
+        if (entries[0].isIntersecting && hasMore && !loading) {
           loadMore();
         }
       },
       {
-        // 當元素距離視口底部 100px 時就觸發
         rootMargin: '100px',
       }
     );
@@ -124,7 +65,7 @@ export default function PostList({
         observer.unobserve(currentTarget);
       }
     };
-  }, [hasMore, loading, nextCursor, loadMore]);
+  }, [hasMore, loading, loadMore]);
 
   const containerClassName =
     variant === 'plain' ? 'space-y-4' : 'space-y-4 bg-white p-4 rounded-lg';

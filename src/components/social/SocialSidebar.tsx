@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus, LayoutGrid, User } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
+import { useBoards } from '@/hooks/useBoards';
+import { usePopularTags } from '@/hooks/usePopularTags';
 
 function PostButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,82 +61,12 @@ function PostButton() {
   );
 }
 
-interface Board {
-  id: string;
-  name: string;
-  slug: string;
-  type: string;
-  schoolId?: string;
-  country_id?: string;
-}
-
 export default function SocialSidebar() {
   const { data: session } = useSession();
-  const [followedBoards, setFollowedBoards] = useState<Board[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [popularTags, setPopularTags] = useState<string[]>([]);
-  const [tagsLoading, setTagsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchFollowedBoards = async () => {
-      if (!session?.user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/boards/followed');
-        const data = await response.json();
-        
-        if (data.success) {
-          setFollowedBoards(data.boards || []);
-        }
-      } catch (error) {
-        console.error('Error fetching followed boards:', error instanceof Error ? error.message : String(error));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFollowedBoards();
-
-    // 監聽追蹤狀態變化事件
-    const handleBoardFollowChanged = () => {
-      fetchFollowedBoards();
-    };
-
-    window.addEventListener('boardFollowChanged', handleBoardFollowChanged);
-
-    return () => {
-      window.removeEventListener('boardFollowChanged', handleBoardFollowChanged);
-    };
-  }, [session]);
-
-  // 获取热门标签
-  useEffect(() => {
-    const fetchPopularTags = async () => {
-      try {
-        const response = await fetch('/api/hashtags/popular');
-        
-        if (!response.ok) {
-          setTagsLoading(false);
-          return;
-        }
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          setPopularTags(data.tags || []);
-        }
-      } catch (error) {
-        // 静默处理错误
-      } finally {
-        setTagsLoading(false);
-      }
-    };
-
-    fetchPopularTags();
-  }, []);
+  // 使用自定義 hooks 來管理資料
+  const { followedBoards, loading } = useBoards();
+  const { tags: popularTags, loading: tagsLoading } = usePopularTags();
 
   return (
     <div className="w-64 flex flex-col gap-4 h-full">
@@ -174,9 +106,9 @@ export default function SocialSidebar() {
                 key={board.id}
                 href={
                   board.type === 'school' && board.schoolId
-                    ? `/social/boards/school/${board.schoolId.toString()}`
+                    ? `/social/boards/school/${board.schoolId}`
                     : board.country_id
-                    ? `/social/boards/country/${board.country_id.toString()}`
+                    ? `/social/boards/country/${board.country_id}`
                     : '#'
                 }
                 className="block text-sm text-gray-600 hover:text-gray-800"

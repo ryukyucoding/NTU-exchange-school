@@ -412,9 +412,10 @@ export async function POST(req: NextRequest) {
     
     // 2. 處理學校看板（根據 schoolIds 查找學校版，有 schoolId）
     if (schoolIds && Array.isArray(schoolIds) && schoolIds.length > 0) {
+      console.log(`[POST /api/posts] 開始處理學校看板，schoolIds:`, schoolIds);
       for (const schoolId of schoolIds) {
         if (!schoolId || typeof schoolId !== 'string') continue;
-        
+
         // 查找學校版 Board（有 schoolId）
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data: schoolBoard } = await (supabase as any)
@@ -424,15 +425,16 @@ export async function POST(req: NextRequest) {
           .not('schoolId', 'is', null)
           .limit(1)
           .maybeSingle();
-        
+
         if (schoolBoard) {
           boardIds.push(schoolBoard.id);
+          console.log(`[POST /api/posts] 找到學校板: schoolId=${schoolId}, boardId=${schoolBoard.id}`);
         } else {
           // 如果學校版不存在，嘗試創建
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { data: schoolInfo } = await (supabase as any)
             .from('schools')
-            .select('name_zh, country')
+            .select('name_zh, country_id')
             .eq('id', schoolId)
             .maybeSingle();
           
@@ -505,12 +507,15 @@ export async function POST(req: NextRequest) {
     // 如果是新發布的貼文（非草稿、非更新），通知追蹤這些看板的用戶
     if (status === 'published' && !isUpdate && uniqueBoardIds.length > 0) {
       try {
+        console.log(`[POST /api/posts] 準備發送通知，postId=${postId}, boardIds=`, uniqueBoardIds);
         await createBoardNewPostNotifications(postId, uniqueBoardIds, userId);
         console.log(`[POST /api/posts] 已發送板新貼文通知給追蹤者`);
       } catch (notifError) {
         console.error('[POST /api/posts] 發送板新貼文通知失敗:', notifError);
         // 通知失敗不影響貼文創建
       }
+    } else {
+      console.log(`[POST /api/posts] 跳過通知發送: status=${status}, isUpdate=${isUpdate}, boardIds.length=${uniqueBoardIds.length}`);
     }
 
     // 獲取完整的貼文資料（包含作者資訊）
@@ -818,7 +823,7 @@ export async function GET(req: NextRequest) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = await (supabase as any)
             .from('PostSchool')
-            .select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)')
+            .select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country_id)')
             .in('postId', postIds);
           return result;
         } catch (error) {
@@ -1495,16 +1500,16 @@ export async function GET(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data: schoolsInfo } = await (supabase as any)
           .from('schools')
-          .select('id, name_zh, name_en, country')
+          .select('id, name_zh, name_en, country_id')
           .in('id', Array.from(schoolIdsToFetch));
-        
+
         if (schoolsInfo) {
-          schoolsInfo.forEach((school: { id: string | number; name_zh: string; name_en: string; country: string }) => {
+          schoolsInfo.forEach((school: { id: string | number; name_zh: string; name_en: string; country_id: string }) => {
             schoolsInfoMap.set(school.id, {
               id: String(school.id),
               name_zh: school.name_zh,
               name_en: school.name_en,
-              country: school.country,
+              country: school.country_id,
             });
           });
         }
@@ -1602,7 +1607,7 @@ export async function GET(req: NextRequest) {
           const originalPostIdsForDetails = originalPostsData.map((p: { id: string }) => p.id);
           const [originalHashtagsResult, originalSchoolsResult] = await Promise.allSettled([
             (supabase as any).from('Hashtag').select('postId, content').in('postId', originalPostIdsForDetails).then((r: any) => r).catch(() => ({ data: [] })),
-            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').in('postId', originalPostIdsForDetails).then((r: any) => r).catch(() => ({ data: [] })),
+            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country_id)').in('postId', originalPostIdsForDetails).then((r: any) => r).catch(() => ({ data: [] })),
           ]);
 
           const originalHashtags = originalHashtagsResult.status === 'fulfilled' ? originalHashtagsResult.value.data || [] : [];

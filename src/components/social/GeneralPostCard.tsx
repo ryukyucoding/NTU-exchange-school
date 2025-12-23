@@ -7,11 +7,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Edit } from 'lucide-react';
-import { cleanMarkdown, truncateLines } from '@/utils/markdown';
+import { cleanMarkdown } from '@/utils/markdown';
 import { markdownToHtml } from '@/lib/utils';
 import RepostPreview from './RepostPreview';
 import DeletePostDialog from './DeletePostDialog';
 import { usePostUpdates } from '@/hooks/usePostUpdates';
+import { usePostActions } from '@/hooks/usePostActions';
 import { formatDate } from '@/utils/date';
 import {
   DropdownMenu,
@@ -76,10 +77,6 @@ interface GeneralPostCardProps {
 export default function GeneralPostCard({ post }: GeneralPostCardProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [isReposted, setIsReposted] = useState(post.isReposted);
-  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
-  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -93,43 +90,16 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
     },
   });
 
+  // 使用自定義 hook 來管理貼文互動
+  const { isLiked, isReposted, isBookmarked, handleLike, handleRepost, handleBookmark } = usePostActions({
+    postId: post.id,
+    initialIsLiked: post.isLiked,
+    initialIsReposted: post.isReposted,
+    initialIsBookmarked: post.isBookmarked || false,
+    onLikeCountUpdate: (count) => updateCounts({ likeCount: count }),
+  });
+
   const isAuthor = session?.user && (session.user as { id: string }).id === post.author.id;
-
-  const handleLike = async () => {
-    try {
-      const response = await fetch(`/api/posts/${post.id}/like`, {
-        method: isLiked ? 'DELETE' : 'POST',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setIsLiked(!isLiked);
-        // 使用 hook 的 updateCounts 方法來同步本地狀態
-        updateCounts({ likeCount: data.likeCount });
-      }
-    } catch (error) {
-      console.error('Error toggling like:', error);
-    }
-  };
-
-  const handleRepost = () => {
-    // 跳轉到發文頁面並帶上 repostId 參數，記錄當前頁面作為 return
-    const currentUrl = window.location.pathname + window.location.search;
-    router.push(`/social/post/general?repostId=${post.id}&return=${encodeURIComponent(currentUrl)}`);
-  };
-
-  const handleBookmark = async () => {
-    try {
-      const response = await fetch(`/api/posts/${post.id}/bookmark`, {
-        method: isBookmarked ? 'DELETE' : 'POST',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setIsBookmarked(!isBookmarked);
-      }
-    } catch (error) {
-      console.error('Error toggling bookmark:', error);
-    }
-  };
 
   const handleEdit = () => {
     // 導航到編輯頁面（general 類型），並記錄當前頁面作為返回 URL

@@ -100,35 +100,107 @@ export async function createBoardNewPostNotifications(
 
   const supabase = getSupabaseServer();
 
-  // 獲取所有追蹤這些看板的用戶
+  console.log('[createBoardNewPostNotifications] 開始處理通知:', {
+    postId,
+    boardIds,
+    authorId,
+    boardCount: boardIds.length,
+  });
+
+  // 獲取所有追蹤這些看板的用戶（同時查詢 Board 資訊以便除錯）
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: followers } = await (supabase as any)
+  const { data: followers, error: followersError } = await (supabase as any)
     .from('BoardFollow')
-    .select('userId')
+    .select('userId, boardId, Board!inner(name, type)')
     .in('boardId', boardIds);
 
-  if (!followers || followers.length === 0) return;
+  console.log('[createBoardNewPostNotifications] 查詢追蹤者結果:', {
+    followersCount: followers?.length || 0,
+    boardIds: boardIds, // 顯示傳入的 boardIds 順序
+    followers: followers?.map((f: any) => ({
+      userId: f.userId,
+      boardId: f.boardId,
+      boardName: f.Board?.name,
+      boardType: f.Board?.type
+    })),
+    error: followersError,
+  });
 
-  // 去重並排除作者自己
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const uniqueUserIds = [...new Set(followers.map((f: any) => f.userId))]
-    .filter(uid => uid !== authorId);
+  if (!followers || followers.length === 0) {
+    console.log('[createBoardNewPostNotifications] 沒有追蹤者，跳過通知');
+    return;
+  }
+
+  // 為每個追蹤者建立通知，並使用他們追蹤的看板 ID
+  // 去重：如果同一個使用者追蹤了多個看板（例如同時追蹤國家板和學校板），
+  // 只為該使用者建立一個通知，使用他追蹤的第一個看板 ID
+  const userBoardMap = new Map<string, string>();
+  followers.forEach((f: any) => {
+    if (f.userId !== authorId && !userBoardMap.has(f.userId)) {
+      userBoardMap.set(f.userId, f.boardId);
+    }
+  });
+
+  console.log('[createBoardNewPostNotifications] 準備建立通知:', {
+    totalFollowers: followers.length,
+    uniqueUserIds: userBoardMap.size,
+    authorId,
+    willCreateNotifications: userBoardMap.size,
+    userBoardMap: Array.from(userBoardMap.entries()), // 顯示所有映射關係
+  });
 
   // 批量創建通知（最多1000個）
-  const notifications = uniqueUserIds.slice(0, 1000).map(userId => ({
-    id: crypto.randomUUID(),
-    userId,
-    type: 'board_new_post',
-    actorId: authorId,
-    postId,
-    boardId: boardIds[0], // 使用第一個 boardId
-    read: false,
-    createdAt: new Date().toISOString(),
-  }));
+  const notifications = Array.from(userBoardMap.entries())
+    .slice(0, 1000)
+    .map(([userId, boardId]) => ({
+      id: crypto.randomUUID(),
+      userId,
+      type: 'board_new_post',
+      actorId: authorId,
+      postId,
+      boardId, // 使用該使用者追蹤的看板 ID
+      read: false,
+      createdAt: new Date().toISOString(),
+    }));
 
   if (notifications.length > 0) {
+    // 記錄即將建立的通知樣本（用於除錯）
+    console.log('[createBoardNewPostNotifications] 即將建立的通知樣本（前3個）:', {
+      samples: notifications.slice(0, 3).map(n => ({
+        userId: n.userId,
+        boardId: n.boardId,
+        postId: n.postId,
+      }))
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any).from('Notification').insert(notifications);
+    const { error: insertError } = await (supabase as any).from('Notification').insert(notifications);
+
+    if (insertError) {
+      console.error('[createBoardNewPostNotifications] 建立通知失敗:', insertError);
+    } else {
+      console.log('[createBoardNewPostNotifications] 成功建立通知:', {
+        count: notifications.length,
+        boardIds,
+      });
+
+      // 驗證剛建立的通知（查詢幾個樣本並顯示 Board 資訊）
+      const sampleNotificationIds = notifications.slice(0, 3).map(n => n.id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: createdNotifications } = await (supabase as any)
+        .from('Notification')
+        .select('id, userId, boardId, Board!inner(name, type)')
+        .in('id', sampleNotificationIds);
+
+      console.log('[createBoardNewPostNotifications] 驗證剛建立的通知:', {
+        samples: createdNotifications?.map((n: any) => ({
+          userId: n.userId,
+          boardId: n.boardId,
+          boardName: n.Board?.name,
+          boardType: n.Board?.type
+        }))
+      });
+    }
 
     // 推送即時通知到所有追蹤者（批量推送）
     // 注意：大量推送時可能需要考慮限流
@@ -140,6 +212,15 @@ export async function createBoardNewPostNotifications(
         createdAt: notification.createdAt,
       })
     );
-    await Promise.allSettled(pushPromises);
+    const pushResults = await Promise.allSettled(pushPromises);
+
+    const successCount = pushResults.filter(r => r.status === 'fulfilled').length;
+    const failCount = pushResults.filter(r => r.status === 'rejected').length;
+
+    console.log('[createBoardNewPostNotifications] Pusher 推送結果:', {
+      total: pushResults.length,
+      success: successCount,
+      failed: failCount,
+    });
   }
 }

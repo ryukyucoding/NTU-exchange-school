@@ -78,7 +78,7 @@ export async function GET(
       userId ? (supabase as any).from('Bookmark').select('postId').eq('userId', userId).eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
       (supabase as any).from('Hashtag').select('postId, content').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('PostPhoto').select('*').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
-      (supabase as any).from('PostSchool').select('schoolId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
+      (supabase as any).from('PostSchool').select('schoolId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country_id)').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
       (supabase as any).from('SchoolRating').select('*').eq('postId', postId).then((r: any) => r).catch(() => ({ data: [] })),
     ]);
 
@@ -175,25 +175,25 @@ export async function GET(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: boardSchools, error: boardSchoolsError } = await (supabase as any)
         .from('schools')
-        .select('id, name_zh, name_en, country')
+        .select('id, name_zh, name_en, country_id')
         .in('id', Array.from(schoolIdsFromBoards));
 
       if (boardSchoolsError) {
         console.warn(`[GET /api/posts/${postId}] Error fetching schools for Board.schoolId:`, boardSchoolsError);
       }
 
-      (boardSchools || []).forEach((s: { id: string | number; name_zh: string; name_en: string; country: string }) => {
+      (boardSchools || []).forEach((s: { id: string | number; name_zh: string; name_en: string; country_id: string }) => {
         const schoolIdStr = String(s.id);
         if (!schools.some((x) => String(x.id) === schoolIdStr)) {
           schools.push({
             id: schoolIdStr,
             name_zh: s.name_zh,
             name_en: s.name_en,
-            country: s.country,
+            country: s.country_id,
           });
         }
-        if (s.country && !countries.includes(s.country)) {
-          countries.push(s.country);
+        if (s.country_id && !countries.includes(s.country_id)) {
+          countries.push(s.country_id);
         }
       });
     }
@@ -233,7 +233,7 @@ export async function GET(
           // 獲取原貼文的 hashtags / schools / boards（讓原貼文預覽也能顯示版面）
           const [originalHashtagsResult, originalSchoolsResult, originalBoardsResult] = await Promise.allSettled([
             (supabase as any).from('Hashtag').select('postId, content').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
-            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
+            (supabase as any).from('PostSchool').select('postId, school:schools!PostSchool_schoolId_fkey(id, name_zh, name_en, country_id)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
             // 只取 Board 的基本欄位，避免 nested join 造成資料為空
             (supabase as any).from('PostBoard').select('board:Board!PostBoard_boardId_fkey(id, name, type, schoolId, country_id)').eq('postId', post.repostId).then((r: any) => r).catch(() => ({ data: [] })),
           ]);
@@ -246,16 +246,16 @@ export async function GET(
           const originalSchoolsList: { id: string; name_zh: string; name_en: string; country: string }[] = [];
           const originalCountriesList: string[] = [];
 
-          originalSchools.forEach((ps: { school: { id: string; name_zh: string; name_en: string; country: string } | null }) => {
+          originalSchools.forEach((ps: { school: { id: string; name_zh: string; name_en: string; country_id: string } | null }) => {
             if (ps.school) {
               originalSchoolsList.push({
                 id: ps.school.id,
                 name_zh: ps.school.name_zh,
                 name_en: ps.school.name_en,
-                country: ps.school.country,
+                country: ps.school.country_id,
               });
-              if (ps.school.country && !originalCountriesList.includes(ps.school.country)) {
-                originalCountriesList.push(ps.school.country);
+              if (ps.school.country_id && !originalCountriesList.includes(ps.school.country_id)) {
+                originalCountriesList.push(ps.school.country_id);
               }
             }
           });
@@ -292,7 +292,7 @@ export async function GET(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { data: originalBoardSchools } = await (supabase as any)
               .from('schools')
-              .select('id, name_zh, name_en, country')
+              .select('id, name_zh, name_en, country_id')
               .in('id', Array.from(originalSchoolIdsFromBoards));
 
             (originalBoardSchools || []).forEach((s: any) => {
@@ -302,11 +302,11 @@ export async function GET(
                   id: schoolIdStr,
                   name_zh: s.name_zh,
                   name_en: s.name_en,
-                  country: s.country,
+                  country: s.country_id,
                 });
               }
-              if (s.country && !originalCountriesList.includes(s.country)) {
-                originalCountriesList.push(s.country);
+              if (s.country_id && !originalCountriesList.includes(s.country_id)) {
+                originalCountriesList.push(s.country_id);
               }
             });
           }
