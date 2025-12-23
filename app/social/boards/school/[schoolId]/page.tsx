@@ -142,8 +142,12 @@ function SchoolBoardContent() {
           <div
             className="flex items-center justify-center pointer-events-auto"
             style={{
-              width: '180px',
-              height: '32px',
+              width: 'auto',
+              minWidth: '140px',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
               border: '1px solid #5A5A5A',
               borderRadius: '24px',
               boxSizing: 'border-box',
@@ -151,7 +155,7 @@ function SchoolBoardContent() {
             }}
           >
             <h1
-              className="text-sm font-semibold"
+              className="text-sm font-semibold whitespace-nowrap"
               style={{
                 color: '#5A5A5A',
                 fontSize: '14px',
@@ -185,7 +189,7 @@ function SchoolBoardContent() {
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
               <div className="bg-white p-6">
                 <div className="flex items-start justify-between gap-4">
-                  <div>
+                  <div className="flex-1 min-w-0 max-w-[540px]">
                     <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
                     {school && (
                       <p className="text-gray-500 mt-2">
@@ -205,7 +209,7 @@ function SchoolBoardContent() {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-6 flex-shrink-0">
                     {boardId && (
                       <Button
                         onClick={handleFollowToggle}
@@ -222,12 +226,12 @@ function SchoolBoardContent() {
                       </Button>
                     )}
                     <div className="flex gap-10 text-gray-600">
-                      <div className="text-right">
-                        <div className="text-sm">貼文數</div>
+                      <div className="text-right" style={{ minWidth: '80px' }}>
+                        <div className="text-sm whitespace-nowrap">貼文數</div>
                         <div className="text-xl font-semibold">{stats.postCount}</div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm">追蹤數</div>
+                      <div className="text-right" style={{ minWidth: '80px' }}>
+                        <div className="text-sm whitespace-nowrap">追蹤數</div>
                         <div className="text-xl font-semibold">{stats.followerCount}</div>
                       </div>
                     </div>

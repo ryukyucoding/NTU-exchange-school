@@ -282,8 +282,12 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
             <div
               className="flex items-center justify-center pointer-events-auto"
               style={{
-                width: '140px',
-                height: '32px',
+                width: 'auto',
+                minWidth: '140px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                paddingTop: '4px',
+                paddingBottom: '4px',
                 border: '1px solid #5A5A5A',
                 borderRadius: '24px',
                 boxSizing: 'border-box',
@@ -291,7 +295,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
               }}
             >
               <h1
-                className="text-sm font-semibold"
+                className="text-sm font-semibold whitespace-nowrap"
                 style={{
                   color: '#5A5A5A',
                   fontSize: '14px',
@@ -338,13 +342,13 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
                 <div className="pt-16 px-10 pb-6">
                   <div className="flex items-start justify-between gap-6">
-                    <div>
+                    <div className="flex-1 min-w-0 max-w-[540px]">
                       <h1 className="text-4xl font-bold text-gray-800">{displayName}</h1>
                       <p className="text-gray-500 mt-2">{bio}</p>
                     </div>
 
-                    <div className="text-right text-gray-600">
-                      <div className="text-sm">貼文數</div>
+                    <div className="text-right text-gray-600 flex-shrink-0" style={{ minWidth: '80px' }}>
+                      <div className="text-sm whitespace-nowrap">貼文數</div>
                       <div className="text-xl font-semibold">{postCount}</div>
                       {isOwnProfile && (
                         <Button

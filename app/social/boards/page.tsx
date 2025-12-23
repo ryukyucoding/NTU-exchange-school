@@ -76,8 +76,12 @@ function BoardsContent() {
             <div 
           className="flex items-center justify-center pointer-events-auto"
               style={{
-                width: '96px',
-                height: '32px',
+                width: 'auto',
+                minWidth: '96px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                paddingTop: '4px',
+                paddingBottom: '4px',
                 border: '1px solid #5A5A5A',
                 borderRadius: '24px',
             boxSizing: 'border-box',
@@ -85,7 +89,7 @@ function BoardsContent() {
               }}
             >
               <h1 
-                className="text-sm font-semibold"
+                className="text-sm font-semibold whitespace-nowrap"
                 style={{ 
                   color: '#5A5A5A',
                   fontSize: '14px',

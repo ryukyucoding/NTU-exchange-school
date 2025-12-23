@@ -346,7 +346,8 @@ function PostDetailContentInner() {
             minWidth: '140px',
             paddingLeft: '16px',
             paddingRight: '16px',
-            height: '32px',
+            paddingTop: '4px',
+            paddingBottom: '4px',
             border: '1px solid #5A5A5A',
             borderRadius: '24px',
             boxSizing: 'border-box',
@@ -354,7 +355,7 @@ function PostDetailContentInner() {
           }}
         >
           <h1
-            className="text-sm font-semibold"
+            className="text-sm font-semibold whitespace-nowrap"
             style={{
               color: '#5A5A5A',
               fontSize: '14px',
