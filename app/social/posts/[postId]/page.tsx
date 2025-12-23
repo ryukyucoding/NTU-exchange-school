@@ -281,6 +281,10 @@ function PostDetailContentInner() {
   const htmlContent = markdownToHtml(post.content);
 
   const proseStyles = `
+    .prose {
+      white-space: pre-wrap;  /* 保留換行和空格 */
+      word-wrap: break-word;   /* 自動換行 */
+    }
     .prose img {
       max-width: 100%;
       height: auto;
@@ -321,7 +325,8 @@ function PostDetailContentInner() {
       color: #5A5A5A;
     }
     .prose big {
-      font-size: 1.25em;
+      font-size: 1.5em;  /* 從 1.25em 改為 1.5em，更明顯 */
+      font-weight: 500;   /* 稍微加粗，更明顯 */
     }
     .prose small {
       font-size: 0.875em;
@@ -342,7 +347,7 @@ function PostDetailContentInner() {
         <div
           className="flex items-center justify-center pointer-events-auto"
           style={{
-            width: 'auto',
+            maxWidth: 'calc(100vw - 32px)', // 适应屏幕宽度，左右各留16px边距
             minWidth: '140px',
             paddingLeft: '16px',
             paddingRight: '16px',
@@ -355,12 +360,15 @@ function PostDetailContentInner() {
           }}
         >
           <h1
-            className="text-sm font-semibold whitespace-nowrap"
+            className="text-sm font-semibold text-center"
             style={{
               color: '#5A5A5A',
               fontSize: '14px',
               lineHeight: '20px',
               fontFamily: "'Noto Sans TC', sans-serif",
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              whiteSpace: 'normal',
             }}
           >
             {post.title}

@@ -383,7 +383,11 @@ export default function GeneralPostCard({ post }: GeneralPostCardProps) {
         >
           <div 
             className="text-sm prose prose-sm max-w-none"
-            style={{ color: '#5A5A5A' }}
+            style={{ 
+              color: '#5A5A5A',
+              whiteSpace: 'pre-wrap',  // 保留換行
+              wordWrap: 'break-word'   // 自動換行
+            }}
             dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
           />
         </Link>
