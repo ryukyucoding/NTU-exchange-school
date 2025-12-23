@@ -13,6 +13,7 @@ import HashtagInput from '@/components/social/HashtagInput';
 import DraftList from '@/components/social/DraftList';
 import RepostPreview from '@/components/social/RepostPreview';
 import UnsavedChangesDialog from '@/components/social/UnsavedChangesDialog';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
 
@@ -823,17 +824,17 @@ function GeneralPostContent() {
       </div>
 
       {/* Content Frame */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
         <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar */}
           <aside className="hidden md:block w-64 flex-shrink-0" />
 
           {/* Main Content - Scrollable */}
-          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
             <div className="w-full">
 
               {/* White Card Container */}
-              <Card className="p-6 bg-white relative pt-8" style={{ borderColor: 'white', width: '800px' }}>
+              <Card className="p-6 bg-white relative pt-8 md:w-full lg:w-[800px]" style={{ borderColor: 'white' }}>
                 {/* Left spacer for "+" button */}
                 <div className="absolute left-0 top-0 bottom-0 w-12"></div>
                 
@@ -977,7 +978,7 @@ function GeneralPostContent() {
           </aside>
         </div>
       </div>
-      
+
       {/* 未儲存變更確認對話框 */}
       <UnsavedChangesDialog
         open={showUnsavedDialog}
@@ -1006,6 +1007,9 @@ function GeneralPostContent() {
         }}
         isUpdating={isSubmitting}
       />
+
+      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      <SocialBottomNav />
     </div>
   );
 }

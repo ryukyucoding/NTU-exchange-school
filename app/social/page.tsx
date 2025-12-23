@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import RouteGuard from '@/components/auth/RouteGuard';
 import FeatureTour from '@/components/onboarding/FeatureTour';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 
@@ -76,7 +77,7 @@ function SocialContent() {
       </div>
 
       {/* Content Frame: Main content area with posts and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
         <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar - Empty but keeps layout structure */}
           <aside className="hidden md:block w-64 flex-shrink-0">
@@ -84,7 +85,7 @@ function SocialContent() {
           </aside>
 
           {/* Main Content - Posts (ONLY scrollable area) */}
-          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
             <PostList filter={filter} hashtag={hashtag} />
           </main>
 
@@ -94,6 +95,9 @@ function SocialContent() {
           </aside>
         </div>
       </div>
+
+      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      <SocialBottomNav />
     </div>
   );
 }

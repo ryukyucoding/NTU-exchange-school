@@ -7,6 +7,7 @@ import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
@@ -377,7 +378,7 @@ function PostDetailContentInner() {
       </div>
 
       {/* Content Frame: Main content area with post detail and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
         <div className="flex gap-6 items-start justify-center h-full">
           {/* Left Sidebar - Empty but keeps layout structure */}
           <aside className="hidden md:block w-64 flex-shrink-0">
@@ -385,7 +386,7 @@ function PostDetailContentInner() {
           </aside>
 
           {/* Main Content - Posts (ONLY scrollable area) */}
-            <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+            <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
               <div className="space-y-4 bg-white p-4 rounded-lg">
                   {/* Back Button and Edit/Delete Menu */}
                   <div className="flex items-center justify-between mb-4">
@@ -696,6 +697,9 @@ function PostDetailContentInner() {
           </aside>
         </div>
       </div>
+
+      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      <SocialBottomNav />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { use, useEffect, useMemo, useState, useRef } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 import {
@@ -309,13 +310,13 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
           </div>
         )}
 
-        <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
           <div className="flex gap-6 items-start justify-center h-full">
             {/* Left spacer (match boards layout) */}
             <aside className="hidden md:block w-64 flex-shrink-0" />
 
             {/* Main (ONLY scrollable area) */}
-            <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+            <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
               <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4">
                 <div className="relative">
                   {backgroundImageUrl ? (
@@ -439,6 +440,9 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
             </aside>
           </div>
         </div>
+
+        {/* Bottom Navigation - Only visible on screens smaller than lg */}
+        <SocialBottomNav />
       </div>
 
       {/* Edit profile modal */}
