@@ -818,7 +818,7 @@ function GeneralPostContent() {
               borderRadius: '9999px'
             }}
           >
-            發布貼文
+            {editPostId && title ? title : '發布貼文'}
           </div>
         </div>
       </div>
@@ -970,11 +970,11 @@ function GeneralPostContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Drafts (轉發時為空，編輯時也顯示) */}
+          {/* Right Sidebar - Drafts (轉發時為空，編輯時隱藏) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            {(!repostId && !currentRepostId) || draftId || editPostId ? (
+            {!editPostId && (!repostId && !currentRepostId) && (
               <DraftList type="general" onLoadDraft={handleLoadDraft} />
-            ) : null}
+            )}
           </aside>
         </div>
       </div>
