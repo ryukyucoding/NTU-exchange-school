@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { cleanMarkdown } from '@/utils/markdown';
+import { formatDate } from '@/utils/date';
 
 interface RepostPreviewProps {
   originalPost: {
@@ -47,14 +48,6 @@ export default function RepostPreview({ originalPost, onClick }: RepostPreviewPr
         ? [...new Set(originalPost.schools.map(s => s.country).filter(Boolean))]
         : []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
 
   return (
     <Card 
@@ -127,7 +120,7 @@ export default function RepostPreview({ originalPost, onClick }: RepostPreviewPr
                 color: '#5A5A5A',
               }}
             >
-              {tag}
+              #{tag}
             </span>
           ))}
         </div>

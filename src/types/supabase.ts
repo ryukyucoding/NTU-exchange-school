@@ -386,6 +386,41 @@ export interface Database {
           updatedAt?: string
         }
       }
+      Notification: {
+        Row: {
+          id: string
+          userId: string
+          type: string
+          actorId: string | null
+          postId: string | null
+          commentId: string | null
+          boardId: string | null
+          read: boolean
+          createdAt: string
+        }
+        Insert: {
+          id?: string
+          userId: string
+          type: string
+          actorId?: string | null
+          postId?: string | null
+          commentId?: string | null
+          boardId?: string | null
+          read?: boolean
+          createdAt?: string
+        }
+        Update: {
+          id?: string
+          userId?: string
+          type?: string
+          actorId?: string | null
+          postId?: string | null
+          commentId?: string | null
+          boardId?: string | null
+          read?: boolean
+          createdAt?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

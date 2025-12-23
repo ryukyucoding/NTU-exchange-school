@@ -115,13 +115,19 @@ export default function SocialSidebar() {
     const fetchPopularTags = async () => {
       try {
         const response = await fetch('/api/hashtags/popular');
+        
+        if (!response.ok) {
+          setTagsLoading(false);
+          return;
+        }
+        
         const data = await response.json();
         
         if (data.success) {
           setPopularTags(data.tags || []);
         }
       } catch (error) {
-        console.error('Error fetching popular tags:', error instanceof Error ? error.message : String(error));
+        // 静默处理错误
       } finally {
         setTagsLoading(false);
       }
@@ -191,11 +197,11 @@ export default function SocialSidebar() {
           <div className="text-sm text-gray-400">載入中...</div>
         ) : popularTags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {popularTags.map((tag, index) => (
+            {popularTags.map((tag) => (
               <Link
-                key={index}
+                key={tag}
                 href={`/social?hashtag=${encodeURIComponent(tag)}`}
-                className="px-3 py-1 text-sm rounded-full border border-[#d6c3a1] bg-[#f7efe5] text-[#8D7051] hover:bg-[#f0e6d6] transition-colors"
+                className="px-3 py-1 text-sm rounded-full border border-[#d6c3a1] bg-[#f7efe5] text-[#8D7051] hover:bg-[#f0e6d6] transition-colors whitespace-nowrap"
               >
                 #{tag}
               </Link>

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Send, Heart, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { formatDate } from '@/utils/date';
 
 interface Author {
   id: string;
@@ -363,14 +364,6 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
 
   if (loading) {
     return (

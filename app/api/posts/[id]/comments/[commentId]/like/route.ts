@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { createNotification } from "@/lib/notifications";
 
 /**
  * POST /api/posts/[id]/comments/[commentId]/like
@@ -31,11 +32,11 @@ export async function POST(
 
     const supabase = getSupabaseServer();
 
-    // 檢查留言是否存在且屬於該貼文
+    // 檢查留言是否存在且屬於該貼文，並獲取留言作者 ID
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: comment, error: commentError } = await (supabase as any)
       .from('Comment')
-      .select('id, postId')
+      .select('id, postId, userId')
       .eq('id', commentId)
       .eq('postId', postId)
       .is('deletedAt', null)
@@ -83,6 +84,17 @@ export async function POST(
         { error: "Failed to like comment" },
         { status: 500 }
       );
+    }
+
+    // 創建通知（通知留言作者）
+    if (comment.userId) {
+      await createNotification({
+        userId: comment.userId,
+        type: 'comment_like',
+        actorId: userId,
+        postId: postId,
+        commentId: commentId,
+      });
     }
 
     return NextResponse.json({

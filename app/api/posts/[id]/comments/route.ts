@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
+import { createNotification } from "@/lib/notifications";
+import { pushPostUpdate } from "@/lib/pusher";
 
 /**
  * GET /api/posts/[id]/comments
@@ -172,21 +174,23 @@ export async function POST(
     }
 
     // 如果提供了 parentId，驗證父評論存在且屬於同一貼文
+    let parentComment = null;
     if (parentId) {
       const supabase = getSupabaseServer();
-      const { data: parentComment } = await (supabase as any)
+      const { data: parent } = await (supabase as any)
         .from('Comment')
-        .select('id, postId')
+        .select('id, postId, userId')
         .eq('id', parentId)
         .is('deletedAt', null)
         .maybeSingle();
 
-      if (!parentComment || parentComment.postId !== postId) {
+      if (!parent || parent.postId !== postId) {
         return NextResponse.json(
           { success: false, error: "父評論不存在或屬於不同貼文" },
           { status: 400 }
         );
       }
+      parentComment = parent;
     }
 
     const supabase = getSupabaseServer();
@@ -227,6 +231,47 @@ export async function POST(
         { status: 500 }
       );
     }
+
+    // 創建通知
+    if (parentId && parentComment) {
+      // 回覆留言 - 通知父留言作者
+      await createNotification({
+        userId: parentComment.userId,
+        type: 'comment_reply',
+        actorId: userId,
+        postId: postId,
+        commentId: comment.id,
+      });
+    } else {
+      // 留言貼文 - 通知貼文作者
+      const { data: post } = await (supabase as any)
+        .from('Post')
+        .select('authorId')
+        .eq('id', postId)
+        .single();
+
+      if (post?.authorId) {
+        await createNotification({
+          userId: post.authorId,
+          type: 'post_comment',
+          actorId: userId,
+          postId: postId,
+          commentId: comment.id,
+        });
+      }
+    }
+
+    // 獲取最新的評論數量並推送即時更新
+    const { count: commentCount } = await (supabase as any)
+      .from('Comment')
+      .select('*', { count: 'exact', head: true })
+      .eq('postId', postId)
+      .is('deletedAt', null);
+
+    await pushPostUpdate(postId, {
+      type: 'comment',
+      commentCount: commentCount || 0,
+    });
 
     return NextResponse.json({
       success: true,

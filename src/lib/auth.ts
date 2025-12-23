@@ -5,6 +5,7 @@
 
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { getSupabaseServer } from "./db";
 
 // 检查环境变量
@@ -17,6 +18,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    Credentials({
+      name: "Admin Login",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // 檢查管理員憑證
+        if (credentials?.username === process.env.ADMIN_USERNAME &&
+            credentials?.password === process.env.ADMIN_PASSWORD) {
+          try {
+            const supabase = getSupabaseServer();
+            // 查找「心得小幫手」用戶
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: adminUser, error } = await (supabase as any)
+              .from('User')
+              .select('*')
+              .eq('name', '心得小幫手')
+              .maybeSingle();
+
+            if (adminUser && !error) {
+              return {
+                id: adminUser.id,
+                name: adminUser.name,
+                email: adminUser.email,
+                image: adminUser.image,
+                userID: adminUser.userID,
+              };
+            }
+          } catch (error) {
+            console.error("Error finding admin user:", error);
+          }
+        }
+        return null;
+      }
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
