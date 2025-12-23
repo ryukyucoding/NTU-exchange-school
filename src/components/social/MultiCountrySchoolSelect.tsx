@@ -98,13 +98,11 @@ export default function MultiCountrySchoolSelect({
 
   // 根據輸入過濾學校
   const filteredSchoolsByInput = useMemo(() => {
-    if (!schoolInput.trim()) return filteredSchools.slice(0, 10);
-    return filteredSchools
-      .filter(school => 
-        school.name_zh.includes(schoolInput.trim()) || 
-        school.name_en.toLowerCase().includes(schoolInput.trim().toLowerCase())
-      )
-      .slice(0, 10);
+    if (!schoolInput.trim()) return filteredSchools;
+    return filteredSchools.filter(school => 
+      school.name_zh.includes(schoolInput.trim()) || 
+      school.name_en.toLowerCase().includes(schoolInput.trim().toLowerCase())
+    );
   }, [schoolInput, filteredSchools]);
 
   const handleCountrySelect = (country: string) => {
