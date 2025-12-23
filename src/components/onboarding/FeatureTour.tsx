@@ -91,6 +91,13 @@ const socialTourSteps: TourStep[] = [
     description: '點擊「發布貼文」按鈕可以分享你的交換心得、學校評價，或提出問題與其他同學交流。',
     position: 'right',
   },
+  {
+    id: 'social-logo',
+    targetSelector: '[data-tour-step="social-logo"]',
+    title: '回到社群主頁',
+    description: '點擊左上角的 logo 可以回到社群主頁。',
+    position: 'bottom',
+  },
 ];
 
 // 使用普通数字，因为已经有圆底背景

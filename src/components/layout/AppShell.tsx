@@ -51,7 +51,11 @@ export default function AppShell({ children }: AppShellProps) {
           </Button>
             {/* 在特定頁面顯示 Logo */}
             {pathname?.startsWith('/social') && (
-              <Link href="/social" className="flex items-center hover:opacity-80 transition-opacity">
+              <Link
+                href="/social"
+                data-tour-step="social-logo"
+                className="flex items-center hover:opacity-80 transition-opacity"
+              >
                 <Image
                   src="/logo-social.png"
                   alt="社群 Logo"
