@@ -78,22 +78,24 @@ function SocialContent() {
 
       {/* Content Frame: Main content area with posts and sidebar */}
       <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
+        {/* Layout: flex on all screens, mx-auto centers content on mobile when sidebars are hidden */}
         <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure */}
-          <aside className="hidden md:block w-64 flex-shrink-0">
+          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
+          <aside className="md:w-16 lg:w-64 flex-shrink-0">
             {/* Empty sidebar to maintain three-column layout */}
           </aside>
 
-          {/* Main Content - Posts (ONLY scrollable area) */}
-          <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
+          <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
             <PostList filter={filter} hashtag={hashtag} />
           </main>
 
-          {/* Right Sidebar - Fixed (does NOT scroll) */}
+          {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
               <SocialSidebar />
           </aside>
         </div>
+
       </div>
 
       {/* Bottom Navigation - Only visible on screens smaller than lg */}

@@ -312,11 +312,11 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
         <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
           <div className="flex gap-6 items-start justify-center h-full">
-            {/* Left spacer (match boards layout) */}
-            <aside className="hidden md:block w-64 flex-shrink-0" />
+            {/* Left spacer (match boards layout), shrinks on smaller screens */}
+            <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
-            {/* Main (ONLY scrollable area) */}
-            <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+            {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
+            <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
               <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4">
                 <div className="relative">
                   {backgroundImageUrl ? (

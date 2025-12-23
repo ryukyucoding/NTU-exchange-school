@@ -379,14 +379,15 @@ function PostDetailContentInner() {
 
       {/* Content Frame: Main content area with post detail and sidebar */}
       <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
+        {/* Layout: flex on md+, simple centering on mobile */}
         <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure */}
-          <aside className="hidden md:block w-64 flex-shrink-0">
+          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
+          <aside className="md:w-16 lg:w-64 flex-shrink-0">
             {/* Empty sidebar to maintain three-column layout */}
           </aside>
 
-          {/* Main Content - Posts (ONLY scrollable area) */}
-            <main className="w-[800px] md:w-[500px] lg:w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
+            <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
               <div className="space-y-4 bg-white p-4 rounded-lg">
                   {/* Back Button and Edit/Delete Menu */}
                   <div className="flex items-center justify-between mb-4">
