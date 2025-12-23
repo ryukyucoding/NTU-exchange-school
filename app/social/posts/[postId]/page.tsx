@@ -12,6 +12,7 @@ import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign, M
 import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
 import RepostPreview from '@/components/social/RepostPreview';
+import DeletePostDialog from '@/components/social/DeletePostDialog';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
@@ -101,6 +102,8 @@ function PostDetailContentInner() {
   const [likeCount, setLikeCount] = useState(0);
   const [repostCount, setRepostCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -218,8 +221,13 @@ function PostDetailContentInner() {
 
   const handleDelete = async () => {
     if (!post) return;
-    if (!confirm('確定要刪除這篇貼文嗎？')) return;
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!post) return;
     
+    setIsDeleting(true);
     try {
       const response = await fetch(`/api/posts/${post.id}`, {
         method: 'DELETE',
@@ -227,6 +235,7 @@ function PostDetailContentInner() {
       const data = await response.json();
       if (data.success) {
         toast.success('貼文已刪除');
+        setShowDeleteDialog(false);
         // 如果有 return URL，返回該頁面並刷新；否則返回社群主頁並刷新
         if (returnUrl && returnUrl !== window.location.pathname + window.location.search) {
           router.push(returnUrl);
@@ -237,10 +246,12 @@ function PostDetailContentInner() {
         }
       } else {
         toast.error(data.error || '刪除失敗');
+        setIsDeleting(false);
       }
     } catch (error) {
       console.error('Error deleting post:', error);
       toast.error('刪除失敗，請稍後再試');
+      setIsDeleting(false);
     }
   };
 
@@ -721,6 +732,14 @@ function PostDetailContentInner() {
 
       {/* Bottom Navigation - Only visible on screens smaller than lg */}
       <SocialBottomNav />
+
+      {/* Delete Post Confirmation Dialog */}
+      <DeletePostDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirm={confirmDelete}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Heart, MessageCircle, Repeat2, Bookmark, MoreHorizontal, Trash2, Star, DollarSign, Edit } from 'lucide-react';
 import { cleanMarkdown, truncateLines } from '@/utils/markdown';
+import DeletePostDialog from './DeletePostDialog';
 import { usePostUpdates } from '@/hooks/usePostUpdates';
 import { formatDate } from '@/utils/date';
 import {
@@ -28,6 +29,8 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isReposted, setIsReposted] = useState(post.isReposted);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 使用即時更新 hook
   const { likeCount, commentCount, repostCount, updateCounts } = usePostUpdates({
@@ -84,22 +87,28 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
   };
 
   const handleDelete = async () => {
-    if (!confirm('確定要刪除這篇貼文嗎？')) return;
-    
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsDeleting(true);
     try {
       const response = await fetch(`/api/posts/${post.id}`, {
         method: 'DELETE',
       });
       const data = await response.json();
       if (data.success) {
+        setShowDeleteDialog(false);
         // 強制刷新頁面
         window.location.reload();
       } else {
         alert(data.error || '刪除失敗');
+        setIsDeleting(false);
       }
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('刪除失敗，請稍後再試');
+      setIsDeleting(false);
     }
   };
 
@@ -370,6 +379,14 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
           </div>
         </Button>
       </div>
+
+      {/* Delete Post Confirmation Dialog */}
+      <DeletePostDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirm={confirmDelete}
+        isDeleting={isDeleting}
+      />
     </Card>
   );
 }
