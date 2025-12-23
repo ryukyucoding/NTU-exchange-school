@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import RouteGuard from '@/components/auth/RouteGuard';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -169,12 +170,12 @@ function SchoolBoardContent() {
         </div>
       )}
 
-      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
         <div className="flex gap-6 items-start justify-center h-full">
-          <aside className="hidden md:block w-64 flex-shrink-0" />
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
 
-          {/* Main (ONLY scrollable area) */}
-          <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
+          <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -350,6 +351,9 @@ function SchoolBoardContent() {
           </aside>
         </div>
       </div>
+
+      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      <SocialBottomNav />
     </div>
   );
 }

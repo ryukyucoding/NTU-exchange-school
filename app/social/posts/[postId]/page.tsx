@@ -7,6 +7,7 @@ import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import SocialSidebar from '@/components/social/SocialSidebar';
+import SocialBottomNav from '@/components/social/SocialBottomNav';
 import { Heart, MessageCircle, Repeat2, Bookmark, ArrowLeft, Star, DollarSign, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
@@ -281,6 +282,10 @@ function PostDetailContentInner() {
   const htmlContent = markdownToHtml(post.content);
 
   const proseStyles = `
+    .prose {
+      white-space: pre-wrap;  /* 保留換行和空格 */
+      word-wrap: break-word;   /* 自動換行 */
+    }
     .prose img {
       max-width: 100%;
       height: auto;
@@ -321,7 +326,8 @@ function PostDetailContentInner() {
       color: #5A5A5A;
     }
     .prose big {
-      font-size: 1.25em;
+      font-size: 1.5em;  /* 從 1.25em 改為 1.5em，更明顯 */
+      font-weight: 500;   /* 稍微加粗，更明顯 */
     }
     .prose small {
       font-size: 0.875em;
@@ -342,7 +348,7 @@ function PostDetailContentInner() {
         <div
           className="flex items-center justify-center pointer-events-auto"
           style={{
-            width: 'auto',
+            maxWidth: 'calc(100vw - 32px)', // 适应屏幕宽度，左右各留16px边距
             minWidth: '140px',
             paddingLeft: '16px',
             paddingRight: '16px',
@@ -355,12 +361,15 @@ function PostDetailContentInner() {
           }}
         >
           <h1
-            className="text-sm font-semibold whitespace-nowrap"
+            className="text-sm font-semibold text-center"
             style={{
               color: '#5A5A5A',
               fontSize: '14px',
               lineHeight: '20px',
               fontFamily: "'Noto Sans TC', sans-serif",
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              whiteSpace: 'normal',
             }}
           >
             {post.title}
@@ -369,15 +378,16 @@ function PostDetailContentInner() {
       </div>
 
       {/* Content Frame: Main content area with post detail and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-6 pt-4 flex-1 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
+        {/* Layout: flex on md+, simple centering on mobile */}
         <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure */}
-          <aside className="hidden md:block w-64 flex-shrink-0">
+          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
+          <aside className="md:w-16 lg:w-64 flex-shrink-0">
             {/* Empty sidebar to maintain three-column layout */}
           </aside>
 
-          {/* Main Content - Posts (ONLY scrollable area) */}
-            <main className="w-[800px] flex-shrink-0 h-full overflow-y-auto overscroll-contain">
+          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
+            <main className="max-w-[800px] min-w-[500px] w-full md:w-auto lg:w-auto flex-shrink h-full overflow-y-auto overscroll-contain md:mx-0 lg:mx-0 mx-auto">
               <div className="space-y-4 bg-white p-4 rounded-lg">
                   {/* Back Button and Edit/Delete Menu */}
                   <div className="flex items-center justify-between mb-4">
@@ -688,6 +698,9 @@ function PostDetailContentInner() {
           </aside>
         </div>
       </div>
+
+      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      <SocialBottomNav />
     </div>
   );
 }
