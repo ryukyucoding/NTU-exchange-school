@@ -852,7 +852,7 @@ function GeneralPostContent() {
             <div className="w-full min-w-full">
 
               {/* White Card Container */}
-              <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px]" style={{ borderColor: 'white' }}>
+              <Card className="p-6 bg-white relative pt-8 w-[800px]" style={{ borderColor: 'white' }}>
                 {/* Left spacer for "+" button */}
                 <div className="absolute left-0 top-0 bottom-0 w-12"></div>
                 
