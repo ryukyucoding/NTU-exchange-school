@@ -79,6 +79,98 @@ https://tang-yuan.vercel.app
 - **型別安全**：全面使用 TypeScript 確保程式碼品質
 - **現代化 UI**：使用 Tailwind CSS + Radix UI 構建美觀的使用者介面
 
+### 專案架構
+
+本專案採用現代化的全端架構設計，遵循關注點分離原則，將程式碼組織成清晰的模組結構：
+
+#### 前端架構（Next.js 15 App Router）
+```
+app/                          # Next.js App Router 頁面結構
+├── admin/                    # 管理員頁面
+├── api/                      # API 路由處理
+│   ├── auth/                # 認證相關 API
+│   ├── boards/              # 看板管理 API
+│   ├── hashtags/            # Hashtag 管理 API
+│   ├── notifications/       # 通知管理 API
+│   ├── posts/               # 貼文管理 API
+│   ├── schools/             # 學校資料 API
+│   ├── upload/              # 檔案上傳 API
+│   ├── user/                # 使用者管理 API
+│   └── wishlist/            # 收藏清單 API
+├── social/                  # 社群功能頁面
+├── table/                   # 表格視圖頁面
+├── wishlist/                # 收藏清單頁面
+└── layout.tsx               # 根佈局組件
+```
+
+#### 組件架構（模組化設計）
+```
+src/components/               # React 組件庫
+├── application/             # 學校申請相關組件
+├── auth/                    # 認證相關組件
+├── filters/                 # 篩選器組件
+├── layout/                  # 佈局組件
+├── notifications/           # 通知組件
+├── onboarding/              # 新手引導組件
+├── school-display/          # 學校展示組件
+├── social/                  # 社群功能組件
+├── ui/                      # 通用 UI 組件
+├── views/                   # 視圖組件
+└── wishlist/                # 收藏功能組件
+```
+
+#### 狀態管理與工具
+```
+src/
+├── contexts/                # React Context 狀態管理
+│   ├── FilterContext.tsx    # 篩選條件狀態
+│   ├── MapZoomContext.tsx   # 地圖縮放狀態
+│   ├── NotificationContext.tsx # 通知狀態
+│   ├── SchoolContext.tsx    # 學校資料狀態
+│   ├── UserContext.tsx      # 使用者狀態
+│   └── WishlistContext.tsx  # 收藏清單狀態
+├── hooks/                   # 自訂 React Hooks
+│   ├── useBoards.ts         # 看板管理 Hook
+│   ├── useFilteredSchools.ts # 學校篩選 Hook
+│   ├── usePanelManager.ts   # 面板管理 Hook
+│   ├── usePopularTags.ts    # 熱門標籤 Hook
+│   ├── usePosts.ts          # 貼文管理 Hook
+│   └── usePusher.ts         # Pusher 即時通訊 Hook
+├── lib/                     # 工具函數庫
+├── types/                   # TypeScript 類型定義
+└── utils/                   # 通用工具函數
+```
+
+#### 資料處理與工具
+```
+scraper/                     # Python 資料爬蟲
+├── experiences/             # 心得資料爬取
+├── fetch_schools.py         # 學校資料爬取
+├── get_coordinates.py       # 地理座標查詢
+└── requirements.txt         # Python 依賴
+
+scripts/                     # 資料處理腳本
+├── import-schools-to-supabase.ts # 學校資料匯入
+├── import-to-supabase.ts    # 心得資料匯入
+└── data-cleaning/           # 資料清理工具
+
+supabase/                    # 資料庫結構
+└── schema.sql               # PostgreSQL 資料庫結構
+
+docs/                        # 專案文檔
+├── AUTH_SETUP_CHECKLIST.md
+├── DATABASE_AUTH_SETUP.md
+├── GOOGLE_OAUTH_SETUP.md
+└── ...
+```
+
+#### 架構特點
+- **模組化設計**：將組件按功能分類，提高程式碼可維護性
+- **關注點分離**：API 路由、組件邏輯、狀態管理分離清晰
+- **型別安全**：全面使用 TypeScript，提供完整的型別檢查
+- **可擴展性**：採用 Context + Hooks 模式，方便功能擴展
+- **工具化**：整合爬蟲腳本和資料處理工具，自動化資料維護
+
 ### 資料來源
 - 學校資料來自台大國際事務處（OIA）官方網站
 - 使用 Python 爬蟲自動化收集學校資訊
