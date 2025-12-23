@@ -413,8 +413,8 @@ export default function SchoolDetailModal({
           ref={sidePanelRef}
           className={
             isWishlist
-              ? 'fixed right-0 top-0 bottom-0 h-full bg-white border border-[#d6c3a1] shadow-xl overflow-hidden text-[#4a3828]'
-              : 'fixed right-0 top-0 bottom-0 h-full bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl overflow-hidden text-white'
+              ? 'fixed right-0 top-0 bottom-0 h-full bg-white border border-[#d6c3a1] shadow-xl overflow-hidden text-[#4a3828] flex flex-col'
+              : 'fixed right-0 top-0 bottom-0 h-full bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl overflow-hidden text-white flex flex-col'
           }
           style={{
             width: '480px',
@@ -430,37 +430,42 @@ export default function SchoolDetailModal({
           exit={{ x: '100%' }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
         >
-          {/* Close button - 左上角 */}
-          <button
-            type="button"
-            aria-label="關閉"
-            onClick={onClose}
-            className={
-              isWishlist
-                ? 'absolute left-4 top-4 z-10 rounded-md p-2 text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
-                : 'absolute left-4 top-4 z-10 rounded-md p-2 text-white/80 border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
-            }
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-x w-4 h-4"
-              aria-hidden="true"
+          {/* Sticky header with close button - 固定在頂部 */}
+          <div className="flex-shrink-0 sticky top-0 z-10 flex justify-start p-4 bg-inherit">
+            <button
+              type="button"
+              aria-label="關閉"
+              onClick={onClose}
+              className={
+                isWishlist
+                  ? 'rounded-md p-2 text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+                  : 'rounded-md p-2 text-white/80 border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0'
+              }
             >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-x w-4 h-4"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </div>
 
-          <div className="h-full overflow-y-auto p-6 pt-16">
-            {renderContent()}
+          {/* 可滾動的內容區域 */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="px-6 pt-4 pb-6">
+              {renderContent()}
+            </div>
           </div>
         </motion.div>
       ) : (
