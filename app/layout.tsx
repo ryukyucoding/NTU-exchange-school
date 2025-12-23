@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { Providers } from './providers';
 import AppShell from '@/components/layout/AppShell';
+import { Suspense } from 'react';
+import NavigationReferrerTracker from '@/components/NavigationReferrerTracker';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,6 +33,9 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" suppressHydrationWarning style={{ backgroundColor: 'unset', background: 'unset' }}>
       <body className={inter.className}>
+        <Suspense fallback={null}>
+          <NavigationReferrerTracker />
+        </Suspense>
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>
