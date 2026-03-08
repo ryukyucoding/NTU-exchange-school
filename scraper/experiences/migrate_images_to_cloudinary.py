@@ -177,11 +177,11 @@ def update_supabase_posts(student_id: str, content_data: dict):
 
         logger.info(f"🔍 查找學生 {student_name} ({school_name}) 對應的 Post 記錄...")
 
-        # 策略 1: 根據學生姓名和學校名稱精確匹配
-        search_query = f"{student_name} {school_name}"
+        # 策略 1: 根據學生姓名和學校名稱匹配
+        # 分別搜尋學生姓名和學校名稱，避免因空格或換行導致搜尋失敗
 
-        # 在 Supabase 中搜索匹配的 Post
-        response = supabase.table('Post').select('id, content, title').ilike('content', f'%{search_query}%').eq('status', 'published').execute()
+        # 在 Supabase 中搜索匹配的 Post (同時包含學生姓名和學校名稱)
+        response = supabase.table('Post').select('id, content, title').ilike('content', f'%{student_name}%').ilike('content', f'%{school_name}%').eq('status', 'published').execute()
 
         if response.data and len(response.data) > 0:
             logger.info(f"✓ 找到 {len(response.data)} 個匹配的 Post 記錄")

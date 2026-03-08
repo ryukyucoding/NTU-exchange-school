@@ -32,3 +32,8 @@ export const formatDateTime = (dateString: string): string => {
 
   return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')} ${hours}:${minutes}`;
 };
+
+
+
+
+

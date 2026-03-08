@@ -22,7 +22,7 @@ export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name"
 export CLOUDINARY_UPLOAD_PRESET="your_upload_preset"
 
 # Supabase 設定
-export NEXT_PUBLIC_SUPABASE_URL="https://dvqlakvtakiwhwgjmsgu.supabase.co"
+export NEXT_PUBLIC_SUPABASE_URL=""
 export SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"
 ```
 
@@ -128,3 +128,8 @@ Invalid API key
 2. **測試**：先在少量數據上測試
 3. **監控**：遷移過程中監控 Cloudinary 使用量
 4. **驗證**：遷移後徹底測試圖片顯示功能
+
+
+
+
+
