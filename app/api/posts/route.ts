@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getSupabaseServer } from "@/lib/db";
 import { createBoardNewPostNotifications } from "@/lib/notifications";
+import { rateLimit } from "@/lib/rate-limit";
 
 /**
  * POST /api/posts
  * 建立新貼文
  */
 export async function POST(req: NextRequest) {
+  const limited = rateLimit(req, 20, 60_000); // 每分鐘最多 20 篇發文
+  if (limited) return limited;
+
   try {
     // 獲取登入 session
     const session = await auth();
@@ -550,7 +554,7 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error creating post:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

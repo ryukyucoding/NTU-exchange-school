@@ -81,7 +81,7 @@ export async function GET(_req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error fetching followed boards:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

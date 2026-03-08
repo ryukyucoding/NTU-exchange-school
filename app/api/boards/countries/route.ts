@@ -23,7 +23,7 @@ export async function GET(_req: NextRequest) {
       console.error("Error creating Supabase client:", error);
       return NextResponse.json({
         success: false,
-        error: error instanceof Error ? error.message : "Failed to connect to database",
+        error: "伺服器錯誤，請稍後再試",
         countriesByRegion: {
           Americas: [],
           Europe: [],
@@ -59,7 +59,7 @@ export async function GET(_req: NextRequest) {
       console.error("Error fetching countries from country table:", error);
       return NextResponse.json({
         success: false,
-        error: error.message || "Failed to fetch countries",
+        error: "伺服器錯誤，請稍後再試",
         countriesByRegion: {
           Americas: [],
           Europe: [],
@@ -112,7 +112,7 @@ export async function GET(_req: NextRequest) {
     console.error("Unexpected error in GET /api/boards/countries:", error);
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : "Internal server error",
+      error: "伺服器錯誤，請稍後再試",
       countriesByRegion: {
         Americas: [],
         Europe: [],

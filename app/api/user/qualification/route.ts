@@ -90,7 +90,7 @@ export async function GET(_req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in GET /api/user/qualification:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -228,11 +228,7 @@ export async function PUT(req: NextRequest) {
         console.error("Error updating user qualification:", error);
         console.error("Error details:", JSON.stringify(error, null, 2));
         return NextResponse.json(
-          { 
-            error: "Failed to update user qualification",
-            details: error.message || JSON.stringify(error),
-            code: error.code || 'UNKNOWN'
-          },
+          { error: '伺服器錯誤，請稍後再試' },
           { status: 500 }
         );
       }
@@ -272,11 +268,7 @@ export async function PUT(req: NextRequest) {
           applicationGroup: applicationGroup || null,
         });
         return NextResponse.json(
-          { 
-            error: "Failed to create user qualification",
-            details: error.message || JSON.stringify(error),
-            code: error.code || 'UNKNOWN'
-          },
+          { error: '伺服器錯誤，請稍後再試' },
           { status: 500 }
         );
       }
@@ -298,7 +290,7 @@ export async function PUT(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in PUT /api/user/qualification:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

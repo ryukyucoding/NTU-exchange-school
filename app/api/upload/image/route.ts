@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  const limited = rateLimit(request, 10, 60_000); // 每分鐘最多 10 次上傳
+  if (limited) return limited;
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -19,8 +23,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // 移除檔案大小限制，因為會在客戶端壓縮
 
     // 檢查必要的環境變數
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;

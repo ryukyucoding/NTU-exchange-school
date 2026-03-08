@@ -50,13 +50,7 @@ export async function GET(_req: NextRequest) {
       console.error("Error message:", error.message);
       console.error("Error details:", error.details);
       return NextResponse.json(
-        { 
-          success: false,
-          error: "Failed to fetch schools from Supabase", 
-          details: error.message,
-          code: error.code,
-          hint: error.hint 
-        },
+        { success: false, error: '伺服器錯誤，請稍後再試' },
         { status: 500 }
       );
     }
@@ -224,7 +218,7 @@ export async function GET(_req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in GET /api/schools:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

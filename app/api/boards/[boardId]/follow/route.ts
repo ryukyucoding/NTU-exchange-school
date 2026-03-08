@@ -78,11 +78,7 @@ export async function POST(
         hint: error.hint,
       });
       return NextResponse.json(
-        { 
-          error: "Failed to follow board",
-          details: error.message,
-          code: error.code,
-        },
+        { error: '伺服器錯誤，請稍後再試' },
         { status: 500 }
       );
     }
@@ -94,7 +90,7 @@ export async function POST(
   } catch (error: unknown) {
     console.error("Error in POST /api/boards/[boardId]/follow:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -149,7 +145,7 @@ export async function DELETE(
   } catch (error: unknown) {
     console.error("Error in DELETE /api/boards/[boardId]/follow:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

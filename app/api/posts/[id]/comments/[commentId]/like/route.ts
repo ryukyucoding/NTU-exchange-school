@@ -105,7 +105,7 @@ export async function POST(
   } catch (error: unknown) {
     console.error("Error liking comment:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -163,7 +163,7 @@ export async function DELETE(
   } catch (error: unknown) {
     console.error("Error unliking comment:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      { error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

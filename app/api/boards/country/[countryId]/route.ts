@@ -104,7 +104,7 @@ export async function GET(
   } catch (error: unknown) {
     console.error("Error in GET /api/boards/country/[countryId]:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
+      { success: false, error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

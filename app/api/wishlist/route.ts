@@ -50,7 +50,7 @@ export async function GET(_req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in GET /api/wishlist:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
+      { success: false, error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -172,12 +172,7 @@ export async function POST(req: NextRequest) {
         order: null,
       });
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "Failed to add to wishlist",
-          details: error.message || JSON.stringify(error),
-          code: error.code
-        },
+        { success: false, error: '伺服器錯誤，請稍後再試' },
         { status: 500 }
       );
     }
@@ -189,7 +184,7 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in POST /api/wishlist:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
+      { success: false, error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -349,7 +344,7 @@ export async function PUT(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in PUT /api/wishlist:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
+      { success: false, error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }
@@ -413,7 +408,7 @@ export async function DELETE(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Error in DELETE /api/wishlist:", error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Internal server error" },
+      { success: false, error: "伺服器錯誤，請稍後再試" },
       { status: 500 }
     );
   }

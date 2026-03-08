@@ -8,6 +8,20 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { getSupabaseServer } from "./db";
 
+// 簡易 admin login 暴力破解防護
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+function checkLoginRateLimit(username: string): boolean {
+  const now = Date.now();
+  const key = `login:${username}`;
+  const entry = loginAttempts.get(key);
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(key, { count: 1, resetAt: now + 15 * 60_000 });
+    return true; // allowed
+  }
+  entry.count += 1;
+  return entry.count <= 20; // 15 分鐘內最多 20 次嘗試
+}
+
 // 检查环境变量
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.warn("⚠️  警告：未設定 Google OAuth 憑證！請在 .env.local 中設定 GOOGLE_CLIENT_ID 和 GOOGLE_CLIENT_SECRET");
@@ -26,8 +40,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        const username = credentials?.username as string | undefined;
+        if (!username || !checkLoginRateLimit(username)) {
+          return null; // 超過嘗試次數，拒絕
+        }
         // 檢查管理員憑證
-        if (credentials?.username === process.env.ADMIN_USERNAME &&
+        if (username === process.env.ADMIN_USERNAME &&
             credentials?.password === process.env.ADMIN_PASSWORD) {
           try {
             const supabase = getSupabaseServer();
@@ -59,7 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   debug: process.env.NODE_ENV === "development",
   callbacks: {
