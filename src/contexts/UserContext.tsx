@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { UserQualification } from '@/types/user';
+import posthog from 'posthog-js';
 
 interface UserContextType {
   user: UserQualification;
@@ -42,9 +43,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       loadUserQualification();
+      // 只在本 browser session 內的第一次登入時追蹤（避免重整頁面重複計算）
+      if (!sessionStorage.getItem('ph_signed_in')) {
+        posthog.capture('user_signed_in', { provider: 'google' });
+        sessionStorage.setItem('ph_signed_in', '1');
+      }
     } else if (status === 'unauthenticated') {
       // 登出時重置
       setUser(defaultUser);
+      sessionStorage.removeItem('ph_signed_in');
     }
   }, [status, session]);
 
