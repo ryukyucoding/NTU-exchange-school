@@ -344,7 +344,7 @@ export default function MapView({ schools }: MapViewProps) {
       </div>
 
       <Map
-        mapboxAccessToken="pk.eyJ1IjoieXV1dXV1dXV1dXUiLCJhIjoiY21nbmxmdnJlMHV3djJpcjVjMnM4d3Q1aiJ9._yqd6BliWVZ9watWky3-gg"
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         initialViewState={{
           longitude: center[0],
           latitude: center[1],
