@@ -36,7 +36,7 @@ async function checkPost() {
   const cloudinaryUrls = data.content.match(/https:\/\/res\.cloudinary\.com\/[^\s)]+/g);
   console.log(`✓ Cloudinary 圖片: ${cloudinaryUrls?.length || 0} 個`);
   if (cloudinaryUrls && cloudinaryUrls.length > 0) {
-    cloudinaryUrls.slice(0, 3).forEach((url, i) => {
+    cloudinaryUrls.slice(0, 3).forEach((url: string, i: number) => {
       console.log(`  ${i + 1}. ${url}`);
     });
   }
@@ -45,7 +45,7 @@ async function checkPost() {
   const supabaseUrls = data.content.match(/https:\/\/[^\/]+\.supabase\.co\/storage\/v1\/object\/public\/experience-images\/[^\s)]+/g);
   console.log(`\n⚠️  Supabase Storage 圖片: ${supabaseUrls?.length || 0} 個`);
   if (supabaseUrls && supabaseUrls.length > 0) {
-    supabaseUrls.forEach((url, i) => {
+    supabaseUrls.forEach((url: string, i: number) => {
       console.log(`  ${i + 1}. ${url}`);
     });
   }
