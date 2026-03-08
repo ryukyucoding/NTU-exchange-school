@@ -10,9 +10,11 @@ import { MapZoomProvider } from '@/contexts/MapZoomContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { PostHogProvider } from '@/components/PostHogProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
+    <PostHogProvider>
     <ErrorBoundary>
       <SessionProvider>
         <UserProvider>
@@ -31,5 +33,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </UserProvider>
       </SessionProvider>
     </ErrorBoundary>
+    </PostHogProvider>
   );
 }

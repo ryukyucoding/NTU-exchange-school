@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { FilterState } from '@/types/filter';
+import posthog from 'posthog-js';
 
 interface FilterContextType {
   filters: FilterState;
@@ -28,10 +29,12 @@ export function FilterProvider({ children }: { children: React.ReactNode }) {
 
   const updateFilters = (updates: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...updates }));
+    posthog.capture('filter_applied', updates as Record<string, unknown>);
   };
 
   const resetFilters = () => {
     setFilters(defaultFilters);
+    posthog.capture('filter_reset');
   };
 
   return (

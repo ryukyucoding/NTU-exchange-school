@@ -45,6 +45,7 @@
     "next": "^15.1.0",
     "next-auth": "^5.0.0-beta.30",
     "papaparse": "^5.5.3",
+    "posthog-js": "^1.359.1",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0",
     "react": "^19.0.0",

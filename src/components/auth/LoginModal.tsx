@@ -68,6 +68,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         <div className="text-center text-xs text-[#8a7a63] mt-6">
           <p>登入即表示您同意我們的服務條款和隱私政策</p>
+          <p className="mt-1">本網站使用匿名分析工具（PostHog）以改善使用體驗</p>
         </div>
       </DialogContent>
     </Dialog>

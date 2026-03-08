@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { SchoolWithMatch } from '@/types/school';
 import toast from 'react-hot-toast';
+import posthog from 'posthog-js';
 
 export interface WishlistItem {
   school: SchoolWithMatch;
@@ -114,6 +115,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       if (data.success) {
         await loadWishlist();
+        posthog.capture('wishlist_added', { school_id: school.id, school_name: school.name_zh });
         toast.success(`已將 ${school.name_zh} 加入收藏`);
       } else {
         toast.error(data.error || '加入收藏失敗');
@@ -135,6 +137,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       if (data.success) {
         await loadWishlist();
         if (school) {
+          posthog.capture('wishlist_removed', { school_id: schoolId, school_name: school.school.name_zh });
           toast.success(`已移除 ${school.school.name_zh}`);
         }
       } else {

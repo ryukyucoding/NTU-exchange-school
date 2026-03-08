@@ -6,6 +6,7 @@ import { ExternalLink, Heart } from 'lucide-react';
 import { useWishlist } from '@/contexts/WishlistContext';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { useEffect, useRef } from 'react';
+import posthog from 'posthog-js';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -172,6 +173,12 @@ export default function SchoolDetailModal({
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open, onClose]);
+
+  useEffect(() => {
+    if (open && school) {
+      posthog.capture('school_viewed', { school_id: school.id, school_name: school.name_zh, country: school.country });
+    }
+  }, [open, school]);
 
   if (!open || !school) {
     return null;
@@ -385,7 +392,10 @@ export default function SchoolDetailModal({
         <div className="pt-4">
           <Button
             variant="outline"
-            onClick={() => window.open(school.url, '_blank')}
+            onClick={() => {
+              posthog.capture('school_external_link_clicked', { school_id: school.id, school_name: school.name_zh, url: school.url });
+              window.open(school.url, '_blank');
+            }}
             className={
               isWishlist
                 ? 'w-full border-[#a07a52] text-[#4a3828] bg-white hover:bg-[#f5ede1] hover:text-[#3b2a1c]'

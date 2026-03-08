@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 
 interface UsePostActionsParams {
   postId: string;
@@ -44,6 +45,7 @@ export function usePostActions({
 
       if (data.success) {
         setIsLiked(!isLiked);
+        posthog.capture('post_liked', { post_id: postId, action: isLiked ? 'unlike' : 'like' });
         // 更新 like 計數（如果有提供回調）
         if (onLikeCountUpdate && typeof data.likeCount === 'number') {
           onLikeCountUpdate(data.likeCount);
@@ -72,6 +74,7 @@ export function usePostActions({
 
       if (data.success) {
         setIsBookmarked(!isBookmarked);
+        posthog.capture('post_bookmarked', { post_id: postId, action: isBookmarked ? 'remove' : 'add' });
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error);
