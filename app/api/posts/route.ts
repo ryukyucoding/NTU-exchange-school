@@ -590,19 +590,6 @@ export async function GET(req: NextRequest) {
     const filterType = searchParams.get("filterType"); // "rating" for rating posts only
     const type = searchParams.get("type"); // 'general' or 'review'
 
-    console.log('[GET /api/posts] 請求參數:', {
-      filter,
-      limit,
-      cursor,
-      boardId,
-      hashtag,
-      schoolId,
-      sort,
-      filterType,
-      type,
-      userId: userId ? '有' : '無',
-    });
-
     const supabase = getSupabaseServer();
     
     // 如果 Supabase 未配置，返回空列表
@@ -679,8 +666,6 @@ export async function GET(req: NextRequest) {
 
     // 如果指定了 boardId，先驗證 board 是否存在，然後通過 PostBoard 表查詢
     if (boardId) {
-      console.log('[GET /api/posts] 查詢 boardId:', boardId);
-      
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: boardData, error: boardError } = await (supabase as any)
         .from('Board')
@@ -688,13 +673,7 @@ export async function GET(req: NextRequest) {
         .eq('id', boardId)
         .maybeSingle();
 
-      console.log('[GET /api/posts] Board 查詢結果:', {
-        boardData,
-        boardError: boardError ? { message: boardError.message, code: boardError.code } : null,
-      });
-
       if (boardError || !boardData) {
-        console.log('[GET /api/posts] Board 不存在或查詢失敗，返回空列表');
         return NextResponse.json({
           success: true,
           posts: [],
@@ -703,15 +682,14 @@ export async function GET(req: NextRequest) {
       }
 
       // 通過 PostBoard 表查詢該看板的貼文
-      // 查詢特定boardId的PostBoard
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: postBoardData, error: postBoardError } = await (supabase as any)
         .from('PostBoard')
-        .select('*')
+        .select('postId')
         .eq('boardId', boardId);
 
       if (postBoardError) {
-        console.error('[GET /api/posts] ❌ PostBoard 查詢錯誤:', postBoardError);
+        console.error('[GET /api/posts] PostBoard 查詢錯誤:', postBoardError);
         return NextResponse.json({
           success: true,
           posts: [],
@@ -729,14 +707,10 @@ export async function GET(req: NextRequest) {
 
       const postIds = (postBoardData as { postId: string }[]).map((p) => p.postId);
       filterPostIds = postIds;
-    } else if (filter !== "drafts") {
-      // 只有在非草稿查詢時才顯示這個 log
-      console.log('[GET /api/posts] 沒有 boardId，將查詢所有 Posts');
     }
 
     // 如果是草稿查詢，只返回當前用戶的草稿
     if (filter === "drafts") {
-      console.log('[GET /api/posts] 開始處理草稿查詢');
       if (!userId) {
         return NextResponse.json({
           success: true,
@@ -861,16 +835,6 @@ export async function GET(req: NextRequest) {
       const schoolsData = schoolsResult.status === 'fulfilled' ? schoolsResult.value : { data: [] };
       const postBoardData = postBoardResult.status === 'fulfilled' ? postBoardResult.value : { data: [] };
 
-      console.log('[GET /api/posts] 草稿相關資料查詢結果:', {
-        postIds,
-        hashtagsCount: hashtagsData.data?.length || 0,
-        schoolsCount: schoolsData.data?.length || 0,
-        postBoardsCount: postBoardData.data?.length || 0,
-        hashtagsData: hashtagsData.data?.slice(0, 3) || [],
-        schoolsData: schoolsData.data?.slice(0, 3) || [],
-        postBoardData: postBoardData.data?.slice(0, 3) || [],
-      });
-
       // 組織資料
       const draftHashtagsMap = new Map<string, string[]>();
       const draftSchoolsMap = new Map<string, { id: string; name_zh: string; name_en: string; country: string }[]>();
@@ -884,11 +848,6 @@ export async function GET(req: NextRequest) {
       });
 
       (schoolsData.data || []).forEach((ps: { postId: string; school: { id: string; name_zh: string; name_en: string; country: string } | null }) => {
-        console.log('[GET /api/posts] 處理 PostSchool 數據:', {
-          postId: ps.postId,
-          hasSchool: !!ps.school,
-          school: ps.school,
-        });
         if (ps.school) {
           if (!draftSchoolsMap.has(ps.postId)) {
             draftSchoolsMap.set(ps.postId, []);
@@ -900,11 +859,6 @@ export async function GET(req: NextRequest) {
           const countryList = draftCountriesMap.get(ps.postId)!;
           if (ps.school.country && !countryList.includes(ps.school.country)) {
             countryList.push(ps.school.country);
-            console.log('[GET /api/posts] 從學校添加國家:', {
-              postId: ps.postId,
-              country: ps.school.country,
-              currentCountries: countryList,
-            });
           }
         }
       });
@@ -921,19 +875,6 @@ export async function GET(req: NextRequest) {
         }
       });
       
-      console.log('[GET /api/posts] 草稿資料組織完成:', {
-        draftSchoolsMap: Array.from(draftSchoolsMap.entries()).map(([id, schools]) => ({
-          postId: id,
-          schoolsCount: schools.length,
-          schools,
-        })),
-        draftCountriesMap: Array.from(draftCountriesMap.entries()).map(([id, countries]) => ({
-          postId: id,
-          countriesCount: countries.length,
-          countries,
-        })),
-      });
-
       let filteredDrafts = drafts;
       if (type === 'review') {
         filteredDrafts = (drafts as { id: string }[]).filter((d) => ratedPostIds.has(d.id));
@@ -945,13 +886,6 @@ export async function GET(req: NextRequest) {
         const postId = post.id;
         const schools = draftSchoolsMap.get(postId) || [];
         const countries = draftCountriesMap.get(postId) || [];
-        console.log('[GET /api/posts] 準備返回草稿:', {
-          postId,
-          title: post.title,
-          schools,
-          countries,
-          hashtags: draftHashtagsMap.get(postId) || [],
-        });
         return {
           ...post,
           type: ratedPostIds.has(postId) ? 'review' : 'general',
@@ -960,19 +894,7 @@ export async function GET(req: NextRequest) {
           countries,
         };
       });
-      
-      console.log('[GET /api/posts] 返回草稿列表:', {
-        count: finalDrafts.length,
-        drafts: finalDrafts.map((d: any) => ({
-          id: d.id,
-          title: d.title,
-          schoolsCount: d.schools?.length || 0,
-          countriesCount: d.countries?.length || 0,
-          schools: d.schools,
-          countries: d.countries,
-        })),
-      });
-      
+
       return NextResponse.json({
         success: true,
         posts: finalDrafts,
@@ -980,31 +902,6 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 如果沒有 boardId，查詢所有 Posts（社群主頁）
-    console.log('[GET /api/posts] 開始構建查詢，沒有 boardId，查詢所有 Posts');
-    
-    // 🔍 先檢查 Post 表中的所有數據（用於調試）
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: allPostsDebug, error: allPostsDebugError } = await (supabase as any)
-      .from('Post')
-      .select('id, title, status, deletedAt, createdAt, authorId')
-      .limit(20);
-    
-    console.log('[GET /api/posts] 🔍 Post 表所有數據（前20筆，用於調試）:', {
-      count: allPostsDebug?.length || 0,
-      error: allPostsDebugError ? { message: allPostsDebugError.message, code: allPostsDebugError.code } : null,
-      posts: allPostsDebug?.map((p: { id: string; title: string; status: string; deletedAt: string | null; createdAt: string }) => ({
-        id: p.id,
-        title: p.title?.substring(0, 30) || '(無標題)',
-        status: p.status,
-        deletedAt: p.deletedAt,
-        createdAt: p.createdAt,
-      })) || [],
-      publishedCount: allPostsDebug?.filter((p: { status: string; deletedAt: string | null }) => 
-        p.status === 'published' && !p.deletedAt
-      ).length || 0,
-    });
-    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase as any)
       .from('Post')
@@ -1027,17 +924,6 @@ export async function GET(req: NextRequest) {
     }
     
     query = query.order('createdAt', { ascending: false }).limit(limit);
-    
-    console.log('[GET /api/posts] 基礎查詢已構建:', {
-      table: 'Post',
-      filters: {
-        deletedAt: 'is null',
-        status: 'published',
-        authorId: authorId || 'all',
-      },
-      orderBy: 'createdAt DESC',
-      limit,
-    });
 
     // 如果是 "following"，只顯示追蹤看板中的貼文
     if (filter === "following") {
@@ -1161,89 +1047,26 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // 如果有過濾條件，應用過濾
-    console.log('[GET /api/posts] 應用過濾條件:', {
-      filterPostIds: filterPostIds ? { count: filterPostIds.length, sampleIds: filterPostIds.slice(0, 5) } : null,
-      filterPostIdsIsNull: filterPostIds === null,
-    });
-
     if (filterPostIds !== null && filterPostIds.length > 0) {
-      // 先檢查這些postId是否真的存在於Post表中，以及它們的狀態
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postCheckData, error: postCheckError } = await (supabase as any)
-        .from('Post')
-        .select('id, status, deletedAt')
-        .in('id', filterPostIds);
-      
-      console.log('[GET /api/posts] 🔍 檢查 filterPostIds 對應的 Post 記錄:', {
-        requestedPostIds: filterPostIds,
-        foundPosts: postCheckData?.length || 0,
-        foundPostIds: postCheckData?.map((p: { id: string; status: string; deletedAt: string | null }) => ({
-          id: p.id,
-          status: p.status,
-          deletedAt: p.deletedAt,
-        })) || [],
-        publishedPosts: postCheckData?.filter((p: { status: string; deletedAt: string | null }) => 
-          p.status === 'published' && !p.deletedAt
-        ).length || 0,
-        error: postCheckError ? { message: postCheckError.message, code: postCheckError.code } : null,
-      });
-      
       query = query.in('id', filterPostIds);
-      console.log('[GET /api/posts] ✅ 已應用 filterPostIds 過濾，將查詢', filterPostIds.length, '個貼文');
     } else if (filterPostIds !== null && filterPostIds.length === 0) {
-      console.log('[GET /api/posts] ⚠️ filterPostIds 為空數組，返回空列表');
       return NextResponse.json({
         success: true,
         posts: [],
         nextCursor: null,
       });
-    } else {
-      console.log('[GET /api/posts] ✅ 沒有過濾條件，將查詢所有已發布的 Posts');
     }
 
-    // 如果有 cursor，從該位置開始
+    // 如果有 cursor（createdAt 時間戳），從該位置開始
     if (cursor && sort === "latest") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: cursorPost } = await (supabase as any)
-        .from('Post')
-        .select('createdAt')
-        .eq('id', cursor)
-        .single();
-
-      if (cursorPost) {
-        query = query.lt('createdAt', cursorPost.createdAt);
-      }
+      query = query.lt('createdAt', cursor);
     }
 
     let posts, error;
     try {
-      console.log('[GET /api/posts] 🔍 執行查詢...');
-      console.log('[GET /api/posts] 查詢對象類型:', typeof query);
       const result = await query;
       posts = result.data;
       error = result.error;
-      
-      console.log('[GET /api/posts] 📊 查詢結果:', {
-        postsCount: posts?.length || 0,
-        postsIsArray: Array.isArray(posts),
-        postsIsNull: posts === null,
-        postsIsUndefined: posts === undefined,
-        error: error ? { 
-          message: error.message, 
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-        } : null,
-        samplePostIds: posts?.slice(0, 3).map((p: { id: string }) => p.id) || [],
-        samplePost: posts?.[0] ? {
-          id: posts[0].id,
-          title: posts[0].title,
-          status: posts[0].status,
-          type: posts[0].type,
-          hasAuthor: !!posts[0].author,
-        } : null,
-      });
     } catch (queryError: unknown) {
       console.error("Query error:", queryError);
       // 如果是表不存在的错误，返回空列表
@@ -1291,21 +1114,6 @@ export async function GET(req: NextRequest) {
     }
 
     if (!posts || posts.length === 0) {
-      console.log('[GET /api/posts] ⚠️ 查詢結果為空，返回空列表', {
-        posts: posts,
-        postsLength: posts?.length || 0,
-        postsIsNull: posts === null,
-        postsIsUndefined: posts === undefined,
-        queryApplied: {
-          hasFilterPostIds: filterPostIds !== null,
-          filterPostIdsCount: filterPostIds?.length || 0,
-          hasBoardId: !!boardId,
-          hasHashtag: !!hashtag,
-          hasSchoolId: !!schoolId,
-          filterType,
-          filter,
-        },
-      });
       return NextResponse.json({
         success: true,
         posts: [],
@@ -1313,19 +1121,10 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    console.log('[GET /api/posts] 查詢到貼文:', {
-      count: posts.length,
-      samplePosts: posts.slice(0, 3).map((p: { id: string; title: string; type?: string }) => ({
-        id: p.id,
-        title: p.title,
-        type: p.type,
-      })),
-    });
-
     // 批量獲取互動數據和相關數據
     const postIds = (posts as { id: string }[]).map((p) => p.id);
     
-    // 獲取按讚數、轉發數、留言數、hashtags、photos、schools、ratings（使用 try-catch 避免錯誤）
+    // 獲取按讚數、轉發數、留言數、hashtags、photos、schools、ratings、bookmarks（使用 try-catch 避免錯誤）
     let likesData = { data: [] };
     let repostsData = { data: [] }; // 現在是 Post 記錄，其中 repostId 指向原始貼文
     let commentsData = { data: [] };
@@ -1335,11 +1134,10 @@ export async function GET(req: NextRequest) {
     let photosData = { data: [] };
     let schoolsData = { data: [] };
     let ratingsData = { data: [] };
+    let userBookmarksData = { data: [] };
 
     if (supabase && postIds.length > 0) {
       try {
-        console.log('[GET /api/posts] 🔍 開始批量查詢相關數據，postIds:', postIds);
-        
         // 使用 Promise.allSettled 來處理錯誤，避免一個失敗影響其他查詢
         const results = await Promise.allSettled([
           (supabase as any).from('Like').select('postId').in('postId', postIds).then((r: any) => r).catch((e: any) => {
@@ -1380,6 +1178,11 @@ export async function GET(req: NextRequest) {
             console.warn('[GET /api/posts] SchoolRating 查詢失敗:', e);
             return { data: [], error: e };
           }),
+          // [9] Bookmark 查詢（與其他查詢並行）
+          (userId) ? (supabase as any).from('Bookmark').select('postId').eq('userId', userId).in('postId', postIds).then((r: any) => r).catch((e: any) => {
+            console.warn('[GET /api/posts] Bookmark 查詢失敗:', e);
+            return { data: [], error: e };
+          }) : Promise.resolve({ data: [] }),
         ]);
 
         // 提取結果
@@ -1392,6 +1195,7 @@ export async function GET(req: NextRequest) {
         photosData = results[6].status === 'fulfilled' ? results[6].value : { data: [] };
         schoolsData = results[7].status === 'fulfilled' ? results[7].value : { data: [] };
         ratingsData = results[8].status === 'fulfilled' ? results[8].value : { data: [] };
+        userBookmarksData = results[9].status === 'fulfilled' ? results[9].value : { data: [] };
 
       } catch (err) {
         console.error('[GET /api/posts] ❌ 批量查詢發生錯誤:', err);
@@ -1405,17 +1209,7 @@ export async function GET(req: NextRequest) {
     const commentCounts = new Map<string, number>();
     const userLikedPostIds = new Set(((userLikes.data || []) as { postId: string }[]).map((l) => l.postId));
     const userRepostedPostIds = new Set(((userReposts.data || []) as { repostId: string }[]).map((r) => r.repostId));
-    
-    // 查詢用戶收藏的貼文（用於設置 isBookmarked 狀態）
-    let userBookmarkedPostIds = new Set<string>();
-    if (userId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: userBookmarks } = await (supabase as any)
-        .from('Bookmark')
-        .select('postId')
-        .eq('userId', userId);
-      userBookmarkedPostIds = new Set(((userBookmarks || []) as { postId: string }[]).map((b) => b.postId));
-    }
+    const userBookmarkedPostIds = new Set(((userBookmarksData.data || []) as { postId: string }[]).map((b) => b.postId));
 
     (((likesData.data || []) as { postId: string }[])).forEach((like) => {
       likeCounts.set(like.postId, (likeCounts.get(like.postId) || 0) + 1);
@@ -1713,9 +1507,8 @@ export async function GET(req: NextRequest) {
     
     // 熱門排序：先用互動數排序，暫時不提供 cursor 分頁（避免排序後 cursor 失真）
     let finalPosts = postsWithStatus;
-    let nextCursor = posts.length === limit ? posts[posts.length - 1].id : null;
-
-    console.log(`[GET /api/posts] 找到 ${finalPosts.length} 篇貼文`);
+    // cursor 直接使用 createdAt 時間戳，省去下次分頁時的 ID 查詢
+    let nextCursor = posts.length === limit ? (posts[posts.length - 1] as { createdAt: string }).createdAt : null;
 
     if (sort === "popular") {
       finalPosts = [...postsWithStatus].sort((a, b) => {
@@ -1729,16 +1522,11 @@ export async function GET(req: NextRequest) {
       nextCursor = null;
     }
 
-    console.log(`[GET /api/posts] 返回 ${finalPosts.length} 篇貼文`);
-
-    const responseData = {
+    return NextResponse.json({
       success: true,
       posts: finalPosts,
       nextCursor,
-    };
-
-
-    return NextResponse.json(responseData);
+    });
   } catch (error: unknown) {
     console.error("Error fetching posts:", error);
     // 任何錯誤都返回空列表，避免 500 錯誤

@@ -22,15 +22,16 @@ import type { PostWithAuthor as Post } from '@/types/social';
 
 interface SchoolReviewPostCardProps {
   post: Post;
+  enableRealtime?: boolean;
 }
 
-export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps) {
+export default function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostCardProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 使用即時更新 hook
+  // 使用即時更新 hook（feed 列表中停用，僅在詳細頁啟用）
   const { likeCount, commentCount, repostCount, updateCounts } = usePostUpdates({
     postId: post.id,
     initialCounts: {
@@ -38,6 +39,7 @@ export default function SchoolReviewPostCard({ post }: SchoolReviewPostCardProps
       commentCount: post.commentCount,
       repostCount: post.repostCount,
     },
+    enabled: enableRealtime,
   });
 
   // 使用自定義 hook 來管理貼文互動

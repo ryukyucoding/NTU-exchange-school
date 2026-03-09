@@ -37,12 +37,14 @@ interface UsePostUpdatesOptions {
     commentCount: number;
     repostCount: number;
   };
+  /** 是否啟用即時訂閱。在 feed 列表中設為 false 可避免大量 Pusher 訂閱。預設 true。 */
+  enabled?: boolean;
 }
 
 /**
  * Hook for subscribing to real-time post interaction updates
  */
-export function usePostUpdates({ postId, initialCounts }: UsePostUpdatesOptions) {
+export function usePostUpdates({ postId, initialCounts, enabled = true }: UsePostUpdatesOptions) {
   const [likeCount, setLikeCount] = useState(initialCounts.likeCount);
   const [commentCount, setCommentCount] = useState(initialCounts.commentCount);
   const [repostCount, setRepostCount] = useState(initialCounts.repostCount);
@@ -56,7 +58,7 @@ export function usePostUpdates({ postId, initialCounts }: UsePostUpdatesOptions)
   }, []);
 
   useEffect(() => {
-    if (!postId) {
+    if (!postId || !enabled) {
       return;
     }
 
@@ -70,7 +72,6 @@ export function usePostUpdates({ postId, initialCounts }: UsePostUpdatesOptions)
 
       // 監聽貼文更新事件
       channel.bind('post-update', (data: PostUpdateData) => {
-        console.log('[Pusher] Post update received:', data);
 
         // 更新對應的計數
         switch (data.type) {
@@ -93,19 +94,17 @@ export function usePostUpdates({ postId, initialCounts }: UsePostUpdatesOptions)
         }
       });
 
-      console.log(`[Pusher] Subscribed to ${channelName}`);
 
       return () => {
         // 清理：取消訂閱
         channel.unbind('post-update');
         pusher.unsubscribe(channelName);
         channelRef.current = null;
-        console.log(`[Pusher] Unsubscribed from ${channelName}`);
       };
     } catch (error) {
       console.error('[Pusher] Failed to subscribe to post updates:', error);
     }
-  }, [postId]);
+  }, [postId, enabled]);
 
   return {
     likeCount,
