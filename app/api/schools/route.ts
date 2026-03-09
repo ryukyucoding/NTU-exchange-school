@@ -35,49 +35,30 @@ export async function GET(_req: NextRequest) {
       );
     }
 
-    // 查詢 schools 表
-    // 注意：根據 current-database.sql，schools 表沒有 country 和 country_en 欄位
-    // 需要通過 country_id JOIN Country 表來獲取國家信息
-    // 明確選擇所有欄位，確保 country_id 被包含
-    const { data: schools, error } = await supabase
-      .from("schools")
-      .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, application_group, gpa_requirement, grade_requirement, language_requirement, restricted_colleges, quota, academic_calendar, registration_fee, accommodation_info, notes, latitude, longitude")
-      .order("name_zh");
+    // 並行查詢 schools 和 Country 表，減少一個 DB round-trip
+    const [schoolsResult, countriesResult] = await Promise.all([
+      supabase
+        .from("schools")
+        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, application_group, gpa_requirement, grade_requirement, language_requirement, restricted_colleges, quota, academic_calendar, registration_fee, accommodation_info, notes, latitude, longitude")
+        .order("name_zh"),
+      supabase
+        .from("Country")
+        .select("id, country_zh, country_en, continent"),
+    ]);
+
+    const { data: schools, error } = schoolsResult;
+    const { data: countries, error: countriesError } = countriesResult;
 
     if (error) {
-      console.error("Error fetching schools from Supabase:", error);
-      console.error("Error code:", error.code);
-      console.error("Error message:", error.message);
-      console.error("Error details:", error.details);
+      console.error("Error fetching schools from Supabase:", error.message);
       return NextResponse.json(
         { success: false, error: '伺服器錯誤，請稍後再試' },
         { status: 500 }
       );
     }
 
-    // 調試：檢查查詢結果
-    if (schools && schools.length > 0) {
-      console.log(`[API /schools] 查詢到 ${schools.length} 個學校`);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const sampleSchool = schools[0] as any;
-      if (sampleSchool && 'id' in sampleSchool) {
-        console.log(`[API /schools] 樣本學校數據:`, {
-          id: sampleSchool.id,
-          name_zh: sampleSchool.name_zh,
-          country_id: sampleSchool.country_id,
-          country_idType: typeof sampleSchool.country_id,
-          hasCountryId: 'country_id' in sampleSchool,
-        });
-      }
-    }
-
-    // 獲取所有國家信息（用於後續匹配）
-    const { data: countries, error: countriesError } = await supabase
-      .from("Country")
-      .select("id, country_zh, country_en, continent");
-
     if (countriesError) {
-      console.error("Error fetching countries:", countriesError);
+      console.error("Error fetching countries:", countriesError.message);
     }
 
     // 創建國家 ID 到國家信息的映射
@@ -87,9 +68,6 @@ export async function GET(_req: NextRequest) {
       (countries as any[]).forEach((c: { id: number; country_zh: string; country_en: string; continent: string }) => {
         countryMap.set(String(c.id), c);
       });
-      console.log(`[API /schools] 載入 ${countries.length} 個國家到映射表`);
-    } else {
-      console.warn("[API /schools] 沒有獲取到國家數據");
     }
 
     // 轉換資料格式以符合前端 School 類型
@@ -114,22 +92,9 @@ export async function GET(_req: NextRequest) {
       latitude: number | null;
       longitude: number | null;
     }) => {
-      // 確保 country_id 存在且正確處理
-      // 注意：school.country_id 可能是 number 或 null/undefined
       const rawCountryId = school.country_id;
       const countryIdStr = (rawCountryId !== null && rawCountryId !== undefined) ? String(rawCountryId) : null;
-      
-      // 調試：記錄 country_id 的原始值和轉換後的值
-      if (!countryIdStr) {
-        console.warn(`[API /schools] 學校 ${school.id} (${school.name_zh}) 的 country_id 為空:`, rawCountryId);
-      }
-      
       const countryInfo = countryIdStr ? countryMap.get(countryIdStr) : null;
-      
-      // 調試：記錄沒有匹配到國家的學校
-      if (countryIdStr && !countryInfo) {
-        console.warn(`[API /schools] 學校 ${school.id} (${school.name_zh}) 的 country_id ${countryIdStr} 沒有匹配到國家`);
-      }
       
       const country = countryInfo?.country_zh || '';
       const country_en = countryInfo?.country_en || '';
@@ -199,22 +164,15 @@ export async function GET(_req: NextRequest) {
       };
     });
 
-    // 統計有 country_id 的學校數量
-    const schoolsWithCountryId = formattedSchools.filter(s => s.country_id != null).length;
-    console.log(`[API /schools] 返回 ${formattedSchools.length} 個學校，其中 ${schoolsWithCountryId} 個有 country_id`);
-    
-    // 調試：檢查前幾個學校的 country_id
-    if (formattedSchools.length > 0) {
-      console.log(`[API /schools] 前3個學校的 country_id:`);
-      formattedSchools.slice(0, 3).forEach((s, idx) => {
-        console.log(`  ${idx + 1}. ${s.name_zh}: country_id = ${s.country_id} (${typeof s.country_id})`);
-      });
-    }
-
-    return NextResponse.json({
-      success: true,
-      schools: formattedSchools,
-    });
+    // 學校資料極少異動，快取 5 分鐘（edge）/ 1 分鐘（瀏覽器），背景自動更新
+    return NextResponse.json(
+      { success: true, schools: formattedSchools },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, max-age=60, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (error: unknown) {
     console.error("Error in GET /api/schools:", error);
     return NextResponse.json(

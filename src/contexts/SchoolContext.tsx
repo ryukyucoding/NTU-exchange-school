@@ -3,6 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { School } from '@/types/school';
 
+const CACHE_KEY = 'schools_cache';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 分鐘
+
 interface SchoolContextType {
   schools: School[];
   loading: boolean;
@@ -11,6 +14,29 @@ interface SchoolContextType {
 }
 
 const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
+
+function readCache(): School[] | null {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, timestamp } = JSON.parse(raw) as { data: School[]; timestamp: number };
+    if (Date.now() - timestamp > CACHE_TTL_MS) {
+      sessionStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(schools: School[]) {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: schools, timestamp: Date.now() }));
+  } catch {
+    // sessionStorage 滿了或不可用時忽略
+  }
+}
 
 export function SchoolProvider({ children }: { children: React.ReactNode }) {
   const [schools, setSchools] = useState<School[]>([]);
@@ -21,28 +47,17 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      // 只從 Supabase API 讀取學校資料
       const response = await fetch('/api/schools');
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (data.success && data.schools) {
-        // 調試：檢查接收到的數據
-        if (data.schools.length > 0) {
-          const sampleSchool = data.schools[0];
-          console.log('[SchoolContext] 接收到的樣本學校:', {
-            id: sampleSchool.id,
-            name_zh: sampleSchool.name_zh,
-            country_id: sampleSchool.country_id,
-            country_idType: typeof sampleSchool.country_id,
-            hasCountryId: 'country_id' in sampleSchool,
-          });
-        }
         setSchools(data.schools);
+        writeCache(data.schools);
       } else {
         throw new Error(data.error || 'Failed to load schools from Supabase');
       }
@@ -56,7 +71,25 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    reloadSchools();
+    // 先從 sessionStorage 讀快取，命中時直接顯示，同時在背景更新
+    const cached = readCache();
+    if (cached) {
+      setSchools(cached);
+      setLoading(false);
+      // 背景靜默更新（不顯示 loading）
+      fetch('/api/schools')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success && data.schools) {
+            setSchools(data.schools);
+            writeCache(data.schools);
+          }
+        })
+        .catch(() => {/* 背景更新失敗時保留快取資料 */});
+    } else {
+      reloadSchools();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
