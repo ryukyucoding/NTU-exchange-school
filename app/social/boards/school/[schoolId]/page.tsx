@@ -69,6 +69,8 @@ function SchoolBoardContent() {
   const [loading, setLoading] = useState(true);
   const [showSchoolDetail, setShowSchoolDetail] = useState(false);
 
+  // Effect 1: 取得版面資訊，只依賴 schoolId，不依賴 session
+  // 避免 NextAuth refetchOnWindowFocus 造成切換分頁/桌面時重新 loading
   useEffect(() => {
     let cancelled = false;
     const fetchBoard = async () => {
@@ -77,19 +79,9 @@ function SchoolBoardContent() {
         const res = await fetch(`/api/boards/school/${schoolId}`);
         const data: BoardInfoResponse = await res.json();
         if (!cancelled && data?.success) {
-          const bid = data.board?.id || null;
-          setBoardId(bid);
+          setBoardId(data.board?.id || null);
           setStats(data.stats || { followerCount: 0, postCount: 0 });
           setAvgRatings(data.avgRatings || { livingConvenience: 0, costOfLiving: 0, courseLoading: 0 });
-          
-          // 檢查是否已追蹤
-          if (bid && session?.user) {
-            const followRes = await fetch(`/api/boards/${bid}/follow`);
-            const followData = await followRes.json();
-            if (!cancelled && followData?.success) {
-              setIsFollowing(followData.isFollowing || false);
-            }
-          }
         }
       } catch (err) {
         console.error('Error fetching board info:', err);
@@ -98,10 +90,27 @@ function SchoolBoardContent() {
       }
     };
     if (schoolId) fetchBoard();
-    return () => {
-      cancelled = true;
+    return () => { cancelled = true; };
+  }, [schoolId]);
+
+  // Effect 2: 查詢追蹤狀態，boardId 有值後才跑，不觸發 loading spinner
+  useEffect(() => {
+    if (!boardId || !session?.user) return;
+    let cancelled = false;
+    const checkFollow = async () => {
+      try {
+        const followRes = await fetch(`/api/boards/${boardId}/follow`);
+        const followData = await followRes.json();
+        if (!cancelled && followData?.success) {
+          setIsFollowing(followData.isFollowing || false);
+        }
+      } catch (err) {
+        console.error('Error checking follow status:', err);
+      }
     };
-  }, [schoolId, session]);
+    checkFollow();
+    return () => { cancelled = true; };
+  }, [boardId]);
 
   // 设置主内容区的最小宽度
   useEffect(() => {

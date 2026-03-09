@@ -92,9 +92,9 @@ export default function PostList({
         const isLast = index === posts.length - 1;
         let postCard;
         if (post.postType === 'review') {
-          postCard = <SchoolReviewPostCard key={post.id} post={post as any} />;
+          postCard = <SchoolReviewPostCard post={post as any} />;
         } else {
-          postCard = <GeneralPostCard key={post.id} post={post as any} />;
+          postCard = <GeneralPostCard post={post as any} />;
         }
 
         return (

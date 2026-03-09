@@ -128,6 +128,8 @@ function CountryBoardContent() {
     });
   };
 
+  // Effect 1: 取得版面資訊，只依賴 countryId，不依賴 session
+  // 避免 NextAuth refetchOnWindowFocus 造成切換分頁/桌面時重新 loading
   useEffect(() => {
     let cancelled = false;
     const fetchBoard = async () => {
@@ -136,25 +138,13 @@ function CountryBoardContent() {
         const res = await fetch(`/api/boards/country/${countryId}`);
         const data: BoardInfoResponse = await res.json();
         if (!cancelled && data?.success) {
-          const bid = data.board?.id || null;
-          setBoardId(bid);
+          setBoardId(data.board?.id || null);
           setStats(data.stats || { followerCount: 0, postCount: 0 });
-          
-          // 設置國家資訊
           if (data.country) {
             setCountryInfo({
               country_zh: data.country.country_zh,
               country_en: data.country.country_en,
             });
-          }
-          
-          // 檢查是否已追蹤
-          if (bid && session?.user) {
-            const followRes = await fetch(`/api/boards/${bid}/follow`);
-            const followData = await followRes.json();
-            if (!cancelled && followData?.success) {
-              setIsFollowing(followData.isFollowing || false);
-            }
           }
         }
       } catch (err) {
@@ -164,10 +154,27 @@ function CountryBoardContent() {
       }
     };
     if (countryId) fetchBoard();
-    return () => {
-      cancelled = true;
+    return () => { cancelled = true; };
+  }, [countryId]);
+
+  // Effect 2: 查詢追蹤狀態，boardId 有值後才跑，不觸發 loading spinner
+  useEffect(() => {
+    if (!boardId || !session?.user) return;
+    let cancelled = false;
+    const checkFollow = async () => {
+      try {
+        const followRes = await fetch(`/api/boards/${boardId}/follow`);
+        const followData = await followRes.json();
+        if (!cancelled && followData?.success) {
+          setIsFollowing(followData.isFollowing || false);
+        }
+      } catch (err) {
+        console.error('Error checking follow status:', err);
+      }
     };
-  }, [countryId, session]);
+    checkFollow();
+    return () => { cancelled = true; };
+  }, [boardId]);
 
   // 设置主内容区的最小宽度
   useEffect(() => {

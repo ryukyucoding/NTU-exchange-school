@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -75,7 +75,7 @@ interface GeneralPostCardProps {
   enableRealtime?: boolean;
 }
 
-export default function GeneralPostCard({ post, enableRealtime = true }: GeneralPostCardProps) {
+function GeneralPostCard({ post, enableRealtime = true }: GeneralPostCardProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -137,18 +137,20 @@ export default function GeneralPostCard({ post, enableRealtime = true }: General
 
 
   // 清理並截斷內容 - 移除換行，單行顯示
-  const cleanedContent = cleanMarkdown(post.content).replace(/\n/g, ' ').trim();
-  // 限制字數而不是行數（大約150字，相當於3行）
-  const truncatedContent = cleanedContent.length > 150 
-    ? cleanedContent.substring(0, 150) + '...' 
-    : cleanedContent;
+  const truncatedContent = useMemo(() => {
+    const cleaned = cleanMarkdown(post.content).replace(/\n/g, ' ').trim();
+    return cleaned.length > 150 ? cleaned.substring(0, 150) + '...' : cleaned;
+  }, [post.content]);
+
+  // markdown → HTML（只在 post.content 變時才重新 parse）
+  const htmlContent = useMemo(() => markdownToHtml(post.content), [post.content]);
 
   // 收集所有國家（優先使用API返回的countries，否則從學校中提取）
-  const countries = post.countries && post.countries.length > 0
-    ? post.countries
-    : (post.schools 
-        ? [...new Set(post.schools.map(s => s.country).filter(Boolean))]
-        : []);
+  const countries = useMemo(() =>
+    post.countries && post.countries.length > 0
+      ? post.countries
+      : (post.schools ? [...new Set(post.schools.map(s => s.country).filter(Boolean))] : []),
+    [post.countries, post.schools]);
 
   return (
     <Card className="p-6 bg-white border-0 shadow-none">
@@ -501,7 +503,7 @@ export default function GeneralPostCard({ post, enableRealtime = true }: General
               whiteSpace: 'pre-wrap',  // 保留換行
               wordWrap: 'break-word'   // 自動換行
             }}
-            dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         </Link>
       )}
@@ -576,3 +578,5 @@ export default function GeneralPostCard({ post, enableRealtime = true }: General
     </Card>
   );
 }
+
+export default memo(GeneralPostCard);

@@ -218,7 +218,7 @@ function GeneralPostContent() {
     return () => {
       cancelled = true;
     };
-  }, [sessionUserId, session?.user]);
+  }, [sessionUserId]);
 
   // 设置主内容区的最小宽度
   useEffect(() => {
@@ -285,7 +285,7 @@ function GeneralPostContent() {
           if (data.success && data.post) {
             const post = data.post;
             // 檢查是否為作者
-            const userId = session?.user ? (session.user as { id: string }).id : null;
+            const userId = sessionUserId ?? null;
             if (post.author.id !== userId) {
               toast.error('無權限編輯此貼文');
               router.push('/social');
@@ -385,7 +385,7 @@ function GeneralPostContent() {
       // 非編輯模式下，初始值會在 URL 參數預填的 useEffect 中設置
       // 這裡不設置，避免覆蓋 URL 參數預填的值
     }
-  }, [editPostId, session, router, schools, repostId]);
+  }, [editPostId, sessionUserId, router, schools, repostId]);
 
   // 檢測是否有未儲存的變更
   const normalizeEditorText = (s: string) =>
