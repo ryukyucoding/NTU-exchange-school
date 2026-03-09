@@ -21,12 +21,15 @@ interface UseBoardsReturn {
 
 export function useBoards(): UseBoardsReturn {
   const { data: session } = useSession();
+  // 用穩定的字串 ID 取代 session 物件，避免 NextAuth refetchOnWindowFocus
+  // 造成 session reference 改變而觸發不必要的重新載入
+  const sessionUserId = (session?.user as { id?: string } | undefined)?.id;
   const [followedBoards, setFollowedBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchFollowedBoards = async () => {
-    if (!session?.user) {
+    if (!sessionUserId) {
       setLoading(false);
       setFollowedBoards([]);
       return;
@@ -62,7 +65,7 @@ export function useBoards(): UseBoardsReturn {
     return () => {
       window.removeEventListener('boardFollowChanged', handleBoardFollowChanged);
     };
-  }, [session]);
+  }, [sessionUserId]);
 
   return {
     followedBoards,
