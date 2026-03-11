@@ -81,7 +81,8 @@ export default function TableView({ schools }: TableViewProps) {
 
   if (schools.length === 0) {
     return (
-      <div className="bg-white border border-dashed border-[#d6c3a1] rounded-xl p-12 text-center shadow-sm">
+      <div className="bg-white border border-dashed border-[#d6c3a1] rounded-xl p-12 text-center shadow-sm flex flex-col items-center gap-4">
+        <img src="/icon.svg" alt="" className="h-16 w-auto opacity-80" />
         <p className="text-[#6b5b4c] text-lg">沒有符合條件的學校</p>
       </div>
     );

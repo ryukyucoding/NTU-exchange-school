@@ -273,20 +273,17 @@ export default function MapView({ schools }: MapViewProps) {
       ]
     : [20.0, 25.0]; // 預設中心點
 
-  if (schoolsWithCoordinates.length === 0) {
-    return (
-      <div className="h-[600px] flex items-center justify-center bg-gray-100 rounded-lg">
-        <p className="text-gray-500">
-          {schools.length === 0 
-            ? "沒有學校可以顯示在地圖上" 
-            : "沒有學校有有效的經緯度資料"}
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="h-screen w-full relative">
+      {/* 無結果提示（浮在地圖上） */}
+      {schools.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div className="bg-white/90 backdrop-blur-sm border border-dashed border-[#d6c3a1] rounded-xl p-12 text-center shadow-lg flex flex-col items-center gap-4">
+            <img src="/icon.svg" alt="" className="h-16 w-auto opacity-80" />
+            <p className="text-[#6b5b4c] text-lg">沒有符合條件的學校</p>
+          </div>
+        </div>
+      )}
       {/* 調試信息 - 臨時顯示縮放級別 */}
       {/* <div className="absolute top-20 left-4 bg-black/70 text-white p-2 rounded z-50 text-xs">
         縮放級別: {zoomLevel.toFixed(2)} | 高縮放: {isHighZoom ? '是' : '否'}
