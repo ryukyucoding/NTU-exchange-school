@@ -16,21 +16,23 @@ interface MapViewProps {
   schools: SchoolWithMatch[];
 }
 
+// 所有組別的顏色（含多組別組合）
+const GROUP_COLORS: Record<string, string> = {
+  '一般組':     '#3B82F6',  // 藍色
+  '法語組':     '#EF4444',  // 紅色
+  '德語組':     '#10B981',  // 綠色
+  '西語組':     '#F59E0B',  // 橙色
+  '日語組':     '#8B5CF6',  // 紫色
+  '中語組':     '#F97316',  // 橘紅色
+  '韓語組':     '#84CC16',  // 黃綠色
+  '葡語組':     '#F43F5E',  // 玫瑰色
+  '日語組/一般組':  '#EC4899',  // 粉色
+  '法語組/德語組':  '#14B8A6',  // 青綠色
+};
+
 // 根據申請組別返回對應的顏色
 function getMarkerColor(applicationGroup: string): string {
-  const groupColors: { [key: string]: string } = {
-    '一般組': '#3B82F6',      // 藍色
-    '法語組': '#EF4444',      // 紅色
-    '德語組': '#10B981',      // 綠色
-    '西語組': '#F59E0B',      // 橙色
-    '日語組': '#8B5CF6',      // 紫色
-    '日語組/一般組': '#EC4899', // 粉色
-    '英語組': '#06B6D4',      // 青色
-    '中語組': '#F97316',      // 橘紅色
-    '韓語組': '#84CC16',      // 黃綠色
-  };
-
-  return groupColors[applicationGroup] || '#6B7280'; // 預設灰色
+  return GROUP_COLORS[applicationGroup] || '#6B7280'; // 預設灰色
 }
 
 // 內部組件：用於獲取地圖實例並計算 Popup 位置
@@ -290,58 +292,36 @@ export default function MapView({ schools }: MapViewProps) {
         縮放級別: {zoomLevel.toFixed(2)} | 高縮放: {isHighZoom ? '是' : '否'}
       </div> */}
       
-      {/* 圖例 - 右下角 */}
-      <div 
-        className={`absolute bottom-4 right-4 backdrop-blur-md p-3 rounded-lg z-10 max-w-xs shadow-2xl transition-all duration-300 ${
-          isHighZoom 
-            ? 'bg-white/30 border-[rgba(255,255,255,0.35)] text-gray-800' 
-            : 'bg-white/10 border-[rgba(255,255,255,0.2)] text-white'
-        }`}
-      >
-        <h3 className={`text-sm font-semibold mb-2 drop-shadow-lg transition-all duration-300 ${
-          isHighZoom ? 'text-gray-800' : 'text-white'
-        }`}>申請組別</h3>
-        <div className={`space-y-1 text-xs transition-all duration-300 ${
-          isHighZoom ? 'text-gray-800' : 'text-white'
-        }`}>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#3B82F6' }}></div>
-            <span className="drop-shadow-md">一般組</span>
+      {/* 圖例 - 右下角（只顯示目前有學校的組別） */}
+      {(() => {
+        const presentGroups = Object.keys(GROUP_COLORS).filter(g =>
+          schoolsWithCoordinates.some(s => (s.language_group || '') === g)
+        );
+        if (presentGroups.length === 0) return null;
+        return (
+          <div
+            className={`absolute bottom-4 right-4 backdrop-blur-md p-3 rounded-lg z-10 max-w-xs shadow-2xl transition-all duration-300 ${
+              isHighZoom
+                ? 'bg-white/30 border-[rgba(255,255,255,0.35)] text-gray-800'
+                : 'bg-white/10 border-[rgba(255,255,255,0.2)] text-white'
+            }`}
+          >
+            <h3 className={`text-sm font-semibold mb-2 drop-shadow-lg transition-all duration-300 ${
+              isHighZoom ? 'text-gray-800' : 'text-white'
+            }`}>申請組別</h3>
+            <div className={`space-y-1 text-xs transition-all duration-300 ${
+              isHighZoom ? 'text-gray-800' : 'text-white'
+            }`}>
+              {presentGroups.map(group => (
+                <div key={group} className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: GROUP_COLORS[group] }}></div>
+                  <span className="drop-shadow-md">{group}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#06B6D4' }}></div>
-            <span className="drop-shadow-md">英語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#EF4444' }}></div>
-            <span className="drop-shadow-md">法語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#10B981' }}></div>
-            <span className="drop-shadow-md">德語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#F59E0B' }}></div>
-            <span className="drop-shadow-md">西語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#8B5CF6' }}></div>
-            <span className="drop-shadow-md">日語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#F97316' }}></div>
-            <span className="drop-shadow-md">中語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#84CC16' }}></div>
-            <span className="drop-shadow-md">韓語組</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: '#EC4899' }}></div>
-            <span className="drop-shadow-md">日語組/一般組</span>
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
@@ -368,7 +348,7 @@ export default function MapView({ schools }: MapViewProps) {
         mapStyle="mapbox://styles/yuuuuuuuuuu/cmjfofvq9003w01sg1khze8k0"
       >
         {schoolsWithCoordinates.map(school => {
-          const markerColor = getMarkerColor(school.application_group);
+          const markerColor = getMarkerColor(school.language_group || '');
           const isHovered = hoveredMarkerId === school.id;
           return (
             <Marker

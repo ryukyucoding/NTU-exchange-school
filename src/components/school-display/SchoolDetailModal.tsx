@@ -18,6 +18,38 @@ function normalizeUrl(raw: string): string {
   return trimmed;
 }
 
+/** 把 sections 的 links[] 按順序注入到文字中（以 link.text 為 anchor text 搜尋替換） */
+function injectSectionLinks(
+  text: string,
+  links: Array<{ text: string; href: string }> | undefined,
+  opts: { variant: 'wishlist' | 'glass' }
+): (string | React.ReactElement)[] {
+  if (!links || links.length === 0) return renderTextWithLinks(text, opts);
+
+  const linkClass =
+    opts.variant === 'wishlist'
+      ? '!text-blue-600 underline underline-offset-2 hover:!text-blue-700 font-medium'
+      : 'text-blue-300 underline underline-offset-2 hover:text-blue-200';
+
+  const nodes: (string | React.ReactElement)[] = [];
+  let remaining = text;
+  let key = 0;
+
+  for (const link of links) {
+    const idx = remaining.indexOf(link.text);
+    if (idx === -1) continue;
+    if (idx > 0) nodes.push(...renderTextWithLinks(remaining.slice(0, idx), opts));
+    nodes.push(
+      <a key={`sl-${key++}`} href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+        {link.text}
+      </a>
+    );
+    remaining = remaining.slice(idx + link.text.length);
+  }
+  if (remaining) nodes.push(...renderTextWithLinks(remaining, opts));
+  return nodes;
+}
+
 function renderTextWithLinks(
   text: string,
   opts: { variant: 'wishlist' | 'glass' }
@@ -237,7 +269,7 @@ export default function SchoolDetailModal({
       </header>
 
       <div className="mt-6 space-y-5">
-        {/* 基本資訊 */}
+        {/* ── 基本資訊 ─────────────────────────────── */}
         <div>
           <h3 className={isWishlist ? 'font-semibold text-lg mb-2 text-[#4a3828]' : 'font-semibold text-lg mb-2'}>
             基本資訊
@@ -269,121 +301,160 @@ export default function SchoolDetailModal({
                 )}
               </span>
             </div>
+            <div>
+              <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>資料狀態:</span>
+              <span className={`ml-2 font-medium ${school.is_updated ? 'text-green-600' : isWishlist ? 'text-[#8a7a63]' : 'text-white/50'}`}>
+                {school.is_updated ? '✓ 本學期已更新' : '待更新'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* 申請資格 */}
-        <div>
-          <h3 className={isWishlist ? 'font-semibold text-lg mb-2 text-[#4a3828]' : 'font-semibold text-lg mb-2'}>
-            申請資格
-          </h3>
-          <div className="space-y-2 text-sm">
-            {school.restricted_colleges && school.restricted_colleges !== '無' && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>不接受申請之學院:</span>
-                <p className="mt-1 text-red-600">{school.restricted_colleges}</p>
-              </div>
-            )}
-
-            {school.application_group && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>申請組別:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.application_group}</span>
-              </div>
-            )}
-
-            {school.grade_requirement && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>年級限制:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.grade_requirement}</span>
-              </div>
-            )}
-
-            {school.gpa_requirement && school.gpa_requirement !== '無' && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>GPA 要求:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.gpa_requirement}</span>
-              </div>
-            )}
-
-            {school.gpa_min && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>GPA 最低要求:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.gpa_min}</span>
-              </div>
-            )}
-
-            {school.language_requirement && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>語言要求: </span>
-                <span className={isWishlist ? 'font-medium' : 'font-medium text-white'}>
-                  {renderTextWithLinks(school.language_requirement, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </span>
-              </div>
-            )}
-
-            {school.other_language && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>其他語言要求:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.other_language}</span>
-              </div>
-            )}
+        {/* ── 申請資格（固定結構化欄位）────────────── */}
+        {(school.restricted_colleges || school.language_group || school.grade_requirement ||
+          school.no_fail_required || school.gpa_min || school.toefl_ibt || school.ielts ||
+          school.toeic || school.gept || school.language_cefr || school.jlpt) && (
+          <div>
+            <h3 className={isWishlist ? 'font-semibold text-lg mb-2 text-[#4a3828]' : 'font-semibold text-lg mb-2'}>
+              申請資格
+            </h3>
+            <div className="space-y-2 text-sm">
+              {school.restricted_colleges && school.restricted_colleges !== '無' && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>不接受申請之學院:</span>
+                  <span className="ml-2 text-red-500 font-medium">{school.restricted_colleges}</span>
+                </div>
+              )}
+              {school.language_group && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>申請組別:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.language_group}</span>
+                </div>
+              )}
+              {school.grade_requirement && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>年級限制:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.grade_requirement}</span>
+                </div>
+              )}
+              {school.no_fail_required && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>不及格限制:</span>
+                  <span className="ml-2 font-medium text-orange-500">歷年不得有不及格紀錄</span>
+                </div>
+              )}
+              {school.gpa_min !== null && school.gpa_min !== undefined && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>GPA 要求:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.gpa_min} 以上</span>
+                </div>
+              )}
+              {school.toefl_ibt && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>TOEFL iBT:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.toefl_ibt} 以上</span>
+                </div>
+              )}
+              {school.ielts && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>IELTS:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.ielts} 以上</span>
+                </div>
+              )}
+              {school.toeic && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>TOEIC:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.toeic} 以上</span>
+                </div>
+              )}
+              {school.gept && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>全民英檢:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>英檢{school.gept}以上</span>
+                </div>
+              )}
+              {school.language_cefr && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>CEFR:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.language_cefr} 以上</span>
+                </div>
+              )}
+              {school.jlpt && (
+                <div>
+                  <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>日語能力:</span>
+                  <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>JLPT {school.jlpt}</span>
+                </div>
+              )}
+              {(() => {
+                const sec = school.sections?.find(s => s.label === '申請資格');
+                if (!sec) return null;
+                // 只過濾「單純標籤行」和格式固定不會有學院特例的項目
+                // 語言要求（TOEFL/IELTS…）可能有一般版和學院特例版，保留完整文字
+                const filters: RegExp[] = [
+                  // 動態比對 language_group 標籤行（如「中語組」「日語組」等）
+                  ...(school.language_group ? [new RegExp(`^${school.language_group}\\s*$`)] : []),
+                  ...(school.grade_requirement ? [/年級/] : []),
+                  ...(school.no_fail_required ? [/不及格/] : []),
+                  ...(school.gpa_min !== null ? [/GPA/i] : []),
+                ];
+                // 正規化 restricted_colleges 用於比對重複行
+                const restrictedNorm = school.restricted_colleges && school.restricted_colleges !== '無'
+                  ? school.restricted_colleges.replace(/[。、，,\s]/g, '')
+                  : '';
+                const remaining = sec.text
+                  .split('\n')
+                  .filter(line => {
+                    const trimmed = line.trim();
+                    if (!trimmed) return false;
+                    if (filters.some(re => re.test(trimmed))) return false;
+                    // 過濾與 restricted_colleges 重複的行
+                    if (restrictedNorm && trimmed.replace(/[。、，,\s]/g, '').includes(restrictedNorm)) return false;
+                    return true;
+                  })
+                  .join('\n')
+                  .trim();
+                if (!remaining) return null;
+                return (
+                  <div className="mt-2 pt-2 border-t border-dashed border-current/20">
+                    <p className={`whitespace-pre-line text-xs ${isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}`}>
+                      {injectSectionLinks(remaining, sec.links, { variant: isWishlist ? 'wishlist' : 'glass' })}
+                    </p>
+                  </div>
+                );
+              })()}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* 其他資訊 */}
+        {/* ── 其他資訊（動態 sections / fallback 舊欄位）── */}
         <div>
           <h3 className={isWishlist ? 'font-semibold text-lg mb-2 text-[#4a3828]' : 'font-semibold text-lg mb-2'}>
             其他資訊
           </h3>
-          <div className="space-y-2 text-sm">
-            {school.academic_calendar && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>學校年曆:</span>
-                <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
-                  {renderTextWithLinks(school.academic_calendar, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </p>
-              </div>
-            )}
-
-            {school.registration_fee && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>註冊繳費:</span>
-                <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
-                  {renderTextWithLinks(school.registration_fee, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </p>
-              </div>
-            )}
-
-            {school.accommodation_info && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>住宿資訊:</span>
-                <p className={isWishlist ? 'mt-1' : 'mt-1 text-white'}>
-                  {renderTextWithLinks(school.accommodation_info, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </p>
-              </div>
-            )}
-
-            {school.tuition && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>學費:</span>
-                <span className={isWishlist ? 'ml-2 font-medium' : 'ml-2 font-medium text-white'}>{school.tuition}</span>
-              </div>
-            )}
-
-            {school.notes && (
-              <div>
-                <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>注意事項:</span>
-                <p
-                  className={
-                    isWishlist
-                      ? 'mt-1 bg-[#f9f3ea] border border-[#e8ddc8] p-3 rounded-lg text-[#4a3828]'
-                      : 'mt-1 bg-white/10 border border-white/20 p-3 rounded-lg text-white'
-                  }
-                >
-                  {renderTextWithLinks(school.notes, { variant: isWishlist ? 'wishlist' : 'glass' })}
-                </p>
-              </div>
+          <div className="space-y-3 text-sm">
+            {school.sections && school.sections.length > 0 ? (
+              school.sections
+                .filter(sec => !['申請資格', '名額', '此校開放予第二次出國交換之同學選填'].includes(sec.label))
+                .map((sec, i) => {
+                  const isWarning = sec.label === '注意事項' || sec.label.startsWith('⚠️');
+                  const variant = isWishlist ? 'wishlist' : 'glass';
+                  return (
+                    <div key={i}>
+                      <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>{sec.label}:</span>
+                      <p className={`mt-1 whitespace-pre-line ${
+                        isWarning
+                          ? isWishlist
+                            ? 'bg-[#f9f3ea] border border-[#e8ddc8] p-3 rounded-lg text-[#4a3828]'
+                            : 'bg-white/10 border border-white/20 p-3 rounded-lg text-white'
+                          : isWishlist ? '' : 'text-white'
+                      }`}>
+                        {injectSectionLinks(sec.text, sec.links, { variant })}
+                      </p>
+                    </div>
+                  );
+                })
+            ) : (
+              <p className={isWishlist ? 'text-[#8a7a63] text-sm' : 'text-white/50 text-sm'}>尚無詳細資訊</p>
             )}
           </div>
         </div>

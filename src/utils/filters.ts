@@ -13,7 +13,7 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
           .filter(Boolean);
 
       const selectedGroups = splitGroups(filters.applicationGroup);
-      const schoolGroups = splitGroups(school.application_group || '');
+      const schoolGroups = splitGroups(school.language_group || '');
 
       // 如果學校沒有標註組別，視為不符合任何「指定組別」篩選
       if (schoolGroups.length === 0) return false;
@@ -102,15 +102,10 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
         school.name_en,
         school.country,
         school.country_en,
-        school.application_group,
-        school.gpa_requirement,
+        school.language_group,
         school.grade_requirement,
-        school.language_requirement,
         school.restricted_colleges,
-        school.academic_calendar,
-        school.registration_fee,
-        school.accommodation_info,
-        school.notes,
+        ...(school.sections || []).map(s => s.text),
       ].join(' ').toLowerCase();
 
       if (!searchText.includes(keyword)) return false;

@@ -201,7 +201,7 @@ export default function TableView({ schools }: TableViewProps) {
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="text-xs text-[#6b5b4c]">
-                      {school.application_group || '無限制'}
+                      {school.language_group || '無限制'}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
@@ -236,11 +236,29 @@ export default function TableView({ schools }: TableViewProps) {
                         if (school.toefl_ibt) requirements.push(`TOEFL ${school.toefl_ibt}`);
                         if (school.ielts) requirements.push(`IELTS ${school.ielts}`);
                         if (school.toeic) requirements.push(`TOEIC ${school.toeic}`);
+                        if (school.gept) requirements.push(`英檢${school.gept}以上`);
+                        if (school.language_cefr) requirements.push(`CEFR ${school.language_cefr}以上`);
+                        if (school.jlpt) requirements.push(`JLPT ${school.jlpt}`);
                         return requirements.length > 0 ? requirements.join('\n') : '無限制';
                       })()}
                     </div>
                   </TableCell>
-                  <TableCell className="text-[#4a3828] text-center">{school.quota || '未提供'}</TableCell>
+                  <TableCell className="text-[#4a3828] text-center">
+                    {(() => {
+                      const q = school.quota || '';
+                      if (!q) return '—';
+                      const cleaned = q
+                        .replace(/（[^）]*）/g, '')               // 先去全形括號（含括號內的不平衡）
+                        .replace(/\([^)]*\)/g, '')                // 再去半形括號
+                        .replace(/因交換學生往來不平衡[^\n]*/g, '') // 剩餘不在括號內的不平衡句
+                        .replace(/※[^\n]*/g, '')                  // ※ 後的備註
+                        .replace(/。/g, '')
+                        .replace(/\n+/g, ' ')
+                        .trim();
+                      if (!cleaned) return '—';
+                      return cleaned.length > 10 ? cleaned.slice(0, 10) + '…' : cleaned;
+                    })()}
+                  </TableCell>
                   <TableCell className="text-center">
                     <Button
                       variant="ghost"

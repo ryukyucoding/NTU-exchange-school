@@ -39,7 +39,7 @@ export async function GET(_req: NextRequest) {
     const [schoolsResult, countriesResult] = await Promise.all([
       supabase
         .from("schools")
-        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, application_group, gpa_requirement, grade_requirement, language_requirement, restricted_colleges, quota, academic_calendar, registration_fee, accommodation_info, notes, latitude, longitude")
+        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, grade_requirement, restricted_colleges, quota, latitude, longitude, gpa_min, toefl_ibt, ielts, toeic, gept, language_cefr, jlpt, no_fail_required, is_updated, sections, language_group")
         .order("name_zh"),
       supabase
         .from("Country")
@@ -79,18 +79,22 @@ export async function GET(_req: NextRequest) {
       country_id: number | null;
       url: string;
       second_exchange_eligible: boolean;
-      application_group: string;
-      gpa_requirement: string;
       grade_requirement: string;
-      language_requirement: string;
       restricted_colleges: string;
       quota: string;
-      academic_calendar: string;
-      registration_fee: string;
-      accommodation_info: string;
-      notes: string;
       latitude: number | null;
       longitude: number | null;
+      gpa_min: number | null;
+      toefl_ibt: number | null;
+      ielts: number | null;
+      toeic: number | null;
+      gept: string | null;
+      language_cefr: string | null;
+      jlpt: string | null;
+      no_fail_required: boolean | null;
+      is_updated: boolean | null;
+      sections: Array<{ label: string; text: string; links?: Array<{ text: string; href: string }> }> | null;
+      language_group: string | null;
     }) => {
       const rawCountryId = school.country_id;
       const countryIdStr = (rawCountryId !== null && rawCountryId !== undefined) ? String(rawCountryId) : null;
@@ -121,46 +125,34 @@ export async function GET(_req: NextRequest) {
         }
       }
 
-      // 解析語言要求
-      const langText = school.language_requirement || '';
-      const languageInfo = parseLanguageRequirement(langText);
-
-      // 解析 GPA
-      const gpaText = school.gpa_requirement || '';
-      const gpa_min = parseGpaRequirement(gpaText);
-
-      // 解析學期
-      const semesters = parseSemesters(school.academic_calendar || '');
-
       return {
-        id: String(school.id), // 確保 id 是字符串（因為數據庫中是 bigint）
+        id: String(school.id),
         name_zh: school.name_zh || '',
         name_en: school.name_en || '',
         country: country,
         country_en: country_en,
-        country_id: countryIdStr, // 使用上面處理過的 countryIdStr
+        country_id: countryIdStr,
         url: school.url || '',
         second_exchange_eligible: school.second_exchange_eligible || false,
-        application_group: school.application_group || '',
-        gpa_requirement: school.gpa_requirement || '',
         grade_requirement: school.grade_requirement || '',
-        language_requirement: school.language_requirement || '',
         restricted_colleges: school.restricted_colleges || '',
         quota: school.quota || '',
-        academic_calendar: school.academic_calendar || '',
-        registration_fee: school.registration_fee || '',
-        accommodation_info: school.accommodation_info || '',
-        notes: school.notes || '',
         latitude: school.latitude ? parseFloat(school.latitude.toString()) : 0,
         longitude: school.longitude ? parseFloat(school.longitude.toString()) : 0,
         region,
-        gpa_min,
-        toefl_ibt: languageInfo.toefl_ibt,
-        ielts: languageInfo.ielts,
-        toeic: languageInfo.toeic,
-        other_language: languageInfo.other_language,
-        semesters,
+        gpa_min: school.gpa_min ?? null,
+        toefl_ibt: school.toefl_ibt ?? null,
+        ielts: school.ielts ?? null,
+        toeic: school.toeic ?? null,
+        other_language: null,
         tuition: null,
+        gept: school.gept ?? null,
+        language_cefr: school.language_cefr ?? null,
+        jlpt: school.jlpt ?? null,
+        no_fail_required: school.no_fail_required ?? false,
+        is_updated: school.is_updated ?? false,
+        sections: school.sections ?? null,
+        language_group: school.language_group ?? null,
       };
     });
 
@@ -182,76 +174,4 @@ export async function GET(_req: NextRequest) {
   }
 }
 
-// 解析 GPA 要求
-function parseGpaRequirement(gpaText: string): number | null {
-  if (!gpaText || gpaText === '無') return null;
-  const match = gpaText.match(/GPA\s*達\s*(\d+\.?\d*)\s*分以上/);
-  if (match) {
-    return parseFloat(match[1]);
-  }
-  return null;
-}
-
-// 解析語言要求
-function parseLanguageRequirement(langText: string): {
-  toefl_ibt: number | null;
-  ielts: number | null;
-  toeic: number | null;
-  other_language: string | null;
-} {
-  const result = {
-    toefl_ibt: null as number | null,
-    ielts: null as number | null,
-    toeic: null as number | null,
-    other_language: null as string | null,
-  };
-
-  if (!langText) return result;
-
-  // TOEFL iBT
-  const toeflMatch = langText.match(/TOEFL\s*(?:iBT)?\s*(\d+)/i);
-  if (toeflMatch) {
-    result.toefl_ibt = parseInt(toeflMatch[1], 10);
-  }
-
-  // IELTS
-  const ieltsMatch = langText.match(/IELTS\s*(\d+\.?\d*)/i);
-  if (ieltsMatch) {
-    result.ielts = parseFloat(ieltsMatch[1]);
-  }
-
-  // TOEIC
-  const toeicMatch = langText.match(/TOEIC\s*(\d+)/i);
-  if (toeicMatch) {
-    result.toeic = parseInt(toeicMatch[1], 10);
-  }
-
-  // 其他語言要求
-  if (langText && !toeflMatch && !ieltsMatch && !toeicMatch) {
-    result.other_language = langText;
-  }
-
-  return result;
-}
-
-// 解析學期
-function parseSemesters(calendarText: string): string[] {
-  if (!calendarText) return [];
-  
-  const semesters: string[] = [];
-  if (calendarText.includes('秋季') || calendarText.includes('Fall') || calendarText.includes('Autumn')) {
-    semesters.push('Fall');
-  }
-  if (calendarText.includes('春季') || calendarText.includes('Spring')) {
-    semesters.push('Spring');
-  }
-  if (calendarText.includes('夏季') || calendarText.includes('Summer')) {
-    semesters.push('Summer');
-  }
-  if (calendarText.includes('冬季') || calendarText.includes('Winter')) {
-    semesters.push('Winter');
-  }
-  
-  return semesters.length > 0 ? semesters : ['Fall', 'Spring']; // 預設
-}
 

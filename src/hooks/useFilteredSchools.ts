@@ -204,7 +204,7 @@ export function useFilteredSchools(
 
           const clauses = pickGradeRequirementClauses(
             school.grade_requirement,
-            school.application_group,
+            school.language_group || '',
             filters.applicationGroup
           );
 

@@ -1,3 +1,9 @@
+export interface SchoolSection {
+  label: string;
+  text: string;
+  links?: Array<{ text: string; href: string }>;
+}
+
 export interface School {
   id: string;
   name_zh: string;
@@ -7,16 +13,9 @@ export interface School {
   country_id: string | null; // Country.id 的外键
   url: string;
   second_exchange_eligible: boolean;
-  application_group: string;
-  gpa_requirement: string;
   grade_requirement: string;
-  language_requirement: string;
   restricted_colleges: string;
   quota: string;
-  academic_calendar: string;
-  registration_fee: string;
-  accommodation_info: string;
-  notes: string;
   latitude: number;
   longitude: number;
   // 解析後的欄位
@@ -27,6 +26,14 @@ export interface School {
   toeic: number | null;
   other_language: string | null;
   tuition: 'Free' | 'Partial' | 'Self-funded' | null;
+  // 結構化欄位（v2 scraper）
+  gept: string | null;
+  language_cefr: string | null;
+  jlpt: string | null;
+  no_fail_required: boolean;
+  is_updated: boolean;
+  sections: SchoolSection[] | null;
+  language_group: string | null;
 }
 
 export type SchoolWithMatch = School;

@@ -96,16 +96,10 @@ export async function loadSchools(): Promise<School[]> {
               country_id: null,
               url: row.url || '',
               second_exchange_eligible: row.開放第二次出國交換之同學選填 === '是',
-              application_group: row.申請組別 || '',
-              gpa_requirement: row.GPA要求 || '',
+              language_group: row.申請組別 || null,
               grade_requirement: row.年級限制 || '',
-              language_requirement: row.語言要求 || '',
               restricted_colleges: row.不接受申請之學院 || '',
               quota: row.名額 || '',
-              academic_calendar: row.學校年曆 || '',
-              registration_fee: row.註冊繳費 || '',
-              accommodation_info: row.accommodation_info || row.住宿資訊 || '',
-              notes: row.注意事項 || '',
               latitude: parseFloat(row.latitude) || 0,
               longitude: parseFloat(row.longitude) || 0,
               // 解析後的欄位
@@ -115,7 +109,14 @@ export async function loadSchools(): Promise<School[]> {
               ielts: languageInfo.ielts,
               toeic: languageInfo.toeic,
               other_language: languageInfo.other_language,
-              tuition: null, // 需要從其他欄位推斷
+              tuition: null,
+              // 結構化欄位（CSV 無此資料）
+              gept: null,
+              language_cefr: null,
+              jlpt: null,
+              no_fail_required: false,
+              is_updated: false,
+              sections: null,
             } as School;
           });
           resolve(schools);

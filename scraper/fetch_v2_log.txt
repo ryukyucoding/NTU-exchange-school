@@ -1,0 +1,593 @@
+2026-03-10 17:11:36,983 - INFO - ============================================================
+2026-03-10 17:11:36,983 - INFO - 開始爬取台大 OIA 交換學校資料 (v2 - 結構化解析)
+2026-03-10 17:11:36,983 - INFO - 開始時間: 2026-03-10 17:11:36.983704
+2026-03-10 17:11:36,983 - INFO - 輸出檔案: raw_schools_v2.json（不覆蓋 raw_schools.json）
+2026-03-10 17:11:36,983 - INFO - ============================================================
+2026-03-10 17:11:37,195 - INFO - 正在載入列表頁面: https://oia.ntu.edu.tw/outgoing/school.list
+2026-03-10 17:11:38,495 - INFO - 正在提取學校列表...
+2026-03-10 17:11:40,594 - INFO - 找到 336 個表格行
+2026-03-10 17:11:42,561 - INFO - 成功提取 289 個學校連結
+2026-03-10 17:11:42,561 - INFO - [1/289] 聖保羅大學 (巴西)
+2026-03-10 17:11:43,904 - INFO -   ✓ name_en=Universidade de São Paulo (USP)  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:11:44,409 - INFO - [2/289] 里約熱內盧天主教大學 (巴西)
+2026-03-10 17:11:45,714 - INFO -   ✓ name_en=Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio)  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:11:46,218 - INFO - [3/289] 坎皮納斯州立大學 (巴西)
+2026-03-10 17:11:47,490 - INFO -   ✓ name_en=Universidade Estadual de Campinas (UNICAMP)  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:11:47,995 - INFO - [4/289] 魁北克大學蒙特婁分校 (加拿大)
+2026-03-10 17:11:49,275 - INFO -   ✓ name_en=Université du Québec à Montréal (UQAM)  group=法語組  gpa=3.2  toefl=None  ielts=None  gept=None  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:11:49,778 - INFO - [5/289] 愛德華王子島大學 (加拿大)
+2026-03-10 17:11:51,053 - INFO -   ✓ name_en=University of Prince Edward Island (UPEI)  group=一般組  gpa=3.0  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:11:51,555 - INFO - [6/289] 蒙特婁大學 (加拿大)
+2026-03-10 17:11:52,888 - INFO -   ✓ name_en=Université de Montréal (UdeM)  group=法語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:11:53,392 - INFO - [7/289] 女王大學 (加拿大)
+2026-03-10 17:11:54,677 - INFO -   ✓ name_en=Queen's University  group=一般組  gpa=3.0  toefl=88  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:11:55,180 - INFO - [8/289] 滑鐵盧大學 (加拿大)
+2026-03-10 17:11:56,597 - INFO -   ✓ name_en=University of Waterloo  group=一般組  gpa=2.7  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:11:57,098 - INFO - [9/289] 西門菲沙大學 (加拿大)
+2026-03-10 17:11:58,836 - INFO -   ✓ name_en=Simon Fraser University (SFU)  group=一般組  gpa=None  toefl=88  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:11:59,341 - INFO - [10/289] 渥太華大學 (加拿大)
+2026-03-10 17:12:01,139 - INFO -   ✓ name_en=University of Ottawa  group=一般組  gpa=3.0  toefl=86  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:01,644 - INFO - [11/289] 多倫多大學 (加拿大)
+2026-03-10 17:12:02,915 - INFO -   ✓ name_en=University of Toronto (U of T)  group=一般組  gpa=None  toefl=89  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:03,418 - INFO - [12/289] 維多利亞大學 (加拿大)
+2026-03-10 17:12:04,699 - INFO -   ✓ name_en=University of Victoria (UVic)  group=一般組  gpa=None  toefl=90  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:05,202 - INFO - [13/289] 加拿大英屬哥倫比亞大學（卑詩大學） (加拿大)
+2026-03-10 17:12:06,557 - INFO -   ✓ name_en=The University of British Columbia (UBC)  group=一般組  gpa=3.3  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:12:07,059 - INFO - [14/289] 智利天主教大學 (智利)
+2026-03-10 17:12:08,461 - INFO -   ✓ name_en=Pontificia Universidad Católica de Chile (UC Chile)  group=西語組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:12:08,966 - INFO - [15/289] 哥倫比亞安地斯大學 (哥倫比亞)
+2026-03-10 17:12:10,224 - INFO -   ✓ name_en=Universidad de los Andes  group=西語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:12:10,728 - INFO - [16/289] 蒙特雷科技大學 (墨西哥)
+2026-03-10 17:12:12,450 - INFO -   ✓ name_en=Tecnológico de Monterrey  group=西語組  gpa=3.44  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:12:12,951 - INFO - [17/289] 墨西哥國立自治大學 (墨西哥)
+2026-03-10 17:12:14,226 - INFO -   ✓ name_en=Universidad Nacional Autónoma de México (UNAM)  group=西語組  gpa=3.7  toefl=None  ielts=None  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:12:14,731 - INFO - [18/289] 西北大學 (美國)
+2026-03-10 17:12:15,992 - INFO -   ✓ name_en=Northwestern University  group=一般組  gpa=3.3  toefl=90  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:12:16,496 - INFO - [19/289] 德州大學奧斯汀分校 (美國)
+2026-03-10 17:12:17,755 - INFO -   ✓ name_en=The University of Texas at Austin (UT Austin)  group=一般組  gpa=3.3  toefl=90  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:18,260 - INFO - [20/289] 康乃爾大學 (美國)
+2026-03-10 17:12:19,594 - INFO -   ✓ name_en=Cornell University  group=一般組  gpa=3.3  toefl=100  ielts=7.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:20,094 - INFO - [21/289] 斯克蘭頓大學 (美國)
+2026-03-10 17:12:21,354 - INFO -   ✓ name_en=The University of Scranton  group=一般組  gpa=3.7  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:21,858 - INFO - [22/289] 北卡羅來納大學格林斯伯勒分校 (美國)
+2026-03-10 17:12:23,128 - INFO -   ✓ name_en=UNC Greensboro (UNCG)  group=一般組  gpa=2.75  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:23,632 - INFO - [23/289] 奧瑞岡州立大學 (美國)
+2026-03-10 17:12:24,900 - INFO -   ✓ name_en=Oregon State University (OSU)  group=一般組  gpa=2.75  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:25,403 - INFO - [24/289] 康乃狄克大學 (美國)
+2026-03-10 17:12:26,666 - INFO -   ✓ name_en=University of Connecticut (UConn)  group=一般組  gpa=3.2  toefl=79  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:27,168 - INFO - [25/289] 喬治梅森大學 (美國)
+2026-03-10 17:12:28,503 - INFO -   ✓ name_en=George Mason University (GMU)  group=一般組  gpa=2.5  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:29,006 - INFO - [26/289] 匹茲堡大學 (美國)
+2026-03-10 17:12:30,274 - INFO -   ✓ name_en=University of Pittsburgh  group=一般組  gpa=3.3  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:30,779 - INFO - [27/289] 新澤西州立羅格斯大學 (美國)
+2026-03-10 17:12:32,040 - INFO -   ✓ name_en=Rutgers, The State University of New Jersey  group=一般組  gpa=None  toefl=85  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:32,544 - INFO - [28/289] 南卡羅來納大學 (美國)
+2026-03-10 17:12:33,815 - INFO -   ✓ name_en=University of South Carolina (U of SC)  group=一般組  gpa=2.75  toefl=79  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:34,317 - INFO - [29/289] 伊利諾大學香檳分校 (美國)
+2026-03-10 17:12:35,576 - INFO -   ✓ name_en=University of Illinois at Urbana-Champaign (UIUC)  group=一般組  gpa=3.3  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:12:36,082 - INFO - [30/289] 北卡羅來納大學教堂山分校 (美國)
+2026-03-10 17:12:37,443 - INFO -   ✓ name_en=The University of North Carolina at Chapel Hill (UNC-Chapel Hill)  group=一般組  gpa=3.0  toefl=85  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:37,947 - INFO - [31/289] 威斯康辛大學麥迪遜分校 (美國)
+2026-03-10 17:12:39,253 - INFO -   ✓ name_en=University of Wisconsin-Madison (UW-Madison)  group=一般組  gpa=None  toefl=95  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:39,758 - INFO - [32/289] 天普大學 (美國)
+2026-03-10 17:12:41,073 - INFO -   ✓ name_en=Temple University  group=一般組  gpa=3.2  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:41,574 - INFO - [33/289] 猶他大學 (美國)
+2026-03-10 17:12:42,834 - INFO -   ✓ name_en=The University of Utah (U of U)  group=一般組  gpa=2.6  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:43,334 - INFO - [34/289] 夏威夷太平洋大學 (美國)
+2026-03-10 17:12:44,635 - INFO -   ✓ name_en=Hawai‘i Pacific University (HPU)  group=一般組  gpa=2.75  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:45,139 - INFO - [35/289] 夏威夷大學希羅分校（E交換學生計畫、V訪問學生計畫） (美國)
+2026-03-10 17:12:46,432 - INFO -   ✓ name_en=University of Hawai‘i at Hilo (UH Hilo)  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:46,936 - INFO - [36/289] 紐約州立大學阿爾伯尼分校 (美國)
+2026-03-10 17:12:48,277 - INFO -   ✓ name_en=State University of New York at Albany  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:48,783 - INFO - [37/289] 亞利桑那州立大學 (美國)
+2026-03-10 17:12:50,057 - INFO -   ✓ name_en=Arizona State University (ASU)  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:50,561 - INFO - [38/289] 伊利諾大學芝加哥分校 (美國)
+2026-03-10 17:12:51,827 - INFO -   ✓ name_en=University of Illinois at Chicago (UIC)  group=一般組  gpa=None  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:12:52,333 - INFO - [39/289] 馬里蘭大學 (美國)
+2026-03-10 17:12:53,697 - INFO -   ✓ name_en=University of Maryland (UMD)  group=一般組  gpa=3.3  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:12:54,201 - INFO - [40/289] 奧瑞岡大學（E交換學生計畫、V訪問學生計畫） (美國)
+2026-03-10 17:12:55,497 - INFO -   ✓ name_en=University of Oregon (UO)  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:12:55,999 - INFO - [41/289] 北卡羅來納州立大學 (美國)
+2026-03-10 17:12:57,261 - INFO -   ✓ name_en=NC State University (NCSU)  group=一般組  gpa=None  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:12:57,764 - INFO - [42/289] 夏威夷大學瑪諾亞分校（E交換學生計畫、V訪問學生計畫） (美國)
+2026-03-10 17:12:59,562 - INFO -   ✓ name_en=University of Hawai‘i at Mānoa (UH Mānoa)  group=一般組  gpa=3.0  toefl=80  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:13:00,064 - INFO - [43/289] 喬治亞大學 (美國)
+2026-03-10 17:13:01,444 - INFO -   ✓ name_en=University of Georgia (UGA)  group=一般組  gpa=3.3  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:13:01,946 - INFO - [44/289] 奧克拉荷瑪大學 (美國)
+2026-03-10 17:13:03,229 - INFO -   ✓ name_en=The University of Oklahoma (OU)  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:13:03,734 - INFO - [45/289] 加州州立大學 (美國)
+2026-03-10 17:13:05,371 - INFO -   ✓ name_en=The California State University (CSUIP)  group=一般組  gpa=3.3  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:13:05,874 - INFO - [46/289] 華盛頓大學 (美國)
+2026-03-10 17:13:07,192 - INFO -   ✓ name_en=University of Washington (UW)  group=一般組  gpa=3.3  toefl=83  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:13:07,697 - INFO - [47/289] 加州大學 (美國)
+2026-03-10 17:13:09,643 - INFO -   ✓ name_en=University of California (UCEAP)  group=一般組  gpa=3.3  toefl=90  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=10
+2026-03-10 17:13:10,148 - INFO - [48/289] 紐澤西理工學院（尚未開放申請） (美國)
+2026-03-10 17:13:11,339 - INFO -   ✓ name_en=New Jersey Institute of Technology (NJIT)  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=None
+2026-03-10 17:13:11,840 - INFO - [49/289] 蒙大拿州立大學（尚未開放申請） (美國)
+2026-03-10 17:13:13,077 - INFO -   ✓ name_en=Montana State University (MSU)  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=None
+2026-03-10 17:13:13,582 - INFO - [50/289] 香港恒生大學 (香港)
+2026-03-10 17:13:14,836 - INFO -   ✓ name_en=The Hang Seng University of Hong Kong  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=6
+2026-03-10 17:13:15,339 - INFO - [51/289] 嶺南大學 (香港)
+2026-03-10 17:13:16,638 - INFO -   ✓ name_en=Lingnan University  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:13:17,139 - INFO - [52/289] 香港大學 (香港)
+2026-03-10 17:13:18,423 - INFO -   ✓ name_en=The University of Hong Kong  group=一般組  gpa=3.0  toefl=93  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=8
+2026-03-10 17:13:18,924 - INFO - [53/289] 香港理工大學 (香港)
+2026-03-10 17:13:20,311 - INFO -   ✓ name_en=The Hong Kong Polytechnic University  group=一般組  gpa=2.9  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:13:20,815 - INFO - [54/289] 香港城市大學 (香港)
+2026-03-10 17:13:22,070 - INFO -   ✓ name_en=City University of Hong Kong  group=一般組  gpa=None  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=8
+2026-03-10 17:13:22,575 - INFO - [55/289] 香港中文大學 (香港)
+2026-03-10 17:13:23,847 - INFO -   ✓ name_en=The Chinese University of Hong Kong (CUHK)  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=5
+2026-03-10 17:13:24,350 - INFO - [56/289] 印度理工學院印多爾分校 (印度)
+2026-03-10 17:13:25,641 - INFO -   ✓ name_en=Indian Institute of Technology Indore  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:13:26,143 - INFO - [57/289] 印度理工學院海得拉巴分校 (印度)
+2026-03-10 17:13:27,388 - INFO -   ✓ name_en=Indian Institute of Technology Hyderabad  group=一般組  gpa=4.0  toefl=None  ielts=8.0  gept=高級  cefr=None  jlpt=None  quota=5
+2026-03-10 17:13:27,893 - INFO - [58/289] 印度理工學院孟買分校 (印度)
+2026-03-10 17:13:29,186 - INFO -   ✓ name_en=Indian Institute of Technology Bombay  group=一般組  gpa=None  toefl=95  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:13:29,689 - INFO - [59/289] 貝內特大學 (印度)
+2026-03-10 17:13:30,936 - INFO -   ✓ name_en=Bennett University  group=一般組  gpa=3.3  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:13:31,442 - INFO - [60/289] 耶路撒冷希伯來大學 (以色列)
+2026-03-10 17:13:32,677 - INFO -   ✓ name_en=Hebrew University of Jerusalem  group=一般組  gpa=3.3  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:13:33,178 - INFO - [61/289] 臺拉維夫大學 (以色列)
+2026-03-10 17:13:34,450 - INFO -   ✓ name_en=Tel Aviv University  group=一般組  gpa=2.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:13:34,954 - INFO - [62/289] 以色列理工學院 (以色列)
+2026-03-10 17:13:36,206 - INFO -   ✓ name_en=Technion - Israel Institute of Technology  group=一般組  gpa=3.3  toefl=80  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:13:36,711 - INFO - [63/289] 熊本大學 (日本)
+2026-03-10 17:13:37,979 - INFO -   ✓ name_en=Kumamoto University  group=日語組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=2
+2026-03-10 17:13:38,483 - INFO - [64/289] 近畿大學 (日本)
+2026-03-10 17:13:39,855 - INFO -   ✓ name_en=Kindai University  group=日語組  gpa=2.8  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:13:40,360 - INFO - [65/289] 秋田大學 (日本)
+2026-03-10 17:13:41,624 - INFO -   ✓ name_en=Akita University  group=日語組  gpa=2.7  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:13:42,129 - INFO - [66/289] 兵庫縣立大學 (日本)
+2026-03-10 17:13:43,392 - INFO -   ✓ name_en=University of Hyogo  group=日語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N1  quota=2
+2026-03-10 17:13:43,892 - INFO - [67/289] 一橋大學 (日本)
+2026-03-10 17:13:45,176 - INFO -   ✓ name_en=Hitotsubashi University  group=日語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=2
+2026-03-10 17:13:45,680 - INFO - [68/289] 廣島大學 (日本)
+2026-03-10 17:13:47,029 - INFO -   ✓ name_en=Hiroshima University  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:13:47,534 - INFO - [69/289] 名古屋外國語大學 (日本)
+2026-03-10 17:13:48,821 - INFO -   ✓ name_en=Nagoya University of Foreign Studies (NUFS)  group=日語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:13:49,327 - INFO - [70/289] 立命館大學 (日本)
+2026-03-10 17:13:50,671 - INFO -   ✓ name_en=Ritsumeikan University  group=日語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N1  quota=0
+2026-03-10 17:13:51,176 - INFO - [71/289] 關西學院大學 (日本)
+2026-03-10 17:13:52,452 - INFO -   ✓ name_en=Kwansei Gakuin University  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:13:52,956 - INFO - [72/289] 日本大學 (日本)
+2026-03-10 17:13:54,211 - INFO -   ✓ name_en=Nihon University  group=日語組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:13:54,711 - INFO - [73/289] 東京科學大學（原東京工業大學） (日本)
+2026-03-10 17:13:56,120 - INFO -   ✓ name_en=Institute of Science Tokyo (Previously Tokyo Institute of Technology)  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:13:56,625 - INFO - [74/289] 長崎大學 (日本)
+2026-03-10 17:13:57,998 - INFO -   ✓ name_en=Nagasaki University  group=日語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:13:58,502 - INFO - [75/289] 橫濱國立大學 (日本)
+2026-03-10 17:13:59,760 - INFO -   ✓ name_en=Yokohama National University (YNU)  group=日語組  gpa=3.7  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:14:00,261 - INFO - [76/289] 金澤大學 (日本)
+2026-03-10 17:14:01,548 - INFO -   ✓ name_en=Kanazawa University  group=日語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:14:02,051 - INFO - [77/289] 神奈川大學 (日本)
+2026-03-10 17:14:03,419 - INFO -   ✓ name_en=Kanagawa University (KU)  group=日語組  gpa=2.44  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:14:03,924 - INFO - [78/289] 大阪大學 (日本)
+2026-03-10 17:14:05,205 - INFO -   ✓ name_en=Osaka University  group=日語組  gpa=3.3  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=0
+2026-03-10 17:14:05,709 - INFO - [79/289] 青山學院大學 (日本)
+2026-03-10 17:14:06,981 - INFO -   ✓ name_en=Aoyama Gakuin University  group=日語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:07,483 - INFO - [80/289] 同志社大學 (日本)
+2026-03-10 17:14:08,769 - INFO -   ✓ name_en=Doshisha University  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:09,274 - INFO - [81/289] 上智大學 (日本)
+2026-03-10 17:14:10,626 - INFO -   ✓ name_en=Sophia University  group=日語組  gpa=3.3  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:11,130 - INFO - [82/289] 名古屋大學 (日本)
+2026-03-10 17:14:12,392 - INFO -   ✓ name_en=Nagoya University  group=日語組  gpa=3.5  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:12,898 - INFO - [83/289] 神戶大學 (日本)
+2026-03-10 17:14:14,160 - INFO -   ✓ name_en=Kobe University  group=日語組  gpa=3.7  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N1  quota=2
+2026-03-10 17:14:14,661 - INFO - [84/289] 岡山大學 (日本)
+2026-03-10 17:14:15,989 - INFO -   ✓ name_en=Okayama University  group=日語組  gpa=2.5  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:16,493 - INFO - [85/289] 筑波大學 (日本)
+2026-03-10 17:14:17,801 - INFO -   ✓ name_en=University of Tsukuba  group=日語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=2
+2026-03-10 17:14:18,306 - INFO - [86/289] 東京大學 (日本)
+2026-03-10 17:14:19,683 - INFO -   ✓ name_en=The University of Tokyo (UTokyo)  group=日語組  gpa=3.3  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:20,188 - INFO - [87/289] 國際教養大學 (日本)
+2026-03-10 17:14:21,464 - INFO -   ✓ name_en=Akita International University (AIU)  group=一般組  gpa=2.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:14:21,968 - INFO - [88/289] 北海道大學 (日本)
+2026-03-10 17:14:23,236 - INFO -   ✓ name_en=Hokkaido University  group=日語組  gpa=3.3  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:23,740 - INFO - [89/289] 京都大學 (日本)
+2026-03-10 17:14:25,012 - INFO -   ✓ name_en=Kyoto University  group=日語組  gpa=3.3  toefl=79  ielts=6.5  gept=None  cefr=None  jlpt=N1  quota=0
+2026-03-10 17:14:25,515 - INFO - [90/289] 關西大學 (日本)
+2026-03-10 17:14:26,867 - INFO -   ✓ name_en=Kansai University  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:14:27,368 - INFO - [91/289] 琉球大學 (日本)
+2026-03-10 17:14:28,658 - INFO -   ✓ name_en=University of the Ryukyus  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:29,164 - INFO - [92/289] 東京學藝大學 (日本)
+2026-03-10 17:14:30,502 - INFO -   ✓ name_en=Tokyo Gakugei University (TGU)  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:31,008 - INFO - [93/289] 九州大學 (日本)
+2026-03-10 17:14:32,294 - INFO -   ✓ name_en=Kyushu University  group=日語組  gpa=3.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:32,798 - INFO - [94/289] 慶應義塾大學 (日本)
+2026-03-10 17:14:34,080 - INFO -   ✓ name_en=Keio University  group=日語組  gpa=3.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:34,581 - INFO - [95/289] 東北大學 (日本)
+2026-03-10 17:14:35,921 - INFO -   ✓ name_en=Tohoku University  group=日語組  gpa=3.3  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:36,423 - INFO - [96/289] 御茶水女子大學 (日本)
+2026-03-10 17:14:37,685 - INFO -   ✓ name_en=Ochanomizu University  group=日語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=0
+2026-03-10 17:14:38,189 - INFO - [97/289] 東京外國語大學 (日本)
+2026-03-10 17:14:39,496 - INFO -   ✓ name_en=Tokyo University of Foreign Studies (TUFS)  group=日語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=N1  quota=0
+2026-03-10 17:14:40,001 - INFO - [98/289] 明治大學 (日本)
+2026-03-10 17:14:41,267 - INFO -   ✓ name_en=Meiji University  group=日語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:41,770 - INFO - [99/289] 早稻田大學 (日本)
+2026-03-10 17:14:43,137 - INFO -   ✓ name_en=Waseda University  group=日語組  gpa=3.7  toefl=95  ielts=7.0  gept=None  cefr=None  jlpt=N1  quota=1
+2026-03-10 17:14:43,642 - INFO - [100/289] 創價大學 (日本)
+2026-03-10 17:14:44,915 - INFO -   ✓ name_en=Soka University  group=日語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=N2  quota=1
+2026-03-10 17:14:45,420 - INFO - [101/289] 韓國外國語大學 (南韓)
+2026-03-10 17:14:46,682 - INFO -   ✓ name_en=Hankuk University of Foreign Studies  group=韓語組  gpa=2.7  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:14:47,185 - INFO - [102/289] 國立慶北大學 (南韓)
+2026-03-10 17:14:48,707 - INFO -   ✓ name_en=Kyungpook National University  group=韓語組  gpa=3.3  toefl=88  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:14:49,212 - INFO - [103/289] 慶熙大學 (南韓)
+2026-03-10 17:14:50,468 - INFO -   ✓ name_en=Kyung Hee University  group=韓語組  gpa=3.3  toefl=82  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:14:50,974 - INFO - [104/289] 韓國科學技術院 (南韓)
+2026-03-10 17:14:52,230 - INFO -   ✓ name_en=Korea Advanced Institute of Science and Technology (KAIST)  group=韓語組  gpa=3.0  toefl=80  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:14:52,735 - INFO - [105/289] 延世大學 (南韓)
+2026-03-10 17:14:53,997 - INFO -   ✓ name_en=Yonsei University  group=韓語組  gpa=3.0  toefl=79  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:14:54,499 - INFO - [106/289] 高麗大學 (南韓)
+2026-03-10 17:14:55,824 - INFO -   ✓ name_en=Korea University  group=韓語組  gpa=2.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:14:56,329 - INFO - [107/289] 國立釜山大學 (南韓)
+2026-03-10 17:14:57,583 - INFO -   ✓ name_en=Pusan National University  group=韓語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=3
+2026-03-10 17:14:58,086 - INFO - [108/289] 成均館大學 (南韓)
+2026-03-10 17:14:59,405 - INFO -   ✓ name_en=Sungkyunkwan University  group=韓語組  gpa=2.7  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:14:59,906 - INFO - [109/289] 梨花女子大學 (南韓)
+2026-03-10 17:15:01,189 - INFO -   ✓ name_en=Ewha Womans University  group=韓語組  gpa=3.3  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:01,694 - INFO - [110/289] 漢陽大學 (南韓)
+2026-03-10 17:15:03,014 - INFO -   ✓ name_en=Hanyang University  group=韓語組  gpa=2.7  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:15:03,514 - INFO - [111/289] 順天國立大學 (南韓)
+2026-03-10 17:15:04,786 - INFO -   ✓ name_en=Sunchon National University  group=韓語組  gpa=None  toefl=79  ielts=6.0  gept=高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:05,286 - INFO - [112/289] 浦項工科大學 (南韓)
+2026-03-10 17:15:06,576 - INFO -   ✓ name_en=Pohang University of Science and Technology (POSTECH)  group=韓語組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:15:07,079 - INFO - [113/289] 首爾國立大學 (南韓)
+2026-03-10 17:15:08,423 - INFO -   ✓ name_en=Seoul National University  group=韓語組  gpa=3.0  toefl=88  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:08,928 - INFO - [114/289] 澳門大學 (澳門)
+2026-03-10 17:15:10,182 - INFO -   ✓ name_en=University of Macau  group=一般組  gpa=3.1  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:10,687 - INFO - [115/289] 武漢理工大學 (大陸地區)
+2026-03-10 17:15:11,948 - INFO -   ✓ name_en=Wuhan University of Technology  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:12,452 - INFO - [116/289] 北京航空航天大學 (大陸地區)
+2026-03-10 17:15:13,719 - INFO -   ✓ name_en=Beihang University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:14,224 - INFO - [117/289] 貴州大學 (大陸地區)
+2026-03-10 17:15:15,487 - INFO -   ✓ name_en=Guizhou University  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:15,992 - INFO - [118/289] 華中科技大學 (大陸地區)
+2026-03-10 17:15:17,333 - INFO -   ✓ name_en=Huazhong University of Science and Technology  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:17,835 - INFO - [119/289] 東南大學 (大陸地區)
+2026-03-10 17:15:19,104 - INFO -   ✓ name_en=Southeast University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:19,609 - INFO - [120/289] 武漢大學 (大陸地區)
+2026-03-10 17:15:20,860 - INFO -   ✓ name_en=Wuhan University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:21,365 - INFO - [121/289] 內蒙古大學 (大陸地區)
+2026-03-10 17:15:22,614 - INFO -   ✓ name_en=Inner Mongolia University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:23,119 - INFO - [122/289] 北京師範大學 (大陸地區)
+2026-03-10 17:15:24,385 - INFO -   ✓ name_en=Beijing Normal University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=8
+2026-03-10 17:15:24,890 - INFO - [123/289] 四川大學 (大陸地區)
+2026-03-10 17:15:26,228 - INFO -   ✓ name_en=Sichuan University  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:26,733 - INFO - [124/289] 天津大學 (大陸地區)
+2026-03-10 17:15:27,974 - INFO -   ✓ name_en=Tianjin University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:28,480 - INFO - [125/289] 重慶大學 (大陸地區)
+2026-03-10 17:15:29,774 - INFO -   ✓ name_en=Chongqing University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=6
+2026-03-10 17:15:30,275 - INFO - [126/289] 蘭州大學 (大陸地區)
+2026-03-10 17:15:31,527 - INFO -   ✓ name_en=Lanzhou University  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:32,031 - INFO - [127/289] 西安交通大學 (大陸地區)
+2026-03-10 17:15:33,298 - INFO -   ✓ name_en=Xi'an Jiaotong University  group=一般組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:33,800 - INFO - [128/289] 哈爾濱工業大學 (大陸地區)
+2026-03-10 17:15:35,038 - INFO -   ✓ name_en=Harbin Institute of Technology  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:35,540 - INFO - [129/289] 大連理工大學 (大陸地區)
+2026-03-10 17:15:36,803 - INFO -   ✓ name_en=Dalian University of Technology  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:37,307 - INFO - [130/289] 廈門大學 (大陸地區)
+2026-03-10 17:15:38,570 - INFO -   ✓ name_en=Xiamen University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=10
+2026-03-10 17:15:39,071 - INFO - [131/289] 上海交通大學 (大陸地區)
+2026-03-10 17:15:40,382 - INFO -   ✓ name_en=Shanghai Jiao Tong University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:15:40,883 - INFO - [132/289] 山東大學 (大陸地區)
+2026-03-10 17:15:42,140 - INFO -   ✓ name_en=Shandong University  group=一般組  gpa=2.7  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:42,644 - INFO - [133/289] 南京大學 (大陸地區)
+2026-03-10 17:15:43,943 - INFO -   ✓ name_en=Nanjing University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=5
+2026-03-10 17:15:44,448 - INFO - [134/289] 清華大學 (大陸地區)
+2026-03-10 17:15:45,696 - INFO -   ✓ name_en=Tsinghua University  group=一般組  gpa=3.44  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:15:46,199 - INFO - [135/289] 浙江大學 (大陸地區)
+2026-03-10 17:15:47,452 - INFO -   ✓ name_en=Zhejiang Univeristy  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:47,957 - INFO - [136/289] 中國科學技術大學 (大陸地區)
+2026-03-10 17:15:49,410 - INFO -   ✓ name_en=University of Science and Technology of China  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=5
+2026-03-10 17:15:49,912 - INFO - [137/289] 復旦大學 (大陸地區)
+2026-03-10 17:15:51,281 - INFO -   ✓ name_en=Fudan University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:51,782 - INFO - [138/289] 北京大學 (大陸地區)
+2026-03-10 17:15:53,046 - INFO -   ✓ name_en=Peking University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=5
+2026-03-10 17:15:53,550 - INFO - [139/289] 中國人民大學 (大陸地區)
+2026-03-10 17:15:54,803 - INFO -   ✓ name_en=Renmin University of China  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:55,308 - INFO - [140/289] 吉林大學 (大陸地區)
+2026-03-10 17:15:56,633 - INFO -   ✓ name_en=Jilin University  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:15:57,138 - INFO - [141/289] 南開大學 (大陸地區)
+2026-03-10 17:15:58,401 - INFO -   ✓ name_en=Nankai University  group=一般組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:15:58,906 - INFO - [142/289] 拉曼大學 (馬來西亞)
+2026-03-10 17:16:00,191 - INFO -   ✓ name_en=Universiti Tunku Abdul Rahman  group=一般組  gpa=2.5  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:00,695 - INFO - [143/289] 馬來西亞諾丁漢大學 (馬來西亞)
+2026-03-10 17:16:01,954 - INFO -   ✓ name_en=The University of Nottingham Malaysia  group=一般組  gpa=3.0  toefl=None  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:02,458 - INFO - [144/289] 馬來亞大學 (馬來西亞)
+2026-03-10 17:16:03,724 - INFO -   ✓ name_en=University of Malaya  group=一般組  gpa=3.2  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:04,229 - INFO - [145/289] 馬來西亞理工大學(UTM) (馬來西亞)
+2026-03-10 17:16:05,560 - INFO -   ✓ name_en=University of Technology Malaysia  group=一般組  gpa=3.7  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:06,063 - INFO - [146/289] 馬來西亞理科大學(USM) (馬來西亞)
+2026-03-10 17:16:07,313 - INFO -   ✓ name_en=Universiti Sains Malaysia  group=一般組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:07,816 - INFO - [147/289] 蒙古國立大學 (蒙古)
+2026-03-10 17:16:09,089 - INFO -   ✓ name_en=National University of Mongolia  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:09,594 - INFO - [148/289] 聖彼得堡國立大學 (俄羅斯)
+2026-03-10 17:16:10,845 - INFO -   ✓ name_en=Saint Petersburg State University  group=一般組  gpa=3.3  toefl=92  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:11,350 - INFO - [149/289] 莫斯科國立大學 (俄羅斯)
+2026-03-10 17:16:12,601 - INFO -   ✓ name_en=Lomonosov Moscow State University  group=一般組  gpa=3.44  toefl=79  ielts=6.0  gept=高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:13,106 - INFO - [150/289] 新加坡科技與設計大學 (新加坡)
+2026-03-10 17:16:14,352 - INFO -   ✓ name_en=Singapore University of Technology and Design  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:14,857 - INFO - [151/289] 新加坡管理大學 (新加坡)
+2026-03-10 17:16:16,082 - INFO -   ✓ name_en=Singapore Management University  group=一般組  gpa=None  toefl=93  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=10
+2026-03-10 17:16:16,586 - INFO - [152/289] 南洋理工大學 (新加坡)
+2026-03-10 17:16:17,837 - INFO -   ✓ name_en=Nanyang Technological University  group=一般組  gpa=2.83  toefl=90  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=11
+2026-03-10 17:16:18,342 - INFO - [153/289] 新加坡國立大學 (新加坡)
+2026-03-10 17:16:19,573 - INFO -   ✓ name_en=National University of Singapore (NUS)  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:20,078 - INFO - [154/289] 馬希竇大學 (泰國)
+2026-03-10 17:16:21,312 - INFO -   ✓ name_en=Mahidol University  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:21,816 - INFO - [155/289] 國立法政大學 (泰國)
+2026-03-10 17:16:23,029 - INFO -   ✓ name_en=Thammasat University  group=一般組  gpa=3.0  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=10
+2026-03-10 17:16:23,535 - INFO - [156/289] 朱拉隆功大學 (泰國)
+2026-03-10 17:16:24,803 - INFO -   ✓ name_en=Chulalongkorn University  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:25,308 - INFO - [157/289] 亞洲理工學院 (泰國)
+2026-03-10 17:16:26,537 - INFO -   ✓ name_en=Asian Institute of Technology  group=一般組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:27,042 - INFO - [158/289] 薩邦哲大學 (土耳其)
+2026-03-10 17:16:28,271 - INFO -   ✓ name_en=Sabanci University  group=一般組  gpa=2.5  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:28,776 - INFO - [159/289] 海峽大學 (土耳其)
+2026-03-10 17:16:30,041 - INFO -   ✓ name_en=Bogazici University  group=一般組  gpa=2.7  toefl=79  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:30,546 - INFO - [160/289] 畢爾肯大學 (土耳其)
+2026-03-10 17:16:31,772 - INFO -   ✓ name_en=Bilkent University  group=一般組  gpa=2.7  toefl=87  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:16:32,277 - INFO - [161/289] 中東科技大學 (土耳其)
+2026-03-10 17:16:33,518 - INFO -   ✓ name_en=Middle East Technical University (METU)  group=一般組  gpa=3.3  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:34,023 - INFO - [162/289] 柯克大學 (土耳其)
+2026-03-10 17:16:35,288 - INFO -   ✓ name_en=Koç University  group=一般組  gpa=2.5  toefl=80  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:35,793 - INFO - [163/289] 維也納大學 (奧地利)
+2026-03-10 17:16:37,039 - INFO -   ✓ name_en=University of Vienna  group=德語組  gpa=None  toefl=80  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:16:37,544 - INFO - [164/289] 林茲大學 (奧地利)
+2026-03-10 17:16:38,779 - INFO -   ✓ name_en=Johannes Kepler University of Linz  group=德語組  gpa=None  toefl=85  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:16:39,284 - INFO - [165/289] 蒙斯大學 (比利時)
+2026-03-10 17:16:40,555 - INFO -   ✓ name_en=University of Mons  group=法語組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=B1  jlpt=None  quota=0
+2026-03-10 17:16:41,060 - INFO - [166/289] 托馬斯莫爾應用科技大學 (比利時)
+2026-03-10 17:16:42,298 - INFO -   ✓ name_en=Thomas More University of Applied Sciences  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:42,803 - INFO - [167/289] 布魯塞爾自由大學 (比利時)
+2026-03-10 17:16:44,043 - INFO -   ✓ name_en=Université Libre de Bruxelles  group=法語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:16:44,549 - INFO - [168/289] 查理士大學 (捷克)
+2026-03-10 17:16:45,802 - INFO -   ✓ name_en=Charles University  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:16:46,307 - INFO - [169/289] 馬薩里克大學 (捷克)
+2026-03-10 17:16:47,548 - INFO -   ✓ name_en=Masaryk University  group=一般組  gpa=2.7  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:16:48,053 - INFO - [170/289] 奧胡斯大學 (丹麥)
+2026-03-10 17:16:49,298 - INFO -   ✓ name_en=Aarhus University  group=一般組  gpa=None  toefl=83  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:16:49,803 - INFO - [171/289] 哥本哈根大學 (丹麥)
+2026-03-10 17:16:51,041 - INFO -   ✓ name_en=University of Copenhagen  group=一般組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:16:51,546 - INFO - [172/289] 拉瑞爾應用科技大學 (芬蘭)
+2026-03-10 17:16:52,798 - INFO -   ✓ name_en=Laurea University of Applied Sciences  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:16:53,303 - INFO - [173/289] 赫爾辛基大學 (芬蘭)
+2026-03-10 17:16:54,541 - INFO -   ✓ name_en=University of Helsinki  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:16:55,041 - INFO - [174/289] 巴黎高等師範學院 (法國)
+2026-03-10 17:16:56,270 - INFO -   ✓ name_en=Ecole Normale Superieure Paris  group=法語組  gpa=None  toefl=90  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=3
+2026-03-10 17:16:56,775 - INFO - [175/289] 奧爾良大學 (法國)
+2026-03-10 17:16:58,025 - INFO -   ✓ name_en=University of Orleans  group=法語組  gpa=None  toefl=90  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:16:58,531 - INFO - [176/289] 波爾多大學 (法國)
+2026-03-10 17:16:59,768 - INFO -   ✓ name_en=University of Bordeaux  group=法語組  gpa=2.7  toefl=79  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:17:00,273 - INFO - [177/289] 巴黎高等農業學院 (法國)
+2026-03-10 17:17:01,518 - INFO -   ✓ name_en=AgroParisTech  group=法語組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=B1  jlpt=None  quota=1
+2026-03-10 17:17:02,023 - INFO - [178/289] 巴黎薩克雷大學 (法國)
+2026-03-10 17:17:03,289 - INFO -   ✓ name_en=University of Paris-Saclay  group=法語組  gpa=3.0  toefl=90  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:03,794 - INFO - [179/289] 巴黎高等礦業學院 (法國)
+2026-03-10 17:17:05,023 - INFO -   ✓ name_en=MINES ParisTech  group=法語組  gpa=3.0  toefl=90  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=3
+2026-03-10 17:17:05,528 - INFO - [180/289] 雷恩第一大學（原翰尼第一大學） (法國)
+2026-03-10 17:17:06,772 - INFO -   ✓ name_en=University of Rennes 1  group=法語組  gpa=None  toefl=90  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:07,277 - INFO - [181/289] 巴黎第十三大學（北巴黎大學） (法國)
+2026-03-10 17:17:08,513 - INFO -   ✓ name_en=Sorbonne Paris North University  group=法語組  gpa=3.3  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:17:09,019 - INFO - [182/289] 巴黎薩克雷高等師範學校 (法國)
+2026-03-10 17:17:10,251 - INFO -   ✓ name_en=École normale supérieure Paris-Saclay  group=法語組  gpa=3.7  toefl=95  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=0
+2026-03-10 17:17:10,756 - INFO - [183/289] 里爾天主教大學 (法國)
+2026-03-10 17:17:12,006 - INFO -   ✓ name_en=Lille Catholic University  group=法語組  gpa=2.75  toefl=92  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:12,511 - INFO - [184/289] 巴黎中央理工學院-電力高等學院 (法國)
+2026-03-10 17:17:13,769 - INFO -   ✓ name_en=CentraleSupelec  group=法語組  gpa=None  toefl=85  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=3
+2026-03-10 17:17:14,274 - INFO - [185/289] 巴黎西大學農泰爾拉德芳斯（巴黎第十大學） (法國)
+2026-03-10 17:17:15,507 - INFO -   ✓ name_en=University of Paris Ouest - Nanterre La Défense  group=法語組  gpa=3.0  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=5
+2026-03-10 17:17:16,012 - INFO - [186/289] 法國女性高等綜合理工學院 (法國)
+2026-03-10 17:17:17,266 - INFO -   ✓ name_en=EPF - Graduate School of Engineering  group=法語組  gpa=3.3  toefl=79  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:17:17,771 - INFO - [187/289] 特魯瓦科技大學 (法國)
+2026-03-10 17:17:19,004 - INFO -   ✓ name_en=University of Technology of Troyes (UTT)  group=法語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:17:19,509 - INFO - [188/289] 索邦大學（原皮耶及瑪麗居禮大學 ) (法國)
+2026-03-10 17:17:20,780 - INFO -   ✓ name_en=Sorbonne University ( University Pierre and Marie CURIE )  group=法語組  gpa=3.7  toefl=80  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:21,285 - INFO - [189/289] 巴黎高等政治學院 (法國)
+2026-03-10 17:17:22,991 - INFO -   ✓ name_en=Institut d’Études Politiques de Paris (Sciences Po)  group=法語組  gpa=None  toefl=100  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:17:23,496 - INFO - [190/289] 尚慕蘭里昂第三大學 (法國)
+2026-03-10 17:17:24,732 - INFO -   ✓ name_en=University Jean Moulin - Lyon 3  group=法語組  gpa=None  toefl=80  ielts=6.5  gept=None  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:17:25,235 - INFO - [191/289] 科諾伯勒阿爾卑斯大學 (法國)
+2026-03-10 17:17:26,488 - INFO -   ✓ name_en=University Grenoble Alpes (UGA)  group=法語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:26,993 - INFO - [192/289] 哥廷根大學 (德國)
+2026-03-10 17:17:28,261 - INFO -   ✓ name_en=Georg-August-University Göttingen  group=德語組  gpa=None  toefl=79  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:17:28,765 - INFO - [193/289] 德勒斯登工業大學 (德國)
+2026-03-10 17:17:30,011 - INFO -   ✓ name_en=Dresden University of Technology (TUD)  group=德語組  gpa=None  toefl=90  ielts=6.5  gept=中高級  cefr=B1  jlpt=None  quota=3
+2026-03-10 17:17:30,515 - INFO - [194/289] 明斯特大學 (德國)
+2026-03-10 17:17:31,762 - INFO -   ✓ name_en=University of Münster  group=德語組  gpa=None  toefl=85  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=3
+2026-03-10 17:17:32,267 - INFO - [195/289] 達姆施塔特工業大學 (德國)
+2026-03-10 17:17:33,506 - INFO -   ✓ name_en=Technical University of Darmstadt  group=德語組  gpa=3.3  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=3
+2026-03-10 17:17:34,011 - INFO - [196/289] 康斯坦茨大學 (德國)
+2026-03-10 17:17:35,261 - INFO -   ✓ name_en=University of Konstanz  group=德語組  gpa=3.0  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:35,766 - INFO - [197/289] 柏林洪堡大學 (德國)
+2026-03-10 17:17:37,028 - INFO -   ✓ name_en=Humboldt-University Berlin  group=德語組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:17:37,533 - INFO - [198/289] 斯圖加特大學 (德國)
+2026-03-10 17:17:38,883 - INFO -   ✓ name_en=University of Stuttgart  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:39,388 - INFO - [199/289] 弗萊堡大學 (德國)
+2026-03-10 17:17:40,633 - INFO -   ✓ name_en=University of Freiburg  group=德語組  gpa=None  toefl=85  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:17:41,138 - INFO - [200/289] 魯耳波洪大學 (德國)
+2026-03-10 17:17:42,422 - INFO -   ✓ name_en=Ruhr-University Bochum  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:17:42,927 - INFO - [201/289] 柏林工業大學 (德國)
+2026-03-10 17:17:44,183 - INFO -   ✓ name_en=Technical University of Berlin  group=德語組  gpa=None  toefl=87  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:44,689 - INFO - [202/289] 慕尼黑大學 (德國)
+2026-03-10 17:17:45,933 - INFO -   ✓ name_en=Ludwig Maximilian University of Munich  group=德語組  gpa=3.3  toefl=85  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:46,438 - INFO - [203/289] 曼漢姆大學 (德國)
+2026-03-10 17:17:47,689 - INFO -   ✓ name_en=University of Mannheim  group=德語組  gpa=None  toefl=80  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:48,194 - INFO - [204/289] 漢堡大學 (德國)
+2026-03-10 17:17:49,484 - INFO -   ✓ name_en=University of Hamburg  group=德語組  gpa=None  toefl=85  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:17:49,989 - INFO - [205/289] 亞亨工業大學 (德國)
+2026-03-10 17:17:51,334 - INFO -   ✓ name_en=RWTH Aachen University  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=2
+2026-03-10 17:17:51,838 - INFO - [206/289] 慕尼黑工業大學 (德國)
+2026-03-10 17:17:53,083 - INFO -   ✓ name_en=Technical University of Munich  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:17:53,584 - INFO - [207/289] 杜賓根大學 (德國)
+2026-03-10 17:17:54,832 - INFO -   ✓ name_en=University of Tübingen  group=德語組  gpa=None  toefl=92  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:55,338 - INFO - [208/289] 烏爾姆大學 (德國)
+2026-03-10 17:17:56,589 - INFO -   ✓ name_en=Ulm University  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:57,094 - INFO - [209/289] 波昂大學 (德國)
+2026-03-10 17:17:58,351 - INFO -   ✓ name_en=University of Bonn  group=德語組  gpa=3.3  toefl=85  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:17:58,857 - INFO - [210/289] 卡爾斯魯爾理工學院 (德國)
+2026-03-10 17:18:00,122 - INFO -   ✓ name_en=Karlsruhe Institute of Technology  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:18:00,627 - INFO - [211/289] 艾朗根紐倫堡大學 (德國)
+2026-03-10 17:18:01,954 - INFO -   ✓ name_en=Friedrich-Alexander - University Erlangen-Nurnberg  group=德語組  gpa=None  toefl=87  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:18:02,459 - INFO - [212/289] 多特蒙德工業大學 (德國)
+2026-03-10 17:18:03,716 - INFO -   ✓ name_en=TU Dortmund University  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:18:04,221 - INFO - [213/289] 海德堡大學 (德國)
+2026-03-10 17:18:05,491 - INFO -   ✓ name_en=Heidelberg University  group=德語組  gpa=3.3  toefl=95  ielts=7.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:18:05,996 - INFO - [214/289] 柏林自由大學 (德國)
+2026-03-10 17:18:07,251 - INFO -   ✓ name_en=Free University of Berlin  group=德語組  gpa=None  toefl=90  ielts=6.5  gept=None  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:18:07,756 - INFO - [215/289] 雅典大學 (希臘)
+2026-03-10 17:18:08,995 - INFO -   ✓ name_en=National and Kapodistrian University of Athens  group=一般組  gpa=3.0  toefl=90  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:09,500 - INFO - [216/289] 布達佩斯考文紐斯大學 (匈牙利)
+2026-03-10 17:18:10,743 - INFO -   ✓ name_en=Corvinus University of Budapest  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:11,249 - INFO - [217/289] 布達佩斯科技經濟大學 (匈牙利)
+2026-03-10 17:18:12,481 - INFO -   ✓ name_en=Budapest University of Technology and Economics  group=一般組  gpa=3.0  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:12,984 - INFO - [218/289] 羅蘭大學 (匈牙利)
+2026-03-10 17:18:14,240 - INFO -   ✓ name_en=Eötvös Loránd University  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:14,750 - INFO - [219/289] 冰島大學 (冰島)
+2026-03-10 17:18:16,024 - INFO -   ✓ name_en=University of Iceland  group=一般組  gpa=None  toefl=79  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:16,532 - INFO - [220/289] 米蘭理工大學 (義大利)
+2026-03-10 17:18:17,851 - INFO -   ✓ name_en=Politecnico di Milano  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=0
+2026-03-10 17:18:18,356 - INFO - [221/289] 聖心天主教大學 (義大利)
+2026-03-10 17:18:19,649 - INFO -   ✓ name_en=Catholic University of the Sacred Heart  group=一般組  gpa=2.7  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=4
+2026-03-10 17:18:20,150 - INFO - [222/289] 波隆納大學 (義大利)
+2026-03-10 17:18:21,450 - INFO -   ✓ name_en=University of Bologna (UNIBO)  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:21,954 - INFO - [223/289] 拉脫維亞大學 (拉脫維亞)
+2026-03-10 17:18:23,301 - INFO -   ✓ name_en=University of Latvia  group=一般組  gpa=None  toefl=80  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:23,806 - INFO - [224/289] 考納斯理工大學 (立陶宛)
+2026-03-10 17:18:25,092 - INFO -   ✓ name_en=Kaunas University of Technology  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:25,597 - INFO - [225/289] 維爾紐斯大學 (立陶宛)
+2026-03-10 17:18:27,205 - INFO -   ✓ name_en=Vilnius University  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:27,710 - INFO - [226/289] 盧森堡大學 (盧森堡)
+2026-03-10 17:18:29,290 - INFO -   ✓ name_en=University of Luxembourg  group=法語組  gpa=None  toefl=85  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:18:29,795 - INFO - [227/289] 奈梅亨大學 (荷蘭)
+2026-03-10 17:18:31,216 - INFO -   ✓ name_en=Radboud University Nijmegen  group=一般組  gpa=None  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:31,720 - INFO - [228/289] 阿姆斯特丹自由大學 (荷蘭)
+2026-03-10 17:18:33,481 - INFO -   ✓ name_en=VU University Amsterdam  group=一般組  gpa=None  toefl=95  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:18:33,986 - INFO - [229/289] 馬斯垂克大學 (荷蘭)
+2026-03-10 17:18:35,409 - INFO -   ✓ name_en=Maastricht University  group=一般組  gpa=3.3  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:35,914 - INFO - [230/289] 葛洛寧恩大學 (荷蘭)
+2026-03-10 17:18:37,233 - INFO -   ✓ name_en=University of Groningen  group=一般組  gpa=3.0  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=5
+2026-03-10 17:18:37,734 - INFO - [231/289] 烏特列茲大學 (荷蘭)
+2026-03-10 17:18:39,060 - INFO -   ✓ name_en=Utrecht University  group=一般組  gpa=None  toefl=83  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=4
+2026-03-10 17:18:39,564 - INFO - [232/289] 萊頓大學 (荷蘭)
+2026-03-10 17:18:40,993 - INFO -   ✓ name_en=Leiden University  group=一般組  gpa=3.5  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:41,497 - INFO - [233/289] 奧斯陸大學 (挪威)
+2026-03-10 17:18:42,909 - INFO -   ✓ name_en=University of Oslo  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:18:43,412 - INFO - [234/289] 華沙理工大學 (波蘭)
+2026-03-10 17:18:44,810 - INFO -   ✓ name_en=Warsaw University of Technology  group=一般組  gpa=None  toefl=87  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:45,311 - INFO - [235/289] 華沙大學 (波蘭)
+2026-03-10 17:18:46,718 - INFO -   ✓ name_en=University of Warsaw  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:47,221 - INFO - [236/289] 波爾圖大學 (葡萄牙)
+2026-03-10 17:18:48,672 - INFO -   ✓ name_en=University of Porto  group=一般組  gpa=3.5  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:49,174 - INFO - [237/289] 普里斯汀納大學 (科索沃)
+2026-03-10 17:18:50,431 - INFO -   ✓ name_en=University of Prishtina  group=一般組  gpa=None  toefl=85  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:18:50,936 - INFO - [238/289] 盧比安納大學 (斯洛維尼亞)
+2026-03-10 17:18:52,358 - INFO -   ✓ name_en=University of Ljubljana  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:18:52,861 - INFO - [239/289] 馬德里卡洛斯三世大學 (西班牙)
+2026-03-10 17:18:54,151 - INFO -   ✓ name_en=Charles III University of Madrid (UC3M)  group=西語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=1
+2026-03-10 17:18:54,656 - INFO - [240/289] 巴塞隆納大學 (西班牙)
+2026-03-10 17:18:55,990 - INFO -   ✓ name_en=University of Barcelona  group=西語組  gpa=None  toefl=80  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=1
+2026-03-10 17:18:56,491 - INFO - [241/289] 薩拉曼卡大學 (西班牙)
+2026-03-10 17:18:57,936 - INFO -   ✓ name_en=University of Salamanca  group=西語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=4
+2026-03-10 17:18:58,440 - INFO - [242/289] 聖地牙哥．孔波斯特拉大學 (西班牙)
+2026-03-10 17:18:59,709 - INFO -   ✓ name_en=University of Santiago de Compostela  group=西語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=1
+2026-03-10 17:19:00,210 - INFO - [243/289] 馬德里大學 (西班牙)
+2026-03-10 17:19:01,566 - INFO -   ✓ name_en=Complutense University of Madrid  group=西語組  gpa=None  toefl=None  ielts=None  gept=None  cefr=B1  jlpt=None  quota=1
+2026-03-10 17:19:02,068 - INFO - [244/289] 龐貝法布拉大學 (西班牙)
+2026-03-10 17:19:03,366 - INFO -   ✓ name_en=Pompeu Fabra University  group=西語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=0
+2026-03-10 17:19:03,869 - INFO - [245/289] 馬德里自治大學 (西班牙)
+2026-03-10 17:19:05,138 - INFO -   ✓ name_en=Autonomous University of Madrid  group=西語組  gpa=None  toefl=85  ielts=6.0  gept=None  cefr=B1  jlpt=None  quota=1
+2026-03-10 17:19:05,642 - INFO - [246/289] 巴塞隆納自治大學 (西班牙)
+2026-03-10 17:19:06,986 - INFO -   ✓ name_en=Autonomous University of Barcelona  group=西語組  gpa=None  toefl=80  ielts=6.0  gept=中高級  cefr=B1  jlpt=None  quota=3
+2026-03-10 17:19:07,491 - INFO - [247/289] 馬德里技術大學 (西班牙)
+2026-03-10 17:19:08,777 - INFO -   ✓ name_en=Technical University of Madrid  group=西語組  gpa=None  toefl=79  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:19:09,282 - INFO - [248/289] 林雪平大學 (瑞典)
+2026-03-10 17:19:10,591 - INFO -   ✓ name_en=Linköping University  group=一般組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=3
+2026-03-10 17:19:11,094 - INFO - [249/289] 皇家理工學院 (瑞典)
+2026-03-10 17:19:12,381 - INFO -   ✓ name_en=KTH Royal Institute of Technology  group=一般組  gpa=None  toefl=87  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:12,886 - INFO - [250/289] 烏普薩拉大學 (瑞典)
+2026-03-10 17:19:14,186 - INFO -   ✓ name_en=Uppsala University  group=一般組  gpa=None  toefl=92  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:19:14,689 - INFO - [251/289] 優密歐大學 (瑞典)
+2026-03-10 17:19:15,979 - INFO -   ✓ name_en=Umeå University  group=一般組  gpa=None  toefl=90  ielts=6.0  gept=中高級  cefr=None  jlpt=None  quota=4
+2026-03-10 17:19:16,483 - INFO - [252/289] 斯德哥爾摩大學 (瑞典)
+2026-03-10 17:19:17,910 - INFO -   ✓ name_en=Stockholm University  group=一般組  gpa=None  toefl=90  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:19:18,416 - INFO - [253/289] 隆德大學 (瑞典)
+2026-03-10 17:19:19,827 - INFO -   ✓ name_en=Lund University  group=一般組  gpa=None  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:20,331 - INFO - [254/289] 瑞士東部應用科技大學 (瑞士)
+2026-03-10 17:19:21,674 - INFO -   ✓ name_en=Eastern Switzerland University of Applied Sciences  group=德語組  gpa=None  toefl=79  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=3
+2026-03-10 17:19:22,177 - INFO - [255/289] 蘇黎世大學 (瑞士)
+2026-03-10 17:19:23,436 - INFO -   ✓ name_en=University of Zurich  group=德語組  gpa=None  toefl=90  ielts=6.5  gept=None  cefr=C1  jlpt=None  quota=1
+2026-03-10 17:19:23,936 - INFO - [256/289] 洛桑大學 (瑞士)
+2026-03-10 17:19:25,200 - INFO -   ✓ name_en=University of Lausanne  group=法語組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=B2  jlpt=None  quota=2
+2026-03-10 17:19:25,705 - INFO - [257/289] 伯恩大學 (瑞士)
+2026-03-10 17:19:26,982 - INFO -   ✓ name_en=University of Bern  group=德語組  gpa=None  toefl=80  ielts=6.0  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:19:27,485 - INFO - [258/289] 聖加倫大學 (瑞士)
+2026-03-10 17:19:28,847 - INFO -   ✓ name_en=University of St. Gallen  group=德語組  gpa=None  toefl=94  ielts=6.5  gept=中高級  cefr=B2  jlpt=None  quota=4
+2026-03-10 17:19:29,352 - INFO - [259/289] 倫敦大學亞非學院 (英國)
+2026-03-10 17:19:30,627 - INFO -   ✓ name_en=School of Oriental and African Studies, University of London (SOAS)  group=一般組  gpa=3.5  toefl=95  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:19:31,131 - INFO - [260/289] 東安格利亞大學 (英國)
+2026-03-10 17:19:32,436 - INFO -   ✓ name_en=University of East Anglia  group=一般組  gpa=3.0  toefl=88  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:19:32,942 - INFO - [261/289] 里茲大學 (英國)
+2026-03-10 17:19:34,260 - INFO -   ✓ name_en=University of Leeds  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:34,764 - INFO - [262/289] 杜倫大學 (英國)
+2026-03-10 17:19:36,027 - INFO -   ✓ name_en=Durham University  group=一般組  gpa=3.5  toefl=92  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:19:36,529 - INFO - [263/289] 聖安德魯斯大學 (英國)
+2026-03-10 17:19:37,831 - INFO -   ✓ name_en=University of St Andrews  group=一般組  gpa=3.5  toefl=92  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=7
+2026-03-10 17:19:38,336 - INFO - [264/289] 倫敦大學學院 (英國)
+2026-03-10 17:19:39,658 - INFO -   ✓ name_en=University College London  group=一般組  gpa=3.5  toefl=109  ielts=7.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:40,162 - INFO - [265/289] 伯明罕大學 (英國)
+2026-03-10 17:19:41,459 - INFO -   ✓ name_en=University of Birmingham  group=一般組  gpa=3.3  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:19:41,964 - INFO - [266/289] 諾丁漢大學 (英國)
+2026-03-10 17:19:43,257 - INFO -   ✓ name_en=The University of Nottingham  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:43,760 - INFO - [267/289] 倫敦大學瑪麗王后學院 (英國)
+2026-03-10 17:19:45,096 - INFO -   ✓ name_en=Queen Mary University of London  group=一般組  gpa=3.0  toefl=100  ielts=7.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:19:45,598 - INFO - [268/289] 肯特大學 (英國)
+2026-03-10 17:19:46,883 - INFO -   ✓ name_en=University of Kent  group=一般組  gpa=3.0  toefl=87  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:47,386 - INFO - [269/289] 愛丁堡大學 (英國)
+2026-03-10 17:19:48,760 - INFO -   ✓ name_en=University of Edinburgh  group=一般組  gpa=3.3  toefl=92  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:19:49,264 - INFO - [270/289] 薩塞克斯大學 (英國)
+2026-03-10 17:19:50,573 - INFO -   ✓ name_en=University of Sussex  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:51,074 - INFO - [271/289] 曼徹斯特大學 (英國)
+2026-03-10 17:19:52,489 - INFO -   ✓ name_en=University of Manchester  group=一般組  gpa=3.3  toefl=90  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:19:52,993 - INFO - [272/289] 南安普頓大學 (英國)
+2026-03-10 17:19:54,288 - INFO -   ✓ name_en=University of Southampton  group=一般組  gpa=3.2  toefl=92  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:19:54,790 - INFO - [273/289] 阿德雷德大學 (澳大利亞)
+2026-03-10 17:19:56,127 - INFO -   ✓ name_en=Adelaide University  group=一般組  gpa=2.8  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:19:56,631 - INFO - [274/289] 雪梨大學 (澳大利亞)
+2026-03-10 17:19:57,919 - INFO -   ✓ name_en=The University of Sydney (USYD)  group=一般組  gpa=3.2  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:19:58,424 - INFO - [275/289] 蒙納許大學 (澳大利亞)
+2026-03-10 17:19:59,693 - INFO -   ✓ name_en=Monash University  group=一般組  gpa=3.2  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:20:00,195 - INFO - [276/289] 昆士蘭大學 (澳大利亞)
+2026-03-10 17:20:01,504 - INFO -   ✓ name_en=The University of Queensland (UQ)  group=一般組  gpa=3.3  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:02,009 - INFO - [277/289] 格里菲斯大學 (澳大利亞)
+2026-03-10 17:20:03,304 - INFO -   ✓ name_en=Griffith University  group=一般組  gpa=2.9  toefl=None  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=2
+2026-03-10 17:20:03,809 - INFO - [278/289] 汀肯大學（E交換學生計畫、V訪問學生計畫） (澳大利亞)
+2026-03-10 17:20:05,103 - INFO -   ✓ name_en=Deakin University  group=一般組  gpa=2.8  toefl=None  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:05,607 - INFO - [279/289] 新南威爾斯大學 (澳大利亞)
+2026-03-10 17:20:06,904 - INFO -   ✓ name_en=The University of New South Wales (UNSW)  group=一般組  gpa=3.3  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:07,408 - INFO - [280/289] 馬奎里大學 (澳大利亞)
+2026-03-10 17:20:09,056 - INFO -   ✓ name_en=Macquarie University (MQ)  group=一般組  gpa=3.0  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=3
+2026-03-10 17:20:09,561 - INFO - [281/289] 澳洲國立大學 (澳大利亞)
+2026-03-10 17:20:10,848 - INFO -   ✓ name_en=The Australian National University (ANU)  group=一般組  gpa=3.0  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:11,354 - INFO - [282/289] 墨爾本大學（E交換學生計畫、V訪問學生計畫） (澳大利亞)
+2026-03-10 17:20:12,946 - INFO -   ✓ name_en=The University of Melbourne (UniMelb)  group=一般組  gpa=3.0  toefl=None  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:13,451 - INFO - [283/289] 雪梨科技大學（尚未開放申請） (澳大利亞)
+2026-03-10 17:20:14,632 - INFO -   ✓ name_en=University of Technology Sydney (UTS)  group=一般組  gpa=None  toefl=None  ielts=None  gept=None  cefr=None  jlpt=None  quota=None
+2026-03-10 17:20:15,138 - INFO - [284/289] 奧塔哥大學 (紐西蘭)
+2026-03-10 17:20:16,462 - INFO -   ✓ name_en=University of Otago  group=一般組  gpa=3.2  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:16,964 - INFO - [285/289] 坎特伯雷大學 (紐西蘭)
+2026-03-10 17:20:18,265 - INFO -   ✓ name_en=University of Canterbury  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:20:18,767 - INFO - [286/289] 威靈頓維多利亞大學 (紐西蘭)
+2026-03-10 17:20:20,010 - INFO -   ✓ name_en=Victoria University of Wellington (VUW)  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:20,515 - INFO - [287/289] 奧克蘭大學 (紐西蘭)
+2026-03-10 17:20:21,826 - INFO -   ✓ name_en=The University of Auckland  group=一般組  gpa=3.0  toefl=80  ielts=6.0  gept=None  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:22,332 - INFO - [288/289] 開普敦大學 (南非)
+2026-03-10 17:20:23,594 - INFO -   ✓ name_en=University of Cape Town  group=一般組  gpa=3.2  toefl=88  ielts=6.5  gept=None  cefr=None  jlpt=None  quota=0
+2026-03-10 17:20:24,099 - INFO - [289/289] 斯泰倫博斯大學 (南非)
+2026-03-10 17:20:25,481 - INFO -   ✓ name_en=Stellenbosch University  group=一般組  gpa=None  toefl=79  ielts=6.5  gept=中高級  cefr=None  jlpt=None  quota=1
+2026-03-10 17:20:26,040 - INFO - ============================================================
+2026-03-10 17:20:26,040 - INFO - 爬取完成！
+2026-03-10 17:20:26,040 - INFO - 總學校數: 289，成功: 289，失敗: 0
+2026-03-10 17:20:26,040 - INFO - 耗時: 0:08:49.057105
+2026-03-10 17:20:26,040 - INFO - 資料已儲存至: raw_schools_v2.json
+2026-03-10 17:20:26,040 - INFO - ============================================================
