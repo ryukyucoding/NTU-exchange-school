@@ -13,6 +13,7 @@ import { markdownToHtml } from '@/lib/utils';
 import CommentSection from '@/components/social/CommentSection';
 import RepostPreview from '@/components/social/RepostPreview';
 import DeletePostDialog from '@/components/social/DeletePostDialog';
+import LoadingScreen from '@/components/ui/loading-screen';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
@@ -291,11 +292,7 @@ function PostDetailContentInner() {
   };
 
   if (loading) {
-    return (
-      <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] flex items-center justify-center">
-        <div className="text-gray-500">載入中...</div>
-      </div>
-    );
+    return <LoadingScreen className="h-[calc(100vh-64px)] bg-[#F4F4F4]" />;
   }
 
   if (!post) {
@@ -746,7 +743,7 @@ function PostDetailContentInner() {
 
 function PostDetailContent() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+    <Suspense fallback={<LoadingScreen />}>
       <PostDetailContentInner />
     </Suspense>
   );

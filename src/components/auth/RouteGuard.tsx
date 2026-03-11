@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import LoginModal from './LoginModal';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -35,14 +36,7 @@ export default function RouteGuard({ children }: RouteGuardProps) {
 
   // 如果正在載入，顯示載入中
   if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#b08a63] border-t-transparent mx-auto"></div>
-          <p className="mt-3 text-sm text-[#6b5b4c]">載入中...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   // 如果需要登入但未登入，顯示登入模态框並阻止訪問內容

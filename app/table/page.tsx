@@ -9,6 +9,7 @@ import { useMapZoom } from '@/contexts/MapZoomContext';
 import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
 import TableView from '@/components/views/TableView';
+import LoadingScreen from '@/components/ui/loading-screen';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -123,14 +124,7 @@ function TableContent() {
   }, [setZoomLevel]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-          <p className="mt-4 text-gray-600">載入學校資料中...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen text="載入學校資料中..." />;
   }
 
   return (

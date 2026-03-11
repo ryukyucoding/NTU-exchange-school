@@ -8,6 +8,7 @@ import SocialSidebar from '@/components/social/SocialSidebar';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 function SocialContent() {
   const searchParams = useSearchParams();
@@ -127,7 +128,7 @@ function SocialContent() {
 export default function SocialPage() {
   return (
     <RouteGuard>
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+      <Suspense fallback={<LoadingScreen />}>
         <SocialContent />
         <FeatureTour tourType="social" />
       </Suspense>

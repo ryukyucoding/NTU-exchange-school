@@ -13,6 +13,7 @@ import HashtagInput from '@/components/social/HashtagInput';
 import DraftList from '@/components/social/DraftList';
 import RepostPreview from '@/components/social/RepostPreview';
 import UnsavedChangesDialog from '@/components/social/UnsavedChangesDialog';
+import LoadingScreen from '@/components/ui/loading-screen';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
@@ -812,11 +813,7 @@ function GeneralPostContent() {
   };
 
   if (loading) {
-    return (
-      <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] flex items-center justify-center">
-        <div className="text-gray-500">載入中...</div>
-      </div>
-    );
+    return <LoadingScreen className="h-[calc(100vh-64px)] bg-[#F4F4F4]" />;
   }
 
   return (
@@ -1037,7 +1034,7 @@ function GeneralPostContent() {
 export default function GeneralPostPage() {
   return (
     <RouteGuard>
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">載入中...</div>}>
+      <Suspense fallback={<LoadingScreen />}>
         <GeneralPostContent />
       </Suspense>
     </RouteGuard>

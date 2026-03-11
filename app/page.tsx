@@ -11,6 +11,7 @@ import FloatingSearchBar from '@/components/layout/FloatingSearchBar';
 import UserQualificationPanel from '@/components/filters/UserQualificationPanel';
 import MapView from '@/components/views/MapView';
 import FeatureTour from '@/components/onboarding/FeatureTour';
+import LoadingScreen from '@/components/ui/loading-screen';
 import PanelOverlay from '@/components/layout/PanelOverlay';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -166,14 +167,7 @@ function MainContent() {
   const filteredSchools = useFilteredSchools(schools, filters, user);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">載入學校資料中...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen text="載入學校資料中..." />;
   }
 
   return (

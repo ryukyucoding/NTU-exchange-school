@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Plus, Minus, GripVertical, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import RouteGuard from '@/components/auth/RouteGuard';
+import LoadingScreen from '@/components/ui/loading-screen';
 import FeatureTour from '@/components/onboarding/FeatureTour';
 import {
   Dialog,
@@ -280,11 +281,7 @@ function WishlistContent() {
   };
 
   if (loading) {
-    return (
-      <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-[#F4F4F4] overflow-hidden">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
-      </div>
-    );
+    return <LoadingScreen className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden" />;
   }
 
   return (

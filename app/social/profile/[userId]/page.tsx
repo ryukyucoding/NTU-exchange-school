@@ -6,6 +6,7 @@ import SocialSidebar from '@/components/social/SocialSidebar';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
 import { Button } from '@/components/ui/button';
+import LoadingScreen from '@/components/ui/loading-screen';
 import {
   Dialog,
   DialogContent,
@@ -264,11 +265,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   if (loading) {
     return (
       <RouteGuard>
-        <div className="min-h-screen" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
-          </div>
-        </div>
+        <LoadingScreen />
       </RouteGuard>
     );
   }

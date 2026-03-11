@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import { Star, Info } from 'lucide-react';
 import SchoolDetailModal from '@/components/school-display/SchoolDetailModal';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 type SortMode = 'popular' | 'latest' | 'rating';
 
@@ -220,9 +221,7 @@ function SchoolBoardContent() {
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
-                  </div>
+                  <LoadingScreen className="py-12" />
                 </div>
               </Card>
             ) : (

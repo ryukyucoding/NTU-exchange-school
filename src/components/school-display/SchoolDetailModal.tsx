@@ -489,7 +489,7 @@ export default function SchoolDetailModal({
       variant={isWishlist ? 'wishlist' : 'glass'}
       zIndex={isSide ? 80 : 40}
       overlayStyle={isSide ? 'none' : 'default'}
-      contentAnimation={isSide ? 'none' : 'default'}
+      contentAnimation="none"
       closeOnBackdropClick={!isSide}
     >
       {isSide ? (
@@ -566,9 +566,9 @@ export default function SchoolDetailModal({
                 : 'relative w-full max-w-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl rounded-3xl overflow-hidden text-white'
             }
             onMouseDown={(e) => e.stopPropagation()}
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 0.95, y: -16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -16 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             <div className="max-h-[80vh] flex flex-col">

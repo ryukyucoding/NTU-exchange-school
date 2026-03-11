@@ -88,6 +88,7 @@ export default function TableView({ schools }: TableViewProps) {
   }
 
   return (
+    <>
     <div className="bg-white border border-[#d6c3a1] rounded-xl shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
@@ -292,12 +293,14 @@ export default function TableView({ schools }: TableViewProps) {
         </Table>
       </div>
 
-      <SchoolDetailModal
-        school={selectedSchool}
-        open={!!selectedSchool}
-        onClose={() => setSelectedSchool(null)}
-        variant="wishlist"
-      />
     </div>
+
+    <SchoolDetailModal
+      school={selectedSchool}
+      open={!!selectedSchool}
+      onClose={() => setSelectedSchool(null)}
+      variant="wishlist"
+    />
+    </>
   );
 }

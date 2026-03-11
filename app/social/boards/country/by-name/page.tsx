@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 export default function CountryBoardByNamePage() {
   const searchParams = useSearchParams();
@@ -31,13 +32,6 @@ export default function CountryBoardByNamePage() {
       });
   }, [countryName, router]);
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400 mx-auto"></div>
-        <p className="mt-4 text-gray-600">載入中...</p>
-      </div>
-    </div>
-  );
+  return <LoadingScreen />;
 }
 

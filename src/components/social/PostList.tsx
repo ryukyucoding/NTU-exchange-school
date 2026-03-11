@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import GeneralPostCard from './GeneralPostCard';
 import SchoolReviewPostCard from './SchoolReviewPostCard';
 import { usePosts } from '@/hooks/usePosts';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 interface PostListProps {
   filter: 'all' | 'following';
@@ -71,11 +72,7 @@ export default function PostList({
     variant === 'plain' ? 'space-y-4' : 'space-y-4 bg-white p-4 rounded-lg';
 
   if (loading && posts.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
-      </div>
-    );
+    return <LoadingScreen className="py-12" />;
   }
 
   if (posts.length === 0) {
