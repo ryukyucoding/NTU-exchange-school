@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -104,8 +104,6 @@ function PostDetailContentInner() {
   const [commentCount, setCommentCount] = useState(0);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const mainContentRef = useRef<HTMLElement>(null);
-
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -138,23 +136,6 @@ function PostDetailContentInner() {
       fetchPost();
     }
   }, [postId, router]);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
 
   const handleLike = async () => {
     if (!post) return;
@@ -406,18 +387,12 @@ function PostDetailContentInner() {
         </div>
       </div>
 
-      {/* Content Frame: Main content area with post detail and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        {/* Layout: flex on md+, simple centering on mobile */}
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
+        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
 
-          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-            <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-              <div className="w-full min-w-full">
+          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
+              <div className="w-full min-w-0 min-h-[60vh]">
               <div className="space-y-4 bg-white p-4 rounded-lg">
                   {/* Back Button and Edit/Delete Menu */}
                   <div className="flex items-center justify-between mb-4">
@@ -724,7 +699,7 @@ function PostDetailContentInner() {
             </main>
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
             <SocialSidebar />
           </aside>
         </div>

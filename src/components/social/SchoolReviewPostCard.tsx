@@ -263,21 +263,24 @@ function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostC
 
       {/* 評分指標 */}
       {post.ratings && (
-        <div className="mb-4 flex items-center justify-between gap-4" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+        <div
+          className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               生活機能
             </span>
             {renderStars(post.ratings.livingConvenience)}
           </div>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+          <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               學習體驗
             </span>
             {renderStars(post.ratings.courseLoading)}
           </div>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+          <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <span className="text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               物價水準
             </span>
             {renderDollarSigns(post.ratings.costOfLiving)}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import RouteGuard from '@/components/auth/RouteGuard';
 import FeatureTour from '@/components/onboarding/FeatureTour';
@@ -13,29 +13,11 @@ function SocialContent() {
   const searchParams = useSearchParams();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
   const [hashtag, setHashtag] = useState<string | null>(null);
-  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const hashtagParam = searchParams.get('hashtag');
     setHashtag(hashtagParam);
   }, [searchParams]);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
 
   return (
     // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
@@ -94,31 +76,27 @@ function SocialContent() {
         </div>
       </div>
 
-      {/* Content Frame: Main content area with posts and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        {/* Layout: flex on all screens, mx-auto centers content on mobile when sidebars are hidden */}
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      {/* Content Frame: min-h-0 so flex child can shrink and scroll */}
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
+        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
+          {/* Left spacer - keeps three-column layout on md+ */}
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
 
-          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-full">
-            <PostList filter={filter} hashtag={hashtag} />
+          {/* Main - flexible width up to 800px, only scrollable area */}
+          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-0 min-h-[60vh]">
+              <PostList filter={filter} hashtag={hashtag} />
             </div>
           </main>
 
-          {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-              <SocialSidebar />
+          {/* Right Sidebar - fixed width, hidden below sm (640px) */}
+          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
+            <SocialSidebar />
           </aside>
         </div>
-
       </div>
 
-      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      {/* Bottom Navigation - Only visible on screens smaller than sm (640px) */}
       <SocialBottomNav />
     </div>
   );

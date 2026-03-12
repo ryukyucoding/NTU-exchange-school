@@ -99,7 +99,6 @@ function CountryBoardContent() {
   }, [schools, countryId, schoolsLoading]);
 
   const schoolScrollRef = useRef<HTMLDivElement>(null);
-  const mainContentRef = useRef<HTMLElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
@@ -175,34 +174,6 @@ function CountryBoardContent() {
     checkFollow();
     return () => { cancelled = true; };
   }, [boardId]);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    // 使用 requestAnimationFrame 确保在 DOM 渲染后执行
-    const rafId = requestAnimationFrame(() => {
-      updateMinWidth();
-      // 如果第一次执行时 ref 还没有设置，再试一次
-      if (!mainContentRef.current) {
-        setTimeout(updateMinWidth, 0);
-      }
-    });
-    
-    window.addEventListener('resize', updateMinWidth);
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('resize', updateMinWidth);
-    };
-  }, []);
 
   // 獲取學校評分
   useEffect(() => {
@@ -301,15 +272,12 @@ function CountryBoardContent() {
         </div>
       )}
 
-      {/* Content Frame */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar placeholder, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
+        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
 
-          {/* Main (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-full">
+          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-0 min-h-[60vh]">
             {loading || !countryInfo ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -483,7 +451,7 @@ function CountryBoardContent() {
           </main>
 
           {/* Right Sidebar (fixed, does NOT scroll) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
             <SocialSidebar />
           </aside>
         </div>

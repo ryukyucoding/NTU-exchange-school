@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,6 @@ function BoardsContent() {
     Oceania: [],
   });
   const [_loading, setLoading] = useState(true);
-  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -50,23 +49,6 @@ function BoardsContent() {
     };
 
     fetchCountries();
-  }, []);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
   }, []);
 
   const toggleRegion = (region: string) => {
@@ -121,17 +103,12 @@ function BoardsContent() {
         </div>
       </div>
 
-      {/* Content Frame: Main content area with boards and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
+        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
 
-          {/* Main Content - Boards list (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="space-y-4 w-full min-w-full">
+          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
+            <div className="space-y-4 w-full min-w-0 min-h-[60vh]">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
                 const countries = countriesByRegion[region.value] || [];
@@ -183,8 +160,8 @@ function BoardsContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          {/* Right Sidebar - hidden below sm (640px) */}
+          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
               <SocialSidebar />
           </aside>
         </div>

@@ -69,9 +69,9 @@ export default function SocialSidebar() {
   const { tags: popularTags, loading: tagsLoading } = usePopularTags();
 
   return (
-    <div className="w-64 flex flex-col gap-4 h-full">
+    <div className="w-full flex flex-col gap-4 h-full">
       {/* Navigation */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
         <nav className="flex flex-col gap-2">
           <Link href="/social/boards" data-tour-step="social-boards">
             <Button
@@ -95,7 +95,7 @@ export default function SocialSidebar() {
       </Card>
 
       {/* Followed Boards */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
         <h3 className="font-semibold mb-3 text-gray-800">追蹤的看板</h3>
         {loading ? (
           <div className="text-sm text-gray-400">載入中...</div>
@@ -123,7 +123,7 @@ export default function SocialSidebar() {
       </Card>
 
       {/* Popular Topics */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
         <h3 className="font-semibold mb-3 text-gray-800">熱門話題</h3>
         {tagsLoading ? (
           <div className="text-sm text-gray-400">載入中...</div>

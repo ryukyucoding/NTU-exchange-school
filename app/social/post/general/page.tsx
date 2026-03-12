@@ -74,7 +74,6 @@ function GeneralPostContent() {
   const [pendingDraftLoad, setPendingDraftLoad] = useState<Draft | null>(null);
   const [entryPage, setEntryPage] = useState<string | null>(null); // 記錄進入發布貼文頁面的上一頁
   const hasPushedHistoryRef = useRef(false);
-  const mainContentRef = useRef<HTMLElement>(null);
 
   // 記錄進入發布貼文頁面的上一頁
   useEffect(() => {
@@ -219,23 +218,6 @@ function GeneralPostContent() {
       cancelled = true;
     };
   }, [sessionUserId]);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
 
   // 載入要轉發的原貼文資料（從 URL 參數或編輯的貼文中）
   useEffect(() => {
@@ -843,18 +825,15 @@ function GeneralPostContent() {
         </div>
       </div>
 
-      {/* Content Frame */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
+      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
+        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
+          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
 
-          {/* Main Content - Scrollable, can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-full">
+          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
+            <div className="w-full min-w-0 min-h-[60vh]">
 
               {/* White Card Container */}
-              <Card className="p-6 bg-white relative pt-8 w-[800px]" style={{ borderColor: 'white' }}>
+              <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px] mx-auto" style={{ borderColor: 'white' }}>
                 {/* Left spacer for "+" button */}
                 <div className="absolute left-0 top-0 bottom-0 w-12"></div>
                 
@@ -991,7 +970,7 @@ function GeneralPostContent() {
           </main>
 
           {/* Right Sidebar - Drafts (轉發時為空，編輯時隱藏) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
             {!editPostId && (!repostId && !currentRepostId) && (
               <DraftList type="general" onLoadDraft={handleLoadDraft} />
             )}
