@@ -32,7 +32,6 @@ export default function UserQualificationPanel({
     if (user.applicationGroup !== null && filters.applicationGroup !== user.applicationGroup) {
       updateFilters({ applicationGroup: user.applicationGroup });
     } else if (user.applicationGroup === null && filters.applicationGroup !== null) {
-      // 如果 user.applicationGroup 被清除，也清除 filters
       updateFilters({ applicationGroup: null });
     }
   }, [user.applicationGroup]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -45,52 +44,38 @@ export default function UserQualificationPanel({
       user.toefl !== null ||
       user.ielts !== null ||
       user.toeic !== null ||
-      filters.applicationGroup !== null;
+      user.gept !== null ||
+      user.cefr !== null ||
+      user.jlpt !== null ||
+      user.noFail ||
+      filters.applicationGroup !== null ||
+      filters.hasQuota;
 
     if (!hasAnyQualification) {
       toast('請先設定至少一項篩選條件', { icon: 'ℹ️' });
       return;
     }
 
-    // 如果未登入，只套用篩選但不保存
     if (!session) {
       toast.success('已套用資格篩選（未登入，不會保存）');
-      // 自動收起面板
-      if (onApply) {
-        setTimeout(() => {
-          onApply();
-        }, 300);
-      }
+      if (onApply) setTimeout(() => onApply(), 300);
       return;
     }
 
-    // 如果已登入，保存到資料庫
     setIsSaving(true);
     try {
       const response = await fetch('/api/user/qualification', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...user,
-          applicationGroup: filters.applicationGroup,
-        }),
+        body: JSON.stringify({ ...user, applicationGroup: filters.applicationGroup }),
       });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          // 更新 user state 中的 applicationGroup
-          setUser({
-            ...user,
-            applicationGroup: filters.applicationGroup,
-          });
+          setUser({ ...user, applicationGroup: filters.applicationGroup });
           toast.success('已套用資格篩選並保存');
-          // 自動收起面板
-          if (onApply) {
-            setTimeout(() => {
-              onApply();
-            }, 300); // 稍微延遲，讓 toast 顯示
-          }
+          if (onApply) setTimeout(() => onApply(), 300);
         } else {
           throw new Error(data.error || data.details || '保存失敗');
         }
@@ -100,8 +85,7 @@ export default function UserQualificationPanel({
       }
     } catch (error: unknown) {
       console.error('Failed to save qualification:', error);
-      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
-      toast.error(`保存失敗: ${errorMessage}`);
+      toast.error(`保存失敗: ${error instanceof Error ? error.message : '未知錯誤'}`);
     } finally {
       setIsSaving(false);
     }
@@ -109,417 +93,335 @@ export default function UserQualificationPanel({
 
   const handleClearFilter = async () => {
     resetUser();
-    updateFilters({ applicationGroup: null });
-    // 如果已登入，也清除資料庫中的 applicationGroup
+    updateFilters({ applicationGroup: null, hasQuota: false });
     if (session) {
       try {
         await fetch('/api/user/qualification', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...user,
-            applicationGroup: null,
-          }),
+          body: JSON.stringify({ ...user, applicationGroup: null }),
         });
       } catch (error) {
         console.error('Failed to clear applicationGroup:', error);
       }
     }
     toast.success('已清除所有篩選條件');
-    // 自動收起面板
-    if (onApply) {
-      setTimeout(() => {
-        onApply();
-      }, 300); // 稍微延遲，讓 toast 顯示
-    }
+    if (onApply) setTimeout(() => onApply(), 300);
   };
 
+  // 選項列表
   const colleges = [
     '文學院', '理學院', '社會科學院', '醫學院', '工學院',
-    '生農學院', '管理學院', '公衛學院', '電資學院', '法律學院', '生科學院'
+    '生農學院', '管理學院', '公衛學院', '電資學院', '法律學院', '生科學院',
   ];
-
   const grades = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Master1', 'Master2'];
+  const gradeLabels: Record<string, string> = {
+    Freshman: '大一', Sophomore: '大二', Junior: '大三', Senior: '大四',
+    Master1: '碩一', Master2: '碩二',
+  };
   const APPLICATION_GROUP_ALL = '__all__';
-  // 下拉選單只提供「單一組別」選項（例如：學校為「日語組/一般組」會在篩選邏輯中被拆成兩個組別匹配）
-  const applicationGroups = ['一般組', '英語組', '法語組', '德語組', '西語組', '日語組', '中語組', '韓語組'];
+  const applicationGroups = ['一般組', '法語組', '德語組', '西語組', '日語組', '中語組', '韓語組'];
+  const geptLevels = ['初級', '中級', '中高級', '高級'];
+  const cefrLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+  const jlptLevels = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
   const safeApplicationGroupValue =
     filters.applicationGroup && applicationGroups.includes(filters.applicationGroup)
       ? filters.applicationGroup
       : APPLICATION_GROUP_ALL;
 
+  // 共用 className
+  const triggerCls = variant === 'wishlist'
+    ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] transition-colors'
+    : `transition-all duration-300 ${isHighZoom ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600' : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'}`;
+
+  const contentCls = variant === 'wishlist'
+    ? 'bg-white border-[#d6c3a1]'
+    : `backdrop-blur-md transition-all duration-300 ${isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'}`;
+
+  const itemCls = variant === 'wishlist'
+    ? 'text-[#4a3828] hover:bg-[#f5ede1] focus:bg-[#f5ede1]'
+    : `transition-all duration-300 ${isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'}`;
+
+  const labelCls = `font-medium transition-all duration-300 ${
+    variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
+  }`;
+
+  const inputCls = variant === 'wishlist'
+    ? 'bg-white border-[#d6c3a1] text-[#4a3828] placeholder:text-[#8a7a63] focus-visible:ring-[#d6c3a1]'
+    : `transition-all duration-300 ${isHighZoom ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600' : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'}`;
+
+
+  const mutedCls = `text-xs transition-all duration-300 ${
+    variant === 'wishlist' ? 'text-[#8a7a63]' : (isHighZoom ? 'text-gray-600' : 'text-white/70')
+  }`;
+
+  const sectionLabelCls = `text-base font-semibold transition-all duration-300 ${
+    variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
+  }`;
+
   return (
-    <div className="w-full space-y-4">
-      {/* 年級選擇 */}
-      <div>
-        <Label
-          htmlFor="grade"
-          className={`font-medium transition-all duration-300 ${
-            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-          }`}
-        >
-          年級
-        </Label>
-        <Select
-          value={user.grade || ''}
-          onValueChange={(value: string) =>
-            setUser({
-              ...user,
-              grade: value as 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | 'Master1' | 'Master2' | null
-            })
-          }
-        >
-          <SelectTrigger
-            id="grade"
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
-                : `transition-all duration-300 ${
-                    isHighZoom
-                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
-                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
-                  }`
-            }
-          >
-            <SelectValue placeholder="請選擇年級" />
-          </SelectTrigger>
-          <SelectContent
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1]'
-                : `backdrop-blur-md transition-all duration-300 ${
-                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
-                  }`
-            }
-          >
-            {grades.map(grade => (
-              <SelectItem
-                key={grade}
-                value={grade}
-                className={
-                  variant === 'wishlist'
-                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                    : `transition-all duration-300 ${
-                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                      }`
-                }
-              >
-                {grade === 'Freshman' && '大一'}
-                {grade === 'Sophomore' && '大二'}
-                {grade === 'Junior' && '大三'}
-                {grade === 'Senior' && '大四'}
-                  {grade === 'Master1' && '碩一'}
-                  {grade === 'Master2' && '碩二'}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+    <div className="w-full flex flex-col">
+      {/* 可捲動欄位區 */}
+      <div className="space-y-4 pr-1 pb-1">
 
-      {/* 學院選擇 */}
-      <div>
-        <Label
-          htmlFor="college"
-          className={`font-medium transition-all duration-300 ${
-            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-          }`}
-        >
-          學院
-        </Label>
-        <Select
-          value={user.college || ''}
-          onValueChange={(value) => setUser({ ...user, college: value })}
-        >
-          <SelectTrigger
-            id="college"
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
-                : `transition-all duration-300 ${
-                    isHighZoom
-                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
-                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
-                  }`
-            }
-          >
-            <SelectValue placeholder="請選擇學院" />
-          </SelectTrigger>
-          <SelectContent
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1]'
-                : `backdrop-blur-md transition-all duration-300 ${
-                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
-                  }`
-            }
-          >
-            {colleges.map(college => (
-              <SelectItem
-                key={college}
-                value={college}
-                className={
-                  variant === 'wishlist'
-                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                    : `transition-all duration-300 ${
-                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                      }`
-                }
-              >
-                {college}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* 申請組別篩選 */}
-      <div>
-        <Label
-          htmlFor="application-group"
-          className={`font-medium transition-all duration-300 ${
-            variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-          }`}
-        >
-          申請組別
-        </Label>
-        <Select
-          value={safeApplicationGroupValue}
-          onValueChange={(value) =>
-            updateFilters({ applicationGroup: value === APPLICATION_GROUP_ALL ? null : value })
-          }
-        >
-          <SelectTrigger
-            id="application-group"
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1] text-[#4a3828] data-[placeholder]:text-[#8a7a63] focus:ring-[#d6c3a1] hover:bg-[#f5ede1] hover:text-[#4a3828] transition-colors'
-                : `transition-all duration-300 ${
-                    isHighZoom
-                      ? 'bg-white/20 border-white/30 text-gray-800 data-[placeholder]:text-gray-600'
-                      : 'bg-white/10 border-white/30 text-white data-[placeholder]:text-white/70'
-                  }`
-            }
-          >
-            <SelectValue placeholder="不限" />
-          </SelectTrigger>
-          <SelectContent
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1]'
-                : `backdrop-blur-md transition-all duration-300 ${
-                    isHighZoom ? 'bg-white/30 border-white/35' : 'bg-white/20 border-white/30'
-                  }`
-            }
-          >
-            <SelectItem
-              value={APPLICATION_GROUP_ALL}
-              className={
-                variant === 'wishlist'
-                  ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                  : `transition-all duration-300 ${
-                      isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                    }`
-              }
-            >
-              不限
-            </SelectItem>
-            {applicationGroups.map(group => (
-              <SelectItem
-                key={group}
-                value={group}
-                className={
-                  variant === 'wishlist'
-                    ? 'text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828] focus:bg-[#f5ede1] focus:text-[#4a3828]'
-                    : `transition-all duration-300 ${
-                        isHighZoom ? 'text-gray-800 hover:bg-white/30' : 'text-white hover:bg-white/20'
-                      }`
-                }
-              >
-                {group}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-        {/* GPA 輸入 */}
+        {/* 年級 */}
         <div>
-          <Label
-            htmlFor="gpa"
-            className={`font-medium transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-            }`}
+          <Label htmlFor="grade" className={labelCls}>年級</Label>
+          <Select
+            value={user.grade || ''}
+            onValueChange={(v) => setUser({ ...user, grade: v as typeof user.grade })}
           >
-            GPA
-          </Label>
+            <SelectTrigger id="grade" className={triggerCls}>
+              <SelectValue placeholder="請選擇年級" />
+            </SelectTrigger>
+            <SelectContent className={contentCls}>
+              {grades.map(g => (
+                <SelectItem key={g} value={g} className={itemCls}>{gradeLabels[g]}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* 學院 */}
+        <div>
+          <Label htmlFor="college" className={labelCls}>學院</Label>
+          <Select value={user.college || ''} onValueChange={(v) => setUser({ ...user, college: v })}>
+            <SelectTrigger id="college" className={triggerCls}>
+              <SelectValue placeholder="請選擇學院" />
+            </SelectTrigger>
+            <SelectContent className={contentCls}>
+              {colleges.map(c => (
+                <SelectItem key={c} value={c} className={itemCls}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* 申請組別 */}
+        <div>
+          <Label htmlFor="application-group" className={labelCls}>申請組別</Label>
+          <Select
+            value={safeApplicationGroupValue}
+            onValueChange={(v) => updateFilters({ applicationGroup: v === APPLICATION_GROUP_ALL ? null : v })}
+          >
+            <SelectTrigger id="application-group" className={triggerCls}>
+              <SelectValue placeholder="不限" />
+            </SelectTrigger>
+            <SelectContent className={contentCls}>
+              <SelectItem value={APPLICATION_GROUP_ALL} className={itemCls}>不限</SelectItem>
+              {applicationGroups.map(g => (
+                <SelectItem key={g} value={g} className={itemCls}>{g}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* GPA */}
+        <div>
+          <Label htmlFor="gpa" className={labelCls}>GPA</Label>
           <Input
-            id="gpa"
-            type="number"
-            min={0}
-            max={4.3}
-            step={0.01}
+            id="gpa" type="number" min={0} max={4.3} step={0.01}
             value={user.gpa ?? ''}
             onChange={(e) => setUser({ ...user, gpa: e.target.value ? parseFloat(e.target.value) : null })}
             placeholder="例如: 3.8"
-            className={
-              variant === 'wishlist'
-                ? 'bg-white border-[#d6c3a1] text-[#4a3828] placeholder:text-[#8a7a63] focus-visible:ring-[#d6c3a1]'
-                : `transition-all duration-300 ${
-                    isHighZoom
-                      ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
-                      : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
-                  }`
-            }
+            className={inputCls}
           />
-          <p
-            className={`text-xs mt-1 transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#8a7a63]' : (isHighZoom ? 'text-gray-600' : 'text-white/70')
-            }`}
-          >
-            滿分 4.3
-          </p>
+          <p className={`mt-1 ${mutedCls}`}>滿分 4.3</p>
         </div>
 
         {/* 語言成績 */}
         <div className="space-y-3">
-          <Label
-            className={`text-base font-semibold transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-            }`}
-          >
-            語言成績
-          </Label>
+          <Label className={sectionLabelCls}>語言成績</Label>
 
           <div>
-            <Label
-              htmlFor="toefl"
-              className={`font-medium transition-all duration-300 ${
-                variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-              }`}
-            >
-              TOEFL iBT
-            </Label>
+            <Label htmlFor="toefl" className={labelCls}>TOEFL iBT</Label>
             <Input
-              id="toefl"
-              type="number"
-              min={0}
-              max={120}
+              id="toefl" type="number" min={0} max={120}
               value={user.toefl ?? ''}
               onChange={(e) => setUser({ ...user, toefl: e.target.value ? parseInt(e.target.value) : null })}
               placeholder="例如: 90"
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1] text-[#4a3828] placeholder:text-[#8a7a63] focus-visible:ring-[#d6c3a1]'
-                  : `transition-all duration-300 ${
-                      isHighZoom
-                        ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
-                        : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
-                    }`
-              }
+              className={inputCls}
             />
           </div>
 
           <div>
-            <Label
-              htmlFor="ielts"
-              className={`font-medium transition-all duration-300 ${
-                variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-              }`}
-            >
-              IELTS
-            </Label>
+            <Label htmlFor="ielts" className={labelCls}>IELTS</Label>
             <Input
-              id="ielts"
-              type="number"
-              min={0}
-              max={9}
-              step={0.5}
+              id="ielts" type="number" min={0} max={9} step={0.5}
               value={user.ielts ?? ''}
               onChange={(e) => setUser({ ...user, ielts: e.target.value ? parseFloat(e.target.value) : null })}
               placeholder="例如: 7.0"
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1] text-[#4a3828] placeholder:text-[#8a7a63] focus-visible:ring-[#d6c3a1]'
-                  : `transition-all duration-300 ${
-                      isHighZoom
-                        ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
-                        : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
-                    }`
-              }
+              className={inputCls}
             />
           </div>
 
           <div>
-            <Label
-              htmlFor="toeic"
-              className={`font-medium transition-all duration-300 ${
-                variant === 'wishlist' ? 'text-[#4a3828]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-              }`}
-            >
-              TOEIC
-            </Label>
+            <Label htmlFor="toeic" className={labelCls}>TOEIC</Label>
             <Input
-              id="toeic"
-              type="number"
-              min={0}
-              max={990}
+              id="toeic" type="number" min={0} max={990}
               value={user.toeic ?? ''}
               onChange={(e) => setUser({ ...user, toeic: e.target.value ? parseInt(e.target.value) : null })}
               placeholder="例如: 850"
-              className={
-                variant === 'wishlist'
-                  ? 'bg-white border-[#d6c3a1] text-[#4a3828] placeholder:text-[#8a7a63] focus-visible:ring-[#d6c3a1]'
-                  : `transition-all duration-300 ${
-                      isHighZoom
-                        ? 'bg-white/20 border-white/30 text-gray-800 placeholder:text-gray-600'
-                        : 'bg-white/10 border-white/30 text-white placeholder:text-white/70'
-                    }`
-              }
+              className={inputCls}
             />
+          </div>
+
+          {/* 全民英檢 */}
+          <div>
+            <Label htmlFor="gept" className={labelCls}>全民英檢</Label>
+            <Select
+              value={user.gept || '__none__'}
+              onValueChange={(v) => setUser({ ...user, gept: v === '__none__' ? null : v })}
+            >
+              <SelectTrigger id="gept" className={triggerCls}>
+                <SelectValue placeholder="不限" />
+              </SelectTrigger>
+              <SelectContent className={contentCls}>
+                <SelectItem value="__none__" className={itemCls}>不限</SelectItem>
+                {geptLevels.map(l => (
+                  <SelectItem key={l} value={l} className={itemCls}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* CEFR */}
+          <div>
+            <Label htmlFor="cefr" className={labelCls}>CEFR</Label>
+            <Select
+              value={user.cefr || '__none__'}
+              onValueChange={(v) => setUser({ ...user, cefr: v === '__none__' ? null : v })}
+            >
+              <SelectTrigger id="cefr" className={triggerCls}>
+                <SelectValue placeholder="不限" />
+              </SelectTrigger>
+              <SelectContent className={contentCls}>
+                <SelectItem value="__none__" className={itemCls}>不限</SelectItem>
+                {cefrLevels.map(l => (
+                  <SelectItem key={l} value={l} className={itemCls}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* JLPT */}
+          <div>
+            <Label htmlFor="jlpt" className={labelCls}>JLPT 日語能力</Label>
+            <Select
+              value={user.jlpt || '__none__'}
+              onValueChange={(v) => setUser({ ...user, jlpt: v === '__none__' ? null : v })}
+            >
+              <SelectTrigger id="jlpt" className={triggerCls}>
+                <SelectValue placeholder="不限" />
+              </SelectTrigger>
+              <SelectContent className={contentCls}>
+                <SelectItem value="__none__" className={itemCls}>不限</SelectItem>
+                {jlptLevels.map(l => (
+                  <SelectItem key={l} value={l} className={itemCls}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        {/* 操作按鈕 */}
-        <div className="flex gap-2 pt-2">
-          <Button
-            className={
-              variant === 'wishlist'
-                ? 'flex-1 bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] shadow-sm disabled:opacity-50'
-                : 'flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-md disabled:opacity-50'
-            }
-            onClick={handleApplyFilter}
-            disabled={isSaving}
-          >
-            <Check className="w-4 h-4 mr-2" />
-            {isSaving ? '保存中...' : '套用篩選'}
-          </Button>
-          <Button
-            variant="outline"
-            className={
-              variant === 'wishlist'
-                ? 'flex-1 bg-white border-[#a07a52] text-[#4a3828] hover:bg-[#f5ede1]'
-                : `flex-1 transition-all duration-300 ${
-                    isHighZoom
-                      ? 'bg-white/20 border-white/30 text-gray-800 hover:bg-white/30 hover:text-gray-900'
-                      : 'bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white'
-                  }`
-            }
-            onClick={handleClearFilter}
-            disabled={isSaving}
-          >
-            <X className="w-4 h-4 mr-2" />
-            清除篩選
-          </Button>
+        {/* 其他條件 */}
+        <div>
+          <Label className={sectionLabelCls}>其他條件</Label>
+          <div className="flex flex-wrap gap-3 mt-3">
+            <Button
+              variant={user.noFail ? 'default' : 'outline'}
+              size="sm"
+              className={
+                variant === 'wishlist'
+                  ? `text-sm font-normal transition-all duration-200 ${
+                      user.noFail
+                        ? 'bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
+                        : 'bg-white border border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
+                    }`
+                  : `text-sm font-normal transition-all duration-300 ${
+                      user.noFail
+                        ? 'bg-blue-500/80 hover:bg-blue-500 text-white shadow-lg'
+                        : isHighZoom
+                          ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
+                          : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
+                    }`
+              }
+              onClick={() => setUser({ ...user, noFail: !user.noFail })}
+            >
+              我曾有不及格科目
+            </Button>
+            <Button
+              variant={filters.hasQuota ? 'default' : 'outline'}
+              size="sm"
+              className={
+                variant === 'wishlist'
+                  ? `text-sm font-normal transition-all duration-200 ${
+                      filters.hasQuota
+                        ? 'bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
+                        : 'bg-white border border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
+                    }`
+                  : `text-sm font-normal transition-all duration-300 ${
+                      filters.hasQuota
+                        ? 'bg-blue-500/80 hover:bg-blue-500 text-white shadow-lg'
+                        : isHighZoom
+                          ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
+                          : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
+                    }`
+              }
+              onClick={() => updateFilters({ hasQuota: !filters.hasQuota })}
+            >
+              排除資料已更新且無名額的學校
+            </Button>
+          </div>
         </div>
-        {!session && (
-          <p
-            className={`text-xs text-center mt-2 transition-all duration-300 ${
-              variant === 'wishlist' ? 'text-[#8a7a63]' : (isHighZoom ? 'text-gray-600' : 'text-white/70')
-            }`}
-          >
-            登入後可保存資格設定
-          </p>
-        )}
+
+      </div>{/* end scrollable */}
+
+      {/* 分隔線（獨立包裝確保上下間距） */}
+      <div className="py-4 flex-shrink-0">
+        <div className={`border-t transition-all duration-300 ${
+          variant === 'wishlist' ? 'border-[#d6c3a1]' : (isHighZoom ? 'border-gray-300' : 'border-white/20')
+        }`} />
+      </div>
+
+      {/* 操作按鈕（固定在下方） */}
+      <div className="flex gap-2 flex-shrink-0">
+        <Button
+          className={
+            variant === 'wishlist'
+              ? 'flex-1 bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] shadow-sm disabled:opacity-50'
+              : 'flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-md disabled:opacity-50'
+          }
+          onClick={handleApplyFilter}
+          disabled={isSaving}
+        >
+          <Check className="w-4 h-4 mr-2" />
+          {isSaving ? '保存中...' : '套用篩選'}
+        </Button>
+        <Button
+          variant="outline"
+          className={
+            variant === 'wishlist'
+              ? 'flex-1 bg-white border-[#a07a52] text-[#4a3828] hover:bg-[#f5ede1]'
+              : `flex-1 transition-all duration-300 ${
+                  isHighZoom
+                    ? 'bg-white/20 border-white/30 text-gray-800 hover:bg-white/30'
+                    : 'bg-white/10 border-white/30 text-white hover:bg-white/20'
+                }`
+          }
+          onClick={handleClearFilter}
+          disabled={isSaving}
+        >
+          <X className="w-4 h-4 mr-2" />
+          清除資格篩選
+        </Button>
+      </div>
+      {!session && (
+        <p className={`text-xs text-center mt-2 flex-shrink-0 ${mutedCls}`}>
+          登入後可保存資格設定
+        </p>
+      )}
     </div>
   );
 }

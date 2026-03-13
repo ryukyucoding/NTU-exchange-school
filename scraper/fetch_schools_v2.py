@@ -34,6 +34,15 @@ if '--semester' in sys.argv:
     if idx + 1 < len(sys.argv):
         SEMESTER = int(sys.argv[idx + 1])
 
+LIST_ONLY = '--list-only' in sys.argv   # 只爬列表頁，不爬詳細頁
+
+# --ids 1075,1080  只爬這些 ID 的詳細頁（搭配現有 JSON 使用）
+ONLY_IDS = set()
+if '--ids' in sys.argv:
+    ids_idx = sys.argv.index('--ids')
+    if ids_idx + 1 < len(sys.argv):
+        ONLY_IDS = set(sys.argv[ids_idx + 1].split(','))
+
 LIST_URL = f"{BASE_URL}/outgoing/school.list/semester/{SEMESTER}"
 OUTPUT_FILE = f'raw_schools_v2_sem{SEMESTER}.json'
 
@@ -345,11 +354,11 @@ def _extract_common_fields(sections):
 
 def main():
     start_time = datetime.now()
+    mode = "LIST ONLY" if LIST_ONLY else f"IDS {','.join(ONLY_IDS)}" if ONLY_IDS else "FULL"
     logger.info("=" * 60)
     logger.info("開始爬取台大 OIA 交換學校資料 (v2 - 結構化解析)")
-    logger.info(f"學期: Semester {SEMESTER}")
+    logger.info(f"學期: Semester {SEMESTER}  模式: {mode}")
     logger.info(f"列表 URL: {LIST_URL}")
-    logger.info(f"開始時間: {start_time}")
     logger.info(f"輸出檔案: {OUTPUT_FILE}")
     logger.info("=" * 60)
 
@@ -369,7 +378,57 @@ def main():
             schools = extract_school_links(page)
             logger.info(f"成功提取 {len(schools)} 個學校連結")
 
-            # Step 2：逐一爬取詳細頁面
+            # --list-only: 存到獨立暫存檔，不覆蓋主 JSON
+            if LIST_ONLY:
+                list_only_file = OUTPUT_FILE.replace('.json', '_list_only.json')
+                with open(list_only_file, 'w', encoding='utf-8') as f:
+                    json.dump(schools, f, ensure_ascii=False, indent=2)
+                logger.info(f"✅ 列表模式完成，已存 {len(schools)} 筆 → {list_only_file}")
+                return
+
+            # --ids: 若有指定 ID，載入既有 JSON 並只更新指定學校的詳細頁
+            if ONLY_IDS:
+                # 載入既有 JSON 作為基底
+                import os
+                existing = {}
+                if os.path.exists(OUTPUT_FILE):
+                    with open(OUTPUT_FILE, encoding='utf-8') as f:
+                        for s in json.load(f):
+                            existing[s['id']] = s
+                # 用列表頁的最新資料更新基底（列表欄位如 is_updated, selection_quota 等）
+                for s in schools:
+                    if s['id'] in existing:
+                        existing[s['id']].update(s)
+                    else:
+                        existing[s['id']] = s
+
+                # 只爬指定 ID 的詳細頁
+                targets = [s for s in schools if s['id'] in ONLY_IDS]
+                logger.info(f"將爬取 {len(targets)} 所指定學校的詳細頁")
+
+                success_count = 0
+                fail_count = 0
+                for idx, school in enumerate(targets, 1):
+                    logger.info(f"[{idx}/{len(targets)}] {school['name_zh']} ({school['country']})")
+                    detail = extract_detail_info(page, school['url'])
+                    if detail:
+                        existing[school['id']].update(detail)
+                        if detail.get('name_zh_detail'):
+                            existing[school['id']]['name_zh'] = detail['name_zh_detail']
+                        success_count += 1
+                        logger.info(f"  ✓ OK")
+                    else:
+                        fail_count += 1
+                        logger.warning(f"  ✗ 無法取得詳細資訊")
+                    time.sleep(DELAY_BETWEEN_REQUESTS)
+
+                all_schools = list(existing.values())
+                with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(all_schools, f, ensure_ascii=False, indent=2)
+                logger.info(f"✅ 指定 ID 模式完成，更新 {success_count} 所，失敗 {fail_count} 所")
+                return
+
+            # Step 2：完整模式 - 逐一爬取詳細頁面
             total = len(schools)
             success_count = 0
             fail_count = 0

@@ -9,6 +9,7 @@ export interface FilterState {
   ieltsMin: number | null;
   toeicMin: number | null;
   quotaMin: number | null;
+  hasQuota: boolean;         // 僅顯示有名額的學校
   searchKeyword: string;
 }
 

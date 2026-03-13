@@ -23,20 +23,10 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
       if (!matches) return false;
     }
 
-    // 地區篩選
-    if (filters.regions.length > 0 && !filters.regions.includes(school.region)) {
-      return false;
-    }
-
-    // 國家篩選
+    // 國家篩選（地區選取會自動展開為國家列表，因此只需檢查 countries[]）
     if (filters.countries && filters.countries.length > 0) {
       const schoolCountry = school.country || school.country_en;
-      const matchesCountry = filters.countries.some(country => 
-        schoolCountry.includes(country)
-      );
-      if (!matchesCountry) {
-        return false;
-      }
+      if (!filters.countries.some(country => schoolCountry.includes(country))) return false;
     }
 
     // 學院篩選 - 基於不接受申請之學院
@@ -91,6 +81,15 @@ export function applyFilters(schools: School[], filters: FilterState): School[] 
       if (quotaMatch) {
         const quotaNum = parseInt(quotaMatch[1], 10);
         if (!isNaN(quotaNum) && quotaNum < filters.quotaMin) return false;
+      }
+    }
+
+    // 排除已確認無名額的學校（已更新且甄選名額/人次皆為 0）
+    if (filters.hasQuota) {
+      if (school.is_updated) {
+        const sq = school.selection_quota ?? 0;
+        const sc = school.selection_count ?? 0;
+        if (sq === 0 && sc === 0) return false;
       }
     }
 

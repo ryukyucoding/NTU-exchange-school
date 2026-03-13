@@ -22,7 +22,11 @@
     "migrate-from-posts-test": "tsx scripts/migrate-from-posts.ts --dry-run --limit 5",
     "retry-failed-posts": "tsx scripts/retry-failed-posts.ts",
     "check-supabase-urls": "tsx scripts/check-supabase-urls.ts",
-    "verify-before-delete": "tsx scripts/verify-before-delete.ts"
+    "verify-before-delete": "tsx scripts/verify-before-delete.ts",
+    "sync": "tsx scripts/sync-schools.ts --semester 2",
+    "sync:sem1": "tsx scripts/sync-schools.ts --semester 1",
+    "sync:apply": "tsx scripts/sync-schools.ts --semester 2 --apply",
+    "sync:sem1:apply": "tsx scripts/sync-schools.ts --semester 1 --apply"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

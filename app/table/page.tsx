@@ -37,6 +37,7 @@ function UnifiedPanelManager() {
         onClose={() => collapsePanel('user')}
         panelType="user"
         variant="wishlist"
+        contentAnimation="none"
       >
         <motion.div
           className="fixed top-20 right-4 z-20 w-80"
@@ -45,8 +46,8 @@ function UnifiedPanelManager() {
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
-          <div className="bg-white border border-[#d6c3a1] rounded-xl shadow-sm p-4">
-            <div className="flex justify-between items-center mb-4">
+          <div className="bg-white border border-[#d6c3a1] rounded-xl shadow-sm p-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4 flex-shrink-0">
               <h3 className="text-[#4a3828] font-semibold">我的資格</h3>
               <Button
                 variant="ghost"

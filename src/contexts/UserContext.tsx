@@ -20,6 +20,10 @@ const defaultUser: UserQualification = {
   ielts: null,
   toeic: null,
   applicationGroup: null,
+  gept: null,
+  cefr: null,
+  jlpt: null,
+  noFail: false,
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -36,7 +40,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     user.toefl !== null ||
     user.ielts !== null ||
     user.toeic !== null ||
-    user.applicationGroup !== null
+    user.applicationGroup !== null ||
+    user.gept !== null ||
+    user.cefr !== null ||
+    user.jlpt !== null ||
+    user.noFail
   );
 
   // 當用戶登入時，自動載入保存的資格

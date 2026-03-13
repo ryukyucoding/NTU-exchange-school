@@ -55,6 +55,7 @@ function UnifiedPanelManager() {
         onClose={() => collapsePanel('user')}
         panelType="user"
         variant="glass"
+        contentAnimation="none"
       >
         <motion.div
           className="fixed top-20 right-4 z-20 w-80"
@@ -64,7 +65,7 @@ function UnifiedPanelManager() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
           <div
-            className={`backdrop-blur-md rounded-lg shadow-2xl p-4 transition-all duration-300 ${
+            className={`backdrop-blur-md rounded-lg shadow-2xl p-4 max-h-[80vh] overflow-y-auto transition-all duration-300 ${
               isHighZoom ? 'bg-white/30' : 'bg-white/20'
             }`}
             style={{
@@ -73,7 +74,7 @@ function UnifiedPanelManager() {
                 : '1px solid rgba(255, 255, 255, 0.30)',
             }}
           >
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 flex-shrink-0">
               <h3 className={`font-semibold transition-all duration-300 ${
                 isHighZoom ? 'text-gray-800' : 'text-white'
               }`}>我的資格</h3>

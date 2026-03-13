@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useFilters } from '@/contexts/FilterContext';
+import { useSchoolContext } from '@/contexts/SchoolContext';
 import { usePanelManager } from '@/hooks/usePanelManager';
 import { useMapBackgroundBrightness } from '@/hooks/useBackgroundBrightness';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +17,7 @@ interface FloatingSearchBarProps {
 
 export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: FloatingSearchBarProps) {
   const { filters, updateFilters } = useFilters();
+  const { schools } = useSchoolContext();
   const [searchTerm, setSearchTerm] = useState(filters.searchKeyword || '');
   const panelManager = usePanelManager();
   const { panels, togglePanel, collapsePanel } = panelManager;
@@ -39,16 +41,50 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
     e.stopPropagation();
   };
 
-  const toggleRegion = (region: string) => {
-    const newRegions = filters.regions.includes(region)
-      ? filters.regions.filter(r => r !== region)
-      : [...filters.regions, region];
-    updateFilters({ regions: newRegions });
+  // 依地區分組的國家列表（從學校資料動態產生）
+  const regionToCountries = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    schools.forEach(s => {
+      if (s.country && s.region) {
+        if (!map.has(s.region)) map.set(s.region, new Set());
+        map.get(s.region)!.add(s.country);
+      }
+    });
+    const result = new Map<string, string[]>();
+    for (const [region, set] of map) {
+      result.set(region, Array.from(set).sort((a, b) => a.localeCompare(b, 'zh-Hant')));
+    }
+    return result;
+  }, [schools]);
+
+  const regions = ['Asia', 'Europe', 'Americas', 'Oceania', 'Africa'] as const;
+  const regionLabels: Record<string, string> = {
+    Asia: '亞洲', Europe: '歐洲', Americas: '美洲', Oceania: '大洋洲', Africa: '非洲',
   };
 
-  const clearFilters = () => {
-    setSearchTerm('');
-    updateFilters({ searchKeyword: '', regions: [], countries: [] });
+  const getRegionState = (region: string): 'all' | 'some' | 'none' => {
+    const countries = regionToCountries.get(region) || [];
+    if (countries.length === 0) return 'none';
+    const selected = countries.filter(c => filters.countries?.includes(c));
+    if (selected.length === 0) return 'none';
+    if (selected.length === countries.length) return 'all';
+    return 'some';
+  };
+
+  const toggleRegionCountries = (region: string) => {
+    const countriesInRegion = regionToCountries.get(region) || [];
+    const state = getRegionState(region);
+    let newCountries: string[];
+    if (state === 'all') {
+      // 全選 → 全部取消
+      newCountries = (filters.countries || []).filter(c => !countriesInRegion.includes(c));
+    } else {
+      // none 或 some → 全選
+      const existing = new Set(filters.countries || []);
+      countriesInRegion.forEach(c => existing.add(c));
+      newCountries = Array.from(existing);
+    }
+    updateFilters({ countries: newCountries });
   };
 
   const toggleCountry = (country: string) => {
@@ -58,14 +94,10 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
     updateFilters({ countries: newCountries });
   };
 
-  // 所有資料中的國家列表
-  const allCountries = [
-    '丹麥', '以色列', '俄羅斯', '冰島', '加拿大', '匈牙利', '南非', '南韓', '印度', '哥倫比亞',
-    '土耳其', '墨西哥', '中國', '奧地利', '巴西', '希臘', '德國', '拉脫維亞', '挪威', '捷克',
-    '斯洛維尼亞', '新加坡', '日本', '智利', '比利時', '法國', '波蘭', '泰國', '澳大利亞', '澳門',
-    '瑞典', '瑞士', '盧森堡', '科索沃', '立陶宛', '紐西蘭', '美國', '義大利', '芬蘭', '英國',
-    '荷蘭', '葡萄牙', '蒙古', '西班牙', '香港', '馬來西亞'
-  ];
+  const clearFilters = () => {
+    setSearchTerm('');
+    updateFilters({ searchKeyword: '', regions: [], countries: [] });
+  };
 
   return (
     <>
@@ -225,79 +257,92 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <div className="space-y-3">
-              {/* 地區篩選 */}
-              <div>
-                <label className={`text-xs mb-2 block drop-shadow-md transition-all duration-300 ${
-                  variant === 'wishlist' ? 'text-[#6b5b4c]' : (isHighZoom ? 'text-gray-700' : 'text-white/70')
-                }`}>地區篩選</label>
-                <div className="flex flex-wrap gap-2">
-                  {['Americas', 'Europe', 'Asia', 'Oceania'].map(region => (
-                    <Button
-                      key={region}
-                      variant={filters.regions.includes(region) ? 'default' : 'outline'}
-                      size="sm"
-                      className={
-                        variant === 'wishlist'
-                          ? `text-xs transition-all duration-200 ${
-                              filters.regions.includes(region)
-                                ? 'bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
-                                : 'bg-white border border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
-                            }`
-                          : `text-xs transition-all duration-300 ${
-                              filters.regions.includes(region)
-                                ? 'bg-blue-500/80 hover:bg-blue-500 text-white shadow-lg'
-                                : isHighZoom
-                                  ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
-                                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
-                            }`
-                      }
-                      onClick={() => toggleRegion(region)}
-                    >
-                      {region === 'Americas' ? '美洲' :
-                       region === 'Europe' ? '歐洲' :
-                       region === 'Asia' ? '亞洲' :
-                       region === 'Oceania' ? '大洋洲' : region}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+              {/* 地區 / 國家篩選 - 雙欄佈局 */}
+              <label className={`text-xs mb-2 block drop-shadow-md transition-all duration-300 ${
+                variant === 'wishlist' ? 'text-[#6b5b4c]' : (isHighZoom ? 'text-gray-700' : 'text-white/70')
+              }`}>地區 / 國家篩選</label>
+              <div className="max-h-64 overflow-y-auto" style={{ display: 'grid', gridTemplateColumns: 'auto 12px 1px 12px 1fr', gap: 0 }}>
+                {regions.map((region, idx) => {
+                  const countries = regionToCountries.get(region) || [];
+                  if (countries.length === 0) return null;
+                  const state = getRegionState(region);
+                  const isLast = idx === regions.length - 1 || regions.slice(idx + 1).every(r => (regionToCountries.get(r) || []).length === 0);
+                  return (
+                    <React.Fragment key={region}>
+                      {/* 左：地區按鈕 */}
+                      <div className={`flex items-start justify-center ${isLast ? '' : 'pb-3'}`}>
+                        <Button
+                          variant={state !== 'none' ? 'default' : 'outline'}
+                          size="sm"
+                          className={
+                            variant === 'wishlist'
+                              ? `text-xs h-7 w-12 border transition-all duration-200 ${
+                                  state === 'all'
+                                    ? 'bg-[#d6c3a1] border-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
+                                    : state === 'some'
+                                      ? 'bg-[#e8ddc8] border-[#d6c3a1] text-[#3b2a1c] hover:bg-[#ddd0b8] hover:text-[#3b2a1c]'
+                                      : 'bg-white border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
+                                }`
+                              : `text-xs h-7 w-12 border transition-all duration-300 ${
+                                  state === 'all'
+                                    ? 'bg-blue-500/80 border-transparent hover:bg-blue-500 text-white shadow-lg'
+                                    : state === 'some'
+                                      ? 'bg-blue-400/40 border-blue-300/50 hover:bg-blue-400/60 text-white backdrop-blur-sm'
+                                      : isHighZoom
+                                        ? 'bg-white/20 border-white/30 hover:bg-white/30 text-gray-800 backdrop-blur-sm'
+                                        : 'bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm'
+                                }`
+                          }
+                          onClick={() => toggleRegionCountries(region)}
+                        >
+                          {regionLabels[region]}
+                        </Button>
+                      </div>
 
-              {/* 國家篩選 */}
-              <div>
-                <label className={`text-xs mb-2 block drop-shadow-md transition-all duration-300 ${
-                  variant === 'wishlist' ? 'text-[#6b5b4c]' : (isHighZoom ? 'text-gray-700' : 'text-white/70')
-                }`}>國家篩選</label>
-                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-                  {allCountries.map(country => (
-                    <Button
-                      key={country}
-                      variant={filters.countries?.includes(country) ? 'default' : 'outline'}
-                      size="sm"
-                      className={
-                        variant === 'wishlist'
-                          ? `text-xs transition-all duration-200 ${
-                              filters.countries?.includes(country)
-                                ? 'bg-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
-                                : 'bg-white border border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
-                            }`
-                          : `text-xs transition-all duration-300 ${
-                              filters.countries?.includes(country)
-                                ? 'bg-green-500/80 hover:bg-green-500 text-white shadow-lg'
-                                : isHighZoom
-                                  ? 'bg-white/20 hover:bg-white/30 text-gray-800 border-white/30 backdrop-blur-sm'
-                                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm'
-                            }`
-                      }
-                      onClick={() => toggleCountry(country)}
-                    >
-                      {country}
-                    </Button>
-                  ))}
-                </div>
+                      {/* 左間距 */}
+                      <div className={isLast ? '' : 'pb-3'} />
+                      {/* 分隔線 */}
+                      <div className={`${isLast ? '' : 'pb-3'} ${
+                        variant === 'wishlist' ? 'bg-[#d6c3a1]' : (isHighZoom ? 'bg-gray-300' : 'bg-white/20')
+                      }`} />
+                      {/* 右間距 */}
+                      <div className={isLast ? '' : 'pb-3'} />
+
+                      {/* 右：國家按鈕 */}
+                      <div className={`flex flex-wrap gap-1.5 items-start ${isLast ? '' : 'pb-3'}`}>
+                        {countries.map(country => (
+                          <Button
+                            key={country}
+                            variant={filters.countries?.includes(country) ? 'default' : 'outline'}
+                            size="sm"
+                            className={
+                              variant === 'wishlist'
+                                ? `text-xs h-7 px-2 border transition-all duration-200 ${
+                                    filters.countries?.includes(country)
+                                      ? 'bg-[#d6c3a1] border-[#d6c3a1] text-[#3b2a1c] hover:bg-[#c5b28f] hover:text-[#3b2a1c]'
+                                      : 'bg-white border-[#d6c3a1] text-[#4a3828] hover:bg-[#f5ede1] hover:text-[#4a3828]'
+                                  }`
+                                : `text-xs h-7 px-2 border transition-all duration-300 ${
+                                    filters.countries?.includes(country)
+                                      ? 'bg-blue-500/80 border-transparent hover:bg-blue-500 text-white shadow-lg'
+                                      : isHighZoom
+                                        ? 'bg-white/20 border-white/30 hover:bg-white/30 text-gray-800 backdrop-blur-sm'
+                                        : 'bg-white/10 border-white/20 hover:bg-white/20 text-white backdrop-blur-sm'
+                                  }`
+                            }
+                            onClick={() => toggleCountry(country)}
+                          >
+                            {country}
+                          </Button>
+                        ))}
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
               </div>
 
               {/* 清除篩選按鈕 */}
-              {(filters.regions.length > 0 || filters.searchKeyword || (filters.countries && filters.countries.length > 0)) && (
+              {(filters.searchKeyword || (filters.countries && filters.countries.length > 0)) && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -312,7 +357,7 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
                         }`
                   }
                 >
-                  清除所有篩選
+                  清除地區篩選
                 </Button>
               )}
               </div>

@@ -19,6 +19,7 @@ const defaultFilters: FilterState = {
   ieltsMin: null,
   toeicMin: null,
   quotaMin: null,
+  hasQuota: false,
   searchKeyword: '',
 };
 

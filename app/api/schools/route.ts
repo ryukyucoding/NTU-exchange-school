@@ -39,7 +39,7 @@ export async function GET(_req: NextRequest) {
     const [schoolsResult, countriesResult] = await Promise.all([
       supabase
         .from("schools")
-        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, grade_requirement, restricted_colleges, quota, latitude, longitude, gpa_min, toefl_ibt, ielts, toeic, gept, language_cefr, jlpt, no_fail_required, is_updated, sections, language_group")
+        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, grade_requirement, restricted_colleges, quota, latitude, longitude, gpa_min, toefl_ibt, ielts, toeic, gept, language_cefr, jlpt, no_fail_required, is_updated, sections, language_group, contract_quota, selection_quota, selection_count")
         .order("name_zh"),
       supabase
         .from("Country")

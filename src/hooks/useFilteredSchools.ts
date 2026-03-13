@@ -4,6 +4,26 @@ import { FilterState } from '@/types/filter';
 import { UserQualification } from '@/types/user';
 import { applyFilters } from '@/utils/filters';
 
+// 全民英檢等級對應數值（越高越好）
+const GEPT_LEVEL: Record<string, number> = {
+  '初級': 1, '中級': 2, '中高級': 3, '高級': 4,
+};
+
+// CEFR 等級對應數值（越高越好）
+const CEFR_LEVEL: Record<string, number> = {
+  'A1': 1, 'A2': 2, 'B1': 3, 'B2': 4, 'C1': 5, 'C2': 6,
+};
+
+// JLPT 等級對應數值（N1 最難 = 5，N5 最易 = 1）
+const JLPT_LEVEL: Record<string, number> = {
+  'N5': 1, 'N4': 2, 'N3': 3, 'N2': 4, 'N1': 5,
+};
+
+function parseCEFR(s: string): number | null {
+  const key = s.trim().replace(/\+$/, '').toUpperCase();
+  return CEFR_LEVEL[key] ?? null;
+}
+
 // 年級對應的數值
 const GRADE_LEVEL: Record<string, number> = {
   'Freshman': 1,
@@ -186,7 +206,11 @@ export function useFilteredSchools(
       userQualification.gpa !== null ||
       userQualification.toefl !== null ||
       userQualification.ielts !== null ||
-      userQualification.toeic !== null;
+      userQualification.toeic !== null ||
+      userQualification.gept !== null ||
+      userQualification.cefr !== null ||
+      userQualification.jlpt !== null ||
+      userQualification.noFail;
 
     if (hasUserQualification) {
       filtered = filtered.filter(school => {
@@ -264,6 +288,32 @@ export function useFilteredSchools(
           if (!meetsAnyLanguageRequirement && !hasOtherLanguage) {
             return false;
           }
+        }
+
+        // 全民英檢：使用者等級須 >= 學校要求
+        if (userQualification.gept && school.gept) {
+          const userLevel = GEPT_LEVEL[userQualification.gept] ?? 0;
+          const schoolLevel = GEPT_LEVEL[school.gept] ?? 0;
+          if (schoolLevel > 0 && userLevel < schoolLevel) return false;
+        }
+
+        // CEFR：使用者等級須 >= 學校要求
+        if (userQualification.cefr && school.language_cefr) {
+          const userLevel = parseCEFR(userQualification.cefr) ?? 0;
+          const schoolLevel = parseCEFR(school.language_cefr) ?? 0;
+          if (schoolLevel > 0 && userLevel < schoolLevel) return false;
+        }
+
+        // JLPT：使用者等級須 >= 學校要求
+        if (userQualification.jlpt && school.jlpt) {
+          const userLevel = JLPT_LEVEL[userQualification.jlpt] ?? 0;
+          const schoolLevel = JLPT_LEVEL[school.jlpt] ?? 0;
+          if (schoolLevel > 0 && userLevel < schoolLevel) return false;
+        }
+
+        // 不及格科目：若使用者有不及格，排除要求無不及格的學校
+        if (userQualification.noFail && school.no_fail_required) {
+          return false;
         }
 
         return true;

@@ -34,6 +34,9 @@ export interface School {
   is_updated: boolean;
   sections: SchoolSection[] | null;
   language_group: string | null;
+  contract_quota: number | null;
+  selection_quota: number | null;
+  selection_count: number | null;
 }
 
 export type SchoolWithMatch = School;
