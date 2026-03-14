@@ -27,6 +27,18 @@ export default function UserQualificationPanel({
   const { data: session } = useSession();
   const [isSaving, setIsSaving] = useState(false);
 
+  // local string states for numeric inputs (避免打小數點時被 parseFloat 吃掉)
+  const [gpaStr, setGpaStr] = useState(user.gpa?.toString() ?? '');
+  const [toeflStr, setToeflStr] = useState(user.toefl?.toString() ?? '');
+  const [ieltsStr, setIeltsStr] = useState(user.ielts?.toString() ?? '');
+  const [toeicStr, setToeicStr] = useState(user.toeic?.toString() ?? '');
+
+  // 外部 user 資料變化時同步 local state（如清除篩選、從 DB 載入）
+  useEffect(() => { setGpaStr(user.gpa?.toString() ?? ''); }, [user.gpa]);
+  useEffect(() => { setToeflStr(user.toefl?.toString() ?? ''); }, [user.toefl]);
+  useEffect(() => { setIeltsStr(user.ielts?.toString() ?? ''); }, [user.ielts]);
+  useEffect(() => { setToeicStr(user.toeic?.toString() ?? ''); }, [user.toeic]);
+
   // 當 user.applicationGroup 從資料庫載入時，同步到 filters
   useEffect(() => {
     if (user.applicationGroup !== null && filters.applicationGroup !== user.applicationGroup) {
@@ -221,9 +233,10 @@ export default function UserQualificationPanel({
         <div>
           <Label htmlFor="gpa" className={labelCls}>GPA</Label>
           <Input
-            id="gpa" type="number" min={0} max={4.3} step={0.01}
-            value={user.gpa ?? ''}
-            onChange={(e) => setUser({ ...user, gpa: e.target.value ? parseFloat(e.target.value) : null })}
+            id="gpa" type="text" inputMode="decimal"
+            value={gpaStr}
+            onChange={(e) => { if (e.target.value === '' || /^\d*\.?\d*$/.test(e.target.value)) setGpaStr(e.target.value); }}
+            onBlur={() => setUser({ ...user, gpa: gpaStr ? parseFloat(gpaStr) || null : null })}
             placeholder="例如: 3.8"
             className={inputCls}
           />
@@ -237,9 +250,10 @@ export default function UserQualificationPanel({
           <div>
             <Label htmlFor="toefl" className={labelCls}>TOEFL iBT</Label>
             <Input
-              id="toefl" type="number" min={0} max={120}
-              value={user.toefl ?? ''}
-              onChange={(e) => setUser({ ...user, toefl: e.target.value ? parseInt(e.target.value) : null })}
+              id="toefl" type="text" inputMode="numeric"
+              value={toeflStr}
+              onChange={(e) => { if (e.target.value === '' || /^\d*$/.test(e.target.value)) setToeflStr(e.target.value); }}
+              onBlur={() => setUser({ ...user, toefl: toeflStr ? parseInt(toeflStr) || null : null })}
               placeholder="例如: 90"
               className={inputCls}
             />
@@ -248,9 +262,10 @@ export default function UserQualificationPanel({
           <div>
             <Label htmlFor="ielts" className={labelCls}>IELTS</Label>
             <Input
-              id="ielts" type="number" min={0} max={9} step={0.5}
-              value={user.ielts ?? ''}
-              onChange={(e) => setUser({ ...user, ielts: e.target.value ? parseFloat(e.target.value) : null })}
+              id="ielts" type="text" inputMode="decimal"
+              value={ieltsStr}
+              onChange={(e) => { if (e.target.value === '' || /^\d*\.?\d*$/.test(e.target.value)) setIeltsStr(e.target.value); }}
+              onBlur={() => setUser({ ...user, ielts: ieltsStr ? parseFloat(ieltsStr) || null : null })}
               placeholder="例如: 7.0"
               className={inputCls}
             />
@@ -259,9 +274,10 @@ export default function UserQualificationPanel({
           <div>
             <Label htmlFor="toeic" className={labelCls}>TOEIC</Label>
             <Input
-              id="toeic" type="number" min={0} max={990}
-              value={user.toeic ?? ''}
-              onChange={(e) => setUser({ ...user, toeic: e.target.value ? parseInt(e.target.value) : null })}
+              id="toeic" type="text" inputMode="numeric"
+              value={toeicStr}
+              onChange={(e) => { if (e.target.value === '' || /^\d*$/.test(e.target.value)) setToeicStr(e.target.value); }}
+              onBlur={() => setUser({ ...user, toeic: toeicStr ? parseInt(toeicStr) || null : null })}
               placeholder="例如: 850"
               className={inputCls}
             />

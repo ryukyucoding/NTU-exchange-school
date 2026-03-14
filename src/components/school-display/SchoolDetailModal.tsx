@@ -229,6 +229,13 @@ export default function SchoolDetailModal({
           <p className={isWishlist ? 'mt-1 text-sm text-[#6b5b4c] truncate' : 'mt-1 text-sm text-white/70 truncate'}>
             {school.name_en}
           </p>
+          <span className={`inline-block text-xs font-medium py-0.5 rounded-full mt-1.5 ${
+            school.is_updated
+              ? 'bg-green-100 text-green-600'
+              : 'bg-red-100 text-red-600'
+          }`}>
+            {school.is_updated ? '資料已更新' : '資料未更新'}
+          </span>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -299,12 +306,6 @@ export default function SchoolDetailModal({
                 ) : (
                   <span className="text-red-600">✗ 不可申請</span>
                 )}
-              </span>
-            </div>
-            <div>
-              <span className={isWishlist ? 'text-[#6b5b4c]' : 'text-white/70'}>資料狀態:</span>
-              <span className={`ml-2 font-medium ${school.is_updated ? 'text-green-600' : isWishlist ? 'text-[#8a7a63]' : 'text-white/50'}`}>
-                {school.is_updated ? '✓ 本學期已更新' : '待更新'}
               </span>
             </div>
           </div>

@@ -345,8 +345,16 @@ async function applyChanges() {
   console.log(`📄 讀取報告: ${report.generated_at}`);
 
   const allSchools = [
+    // 新學校：寫入完整 record
     ...report.new_schools.map(s => ({ id: s.id, name_zh: s.name_zh, record: s.record })),
-    ...report.changed_schools.map(s => ({ id: s.id, name_zh: s.name_zh, record: s.record })),
+    // 既有學校：只寫入有差異的欄位 + id
+    ...report.changed_schools.map(s => {
+      const patch: Record<string, unknown> = { id: s.id };
+      for (const key of Object.keys(s.changes)) {
+        patch[key] = s.changes[key].new;
+      }
+      return { id: s.id, name_zh: s.name_zh, record: patch };
+    }),
   ];
 
   const toApply = ONLY_IDS
