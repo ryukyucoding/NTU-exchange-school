@@ -228,6 +228,15 @@ async function main() {
     if (newlyUpdated.length === 0) {
       console.log('\n✅ 沒有新更新的學校。');
       console.log('   （加 --full 可強制重爬全部）');
+      // 寫空報告，讓 notify-discord 知道無變更
+      const emptyReport: DiffReport = {
+        generated_at: new Date().toISOString(),
+        semester: SEMESTER,
+        summary: { new: 0, changed: 0, unchanged: 0 },
+        new_schools: [],
+        changed_schools: [],
+      };
+      fs.writeFileSync(REPORT_FILE, JSON.stringify(emptyReport, null, 2), 'utf-8');
       return;
     }
 

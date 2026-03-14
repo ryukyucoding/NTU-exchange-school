@@ -34,6 +34,13 @@ interface DiffReport {
   changed_schools: Array<{ id: number; name_zh: string; changes: Record<string, FieldChange> }>;
 }
 
+function formatValue(val: unknown): string {
+  if (val == null) return '`null`';
+  if (typeof val === 'boolean') return val ? '`true`' : '`false`';
+  if (typeof val === 'object') return '`[object]`';
+  return `\`${String(val)}\``;
+}
+
 async function sendWebhook(payload: Record<string, unknown>) {
   const res = await fetch(WEBHOOK_URL, {
     method: 'POST',
@@ -83,13 +90,19 @@ async function notifyDiffReport() {
   if (report.changed_schools.length > 0) {
     lines.push(`**📝 有變更 (${report.changed_schools.length} 所)**`);
     for (const s of report.changed_schools) {
-      const fields = Object.keys(s.changes).join(', ');
-      lines.push(`> #${s.id} ${s.name_zh}: ${fields}`);
+      lines.push(`> **#${s.id} ${s.name_zh}**`);
+      for (const [field, change] of Object.entries(s.changes)) {
+        const oldStr = formatValue(change.old);
+        const newStr = formatValue(change.new);
+        lines.push(`> \u2003${field}：${oldStr} → ${newStr}`);
+      }
     }
     lines.push('');
   }
 
   lines.push(`✅ 無變更: ${summary.unchanged} 所`);
+  lines.push('');
+  lines.push(`[👉 **Approve — 執行匯入**](${APPLY_WORKFLOW_URL})`);
 
   await sendWebhook({
     embeds: [{
@@ -97,16 +110,6 @@ async function notifyDiffReport() {
       description: lines.join('\n'),
       color: 0xf39c12, // orange
       timestamp: report.generated_at,
-      footer: { text: '點擊下方連結 Approve 匯入' },
-    }],
-    components: [{
-      type: 1, // ActionRow
-      components: [{
-        type: 2, // Button
-        style: 5, // Link
-        label: '✅ Approve — 執行匯入',
-        url: APPLY_WORKFLOW_URL,
-      }],
     }],
   });
 }
