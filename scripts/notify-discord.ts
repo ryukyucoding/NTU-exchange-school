@@ -16,14 +16,15 @@ const SEMESTER = semIdx >= 0 ? parseInt(args[semIdx + 1]) : 2;
 const IS_APPLY_RESULT = args.includes('--apply-result');
 
 const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || '';
-if (!WEBHOOK_URL) {
-  console.error('❌ 請設定 DISCORD_WEBHOOK_URL');
+const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || '';
+const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || '';
+
+if (!WEBHOOK_URL && !BOT_TOKEN) {
+  console.error('❌ 請設定 DISCORD_WEBHOOK_URL 或 DISCORD_BOT_TOKEN + DISCORD_CHANNEL_ID');
   process.exit(1);
 }
 
 const REPORT_FILE = path.join(process.cwd(), 'scraper', `diff_report_sem${SEMESTER}.json`);
-const REPO_URL = 'https://github.com/ryukyucoding/NTU-exchange-school';
-const APPLY_WORKFLOW_URL = `${REPO_URL}/actions/workflows/sync-apply.yml`;
 
 interface FieldChange { old: unknown; new: unknown }
 interface DiffReport {
@@ -41,6 +42,7 @@ function formatValue(val: unknown): string {
   return `\`${String(val)}\``;
 }
 
+// Webhook 發送（無差異通知、apply 結果用）
 async function sendWebhook(payload: Record<string, unknown>) {
   const res = await fetch(WEBHOOK_URL, {
     method: 'POST',
@@ -51,7 +53,31 @@ async function sendWebhook(payload: Record<string, unknown>) {
     console.error(`❌ Discord webhook 失敗: ${res.status} ${await res.text()}`);
     process.exit(1);
   }
-  console.log('✅ Discord 通知已送出');
+  console.log('✅ Discord 通知已送出 (webhook)');
+}
+
+// Bot 發送（有差異報告 + interactive button 用）
+async function sendBotMessage(payload: Record<string, unknown>) {
+  if (!BOT_TOKEN || !CHANNEL_ID) {
+    console.error('❌ 需要 DISCORD_BOT_TOKEN 和 DISCORD_CHANNEL_ID 才能發送 interactive button');
+    console.error('   降級為 webhook（不含按鈕）...');
+    await sendWebhook(payload);
+    return;
+  }
+
+  const res = await fetch(`https://discord.com/api/v10/channels/${CHANNEL_ID}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bot ${BOT_TOKEN}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    console.error(`❌ Discord Bot API 失敗: ${res.status} ${await res.text()}`);
+    process.exit(1);
+  }
+  console.log('✅ Discord 通知已送出 (bot)');
 }
 
 async function notifyDiffReport() {
@@ -63,20 +89,20 @@ async function notifyDiffReport() {
   const report: DiffReport = JSON.parse(fs.readFileSync(REPORT_FILE, 'utf-8'));
   const { summary } = report;
 
-  // 沒有差異
+  // 沒有差異 → 用 webhook 發簡單通知
   if (summary.new === 0 && summary.changed === 0) {
     await sendWebhook({
       embeds: [{
         title: `📊 學校資料同步 Semester ${SEMESTER}`,
         description: '✅ 沒有新更新的學校，資料無變化。',
-        color: 0x2ecc71, // green
+        color: 0x2ecc71,
         timestamp: report.generated_at,
       }],
     });
     return;
   }
 
-  // 組裝訊息
+  // 有差異 → 用 Bot 發（帶 interactive button）
   const lines: string[] = [];
 
   if (report.new_schools.length > 0) {
@@ -101,21 +127,27 @@ async function notifyDiffReport() {
   }
 
   lines.push(`✅ 無變更: ${summary.unchanged} 所`);
-  lines.push('');
-  lines.push(`[👉 **Approve — 執行匯入**](${APPLY_WORKFLOW_URL})`);
 
-  await sendWebhook({
+  await sendBotMessage({
     embeds: [{
       title: `📊 學校資料差異報告 Semester ${SEMESTER}`,
       description: lines.join('\n'),
-      color: 0xf39c12, // orange
+      color: 0xf39c12,
       timestamp: report.generated_at,
+    }],
+    components: [{
+      type: 1, // ActionRow
+      components: [{
+        type: 2, // Button
+        style: 3, // SUCCESS (green)
+        label: '✅ Approve — 執行匯入',
+        custom_id: `sync_apply:${SEMESTER}`,
+      }],
     }],
   });
 }
 
 async function notifyApplyResult() {
-  // 從 GitHub Actions 環境變數取得結果
   const success = process.env.APPLY_SUCCESS || '0';
   const fail = process.env.APPLY_FAIL || '0';
   const isSuccess = parseInt(fail) === 0;

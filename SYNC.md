@@ -3,21 +3,62 @@
 ## 自動化（GitHub Actions + Discord）
 
 每天台灣 21:00 自動執行增量同步，結果發到 Discord。
+有差異時會附上 Approve 按鈕，一鍵觸發匯入。
 
 ### 設定步驟（一次性）
 
-1. 建一個 Discord 頻道（如 `#sync-notifications`）
-2. 頻道設定 → 整合 → Webhook → 新增，複製 Webhook URL
-3. 到 GitHub repo → Settings → Secrets → Actions，加入：
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `DISCORD_WEBHOOK_URL`
+#### 1. Discord Bot
+
+1. 到 [Discord Developer Portal](https://discord.com/developers/applications) → New Application
+2. 左側 **Bot** → Reset Token → 複製 Token（這是 `DISCORD_BOT_TOKEN`）
+3. 同頁面開啟 **Message Content Intent**
+4. 左側 **OAuth2** → URL Generator：
+   - Scopes: `bot`
+   - Bot Permissions: `Send Messages`
+   - 複製產生的 URL，貼到瀏覽器邀請 Bot 進你的 Server
+5. 在 Discord 開啟開發者模式（設定 → 進階 → 開發者模式）
+6. 對目標頻道右鍵 → 複製頻道 ID（這是 `DISCORD_CHANNEL_ID`）
+7. 左側 **General Information** → 複製 Application ID 和 Public Key
+8. 左側 **General Information** → Interactions Endpoint URL 填入：
+   `https://你的域名/api/discord-interaction`
+
+#### 2. Discord Webhook（用於無差異 & apply 結果通知）
+
+1. 頻道設定 → 整合 → Webhook → 新增，複製 Webhook URL
+
+#### 3. GitHub PAT
+
+1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
+2. 只選這個 repo，權限：Actions (Read and write)
+3. 複製 Token（這是 `GITHUB_PAT`）
+
+#### 4. GitHub Secrets
+
+到 GitHub repo → Settings → Secrets → Actions，加入：
+
+| Secret | 說明 |
+|--------|------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
+| `DISCORD_WEBHOOK_URL` | Discord channel Webhook URL |
+| `DISCORD_BOT_TOKEN` | Discord Bot Token |
+| `DISCORD_CHANNEL_ID` | Discord 頻道 ID |
+| `GITHUB_PAT` | GitHub Fine-grained PAT |
+
+#### 5. Vercel 環境變數
+
+在 Vercel 專案 Settings → Environment Variables 加入：
+
+| 變數 | 說明 |
+|------|------|
+| `DISCORD_PUBLIC_KEY` | Discord Application Public Key（驗證簽章用） |
+| `GITHUB_PAT` | 同上，用於 API route 觸發 workflow |
 
 ### 自動流程
 
 1. 每天 21:00，GitHub Actions 自動跑 `sync.yml`
-2. Discord 收到差異報告訊息（含 Approve 按鈕）
-3. 點 Approve → 到 GitHub Actions → 點 "Run workflow" → 自動匯入
+2. Discord 收到差異報告訊息（含 ✅ Approve 按鈕）
+3. 點 Approve → 自動觸發 GitHub Actions `sync-apply.yml`
 4. 匯入完成後 Discord 再次通知結果
 
 ### 手動觸發

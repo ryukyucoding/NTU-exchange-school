@@ -300,7 +300,7 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
                       </div>
 
                       {/* 左間距 */}
-                      <div className={isLast ? '' : 'pb-4'} />
+                      <div className={isLast ? '' : 'pb-3'} />
                       {/* 分隔線 */}
                       <div className={`${isLast ? '' : 'pb-3'} ${
                         variant === 'wishlist' ? 'bg-[#d6c3a1]' : (isHighZoom ? 'bg-gray-300' : 'bg-white/20')
@@ -309,7 +309,7 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
                       <div className={isLast ? '' : 'pb-3'} />
 
                       {/* 右：國家按鈕 */}
-                      <div className={`flex flex-wrap gap-1.5 items-start ${isLast ? '' : 'pb-4'}`}>
+                      <div className={`flex flex-wrap gap-1.5 items-start ${isLast ? '' : 'pb-6'}`}>
                         {countries.map(country => (
                           <Button
                             key={country}
