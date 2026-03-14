@@ -65,29 +65,14 @@ function BoardsContent() {
 
   return (
     // AppShell 在 /social/boards 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-      {/* Topic Frame - 固定在 header 内部居中 */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
-          height: '64px', // header 的高度
-          pointerEvents: 'none' // 让点击事件穿透
-        }}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
+      <div
+        className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+        style={{ pointerEvents: 'none' }}
       >
             <div 
-          className="flex items-center justify-center pointer-events-auto"
-              style={{
-                width: 'auto',
-                minWidth: '96px',
-                paddingLeft: '16px',
-                paddingRight: '16px',
-                paddingTop: '4px',
-                paddingBottom: '4px',
-                border: '1px solid #5A5A5A',
-                borderRadius: '24px',
-            boxSizing: 'border-box',
-            backgroundColor: 'transparent',
-              }}
+          className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-1"
+              style={{ minWidth: '96px' }}
             >
               <h1 
                 className="text-sm font-semibold whitespace-nowrap"
@@ -103,12 +88,12 @@ function BoardsContent() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
-            <div className="space-y-4 w-full min-w-0 min-h-[60vh]">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
+            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] space-y-4">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
                 const countries = countriesByRegion[region.value] || [];

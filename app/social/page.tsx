@@ -19,72 +19,70 @@ function SocialContent() {
     setHashtag(hashtagParam);
   }, [searchParams]);
 
+  const filterButtons = (
+    <div className="pointer-events-auto flex w-full max-w-md gap-2 md:max-w-[25%] md:min-w-[280px]">
+          <Button
+            onClick={() => setFilter('all')}
+            style={{
+              borderRadius: '9999px',
+              boxShadow: 'none',
+              ...(filter === 'all'
+                ? {
+                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                    borderColor: '#8D7051',
+                    color: 'white',
+                  }
+                : {
+                    backgroundColor: 'transparent',
+                    borderColor: '#8D7051',
+                    color: '#8D7051',
+                  }),
+            }}
+            className="h-9 flex-1 border text-xs shadow-none transition-colors"
+          >
+            所有貼文
+          </Button>
+          <Button
+            onClick={() => setFilter('following')}
+            style={{
+              borderRadius: '9999px',
+              boxShadow: 'none',
+              ...(filter === 'following'
+                ? {
+                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                    borderColor: '#8D7051',
+                    color: 'white',
+                  }
+                : {
+                    backgroundColor: 'transparent',
+                    borderColor: '#8D7051',
+                    color: '#8D7051',
+                  }),
+            }}
+            className="h-9 flex-1 border text-xs shadow-none transition-colors"
+          >
+            追蹤中
+          </Button>
+    </div>
+  );
+
   return (
-    // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
-      {/* Filter buttons - 固定在 header 内部居中 */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
-          height: '64px', // header 的高度
-          pointerEvents: 'none' // 让点击事件穿透
-        }}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4]">
+      {/* 手機：篩選第二排白底；電腦：與 header 同列 */}
+      <div
+        className="fixed left-0 right-0 z-[51] flex justify-center border-b border-gray-100 bg-white px-3 md:top-0 md:h-16 md:items-center md:border-b-0 md:bg-transparent md:px-4 max-md:top-16 max-md:h-12 max-md:items-center"
+        style={{ pointerEvents: 'none' }}
       >
-        <div className="flex gap-2 pointer-events-auto" style={{ width: '25%' }}>
-              <Button
-                onClick={() => setFilter('all')}
-                style={{
-                  borderRadius: '9999px',
-                  boxShadow: 'none',
-                  ...(filter === 'all'
-                    ? {
-                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                        borderColor: '#8D7051',
-                        color: 'white',
-                      }
-                    : {
-                        backgroundColor: 'transparent',
-                        borderColor: '#8D7051',
-                        color: '#8D7051',
-                      }),
-                }}
-                className="flex-1 text-xs py-1 border transition-colors shadow-none"
-              >
-                所有貼文
-              </Button>
-              <Button
-                onClick={() => setFilter('following')}
-                style={{
-                  borderRadius: '9999px',
-                  boxShadow: 'none',
-                  ...(filter === 'following'
-                    ? {
-                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                        borderColor: '#8D7051',
-                        color: 'white',
-                      }
-                    : {
-                        backgroundColor: 'transparent',
-                        borderColor: '#8D7051',
-                        color: '#8D7051',
-                      }),
-                }}
-                className="flex-1 text-xs py-1 border transition-colors shadow-none"
-              >
-                追蹤中
-              </Button>
-        </div>
+        {filterButtons}
       </div>
 
-      {/* Content Frame: min-h-0 so flex child can shrink and scroll */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
-          {/* Left spacer - keeps three-column layout on md+ */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
+      {/* 手機整欄白底與主欄固定寬度（max-w-[800px] 置中）；電腦維持灰底+側欄 */}
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white max-md:bg-white md:bg-[#F4F4F4] px-0 pb-16 pt-[calc(0.75rem+3rem)] max-md:pb-16 md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6 max-md:gap-0 md:mx-auto md:max-w-[1400px]">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          {/* Main - flexible width up to 800px, only scrollable area */}
-          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-0 min-h-[60vh]">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overflow-x-clip overscroll-contain bg-white pr-px md:max-w-[800px] md:pr-0">
+            <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
               <PostList filter={filter} hashtag={hashtag} />
             </div>
           </main>

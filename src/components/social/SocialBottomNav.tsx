@@ -35,7 +35,7 @@ export default function SocialBottomNav() {
 
   return (
     <>
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-none">
         <div className="flex items-center justify-around h-16 px-2">
           {/* 所有看板 */}
           <Link href="/social/boards" className="flex-1 flex flex-col items-center justify-center">

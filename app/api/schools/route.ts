@@ -39,7 +39,8 @@ export async function GET(_req: NextRequest) {
     const [schoolsResult, countriesResult] = await Promise.all([
       supabase
         .from("schools")
-        .select("id, name_zh, name_en, country_id, url, second_exchange_eligible, application_group, gpa_requirement, grade_requirement, language_requirement, restricted_colleges, quota, academic_calendar, registration_fee, accommodation_info, notes, latitude, longitude")
+        // 用 * 避免「某欄在舊表不存在」整支 API 500；缺欄在前端以 ?? / || 補預設
+        .select("*")
         .order("name_zh"),
       supabase
         .from("Country")
@@ -51,12 +52,11 @@ export async function GET(_req: NextRequest) {
 
     if (error) {
       console.error("Error fetching schools from Supabase:", error.message);
-      const isDev = process.env.NODE_ENV === 'development';
       return NextResponse.json(
         {
           success: false,
           error: '伺服器錯誤，請稍後再試',
-          ...(isDev && { details: error.message }),
+          details: error.message,
         },
         { status: 500 }
       );
@@ -77,25 +77,11 @@ export async function GET(_req: NextRequest) {
 
     // 轉換資料格式以符合前端 School 類型
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedSchools = ((schools || []) as any[]).map((school: {
+    const formattedSchools = ((schools || []) as any[]).map((school: Record<string, unknown> & {
       id: number;
-      name_zh: string;
-      name_en: string;
-      country_id: number | null;
-      url: string;
-      second_exchange_eligible: boolean;
-      application_group: string;
-      gpa_requirement: string;
-      grade_requirement: string;
-      language_requirement: string;
-      restricted_colleges: string;
-      quota: string;
-      academic_calendar: string;
-      registration_fee: string;
-      accommodation_info: string;
-      notes: string;
-      latitude: number | null;
-      longitude: number | null;
+      name_zh?: string | null;
+      name_en?: string | null;
+      country_id?: number | null;
     }) => {
       const rawCountryId = school.country_id;
       const countryIdStr = (rawCountryId !== null && rawCountryId !== undefined) ? String(rawCountryId) : null;
@@ -127,37 +113,43 @@ export async function GET(_req: NextRequest) {
       }
 
       // 解析語言要求
-      const langText = school.language_requirement || '';
+      const langText = String(school.language_requirement ?? '');
       const languageInfo = parseLanguageRequirement(langText);
 
       // 解析 GPA
-      const gpaText = school.gpa_requirement || '';
+      const gpaText = String(school.gpa_requirement ?? '');
       const gpa_min = parseGpaRequirement(gpaText);
 
       // 解析學期
-      const semesters = parseSemesters(school.academic_calendar || '');
+      const semesters = parseSemesters(String(school.academic_calendar ?? ''));
 
       return {
         id: String(school.id), // 確保 id 是字符串（因為數據庫中是 bigint）
-        name_zh: school.name_zh || '',
-        name_en: school.name_en || '',
+        name_zh: String(school.name_zh ?? ''),
+        name_en: String(school.name_en ?? ''),
         country: country,
         country_en: country_en,
         country_id: countryIdStr, // 使用上面處理過的 countryIdStr
-        url: school.url || '',
-        second_exchange_eligible: school.second_exchange_eligible || false,
-        application_group: school.application_group || '',
-        gpa_requirement: school.gpa_requirement || '',
-        grade_requirement: school.grade_requirement || '',
-        language_requirement: school.language_requirement || '',
-        restricted_colleges: school.restricted_colleges || '',
-        quota: school.quota || '',
-        academic_calendar: school.academic_calendar || '',
-        registration_fee: school.registration_fee || '',
-        accommodation_info: school.accommodation_info || '',
-        notes: school.notes || '',
-        latitude: school.latitude ? parseFloat(school.latitude.toString()) : 0,
-        longitude: school.longitude ? parseFloat(school.longitude.toString()) : 0,
+        url: String(school.url ?? ''),
+        second_exchange_eligible: Boolean(school.second_exchange_eligible),
+        application_group: String(school.application_group ?? ''),
+        gpa_requirement: String(school.gpa_requirement ?? ''),
+        grade_requirement: String(school.grade_requirement ?? ''),
+        language_requirement: String(school.language_requirement ?? ''),
+        restricted_colleges: String(school.restricted_colleges ?? ''),
+        quota: String(school.quota ?? ''),
+        academic_calendar: String(school.academic_calendar ?? ''),
+        registration_fee: String(school.registration_fee ?? ''),
+        accommodation_info: String(school.accommodation_info ?? ''),
+        notes: String(school.notes ?? ''),
+        latitude:
+          school.latitude != null && school.latitude !== ''
+            ? parseFloat(String(school.latitude))
+            : 0,
+        longitude:
+          school.longitude != null && school.longitude !== ''
+            ? parseFloat(String(school.longitude))
+            : 0,
         region,
         gpa_min,
         toefl_ibt: languageInfo.toefl_ibt,

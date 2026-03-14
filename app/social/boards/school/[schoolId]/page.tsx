@@ -141,52 +141,27 @@ function SchoolBoardContent() {
 
   return (
     // AppShell 在 /social/boards/school/[id] 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-      {/* Topic Frame - 固定在 header 内部居中 */}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white md:bg-[#F4F4F4]">
       {boardTitle && (
-        <div 
-          className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-          style={{ 
-            height: '64px', // header 的高度
-            pointerEvents: 'none' // 让点击事件穿透
-          }}
+        <div
+          className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+          style={{ pointerEvents: 'none' }}
         >
           <div
-            className="flex items-center justify-center pointer-events-auto"
-            style={{
-              width: 'auto',
-              minWidth: '140px',
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              paddingTop: '4px',
-              paddingBottom: '4px',
-              border: '1px solid #5A5A5A',
-              borderRadius: '24px',
-              boxSizing: 'border-box',
-              backgroundColor: 'transparent',
-            }}
+            className="pointer-events-auto flex items-center justify-center whitespace-nowrap rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-1"
+            style={{ fontFamily: "'Noto Sans TC', sans-serif", color: '#5A5A5A', fontSize: 14 }}
           >
-            <h1
-              className="text-sm font-semibold whitespace-nowrap"
-              style={{
-                color: '#5A5A5A',
-                fontSize: '14px',
-                lineHeight: '20px',
-                fontFamily: "'Noto Sans TC', sans-serif",
-              }}
-            >
-              {boardTitle}
-            </h1>
+            <h1 className="text-sm font-semibold">{boardTitle}</h1>
           </div>
         </div>
       )}
 
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 min-h-0 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-stretch justify-center h-full min-h-0">
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" aria-hidden />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 max-md:pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="min-w-0 flex-1 max-w-[800px] h-full min-h-0 overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-0 min-h-[60vh]">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
+            <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -197,33 +172,34 @@ function SchoolBoardContent() {
               </Card>
             ) : (
               <>
-            <Card className="border-0 shadow-none overflow-hidden mb-4">
+            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none">
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
-              <div className="bg-white p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0 max-w-[540px]">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-4xl font-bold text-gray-800">{boardTitle}</h2>
+              <div className="bg-white p-4 md:p-6">
+                {/* 第一行：中文名 + 詳細；第二行：英文・國家；第三行：追蹤 + 貼文數/追蹤數（手機橫排） */}
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
+                  <div className="min-w-0 w-full flex-1 md:max-w-[540px]">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-2xl font-bold text-gray-800 md:text-4xl">{boardTitle}</h2>
                       {school && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => setShowSchoolDetail(true)}
-                          className="h-9 w-9 bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
+                          className="h-9 w-9 shrink-0 bg-transparent text-[#6b5b4c] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]"
                         >
                           <Info className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
                     {school && (
-                      <p className="text-gray-500 mt-2">
+                      <p className="mt-1 text-sm text-gray-500 md:mt-2">
                         {school.name_en}
                         {school.country && school.country_id && (
                           <>
                             {' ・ '}
                             <Link
                               href={`/social/boards/country/${school.country_id}`}
-                              className="hover:underline text-gray-500 hover:text-gray-700 transition-colors"
+                              className="text-gray-500 transition-colors hover:text-gray-700 hover:underline"
                             >
                               {school.country}
                             </Link>
@@ -233,11 +209,11 @@ function SchoolBoardContent() {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-6 flex-shrink-0">
+                  <div className="flex w-full flex-col gap-3 border-t border-gray-100 pt-3 md:w-auto md:flex-row md:items-center md:gap-6 md:border-t-0 md:pt-0">
                     {boardId && (
                       <Button
                         onClick={handleFollowToggle}
-                        className="px-4 py-2 text-sm font-medium rounded-md transition-colors"
+                        className="w-full shrink-0 rounded-md px-4 py-2 text-sm font-medium transition-colors md:w-auto"
                         style={{
                           backgroundColor: isFollowing ? 'rgba(141, 112, 81, 0.2)' : '#8D7051',
                           color: isFollowing ? '#8D7051' : 'white',
@@ -249,23 +225,23 @@ function SchoolBoardContent() {
                         {isFollowing ? '追蹤中' : '追蹤'}
                       </Button>
                     )}
-                    <div className="flex gap-10 text-gray-600">
-                      <div className="text-right" style={{ minWidth: '80px' }}>
-                        <div className="text-sm whitespace-nowrap">貼文數</div>
-                        <div className="text-xl font-semibold">{stats.postCount}</div>
+                    <div className="flex flex-wrap items-center gap-6 text-gray-600">
+                      <div className="flex items-baseline gap-2 whitespace-nowrap">
+                        <span className="text-sm">貼文數</span>
+                        <span className="text-xl font-semibold">{stats.postCount}</span>
                       </div>
-                      <div className="text-right" style={{ minWidth: '80px' }}>
-                        <div className="text-sm whitespace-nowrap">追蹤數</div>
-                        <div className="text-xl font-semibold">{stats.followerCount}</div>
+                      <div className="flex items-baseline gap-2 whitespace-nowrap">
+                        <span className="text-sm">追蹤數</span>
+                        <span className="text-xl font-semibold">{stats.followerCount}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Rating display - 和贴文一样的排版 */}
-                <div className="mb-4 mt-4 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                {/* 評分：每列標題與星星同一行，手機直向堆疊 */}
+                <div className="mb-4 mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+                  <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                    <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                       生活機能
                     </span>
                     {avgRatings.livingConvenience > 0 ? (
@@ -281,8 +257,8 @@ function SchoolBoardContent() {
                       <span className="text-xs text-gray-400">N/A</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                  <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                    <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                       學習體驗
                     </span>
                     {avgRatings.courseLoading > 0 ? (
@@ -298,8 +274,8 @@ function SchoolBoardContent() {
                       <span className="text-xs text-gray-400">N/A</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                  <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                    <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                       物價水準
                     </span>
                     {avgRatings.costOfLiving > 0 ? (
@@ -321,7 +297,7 @@ function SchoolBoardContent() {
                 </div>
 
                 {/* Sort tabs (text only) */}
-                <div className="mt-6 flex gap-12" style={{ fontFamily: "'Noto Sans TC', sans-serif", paddingLeft: '40px' }}>
+                <div className="mt-6 flex gap-8 pl-4 md:gap-12 md:pl-10" style={{ fontFamily: "'Noto Sans TC', sans-serif" }}>
                   <button
                     onClick={() => setSort('popular')}
                     className="text-sm font-semibold"

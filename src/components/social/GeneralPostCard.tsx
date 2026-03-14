@@ -344,10 +344,7 @@ function GeneralPostCard({ post, enableRealtime = true }: GeneralPostCardProps) 
             className="block cursor-pointer mb-4"
             style={{ textDecoration: 'none' }}
           >
-            <p 
-              className="text-sm"
-              style={{ color: '#5A5A5A' }}
-            >
+            <p className="text-sm leading-relaxed text-[#5A5A5A] line-clamp-3 md:line-clamp-none">
               {truncatedContent}
             </p>
           </Link>
