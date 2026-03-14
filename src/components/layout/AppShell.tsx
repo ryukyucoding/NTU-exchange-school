@@ -34,7 +34,7 @@ export default function AppShell({ children }: AppShellProps) {
     <div className="min-h-screen">
       {/* Header Frame - 完全透明 */}
       <header 
-        className="fixed top-0 left-0 right-0 h-16 z-50 pointer-events-none" 
+        className="fixed top-0 left-0 right-0 z-[100] h-16 pointer-events-none" 
         style={{ backgroundColor: 'unset', background: 'unset' }}
       >
         <div className="relative flex h-full items-center justify-between px-3 sm:px-4">
@@ -127,15 +127,15 @@ export default function AppShell({ children }: AppShellProps) {
           )}
 
           {/* 右上角：通知 + 頭貼（維持右側） */}
-          <div className="pointer-events-auto relative z-[1] shrink-0">
+          <div className="pointer-events-auto relative z-[100] shrink-0">
             <UserMenu />
           </div>
         </div>
       </header>
 
-      {/* 側邊欄 */}
+      {/* 側邊欄：高於遮罩，僅選單本體不變暗 */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-[80] ${
+        className={`fixed left-0 top-0 z-[120] h-full w-64 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -180,12 +180,15 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
       </div>
 
-      {/* 遮罩 */}
+      {/* 遮罩：高於頂欄 z-[100]，整頁（含漢堡／Logo／通知／頭貼）變暗；點擊關閉 */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-[70]"
+          className="fixed inset-0 z-[110] bg-black/45 backdrop-blur-[1px]"
           onClick={() => setOpen(false)}
-          role="presentation"
+          onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
+          role="button"
+          tabIndex={-1}
+          aria-label="關閉選單"
         />
       )}
 

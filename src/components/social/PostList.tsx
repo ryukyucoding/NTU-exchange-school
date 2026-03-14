@@ -70,7 +70,7 @@ export default function PostList({
   const containerClassName =
     variant === 'plain'
       ? 'space-y-4'
-      : 'space-y-4 bg-white p-4 rounded-lg max-md:mx-0 max-md:w-full max-md:rounded-none max-md:p-0 max-md:space-y-0 min-h-full';
+      : 'min-h-full space-y-4 rounded-lg bg-white p-4 max-md:mx-0 max-md:w-full max-md:space-y-0 max-md:rounded-none max-md:p-0 md:rounded-none md:bg-transparent md:p-0';
 
   if (loading && posts.length === 0) {
     return (
@@ -86,7 +86,7 @@ export default function PostList({
         className={
           variant === 'plain'
             ? 'p-8 text-center'
-            : 'bg-white p-8 rounded-lg max-md:rounded-none max-md:min-h-[40vh]'
+            : 'rounded-lg bg-white p-8 max-md:min-h-[40vh] max-md:rounded-none md:rounded-xl'
         }
       >
         <p className="text-muted-foreground">尚無貼文</p>

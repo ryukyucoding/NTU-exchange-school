@@ -105,14 +105,20 @@ export default function PostTypeDialog({ open, onOpenChange, position }: PostTyp
 
   if (!open || !position) return null;
 
+  const centerX = position.left + position.width / 2;
+  const halfW = 140; // 約半個對話框寬，用於左右留邊
+  const margin = 12;
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 400;
+  const clampedCenterX = Math.min(Math.max(centerX, margin + halfW), vw - margin - halfW);
+
   return (
     <div
       ref={dialogRef}
-      className="fixed z-50 bg-white border border-[#d6c3a1] rounded-lg shadow-lg p-4"
+      className="fixed z-[130] w-[min(280px,calc(100vw-1.5rem))] min-w-[240px] rounded-lg border border-[#d6c3a1] bg-white p-4 shadow-lg"
       style={{
         top: `${position.top}px`,
-        left: `${position.left}px`,
-        width: `${position.width}px`,
+        left: `${clampedCenterX}px`,
+        transform: 'translateX(-50%)',
       }}
     >
       <div className="flex flex-col gap-2">

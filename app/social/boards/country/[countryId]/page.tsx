@@ -251,8 +251,8 @@ function CountryBoardContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
-            <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto md:bg-[#F4F4F4]">
+            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] md:py-2">
             {loading || !countryInfo ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -264,7 +264,7 @@ function CountryBoardContent() {
             ) : (
               <>
             {/* Board info */}
-            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none">
+            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none max-md:rounded-none md:rounded-xl md:shadow-sm">
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
               <div className="bg-white p-4 md:p-6">
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">

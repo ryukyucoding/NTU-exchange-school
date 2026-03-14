@@ -81,9 +81,12 @@ function SocialContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6 max-md:gap-0 md:mx-auto md:max-w-[1400px]">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overflow-x-clip overscroll-contain bg-white pr-px md:max-w-[800px] md:pr-0">
-            <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
-              <PostList filter={filter} hashtag={hashtag} />
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overflow-x-clip overscroll-contain bg-white pr-px md:bg-[#F4F4F4] md:max-w-[800px] md:pr-0">
+            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] max-md:min-h-full md:py-2">
+              {/* 電腦版：與貼文詳情相同灰底 + 白卡圓角；手機維持滿版白 */}
+              <div className="min-h-[60vh] max-md:min-h-full md:rounded-xl md:bg-white md:p-4 md:shadow-sm">
+                <PostList filter={filter} hashtag={hashtag} />
+              </div>
             </div>
           </main>
 

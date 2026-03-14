@@ -2,16 +2,16 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Plus, LayoutGrid, User } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
 
+/** 圖示 + 文字同一塊 hover，約 56×56，字不會孤獨在下方 */
+const NAV_TILE =
+  'flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-center transition-colors active:scale-[0.98]';
+
 export default function SocialBottomNav() {
   const { data: session } = useSession();
-  const router = useRouter();
-  const pathname = usePathname();
   const [dialogOpen, setDialogOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [buttonPosition, setButtonPosition] = useState<{ top: number; left: number; width: number } | null>(null);
@@ -20,68 +20,48 @@ export default function SocialBottomNav() {
     if (dialogOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       setButtonPosition({
-        top: rect.top - 120, // 显示在按钮上方
+        top: rect.top - 120,
         left: rect.left,
         width: rect.width,
       });
     }
   }, [dialogOpen]);
 
-  const handlePostClick = () => {
-    setDialogOpen(true);
-  };
-
   const userId = (session?.user as { id?: string })?.id || '';
 
   return (
     <>
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-none">
-        <div className="flex items-center justify-around h-16 px-2">
-          {/* 所有看板 */}
-          <Link href="/social/boards" className="flex-1 flex flex-col items-center justify-center">
-            <Button
-              variant="ghost"
-              className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-700 hover:bg-gray-100 hover:text-gray-700 p-0"
-            >
-              <LayoutGrid className="w-5 h-5 text-gray-600" />
-              <span className="text-xs">看板</span>
-            </Button>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-none sm:hidden">
+        <div className="flex h-16 items-center justify-center gap-8 px-4">
+          <Link
+            href="/social/boards"
+            className={`${NAV_TILE} text-gray-700 hover:bg-gray-100`}
+          >
+            <LayoutGrid className="h-5 w-5 shrink-0 text-gray-600" />
+            <span className="text-[11px] font-medium leading-tight text-gray-600">看板</span>
           </Link>
 
-          {/* 发布贴文 */}
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <Button
-              ref={buttonRef}
-              onClick={handlePostClick}
-              className="w-full h-full flex flex-col items-center justify-center gap-1 bg-[#BAC7E5] text-[#333333] hover:bg-[rgba(186,199,229,0.9)] p-0 rounded-lg"
-              style={{
-                borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-              }}
-            >
-              <Plus className="w-5 h-5" />
-              <span className="text-xs">發文</span>
-            </Button>
-          </div>
+          <button
+            ref={buttonRef}
+            type="button"
+            onClick={() => setDialogOpen(true)}
+            className={`${NAV_TILE} border-0 bg-[#BAC7E5] text-[#333] shadow-none hover:bg-[#a8b8da]`}
+            style={{ boxShadow: 'none' }}
+          >
+            <Plus className="h-5 w-5 shrink-0" />
+            <span className="text-[11px] font-medium leading-tight">發文</span>
+          </button>
 
-          {/* 个人页面 */}
-          <Link href={`/social/profile/${userId}`} className="flex-1 flex flex-col items-center justify-center">
-            <Button
-              variant="ghost"
-              className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-700 hover:bg-gray-100 hover:text-gray-700 p-0"
-            >
-              <User className="w-5 h-5 text-gray-600" />
-              <span className="text-xs">個人</span>
-            </Button>
+          <Link
+            href={`/social/profile/${userId}`}
+            className={`${NAV_TILE} text-gray-700 hover:bg-gray-100`}
+          >
+            <User className="h-5 w-5 shrink-0 text-gray-600" />
+            <span className="text-[11px] font-medium leading-tight text-gray-600">個人</span>
           </Link>
         </div>
       </nav>
-      <PostTypeDialog 
-        open={dialogOpen} 
-        onOpenChange={setDialogOpen}
-        position={buttonPosition}
-      />
+      <PostTypeDialog open={dialogOpen} onOpenChange={setDialogOpen} position={buttonPosition} />
     </>
   );
 }
-

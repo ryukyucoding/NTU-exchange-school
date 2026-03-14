@@ -353,43 +353,38 @@ function PostDetailContentInner() {
         style={{ pointerEvents: 'none' }}
       >
         <div
-          className="pointer-events-auto mx-auto flex h-full w-full max-w-[800px] items-center gap-1 px-2 md:max-w-[calc(800px+2rem)] md:px-3"
+          className="pointer-events-auto relative mx-auto flex h-full w-full max-w-[800px] items-center justify-center px-2 md:max-w-[calc(800px+2rem)] md:px-3"
           style={{ pointerEvents: 'auto' }}
         >
-          <Button
-            variant="ghost"
-            onClick={() => {
-              if (returnUrl) router.push(returnUrl);
-              else router.back();
-            }}
-            className="h-9 shrink-0 gap-1 px-2 hover:bg-gray-100 md:px-3"
-            style={{ color: '#5A5A5A' }}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm max-md:inline">返回</span>
-          </Button>
-          <div className="min-w-0 flex-1 flex justify-center px-1">
-            <div
-              className="max-w-full rounded-full border border-[#5A5A5A] px-3 py-1"
-              style={{
-                backgroundColor: 'transparent',
-                boxSizing: 'border-box',
+          <div className="absolute left-2 top-1/2 z-10 -translate-y-1/2 md:left-3">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (returnUrl) router.push(returnUrl);
+                else router.back();
               }}
+              className="h-9 gap-1 px-2 hover:bg-gray-100 md:px-3"
+              style={{ color: '#5A5A5A' }}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm max-md:inline">返回</span>
+            </Button>
+          </div>
+          <div className="pointer-events-none flex max-w-[min(52vw,280px)] justify-center px-10 md:max-w-[min(40vw,320px)] md:px-14">
+            <div
+              className="pointer-events-auto max-w-full rounded-full border border-[#5A5A5A] px-3 py-1"
+              style={{ backgroundColor: 'transparent', boxSizing: 'border-box' }}
             >
               <h1
                 className="truncate text-center text-sm font-semibold"
-                style={{
-                  color: '#5A5A5A',
-                  fontFamily: "'Noto Sans TC', sans-serif",
-                  maxWidth: 'min(60vw, 320px)',
-                }}
+                style={{ color: '#5A5A5A', fontFamily: "'Noto Sans TC', sans-serif" }}
                 title={post.title}
               >
                 {post.title}
               </h1>
             </div>
           </div>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-end">
+          <div className="absolute right-2 top-1/2 z-10 flex h-9 -translate-y-1/2 items-center justify-end md:right-3">
             {isAuthor ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -414,9 +409,7 @@ function PostDetailContentInner() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <span className="inline-block w-9" aria-hidden />
-            )}
+            ) : null}
           </div>
         </div>
       </div>

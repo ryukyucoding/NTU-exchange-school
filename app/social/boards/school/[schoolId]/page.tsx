@@ -160,8 +160,8 @@ function SchoolBoardContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
-            <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto md:bg-[#F4F4F4]">
+            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] md:py-2">
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -172,7 +172,7 @@ function SchoolBoardContent() {
               </Card>
             ) : (
               <>
-            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none">
+            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none max-md:rounded-none md:rounded-xl md:shadow-sm">
               <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
               <div className="bg-white p-4 md:p-6">
                 {/* 第一行：中文名 + 詳細；第二行：英文・國家；第三行：追蹤 + 貼文數/追蹤數（手機橫排） */}

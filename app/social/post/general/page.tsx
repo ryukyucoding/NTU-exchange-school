@@ -899,13 +899,11 @@ function GeneralPostContent() {
                     <Button
                       onClick={() => {
                         if (hasUnsavedChanges()) {
-                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
                           const targetUrl = entryPage || returnUrl;
                           setPendingNavigation(targetUrl);
                           setShowUnsavedDialog(true);
                         } else {
                           setAllowNavigation(true);
-                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
                           const targetUrl = entryPage || returnUrl;
                           router.push(targetUrl);
                         }
@@ -918,7 +916,7 @@ function GeneralPostContent() {
                         borderRadius: '9999px',
                         backgroundColor: 'transparent',
                       }}
-                      className="hover:bg-gray-50"
+                      className="transition-all duration-200 hover:border-red-600 hover:bg-red-50 hover:shadow-sm disabled:opacity-50"
                     >
                       捨棄變更
                     </Button>
@@ -933,7 +931,7 @@ function GeneralPostContent() {
                         borderRadius: '9999px',
                         backgroundColor: 'transparent',
                       }}
-                      className="hover:bg-gray-50"
+                      className="transition-all duration-200 hover:border-[#8D7051] hover:bg-[#f5f0e8] hover:text-[#4a3828] hover:shadow-sm disabled:opacity-50"
                     >
                       {isSavingDraft ? '儲存中...' : '儲存草稿'}
                     </Button>
@@ -942,11 +940,11 @@ function GeneralPostContent() {
                     onClick={handleSubmit}
                     disabled={isSubmitting || isSavingDraft || !canPublish}
                     style={{
-                      backgroundColor: canPublish ? '#BAC7E5' : '#BAC7E5',
-                      color: canPublish ? '#5A5A5A' : 'white',
+                      backgroundColor: '#BAC7E5',
+                      color: canPublish ? '#5A5A5A' : 'rgba(90,90,90,0.5)',
                       borderRadius: '9999px',
                     }}
-                    className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
+                    className="transition-all duration-200 hover:bg-[#a8b8da] hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:hover:shadow-none"
                   >
                     {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>

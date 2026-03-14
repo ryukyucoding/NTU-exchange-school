@@ -33,7 +33,11 @@ export default function NotificationButton() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0 border-0 shadow-lg" align="end">
+      <PopoverContent
+        className="z-[100] w-[min(100vw-1.25rem,22rem)] max-w-[calc(100vw-1.25rem)] p-0 shadow-lg max-md:max-h-[min(70vh,24rem)] md:w-96 md:max-h-none border border-gray-200"
+        align="end"
+        sideOffset={8}
+      >
         <NotificationList
           onNotificationRead={() => setHasUnread(false)}
           onClose={() => setIsOpen(false)}
