@@ -92,8 +92,9 @@ function BoardsContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
-            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] space-y-4">
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+            <div className="min-h-[60vh] flex-1 space-y-4 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
                 const countries = countriesByRegion[region.value] || [];
@@ -142,6 +143,7 @@ function BoardsContent() {
                   </Card>
                 );
               })}
+            </div>
             </div>
           </main>
 

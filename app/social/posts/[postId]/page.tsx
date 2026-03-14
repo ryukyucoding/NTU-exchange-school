@@ -419,9 +419,10 @@ function PostDetailContentInner() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto md:bg-[#F4F4F4]">
-              <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] max-md:px-0 max-md:pt-0 md:px-0 md:pt-0">
-              <div className="space-y-4 bg-white p-4 max-md:rounded-none max-md:shadow-none md:rounded-xl md:shadow-sm">
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto max-md:overflow-x-clip md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+              <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
+              <div className="space-y-4 bg-white p-4 max-md:p-4 max-md:shadow-none md:bg-transparent md:p-0 md:shadow-none">
 
                   {/* Post Card */}
                   <Card className="rounded-xl text-card-foreground p-6 bg-white border-0 shadow-none">
@@ -684,6 +685,7 @@ function PostDetailContentInner() {
                   <CommentSection postId={post.id} onCommentAdded={handleCommentAdded} />
               </div>
               </div>
+            </div>
             </main>
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
