@@ -71,7 +71,7 @@ function BoardsContent() {
         style={{ pointerEvents: 'none' }}
       >
             <div 
-          className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-1"
+          className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-transparent px-4 py-1 max-md:bg-white"
               style={{ minWidth: '96px' }}
             >
               <h1 

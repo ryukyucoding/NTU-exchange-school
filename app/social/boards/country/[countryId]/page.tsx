@@ -239,7 +239,7 @@ function CountryBoardContent() {
           style={{ pointerEvents: 'none' }}
         >
           <div
-            className="pointer-events-auto flex items-center justify-center whitespace-nowrap rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-1"
+            className="pointer-events-auto flex items-center justify-center whitespace-nowrap rounded-full border border-[#5A5A5A] bg-transparent px-4 py-1 max-md:bg-white"
             style={{ fontFamily: "'Noto Sans TC', sans-serif", color: '#5A5A5A', fontSize: 14 }}
           >
             <h1 className="text-sm font-semibold">{boardTitle}</h1>

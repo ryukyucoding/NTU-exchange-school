@@ -81,10 +81,10 @@ function SocialContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6 max-md:gap-0 md:mx-auto md:max-w-[1400px]">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overflow-x-clip overscroll-contain bg-white pr-px md:bg-[#F4F4F4] md:max-w-[800px] md:pr-0">
-            <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] max-md:min-h-full md:py-2">
-              {/* 電腦版：與貼文詳情相同灰底 + 白卡圓角；手機維持滿版白 */}
-              <div className="min-h-[60vh] max-md:min-h-full md:rounded-xl md:bg-white md:p-4 md:shadow-sm">
+          {/* 電腦：圓角白框固定高度，捲動在框內 → 往上滑仍維持左右上圓角裁切；頂部與右欄對齊不加 py-2 */}
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto max-md:overflow-x-clip md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+              <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
                 <PostList filter={filter} hashtag={hashtag} />
               </div>
             </div>
