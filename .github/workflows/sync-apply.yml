@@ -1,0 +1,57 @@
+name: Sync Apply
+
+on:
+  workflow_dispatch:
+    inputs:
+      semester:
+        description: 'Semester (1 or 2)'
+        required: false
+        default: '2'
+      ids:
+        description: 'Only apply specific IDs (comma-separated, leave empty for all)'
+        required: false
+        default: ''
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # ── 下載 Sync workflow 產出的差異報告 ──────────
+      - name: Download diff report
+        uses: actions/download-artifact@v4
+        with:
+          name: diff-report-sem${{ inputs.semester }}
+          path: scraper/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.inputs.run_id || '' }}
+        continue-on-error: true
+
+      # ── 執行 Apply ────────────────────────────────
+      - name: Apply changes
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -n "${{ inputs.ids }}" ]; then
+            npx tsx scripts/sync-schools.ts --semester ${{ inputs.semester }} --apply --ids ${{ inputs.ids }} --ci
+          else
+            npx tsx scripts/sync-schools.ts --semester ${{ inputs.semester }} --apply --ci
+          fi
+
+      # ── 發送 Discord 完成通知 ──────────────────────
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: npx tsx scripts/notify-discord.ts --semester ${{ inputs.semester }} --apply-result

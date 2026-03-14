@@ -1,34 +1,41 @@
 # 學校資料同步指令
 
-## 快速開始
+## 自動化（GitHub Actions + Discord）
+
+每天台灣 21:00 自動執行增量同步，結果發到 Discord。
+
+### 設定步驟（一次性）
+
+1. 建一個 Discord 頻道（如 `#sync-notifications`）
+2. 頻道設定 → 整合 → Webhook → 新增，複製 Webhook URL
+3. 到 GitHub repo → Settings → Secrets → Actions，加入：
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `DISCORD_WEBHOOK_URL`
+
+### 自動流程
+
+1. 每天 21:00，GitHub Actions 自動跑 `sync.yml`
+2. Discord 收到差異報告訊息（含 Approve 按鈕）
+3. 點 Approve → 到 GitHub Actions → 點 "Run workflow" → 自動匯入
+4. 匯入完成後 Discord 再次通知結果
+
+### 手動觸發
+
+GitHub Actions → Sync Schools → Run workflow（手動跑一次同步）
+
+---
+
+## 本機操作
 
 ```bash
-# 1. 增量同步（只爬新 updated 的學校）+ 差異報告
+# 增量同步（只爬新 updated 的學校）+ 差異報告
 npm run sync            # semester 2
 npm run sync:sem1       # semester 1
 
-# 2. 看完報告後，匯入 DB
+# 看完報告後，匯入 DB
 npm run sync:apply              # 匯入全部有變更的
 npx tsx scripts/sync-schools.ts --semester 2 --apply --ids 42,78  # 只匯入指定 ID
-```
-
-## 流程說明
-
-### Step 1: 增量爬蟲 + 比對
-
-`npm run sync` 會自動：
-
-1. 讀取 DB 現有 `is_updated` 狀態
-2. 爬 OIA 列表頁，找出**新標記 updated** 的學校（DB 是 false → 列表是 true）
-3. 只爬那些新 updated 學校的詳細頁（省時間）
-4. 與 DB 比對，在終端顯示哪些學校的哪些欄位有變更
-5. 存完整報告到 `scraper/diff_report_sem{N}.json`
-
-### Step 2: 確認後匯入
-
-```bash
-npm run sync:apply                                              # 全部匯入
-npx tsx scripts/sync-schools.ts --semester 2 --apply --ids 42,78  # 指定 ID
 ```
 
 ## 選項
@@ -39,6 +46,7 @@ npx tsx scripts/sync-schools.ts --semester 2 --apply --ids 42,78  # 指定 ID
 | `--full` | 強制全部重爬（不只爬新 updated 的） |
 | `--apply` | 將變更寫入 DB |
 | `--ids 1,2,3` | 搭配 `--apply`，只匯入指定 ID |
+| `--ci` | CI 模式（用系統 Python，不用 venv） |
 
 ## 差異報告
 
@@ -55,7 +63,7 @@ npx tsx scripts/sync-schools.ts --semester 2 --apply --ids 42,78  # 指定 ID
 ✅ 無變更: 284 所
 ```
 
-注意：經緯度不列入差異比對。
+注意：經緯度不列入差異比對。Apply 時只更新有變更的欄位，不會覆蓋其他欄位。
 
 ## 手動爬蟲（不透過 sync）
 

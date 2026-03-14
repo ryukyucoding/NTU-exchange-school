@@ -1,0 +1,58 @@
+name: Sync Schools
+
+on:
+  schedule:
+    # 每天台灣 21:00 (UTC 13:00)
+    - cron: '0 13 * * *'
+  workflow_dispatch: # 也可以手動觸發
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── Python (爬蟲) ──────────────────────────────
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependencies
+        run: pip install playwright beautifulsoup4
+
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps
+
+      # ── Node (sync script) ─────────────────────────
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # ── 執行增量同步 ───────────────────────────────
+      - name: Run sync (incremental)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx tsx scripts/sync-schools.ts --semester 2 --ci
+
+      # ── 上傳差異報告 ───────────────────────────────
+      - name: Upload diff report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diff-report-sem2
+          path: scraper/diff_report_sem2.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # ── 發送 Discord 通知 ──────────────────────────
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: npx tsx scripts/notify-discord.ts --semester 2

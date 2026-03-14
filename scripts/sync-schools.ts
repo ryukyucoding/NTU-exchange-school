@@ -44,13 +44,14 @@ const semIdx = args.indexOf('--semester');
 const SEMESTER = semIdx >= 0 ? parseInt(args[semIdx + 1]) : 2;
 const APPLY = args.includes('--apply');
 const FULL = args.includes('--full');
+const CI = args.includes('--ci');
 const idsIdx = args.indexOf('--ids');
 const ONLY_IDS = idsIdx >= 0
   ? new Set(args[idsIdx + 1].split(',').map(s => parseInt(s.trim())))
   : null;
 
 const SCRAPER_DIR = path.join(process.cwd(), 'scraper');
-const PYTHON = path.join(SCRAPER_DIR, 'venv', 'bin', 'python3');
+const PYTHON = CI ? 'python3' : path.join(SCRAPER_DIR, 'venv', 'bin', 'python3');
 const SCRAPER = path.join(SCRAPER_DIR, 'fetch_schools_v2.py');
 const JSON_FILE = path.join(SCRAPER_DIR, `raw_schools_v2_sem${SEMESTER}.json`);
 const REPORT_FILE = path.join(SCRAPER_DIR, `diff_report_sem${SEMESTER}.json`);
