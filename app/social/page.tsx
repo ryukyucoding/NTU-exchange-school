@@ -70,7 +70,7 @@ function SocialContent() {
     <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4]">
       {/* 手機：篩選第二排白底；電腦：與 header 同列 */}
       <div
-        className="fixed left-0 right-0 z-[51] flex justify-center border-b border-gray-100 bg-white px-3 md:top-0 md:h-16 md:items-center md:border-b-0 md:bg-transparent md:px-4 max-md:top-16 max-md:h-12 max-md:items-center"
+        className="fixed left-0 right-0 z-[51] flex justify-center bg-white px-3 md:top-0 md:h-16 md:items-center md:bg-transparent md:px-4 max-md:top-16 max-md:h-12 max-md:items-center"
         style={{ pointerEvents: 'none' }}
       >
         {filterButtons}

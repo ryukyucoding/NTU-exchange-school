@@ -273,10 +273,10 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
       <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
         {displayName && (
           <div
-            className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+            className="fixed left-0 right-0 z-[51] flex items-center justify-center bg-white md:top-0 md:h-16 md:bg-transparent max-md:top-16 max-md:h-12"
             style={{ pointerEvents: 'none' }}
           >
-            <div className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-1">
+            <div className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-transparent px-4 py-1 max-md:bg-white">
               <h1
                 className="text-sm font-semibold whitespace-nowrap"
                 style={{
@@ -292,49 +292,50 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
           </div>
         )}
 
-        <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-12 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
           <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
             <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-            <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
-              <div className="rounded-xl bg-white text-card-foreground border-0 shadow-none overflow-hidden mb-4 w-full">
+            <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto md:bg-[#F4F4F4]">
+              <div className="mb-4 w-full max-w-[800px] overflow-hidden rounded-none border-0 bg-white text-card-foreground shadow-none md:mx-auto md:rounded-xl md:shadow-sm">
                 <div className="relative">
                   {backgroundImageUrl ? (
-                    <div 
-                      className="h-44 rounded-t-xl bg-cover bg-center"
+                    <div
+                      className="h-40 bg-cover bg-center max-md:rounded-none md:h-44 md:rounded-t-xl"
                       style={{ backgroundImage: `url(${backgroundImageUrl})` }}
                     />
                   ) : (
-                    <div className="h-44 bg-[#BAC7E5] rounded-t-xl" />
+                    <div className="h-40 bg-[#BAC7E5] max-md:rounded-none md:h-44 md:rounded-t-xl" />
                   )}
-                  {/* avatar overlaps cover */}
-                  <div className="absolute left-10 -bottom-12">
+                  <div className="absolute left-4 -bottom-10 max-md:left-4 md:left-10 md:-bottom-12">
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
                         alt="avatar"
-                        className="w-28 h-28 rounded-full border-4 border-white shadow object-cover bg-gray-200"
+                        className="h-24 w-24 rounded-full border-4 border-white bg-gray-200 object-cover shadow md:h-28 md:w-28"
                       />
                     ) : (
-                      <div className="w-28 h-28 rounded-full bg-gray-300 border-4 border-white shadow" />
+                      <div className="h-24 w-24 rounded-full border-4 border-white bg-gray-300 shadow md:h-28 md:w-28" />
                     )}
                   </div>
                 </div>
 
-                <div className="pt-16 px-10 pb-6">
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="flex-1 min-w-0 max-w-[540px]">
-                      <h1 className="text-4xl font-bold text-gray-800">{displayName}</h1>
-                      <p className="text-gray-500 mt-2">{bio}</p>
+                <div className="px-4 pb-6 pt-14 max-md:pt-12 md:px-10 md:pt-16">
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+                    <div className="min-w-0 flex-1 md:max-w-[540px]">
+                      <h1 className="text-2xl font-bold text-gray-800 md:text-4xl">{displayName}</h1>
+                      <p className="mt-2 text-sm text-gray-500 md:text-base">{bio}</p>
                     </div>
 
-                    <div className="text-right text-gray-600 flex-shrink-0" style={{ minWidth: '80px' }}>
-                      <div className="text-sm whitespace-nowrap">貼文數</div>
-                      <div className="text-xl font-semibold">{postCount}</div>
+                    <div className="flex flex-row flex-wrap items-end gap-4 text-gray-600 md:flex-shrink-0 md:flex-col md:items-end md:text-right">
+                      <div>
+                        <div className="whitespace-nowrap text-xs md:text-sm">貼文數</div>
+                        <div className="text-lg font-semibold md:text-xl">{postCount}</div>
+                      </div>
                       {isOwnProfile && (
                         <Button
                           onClick={() => setEditOpen(true)}
-                          className="mt-3 px-4 py-2 text-sm font-medium rounded-md transition-colors"
+                          className="h-8 rounded-md px-3 text-xs font-medium transition-colors md:mt-1 md:h-auto md:px-4 md:py-2 md:text-sm"
                           style={{
                             backgroundColor: '#8D7051',
                             color: 'white',
@@ -347,10 +348,9 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                     </div>
                   </div>
 
-                  {/* Tabs (text only) */}
                   <div
-                    className="mt-8 flex gap-12"
-                    style={{ fontFamily: "'Noto Sans TC', sans-serif", paddingLeft: '40px' }}
+                    className="mt-6 flex gap-6 overflow-x-auto pl-0 md:mt-8 md:gap-12 md:pl-10"
+                    style={{ fontFamily: "'Noto Sans TC', sans-serif" }}
                   >
                     <button
                       onClick={() => setActiveTab('posts')}

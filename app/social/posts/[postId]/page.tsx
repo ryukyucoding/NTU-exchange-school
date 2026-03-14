@@ -346,89 +346,89 @@ function PostDetailContentInner() {
 
   return (
     // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white md:bg-[#F4F4F4]">
-      {/* 手機：標題在選單下方第二排；電腦：與 header 同列 */}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4]">
+      {/* 返回 + 標題膠囊 + 選單同一列；手機第二排；不畫底線避免與內容區「一條線」 */}
       <div
-        className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+        className="fixed left-0 right-0 z-[51] flex items-center bg-white md:top-0 md:h-16 md:bg-transparent max-md:top-16 max-md:h-12 max-md:shadow-none"
         style={{ pointerEvents: 'none' }}
       >
         <div
-          className="pointer-events-auto flex max-w-[calc(100vw-24px)] items-center justify-center px-4 py-1"
-          style={{
-            minWidth: '140px',
-            border: '1px solid #5A5A5A',
-            borderRadius: '24px',
-            boxSizing: 'border-box',
-            backgroundColor: 'rgba(255,255,255,0.95)',
-          }}
+          className="pointer-events-auto mx-auto flex h-full w-full max-w-[800px] items-center gap-1 px-2 md:max-w-[calc(800px+2rem)] md:px-3"
+          style={{ pointerEvents: 'auto' }}
         >
-          <h1
-            className="text-sm font-semibold text-center"
-            style={{
-              color: '#5A5A5A',
-              fontSize: '14px',
-              lineHeight: '20px',
-              fontFamily: "'Noto Sans TC', sans-serif",
-              wordWrap: 'break-word',
-              overflowWrap: 'break-word',
-              whiteSpace: 'normal',
+          <Button
+            variant="ghost"
+            onClick={() => {
+              if (returnUrl) router.push(returnUrl);
+              else router.back();
             }}
+            className="h-9 shrink-0 gap-1 px-2 hover:bg-gray-100 md:px-3"
+            style={{ color: '#5A5A5A' }}
           >
-            {post.title}
-          </h1>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm max-md:inline">返回</span>
+          </Button>
+          <div className="min-w-0 flex-1 flex justify-center px-1">
+            <div
+              className="max-w-full rounded-full border border-[#5A5A5A] px-3 py-1"
+              style={{
+                backgroundColor: 'transparent',
+                boxSizing: 'border-box',
+              }}
+            >
+              <h1
+                className="truncate text-center text-sm font-semibold"
+                style={{
+                  color: '#5A5A5A',
+                  fontFamily: "'Noto Sans TC', sans-serif",
+                  maxWidth: 'min(60vw, 320px)',
+                }}
+                title={post.title}
+              >
+                {post.title}
+              </h1>
+            </div>
+          </div>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-end">
+            {isAuthor ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                    <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="border-gray-200 bg-white">
+                  <DropdownMenuItem
+                    onClick={handleEdit}
+                    className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    編輯貼文
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    刪除貼文
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <span className="inline-block w-9" aria-hidden />
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 max-md:pb-20 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+      {/* 手機：白底滿版無圓角（與標題列連成同一塊）；電腦：灰底 + 白卡圓角 */}
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-12 max-md:pb-20 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
-              <div className="mx-auto w-full min-w-0 max-w-[800px] min-h-[60vh]">
-              <div className="space-y-4 rounded-lg bg-white p-4 max-md:rounded-none md:rounded-lg">
-                  {/* Back Button and Edit/Delete Menu */}
-                  <div className="flex items-center justify-between mb-4">
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        if (returnUrl) {
-                          router.push(returnUrl);
-                        } else {
-                          router.back();
-                        }
-                      }}
-                      className="flex items-center gap-2 hover:bg-gray-100"
-                      style={{ color: '#5A5A5A' }}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      返回
-                    </Button>
-                    {isAuthor && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100">
-                            <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white border-gray-200">
-                          <DropdownMenuItem
-                            onClick={handleEdit}
-                            className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
-                          >
-                            <Edit className="h-4 w-4 mr-2" />
-                            編輯貼文
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={handleDelete}
-                            className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            刪除貼文
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </div>
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto md:bg-[#F4F4F4]">
+              <div className="mx-auto min-h-[60vh] w-full min-w-0 max-w-[800px] max-md:px-0 max-md:pt-0 md:px-0 md:pt-0">
+              <div className="space-y-4 bg-white p-4 max-md:rounded-none max-md:shadow-none md:rounded-xl md:shadow-sm">
 
                   {/* Post Card */}
                   <Card className="rounded-xl text-card-foreground p-6 bg-white border-0 shadow-none">
@@ -580,28 +580,31 @@ function PostDetailContentInner() {
 
                     {/* Ratings (if review post) */}
                     {post.ratings && (
-                      <div className="mb-6 mt-6 flex items-center justify-between gap-4 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                      <div
+                        className="mb-6 mt-6 flex flex-col gap-3 border-b pb-6 md:flex-row md:items-center md:justify-between md:gap-4"
+                        style={{ borderColor: '#D9D9D9' }}
+                      >
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             生活機能
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderStars(post.ratings.livingConvenience)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             學習體驗
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderStars(post.ratings.courseLoading)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             物價水準
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderDollarSigns(post.ratings.costOfLiving)}
                           </div>
                         </div>

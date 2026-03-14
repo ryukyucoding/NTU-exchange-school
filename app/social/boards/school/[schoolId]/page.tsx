@@ -209,11 +209,11 @@ function SchoolBoardContent() {
                       </p>
                     )}
                   </div>
-                  <div className="flex w-full flex-col gap-3 border-t border-gray-100 pt-3 md:w-auto md:flex-row md:items-center md:gap-6 md:border-t-0 md:pt-0">
+                  <div className="flex w-full flex-row flex-wrap items-center gap-x-4 gap-y-2 border-t border-gray-100 pt-3 md:w-auto md:gap-6 md:border-t-0 md:pt-0">
                     {boardId && (
                       <Button
                         onClick={handleFollowToggle}
-                        className="w-full shrink-0 rounded-md px-4 py-2 text-sm font-medium transition-colors md:w-auto"
+                        className="h-8 shrink-0 rounded-md px-3 py-0 text-xs font-medium transition-colors"
                         style={{
                           backgroundColor: isFollowing ? 'rgba(141, 112, 81, 0.2)' : '#8D7051',
                           color: isFollowing ? '#8D7051' : 'white',
@@ -225,14 +225,14 @@ function SchoolBoardContent() {
                         {isFollowing ? '追蹤中' : '追蹤'}
                       </Button>
                     )}
-                    <div className="flex flex-wrap items-center gap-6 text-gray-600">
-                      <div className="flex items-baseline gap-2 whitespace-nowrap">
-                        <span className="text-sm">貼文數</span>
-                        <span className="text-xl font-semibold">{stats.postCount}</span>
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-gray-600">
+                      <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+                        <span className="text-xs md:text-sm">貼文數</span>
+                        <span className="text-base font-semibold md:text-xl">{stats.postCount}</span>
                       </div>
-                      <div className="flex items-baseline gap-2 whitespace-nowrap">
-                        <span className="text-sm">追蹤數</span>
-                        <span className="text-xl font-semibold">{stats.followerCount}</span>
+                      <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+                        <span className="text-xs md:text-sm">追蹤數</span>
+                        <span className="text-base font-semibold md:text-xl">{stats.followerCount}</span>
                       </div>
                     </div>
                   </div>

@@ -416,7 +416,7 @@ export default function SchoolDetailModal({
       onClose={onClose}
       panelType="wishlist"
       variant={isWishlist ? 'wishlist' : 'glass'}
-      zIndex={isSide ? 80 : 40}
+      zIndex={isSide ? 100 : 100}
       overlayStyle={isSide ? 'none' : 'default'}
       contentAnimation={isSide ? 'none' : 'default'}
       closeOnBackdropClick={!isSide}
