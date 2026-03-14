@@ -30,7 +30,7 @@
 
 1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
 2. 只選這個 repo，權限：Actions (Read and write)
-3. 複製 Token（這是 `GITHUB_PAT`）
+3. 複製 Token（這是 `GH_PAT`）
 
 #### 4. GitHub Secrets
 
@@ -43,7 +43,7 @@
 | `DISCORD_WEBHOOK_URL` | Discord channel Webhook URL |
 | `DISCORD_BOT_TOKEN` | Discord Bot Token |
 | `DISCORD_CHANNEL_ID` | Discord 頻道 ID |
-| `GITHUB_PAT` | GitHub Fine-grained PAT |
+| `GH_PAT` | GitHub Fine-grained PAT |
 
 #### 5. Vercel 環境變數
 
@@ -52,7 +52,7 @@
 | 變數 | 說明 |
 |------|------|
 | `DISCORD_PUBLIC_KEY` | Discord Application Public Key（驗證簽章用） |
-| `GITHUB_PAT` | 同上，用於 API route 觸發 workflow |
+| `GH_PAT` | 同上，用於 API route 觸發 workflow |
 
 ### 自動流程
 

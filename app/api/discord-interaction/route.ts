@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 const DISCORD_PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY || "";
-const GITHUB_TOKEN = process.env.GITHUB_PAT || "";
+const GITHUB_TOKEN = process.env.GH_PAT || "";
 const GITHUB_REPO = "ryukyucoding/NTU-exchange-school";
 
 // --- Ed25519 signature verification ---
