@@ -258,6 +258,7 @@ export async function POST(req: NextRequest) {
         (supabase as any).from('PostPhoto').delete().eq('postId', postId),
         (supabase as any).from('SchoolRating').delete().eq('postId', postId),
         (supabase as any).from('PostBoard').delete().eq('postId', postId),
+        (supabase as any).from('PostSchool').delete().eq('postId', postId).catch(() => {}),
       ]);
     } else {
       // 創建新 post
@@ -351,6 +352,16 @@ export async function POST(req: NextRequest) {
         if (ratingError) {
           console.error("Error creating school rating:", ratingError);
           // 不影響貼文建立，只記錄錯誤
+        } else {
+          try {
+            await (supabase as any).from('PostSchool').insert({
+              id: crypto.randomUUID(),
+              postId,
+              schoolId: Number(schoolId),
+            });
+          } catch {
+            /* PostSchool 表可選 */
+          }
         }
       }
     }
@@ -503,6 +514,20 @@ export async function POST(req: NextRequest) {
         // 不影響貼文建立，只記錄錯誤
       } else {
         console.log(`[POST /api/posts] 成功建立 ${postBoardInserts.length} 個 PostBoard 關聯 (status: ${status}, isUpdate: ${isUpdate})`);
+        if (schoolIds && Array.isArray(schoolIds) && schoolIds.length > 0) {
+          for (const sid of schoolIds) {
+            if (!sid || typeof sid !== 'string') continue;
+            try {
+              await (supabase as any).from('PostSchool').insert({
+                id: crypto.randomUUID(),
+                postId,
+                schoolId: Number(sid),
+              });
+            } catch {
+              /* 表未建立或重複可略過 */
+            }
+          }
+        }
       }
     } else {
       console.log(`[POST /api/posts] 沒有 boardIds，跳過 PostBoard 關聯建立 (status: ${status})`);
@@ -816,7 +841,7 @@ export async function GET(req: NextRequest) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = await (supabase as any)
             .from('PostBoard')
-            .select('postId, board:Board!PostBoard_boardId_fkey(country_id, Country:country_id(id, name))')
+            .select('postId, board:Board!PostBoard_boardId_fkey(country_id, Country:country_id(id, country_zh))')
             .in('postId', postIds);
           return result;
         } catch (error) {
@@ -863,14 +888,18 @@ export async function GET(req: NextRequest) {
         }
       });
 
-      (postBoardData.data || []).forEach((pb: { postId: string; board: { Country: { name: string } | null } | null }) => {
-        if (pb.board?.Country?.name) {
+      (postBoardData.data || []).forEach((pb: {
+        postId: string;
+        board: { Country: { country_zh: string } | null } | null;
+      }) => {
+        const cn = pb.board?.Country?.country_zh;
+        if (cn) {
           if (!draftCountriesMap.has(pb.postId)) {
             draftCountriesMap.set(pb.postId, []);
           }
           const countryList = draftCountriesMap.get(pb.postId)!;
-          if (!countryList.includes(pb.board.Country.name)) {
-            countryList.push(pb.board.Country.name);
+          if (!countryList.includes(cn)) {
+            countryList.push(cn);
           }
         }
       });
@@ -1001,19 +1030,49 @@ export async function GET(req: NextRequest) {
     }
 
     // 如果指定了 schoolId，只顯示與該學校相關的貼文
+    // 優先 PostSchool；表不存在時用 SchoolRating + 學校版 PostBoard
     if (schoolId) {
+      const sid = parseInt(String(schoolId), 10);
+      const schoolIdStr = String(schoolId);
+      let postIdsFromSchool: string[] = [];
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postSchoolData } = await (supabase as any)
+      const postSchoolRes = await (supabase as any)
         .from('PostSchool')
         .select('postId')
-        .eq('schoolId', schoolId);
+        .eq('schoolId', schoolIdStr);
+      if (!postSchoolRes.error && postSchoolRes.data?.length) {
+        postIdsFromSchool = (postSchoolRes.data as { postId: string }[]).map((p) => p.postId);
+      } else if (postSchoolRes.error?.message?.includes('schema cache') || postSchoolRes.error?.code === 'PGRST205') {
+        // PostSchool 表不存在：心得文的 schoolId 在 SchoolRating；一般文可能在學校看板 PostBoard
+        const [ratingRes, boardRes] = await Promise.all([
+          (supabase as any).from('SchoolRating').select('postId').eq('schoolId', sid),
+          (supabase as any)
+            .from('Board')
+            .select('id')
+            .eq('type', 'school')
+            .eq('schoolId', sid)
+            .maybeSingle(),
+        ]);
+        const fromRating = ((ratingRes.data || []) as { postId: string }[]).map((r) => r.postId);
+        postIdsFromSchool = [...new Set(fromRating)];
+        if (boardRes.data?.id) {
+          const pb = await (supabase as any)
+            .from('PostBoard')
+            .select('postId')
+            .eq('boardId', boardRes.data.id);
+          const fromBoard = ((pb.data || []) as { postId: string }[]).map((p) => p.postId);
+          postIdsFromSchool = [...new Set([...postIdsFromSchool, ...fromBoard])];
+        }
+      } else if (postSchoolRes.data?.length) {
+        postIdsFromSchool = (postSchoolRes.data as { postId: string }[]).map((p) => p.postId);
+      }
 
-      if (postSchoolData && postSchoolData.length > 0) {
-        const postIds = (postSchoolData as { postId: string }[]).map((ps) => ps.postId);
+      if (postIdsFromSchool.length > 0) {
         if (filterPostIds === null) {
-          filterPostIds = postIds;
+          filterPostIds = postIdsFromSchool;
         } else {
-          filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
+          filterPostIds = (filterPostIds as string[]).filter((id) => postIdsFromSchool.includes(id));
         }
       } else {
         return NextResponse.json({
