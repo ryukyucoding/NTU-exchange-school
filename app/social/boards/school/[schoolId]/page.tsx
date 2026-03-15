@@ -162,7 +162,7 @@ function SchoolBoardContent() {
 
           <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
             <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
-            <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
+            <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 max-md:p-4">
             {schoolsLoading || !school || loading ? (
               <Card className="border-0 shadow-none overflow-hidden mb-4">
                 <div className="bg-white p-6">
@@ -173,8 +173,9 @@ function SchoolBoardContent() {
               </Card>
             ) : (
               <>
-            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none max-md:rounded-none md:rounded-none md:shadow-none">
-              <div className="h-32" style={{ backgroundColor: '#BAC7E5' }} />
+            {/* 電腦版給 Card 與背景條圓角 */}
+            <Card className="mb-4 w-full max-w-[800px] overflow-hidden border-0 shadow-none max-md:rounded-none md:rounded-xl">
+              <div className="h-32 max-md:rounded-none md:rounded-t-xl" style={{ backgroundColor: '#BAC7E5' }} />
               <div className="bg-white p-4 md:p-6">
                 {/* 第一行：中文名 + 詳細；第二行：英文・國家；第三行：追蹤 + 貼文數/追蹤數（手機橫排） */}
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
