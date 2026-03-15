@@ -84,6 +84,7 @@ export default function PostList({
   }
 
   if (posts.length === 0) {
+    const isSearchEmpty = q != null && q.trim() !== '';
     return (
       <div
         className={
@@ -92,7 +93,13 @@ export default function PostList({
             : 'rounded-lg bg-white p-8 max-md:min-h-[40vh] max-md:rounded-none md:rounded-xl'
         }
       >
-        <p className="text-muted-foreground">尚無貼文</p>
+        {isSearchEmpty ? (
+          <p className="text-muted-foreground">
+            沒有找到與「{q.trim()}」相關的貼文
+          </p>
+        ) : (
+          <p className="text-muted-foreground">尚無貼文</p>
+        )}
       </div>
     );
   }

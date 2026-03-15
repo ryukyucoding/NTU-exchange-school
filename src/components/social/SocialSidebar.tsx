@@ -71,13 +71,13 @@ export default function SocialSidebar() {
 
   return (
     <div className="w-full flex flex-col gap-4 h-full">
-      {/* 搜尋列：與下方 Card 同風格（白色絲巾底、圓角、微陰影），icon 與 nav 對齊 */}
-      <Card className="p-3 md:p-4 bg-[#faf9f7] border-0 shadow-sm rounded-xl flex-shrink-0">
+      {/* 搜尋列：白底、與下方區塊一致 */}
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none rounded-xl flex-shrink-0">
         <SocialSearchInput variant="sidebar" className="w-full" />
       </Card>
 
-      {/* Navigation */}
-      <Card className="p-3 md:p-4 bg-[#faf9f7] border-0 shadow-sm rounded-xl">
+      {/* Navigation：白底、深灰文字，與「追蹤的看板」同配色 */}
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none rounded-xl">
         <nav className="flex flex-col gap-2">
           <Link href="/social/boards" data-tour-step="social-boards">
             <Button

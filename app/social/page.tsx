@@ -15,17 +15,10 @@ function SocialContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
-  const [hashtag, setHashtag] = useState<string | null>(null);
-  const [searchQ, setSearchQ] = useState<string | null>(null);
 
   const searchFocus = searchParams.get('focus') === 'search';
-
-  useEffect(() => {
-    const hashtagParam = searchParams.get('hashtag');
-    const qParam = searchParams.get('q');
-    setHashtag(hashtagParam);
-    setSearchQ(qParam || null);
-  }, [searchParams]);
+  const hashtag = searchParams.get('hashtag') || null;
+  const searchQ = searchParams.get('q') || null;
 
   const clearSearch = () => {
     router.push('/social?focus=search');

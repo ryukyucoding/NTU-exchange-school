@@ -1033,6 +1033,13 @@ export async function GET(req: NextRequest) {
     // 關鍵字搜尋：標題、內容或標籤(hashtag) 包含 q 的貼文
     if (q) {
       const safeQ = q.replace(/,/g, ' ').trim();
+      if (!safeQ) {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
       const pattern = `%${safeQ}%`;
       const postIdsFromPost: string[] = [];
       const postIdsFromHashtag: string[] = [];
