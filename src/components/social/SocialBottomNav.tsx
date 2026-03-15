@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plus, LayoutGrid, User, Search } from 'lucide-react';
+import { Plus, LayoutGrid, User, Search, Bell } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
 
 /** 僅圖示、無文字，適合點擊的圓角方塊 */
@@ -32,6 +32,7 @@ export default function SocialBottomNav() {
   const userId = (session?.user as { id?: string })?.id || '';
   const isBoards = pathname.startsWith('/social/boards');
   const isSocialHome = pathname === '/social' || (pathname.startsWith('/social') && pathname.includes('?'));
+  const isNotifications = pathname.startsWith('/social/notifications');
   const isProfile = pathname.startsWith('/social/profile');
 
   return (
@@ -46,6 +47,14 @@ export default function SocialBottomNav() {
             <LayoutGrid className={`h-5 w-5 shrink-0 ${isBoards ? 'text-[#4a3828]' : 'text-gray-500'}`} />
           </Link>
 
+          <Link
+            href="/social?focus=search"
+            className={`${NAV_TILE} hover:bg-gray-100 ${isSocialHome ? 'text-[#4a3828]' : 'text-gray-500'}`}
+            aria-label="搜尋貼文"
+          >
+            <Search className={`h-5 w-5 shrink-0 ${isSocialHome ? 'text-[#4a3828]' : 'text-gray-500'}`} />
+          </Link>
+
           <button
             ref={buttonRef}
             type="button"
@@ -58,11 +67,11 @@ export default function SocialBottomNav() {
           </button>
 
           <Link
-            href="/social?focus=search"
-            className={`${NAV_TILE} hover:bg-gray-100 ${isSocialHome ? 'text-[#4a3828]' : 'text-gray-500'}`}
-            aria-label="搜尋貼文"
+            href="/social/notifications"
+            className={`${NAV_TILE} hover:bg-gray-100 ${isNotifications ? 'text-[#4a3828]' : 'text-gray-500'}`}
+            aria-label="通知"
           >
-            <Search className={`h-5 w-5 shrink-0 ${isSocialHome ? 'text-[#4a3828]' : 'text-gray-500'}`} />
+            <Bell className={`h-5 w-5 shrink-0 ${isNotifications ? 'text-[#4a3828]' : 'text-gray-500'}`} />
           </Link>
 
           <Link

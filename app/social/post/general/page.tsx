@@ -16,6 +16,7 @@ import UnsavedChangesDialog from '@/components/social/UnsavedChangesDialog';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import { useSchoolContext } from '@/contexts/SchoolContext';
 import toast from 'react-hot-toast';
+import { Check } from 'lucide-react';
 
 interface Draft {
   id: string;
@@ -779,7 +780,22 @@ function GeneralPostContent() {
 
       if (data.success) {
         setAllowNavigation(true);
-        toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
+        const isRepost = Boolean(currentRepostId || repostId);
+        if (isRepost && !editPostId) {
+          toast.custom(
+            (t) => (
+              <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-3 shadow-lg">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#8D7051]/15 text-[#8D7051]">
+                  <Check className="h-4 w-4" />
+                </span>
+                <span className="text-sm font-medium text-[#4a3828]">已轉發貼文</span>
+              </div>
+            ),
+            { position: 'top-center', duration: 2000 }
+          );
+        } else {
+          toast.success(editPostId ? '貼文更新成功！' : '貼文發布成功！');
+        }
         // 無論是編輯還是發布，都帶上 return 參數
         router.push(`/social/posts/${data.post.id}?return=${encodeURIComponent(returnUrl)}`);
       } else {

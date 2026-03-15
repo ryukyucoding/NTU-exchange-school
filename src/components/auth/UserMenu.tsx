@@ -261,7 +261,7 @@ export default function UserMenu() {
     return (
       <>
         <div className="flex items-center gap-2">
-          {isSocialPage && <NotificationButton />}
+          {isSocialPage && <span className="max-md:hidden"><NotificationButton /></span>}
           <Button
             variant="ghost"
             size="icon"
@@ -283,7 +283,7 @@ export default function UserMenu() {
   return (
     <>
     <div className="flex items-center gap-2">
-        {isSocialPage && <NotificationButton />}
+        {isSocialPage && <span className="max-md:hidden"><NotificationButton /></span>}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
