@@ -13,6 +13,7 @@ interface PostListProps {
   variant?: 'card' | 'plain';
   filterType?: 'rating' | null;
   hashtag?: string | null;
+  q?: string | null; // 關鍵字搜尋（標題/內容）
   bookmarked?: boolean;
   liked?: boolean;
 }
@@ -25,6 +26,7 @@ export default function PostList({
   variant = 'card',
   filterType = null,
   hashtag = null,
+  q = null,
   bookmarked = false,
   liked = false,
 }: PostListProps) {
@@ -38,6 +40,7 @@ export default function PostList({
     sort,
     filterType,
     hashtag,
+    q,
     bookmarked,
     liked,
   });

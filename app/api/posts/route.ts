@@ -607,6 +607,7 @@ export async function GET(req: NextRequest) {
     const cursor = searchParams.get("cursor");
     const boardId = searchParams.get("boardId");
     const hashtag = searchParams.get("hashtag");
+    const q = searchParams.get("q")?.trim() || null; // 關鍵字搜尋（貼文標題/內容）
     const schoolId = searchParams.get("schoolId");
     const authorId = searchParams.get("authorId"); // Filter by author
     const bookmarked = searchParams.get("bookmarked") === "true"; // Filter by bookmarked posts
@@ -1019,6 +1020,51 @@ export async function GET(req: NextRequest) {
           filterPostIds = postIds;
         } else {
           filterPostIds = (filterPostIds as string[]).filter((id) => postIds.includes(id));
+        }
+      } else {
+        return NextResponse.json({
+          success: true,
+          posts: [],
+          nextCursor: null,
+        });
+      }
+    }
+
+    // 關鍵字搜尋：標題、內容或標籤(hashtag) 包含 q 的貼文
+    if (q) {
+      const safeQ = q.replace(/,/g, ' ').trim();
+      const pattern = `%${safeQ}%`;
+      const postIdsFromPost: string[] = [];
+      const postIdsFromHashtag: string[] = [];
+
+      // 標題或內文符合
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: keywordData } = await (supabase as any)
+        .from('Post')
+        .select('id')
+        .eq('status', 'published')
+        .is('deletedAt', null)
+        .or(`title.ilike.${pattern},content.ilike.${pattern}`);
+      if (keywordData?.length) {
+        postIdsFromPost.push(...(keywordData as { id: string }[]).map((p) => p.id));
+      }
+
+      // 標籤(hashtag) 內容符合
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: hashtagMatch } = await (supabase as any)
+        .from('Hashtag')
+        .select('postId')
+        .ilike('content', pattern);
+      if (hashtagMatch?.length) {
+        postIdsFromHashtag.push(...(hashtagMatch as { postId: string }[]).map((h) => h.postId));
+      }
+
+      const unionIds = [...new Set([...postIdsFromPost, ...postIdsFromHashtag])];
+      if (unionIds.length > 0) {
+        if (filterPostIds === null) {
+          filterPostIds = unionIds;
+        } else {
+          filterPostIds = (filterPostIds as string[]).filter((id) => unionIds.includes(id));
         }
       } else {
         return NextResponse.json({

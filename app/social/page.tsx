@@ -1,23 +1,40 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import FeatureTour from '@/components/onboarding/FeatureTour';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
+import { SocialSearchInput } from '@/components/social/SocialSearchInput';
 import { Button } from '@/components/ui/button';
 
 function SocialContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
   const [hashtag, setHashtag] = useState<string | null>(null);
+  const [searchQ, setSearchQ] = useState<string | null>(null);
+
+  const searchFocus = searchParams.get('focus') === 'search';
 
   useEffect(() => {
     const hashtagParam = searchParams.get('hashtag');
+    const qParam = searchParams.get('q');
     setHashtag(hashtagParam);
+    setSearchQ(qParam || null);
   }, [searchParams]);
+
+  const clearSearch = () => {
+    router.push('/social?focus=search');
+  };
+
+  const searchChipClass =
+    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-[#8D7051] transition-colors';
+  const searchChipBg = 'rgba(141, 112, 81, 0.34)';
+  const searchChipText = 'text-[#4a3828]';
 
   const filterButtons = (
     <div className="pointer-events-auto flex w-full max-w-md gap-2 md:max-w-[25%] md:min-w-[280px]">
@@ -84,8 +101,40 @@ function SocialContent() {
           {/* 電腦：圓角白框固定高度，捲動在框內 → 往上滑仍維持左右上圓角裁切；頂部與右欄對齊不加 py-2 */}
           <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto max-md:overflow-x-clip md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
             <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+              {/* 電腦版：僅有 q 時顯示標籤列。手機版：僅在「搜尋模式」(focus=search) 或有 q 時顯示搜尋列 */}
+              {searchQ ? (
+                <div className="flex items-center gap-2 px-4 py-3 md:px-4 md:py-3 border-b border-[#e8e6e3]">
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className={`${searchChipClass} ${searchChipText}`}
+                    style={{ backgroundColor: searchChipBg }}
+                    aria-label="取消搜尋"
+                  >
+                    <span>{searchQ}</span>
+                    <X className="w-3.5 h-3.5 shrink-0 text-[#6b5b4c] hover:text-[#4a3828]" />
+                  </button>
+                </div>
+              ) : (searchFocus && (
+                <div className="sm:hidden flex items-center px-4 py-3 border-b border-[#e8e6e3]">
+                  <SocialSearchInput variant="dialog" className="w-full h-11" />
+                </div>
+              ))}
               <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
-                <PostList filter={filter} hashtag={hashtag} />
+                {/* 手機搜尋模式且尚未輸入關鍵字：顯示空狀態；桌面維持顯示貼文 */}
+                {searchFocus && !searchQ ? (
+                  <>
+                    <div className="sm:hidden flex flex-col items-center justify-center py-16 text-[#8a7a63] text-sm">
+                      <p>輸入關鍵字搜尋貼文</p>
+                      <p className="mt-1 text-xs">可搜尋標題、內文與標籤</p>
+                    </div>
+                    <div className="hidden sm:block">
+                      <PostList filter={filter} hashtag={hashtag} q={searchQ} />
+                    </div>
+                  </>
+                ) : (
+                  <PostList filter={filter} hashtag={hashtag} q={searchQ} />
+                )}
               </div>
             </div>
           </main>

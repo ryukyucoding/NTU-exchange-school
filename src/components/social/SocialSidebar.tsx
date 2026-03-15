@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus, LayoutGrid, User } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
+import { SocialSearchInput } from './SocialSearchInput';
 import { useBoards } from '@/hooks/useBoards';
 import { usePopularTags } from '@/hooks/usePopularTags';
 
@@ -70,8 +71,13 @@ export default function SocialSidebar() {
 
   return (
     <div className="w-full flex flex-col gap-4 h-full">
+      {/* 搜尋列：與下方 Card 同風格（白色絲巾底、圓角、微陰影），icon 與 nav 對齊 */}
+      <Card className="p-3 md:p-4 bg-[#faf9f7] border-0 shadow-sm rounded-xl flex-shrink-0">
+        <SocialSearchInput variant="sidebar" className="w-full" />
+      </Card>
+
       {/* Navigation */}
-      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-[#faf9f7] border-0 shadow-sm rounded-xl">
         <nav className="flex flex-col gap-2">
           <Link href="/social/boards" data-tour-step="social-boards">
             <Button

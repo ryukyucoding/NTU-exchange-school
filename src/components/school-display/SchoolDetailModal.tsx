@@ -186,6 +186,44 @@ export default function SchoolDetailModal({
 
   const inWishlist = isInWishlist(school.id);
 
+  // 討論與收藏按鈕（modal 頂列與內容區共用）
+  const actionButtons = (
+    <div className="flex items-center gap-2 flex-shrink-0">
+      {showDiscussButton && (
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className={
+            isWishlist
+              ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
+              : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
+          }
+        >
+          <Link href={`/social/boards/school/${school.id}`} className="flex items-center gap-2">
+            <img src="/tangyuan-1.svg" alt="Logo" className="w-4 h-4" />
+            討論
+          </Link>
+        </Button>
+      )}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          if (inWishlist) removeFromWishlist(school.id);
+          else addToWishlist(school);
+        }}
+        className={
+          isWishlist
+            ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
+            : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
+        }
+      >
+        <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : (isWishlist ? 'text-[#8a7a63]' : '')}`} />
+      </Button>
+    </div>
+  );
+
   // 渲染詳細內容（兩種模式共用）
   const renderContent = () => (
     <>
@@ -198,42 +236,7 @@ export default function SchoolDetailModal({
             {school.name_en}
           </p>
         </div>
-
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {showDiscussButton && (
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className={
-                isWishlist
-                  ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
-                  : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
-              }
-            >
-              <Link href={`/social/boards/school/${school.id}`} className="flex items-center gap-2">
-                <img src="/tangyuan-1.svg" alt="Logo" className="w-4 h-4" />
-                討論
-              </Link>
-            </Button>
-          )}
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              if (inWishlist) removeFromWishlist(school.id);
-              else addToWishlist(school);
-            }}
-            className={
-              isWishlist
-                ? 'bg-transparent text-[#6b5b4c] border border-[#d6c3a1] hover:bg-[#e8ddc8] hover:text-[#4a3828] hover:ring-1 hover:ring-[#d6c3a1] focus-visible:bg-[#e8ddc8] focus-visible:text-[#4a3828] focus-visible:ring-1 focus-visible:ring-[#d6c3a1]'
-                : 'bg-transparent text-white border border-white/30 hover:bg-white/20 hover:text-white hover:ring-1 hover:ring-white/30'
-            }
-          >
-            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current text-red-500' : (isWishlist ? 'text-[#8a7a63]' : '')}`} />
-          </Button>
-        </div>
+        {actionButtons}
       </header>
 
       <div className="mt-6 space-y-5">
@@ -501,8 +504,8 @@ export default function SchoolDetailModal({
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             <div className="max-h-[80vh] flex flex-col">
-              {/* Row 1: close (own row) */}
-              <div className="flex items-center justify-end p-4 pb-2">
+              {/* 第一列：叉叉在右邊（與下方愛心同一垂直線，用相同 px 對齊） */}
+              <div className="flex items-center justify-end px-4 pt-4 pb-2 flex-shrink-0">
                 <button
                   type="button"
                   aria-label="關閉"
@@ -532,8 +535,8 @@ export default function SchoolDetailModal({
                 </button>
               </div>
 
-              {/* Row 2+: title + actions + rest */}
-              <div className="overflow-y-auto p-6 pt-2">
+              {/* 可滾動：標題 + 討論/愛心 + 內容（與上列同 px-4，叉叉與愛心垂直對齊） */}
+              <div className="overflow-y-auto px-4 pt-2 pb-6">
                 {renderContent()}
               </div>
             </div>
