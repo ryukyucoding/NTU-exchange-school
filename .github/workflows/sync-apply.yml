@@ -11,6 +11,10 @@ on:
         description: 'Only apply specific IDs (comma-separated, leave empty for all)'
         required: false
         default: ''
+      run_id:
+        description: 'Sync workflow run ID (for downloading artifact)'
+        required: false
+        default: ''
 
 jobs:
   apply:
@@ -29,13 +33,13 @@ jobs:
 
       # ── 下載 Sync workflow 產出的差異報告 ──────────
       - name: Download diff report
+        if: ${{ inputs.run_id != '' }}
         uses: actions/download-artifact@v4
         with:
           name: diff-report-sem${{ inputs.semester }}
           path: scraper/
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.inputs.run_id || '' }}
-        continue-on-error: true
+          run-id: ${{ inputs.run_id }}
 
       # ── 執行 Apply ────────────────────────────────
       - name: Apply changes

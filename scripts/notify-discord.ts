@@ -141,15 +141,21 @@ async function notifyDiffReport() {
         type: 2, // Button
         style: 3, // SUCCESS (green)
         label: '✅ Approve — 執行匯入',
-        custom_id: `sync_apply:${SEMESTER}`,
+        custom_id: `sync_apply:${SEMESTER}:${process.env.GITHUB_RUN_ID || ''}`,
       }],
     }],
   });
 }
 
 async function notifyApplyResult() {
-  const success = process.env.APPLY_SUCCESS || '0';
-  const fail = process.env.APPLY_FAIL || '0';
+  // 從 sync-schools.ts 寫的結果檔讀取
+  const resultFile = path.join(process.cwd(), 'scraper', `apply_result_sem${SEMESTER}.json`);
+  let success = '0', fail = '0';
+  if (fs.existsSync(resultFile)) {
+    const result = JSON.parse(fs.readFileSync(resultFile, 'utf-8'));
+    success = String(result.success ?? 0);
+    fail = String(result.fail ?? 0);
+  }
   const isSuccess = parseInt(fail) === 0;
 
   await sendWebhook({

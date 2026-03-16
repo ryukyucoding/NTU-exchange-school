@@ -48,7 +48,7 @@ function hexToUint8Array(hex: string): Uint8Array {
 }
 
 // --- GitHub API: trigger workflow ---
-async function triggerWorkflow(semester: string, ids: string = "") {
+async function triggerWorkflow(semester: string, ids: string = "", runId: string = "") {
   const url = `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/sync-apply.yml/dispatches`;
   const res = await fetch(url, {
     method: "POST",
@@ -59,7 +59,7 @@ async function triggerWorkflow(semester: string, ids: string = "") {
     },
     body: JSON.stringify({
       ref: "main",
-      inputs: { semester, ids },
+      inputs: { semester, ids, run_id: runId },
     }),
   });
 
@@ -91,12 +91,14 @@ export async function POST(req: NextRequest) {
   if (interaction.type === 3) {
     const customId: string = interaction.data?.custom_id || "";
 
-    // custom_id 格式: "sync_apply:semester"  例如 "sync_apply:2"
+    // custom_id 格式: "sync_apply:semester:run_id"  例如 "sync_apply:2:12345678"
     if (customId.startsWith("sync_apply:")) {
-      const semester = customId.split(":")[1] || "2";
+      const parts = customId.split(":");
+      const semester = parts[1] || "2";
+      const runId = parts[2] || "";
 
       try {
-        await triggerWorkflow(semester);
+        await triggerWorkflow(semester, "", runId);
 
         // 回覆 Discord（更新訊息）
         return NextResponse.json({

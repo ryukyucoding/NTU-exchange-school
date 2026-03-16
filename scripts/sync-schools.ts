@@ -404,6 +404,12 @@ async function applyChanges() {
   console.log('\n' + '='.repeat(55));
   console.log(`✅ 匯入完成！成功 ${success} 筆 / 失敗 ${fail} 筆`);
   console.log('='.repeat(55));
+
+  // CI 模式下寫結果到檔案，供 notify-discord 讀取
+  if (CI) {
+    const resultFile = path.join(SCRAPER_DIR, `apply_result_sem${SEMESTER}.json`);
+    fs.writeFileSync(resultFile, JSON.stringify({ success, fail }), 'utf-8');
+  }
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
