@@ -288,7 +288,7 @@ function WishlistContent() {
     <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden">
       <div className="max-w-6xl mx-auto h-full px-6 py-6 flex flex-col gap-4">
         <header className="flex flex-col gap-2 flex-shrink-0">
-          <h1 className="text-3xl font-bold" style={{ color: '#333333' }}>收藏學校</h1>
+          <h1 className="text-2xl font-semibold" style={{ color: '#333333' }}>收藏學校</h1>
           <p style={{ color: '#333333' }}>管理收藏清單，並在右側排定志願序（上限 30 間）。</p>
         </header>
 
@@ -308,77 +308,84 @@ function WishlistContent() {
                 return (
                   <Card key={item.school.id} className="border-[#d6c3a1] bg-white shadow-sm">
                     <CardContent className="p-4">
-                      <div className="flex justify-between items-start gap-3">
-                          <div className="min-w-[240px] max-w-[420px] flex-1">
+                      <div className="flex flex-wrap justify-between items-start gap-3">
+                        {/* 左側內容：允許縮小與換行 */}
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                              <h3 className="text-lg font-semibold" style={{ color: '#333333' }}>{item.school.name_zh}</h3>
-                            </div>
-                            <p className="text-sm" style={{ color: '#333333' }}>{item.school.name_en}</p>
-                            <div className="mt-2 flex gap-2 flex-wrap">
-                              <Badge
-                                variant="secondary"
-                                className="bg-[#f5ede1] pointer-events-none cursor-default select-none"
-                                style={{ color: '#333333', borderColor: '#d6c3a1' }}
-                              >
-                                {item.school.country}
-                              </Badge>
+                            <h3 className="text-lg font-semibold" style={{ color: '#333333' }}>
+                              {item.school.name_zh}
+                            </h3>
+                          </div>
+                          <p className="text-sm" style={{ color: '#333333' }}>
+                            {item.school.name_en}
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <Badge
+                              variant="secondary"
+                              className="bg-[#f5ede1] pointer-events-none cursor-default select-none"
+                              style={{ color: '#333333', borderColor: '#d6c3a1' }}
+                            >
+                              {item.school.country}
+                            </Badge>
+                            <Badge
+                              variant="outline"
+                              className="pointer-events-none cursor-default select-none"
+                              style={{ borderColor: '#d6c3a1', color: '#333333' }}
+                            >
+                              {item.school.region}
+                            </Badge>
+                            {item.school.gpa_min && (
                               <Badge
                                 variant="outline"
                                 className="pointer-events-none cursor-default select-none"
                                 style={{ borderColor: '#d6c3a1', color: '#333333' }}
                               >
-                                {item.school.region}
+                                GPA {item.school.gpa_min}
                               </Badge>
-                              {item.school.gpa_min && (
-                                <Badge
-                                  variant="outline"
-                                  className="pointer-events-none cursor-default select-none"
-                                  style={{ borderColor: '#d6c3a1', color: '#333333' }}
-                                >
-                                  GPA {item.school.gpa_min}
-                                </Badge>
-                              )}
-                            </div>
-                            {item.note && (
-                              <div className="mt-2 text-sm" style={{ color: '#666666' }}>
-                                {item.note}
-                              </div>
                             )}
                           </div>
-
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => togglePreference(item.school.id)}
-                              className={inPreference 
-                                ? "border-[#d6c3a1] bg-[#f5ede1] text-[#333333] hover:bg-[#e8ddc8]"
-                                : "border-[#BAC7E5] bg-[#BAC7E5] text-white hover:bg-[#E8F0FE] hover:text-[#333333]"
-                              }
-                              aria-label={inPreference ? '移出志願序' : '加入志願序'}
-                            >
-                              {inPreference ? (
-                                <Minus className="w-4 h-4" />
-                              ) : (
-                                <Plus className="w-4 h-4" />
-                              )}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => handleRemoveFromWishlist(item.school.id)}
-                              style={{
-                                color: '#8D7051',
-                                borderColor: '#8D7051',
-                                backgroundColor: 'white',
-                              }}
-                              className="hover:bg-[#f5ede1]"
-                              aria-label="移除收藏"
-                            >
-                              <Heart className="w-4 h-4 fill-current" />
-                            </Button>
-                          </div>
+                          {item.note && (
+                            <div className="mt-2 text-sm" style={{ color: '#666666' }}>
+                              {item.note}
+                            </div>
+                          )}
                         </div>
+
+                        {/* 右側按鈕：固定寬度，不被擠壓 */}
+                        <div className="flex flex-shrink-0 gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => togglePreference(item.school.id)}
+                            className={
+                              inPreference
+                                ? 'border-[#d6c3a1] bg-[#f5ede1] text-[#333333] hover:bg-[#e8ddc8]'
+                                : 'border-[#BAC7E5] bg-[#BAC7E5] text-white hover:bg-[#E8F0FE] hover:text-[#333333]'
+                            }
+                            aria-label={inPreference ? '移出志願序' : '加入志願序'}
+                          >
+                            {inPreference ? (
+                              <Minus className="w-4 h-4" />
+                            ) : (
+                              <Plus className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleRemoveFromWishlist(item.school.id)}
+                            style={{
+                              color: '#8D7051',
+                              borderColor: '#8D7051',
+                              backgroundColor: 'white',
+                            }}
+                            className="hover:bg-[#f5ede1]"
+                            aria-label="移除收藏"
+                          >
+                            <Heart className="w-4 h-4 fill-current" />
+                          </Button>
+                        </div>
+                      </div>
                         <div className="mt-2 flex justify-end">
                           <Button
                             variant="ghost"

@@ -70,26 +70,24 @@ export default function AppShell({ children }: AppShellProps) {
             {pathname === '/table' && (
               <Link href="/table" className="flex items-center hover:opacity-80 transition-opacity">
                 <Image
-                  src="/logo-social.png"
+                  src="/icon.svg"
                   alt="瀏覽學校 Logo"
-                  width={0}
-                  height={0}
-                  style={{ width: 'auto', height: '2rem' }}
+                  width={28}
+                  height={28}
+                  className="h-7 w-7"
                   priority
-                  unoptimized
                 />
               </Link>
             )}
             {pathname === '/wishlist' && (
               <Link href="/wishlist" className="flex items-center hover:opacity-80 transition-opacity">
                 <Image
-                  src="/logo-social.png"
+                  src="/icon.svg"
                   alt="收藏學校 Logo"
-                  width={0}
-                  height={0}
-                  style={{ width: 'auto', height: '2rem' }}
+                  width={28}
+                  height={28}
+                  className="h-7 w-7"
                   priority
-                  unoptimized
                 />
               </Link>
             )}

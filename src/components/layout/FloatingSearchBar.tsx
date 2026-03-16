@@ -133,17 +133,17 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
         )}
       </AnimatePresence>
 
-      {/* 搜尋欄 - 始終可見 */}
+      {/* 搜尋欄 - 始終可見；手機置於 Header 下方一排，桌面置中浮動 */}
       <div
-        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-auto"
+        className="fixed z-50 pointer-events-auto top-4 inset-x-0 px-[56px] sm:px-[72px] lg:inset-x-auto lg:left-1/2 lg:-translate-x-1/2 lg:px-0"
         onClick={handleSearchBarClick}
         data-tour-step="search"
       >
         <div
           className={
             variant === 'wishlist'
-              ? 'bg-white border border-[#d6c3a1] rounded-xl shadow-sm p-4 min-w-[600px]'
-              : `backdrop-blur-md rounded-lg shadow-2xl p-4 min-w-[600px] transition-all duration-300 ${
+              ? 'bg-white border border-[#d6c3a1] rounded-xl shadow-sm p-4 w-full md:w-auto md:min-w-[600px]'
+              : `backdrop-blur-md rounded-lg shadow-2xl p-4 w-full max-w-[760px] md:w-auto md:min-w-[600px] transition-all duration-300 ${
                   isHighZoom ? 'bg-white/30' : 'bg-white/10'
                 }`
           }
@@ -228,16 +228,25 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
             </Button>
           </div>
 
-          {/* 學校數量顯示 */}
-          <div className={`text-sm drop-shadow-lg whitespace-nowrap transition-all duration-300 ${
-            variant === 'wishlist' ? 'text-[#6b5b4c]' : (isHighZoom ? 'text-gray-800' : 'text-white')
-          }`}>
-            找到{' '}
-            <span className={`font-bold drop-shadow-md ${
-              variant === 'wishlist' ? 'text-[#a07a52]' : (isHighZoom ? 'text-blue-600' : 'text-blue-300')
-            }`}>{schoolCount}</span>{' '}
-            間學校
+          {/* 學校數量顯示（桌面寬度時顯示在右側；手機改到展開面板內） */}
+          <div className="hidden md:block">
+            <div
+              className={`text-sm drop-shadow-lg whitespace-nowrap transition-all duration-300 ${
+                variant === 'wishlist' ? 'text-[#6b5b4c]' : isHighZoom ? 'text-gray-800' : 'text-white'
+              }`}
+            >
+              找到{' '}
+              <span
+                className={`font-bold drop-shadow-md ${
+                  variant === 'wishlist' ? 'text-[#a07a52]' : isHighZoom ? 'text-blue-600' : 'text-blue-300'
+                }`}
+              >
+                {schoolCount}
+              </span>{' '}
+              間學校
+            </div>
           </div>
+
         </div>
 
         {/* 地區篩選展開面板 */}
@@ -339,6 +348,23 @@ export default function FloatingSearchBar({ schoolCount, variant = 'glass' }: Fl
                     </React.Fragment>
                   );
                 })}
+              </div>
+
+              {/* 學校數量顯示（手機 / 窄寬度：在展開篩選時，置中顯示在清除篩選按鈕上方） */}
+              <div
+                className={`block md:hidden text-sm drop-shadow-lg text-center transition-all duration-300 ${
+                  variant === 'wishlist' ? 'text-[#6b5b4c]' : isHighZoom ? 'text-gray-800' : 'text-white'
+                }`}
+              >
+                找到{' '}
+                <span
+                  className={`font-bold drop-shadow-md ${
+                    variant === 'wishlist' ? 'text-[#a07a52]' : isHighZoom ? 'text-blue-600' : 'text-blue-300'
+                  }`}
+                >
+                  {schoolCount}
+                </span>{' '}
+                間學校
               </div>
 
               {/* 清除篩選按鈕 */}

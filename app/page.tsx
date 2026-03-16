@@ -58,7 +58,7 @@ function UnifiedPanelManager() {
         contentAnimation="none"
       >
         <motion.div
-          className="fixed top-20 right-4 z-20 w-80"
+          className="fixed top-24 right-4 z-20 w-80"
           initial={{ opacity: 0, x: 100, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 100, scale: 0.9 }}
@@ -108,7 +108,7 @@ function UnifiedPanelManager() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <CollapseButton
-                top="top-20"
+                top="top-24"
                 text="我<br />的<br />資<br />格"
                 onClick={() => expandPanel('user')}
                 isActive={isUsingQualificationFilter}

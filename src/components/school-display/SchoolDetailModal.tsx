@@ -144,7 +144,8 @@ export default function SchoolDetailModal({
 }: SchoolDetailModalProps) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const isWishlist = variant === 'wishlist';
-  const isSide = presentation === 'side';
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const isSide = presentation === 'side' && !isMobile;
   const sidePanelRef = useRef<HTMLDivElement | null>(null);
 
   // Side panel: allow map interactions; only close on real "click outside" (not drag/zoom, not marker click).
