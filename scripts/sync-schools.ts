@@ -354,50 +354,67 @@ async function applyChanges() {
   const report: DiffReport = JSON.parse(fs.readFileSync(REPORT_FILE, 'utf-8'));
   console.log(`📄 讀取報告: ${report.generated_at}`);
 
-  const allSchools = [
-    // 新學校：寫入完整 record
-    ...report.new_schools.map(s => ({ id: s.id, name_zh: s.name_zh, record: s.record })),
-    // 既有學校：只寫入有差異的欄位 + id
-    ...report.changed_schools.map(s => {
-      const patch: Record<string, unknown> = { id: s.id };
+  // 新學校：用 upsert 寫入完整 record
+  const newSchools = report.new_schools
+    .filter(s => !ONLY_IDS || ONLY_IDS.has(s.id))
+    .map(s => ({ id: s.id, name_zh: s.name_zh, record: s.record }));
+
+  // 既有學校：只 update 有差異的欄位
+  const changedSchools = report.changed_schools
+    .filter(s => !ONLY_IDS || ONLY_IDS.has(s.id))
+    .map(s => {
+      const patch: Record<string, unknown> = {};
       for (const key of Object.keys(s.changes)) {
         patch[key] = s.changes[key].new;
       }
-      return { id: s.id, name_zh: s.name_zh, record: patch };
-    }),
-  ];
+      return { id: s.id, name_zh: s.name_zh, patch };
+    });
 
-  const toApply = ONLY_IDS
-    ? allSchools.filter(s => ONLY_IDS.has(s.id))
-    : allSchools;
-
-  if (toApply.length === 0) {
+  const totalCount = newSchools.length + changedSchools.length;
+  if (totalCount === 0) {
     console.log('沒有需要匯入的學校。');
     return;
   }
 
-  console.log(`\n將匯入 ${toApply.length} 所學校:`);
-  for (const s of toApply) {
+  console.log(`\n將匯入 ${totalCount} 所學校:`);
+  for (const s of [...newSchools, ...changedSchools]) {
     console.log(`  #${s.id} ${s.name_zh}`);
   }
   console.log();
 
-  const BATCH = 100;
   let success = 0, fail = 0;
-  const records = toApply.map(s => s.record);
 
-  for (let i = 0; i < records.length; i += BATCH) {
-    const batch = records.slice(i, i + BATCH);
-    const { data, error } = await supabase
+  // 新學校：批次 upsert
+  if (newSchools.length > 0) {
+    const BATCH = 100;
+    const records = newSchools.map(s => s.record);
+    for (let i = 0; i < records.length; i += BATCH) {
+      const batch = records.slice(i, i + BATCH);
+      const { data, error } = await supabase
+        .from('schools')
+        .upsert(batch, { onConflict: 'id', ignoreDuplicates: false })
+        .select('id');
+      if (error) {
+        console.error(`❌ 新學校批次失敗: ${error.message}`);
+        fail += batch.length;
+      } else {
+        success += data?.length ?? 0;
+      }
+    }
+  }
+
+  // 既有學校：逐筆 update
+  for (const s of changedSchools) {
+    const { error } = await supabase
       .from('schools')
-      .upsert(batch, { onConflict: 'id', ignoreDuplicates: false })
-      .select('id');
+      .update(s.patch)
+      .eq('id', s.id);
     if (error) {
-      console.error(`❌ 批次 ${Math.floor(i / BATCH) + 1} 失敗: ${error.message}`);
-      fail += batch.length;
+      console.error(`❌ #${s.id} ${s.name_zh} 更新失敗: ${error.message}`);
+      fail++;
     } else {
-      success += data?.length ?? 0;
-      console.log(`  ✓ ${i + 1}–${Math.min(i + BATCH, records.length)} 筆`);
+      success++;
+      console.log(`  ✓ #${s.id} ${s.name_zh}`);
     }
   }
 
