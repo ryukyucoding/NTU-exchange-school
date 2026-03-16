@@ -268,13 +268,6 @@ export default function SchoolDetailModal({
           <p className={isWishlist ? 'mt-1 text-sm text-[#6b5b4c] truncate' : 'mt-1 text-sm text-white/70 truncate'}>
             {school.name_en}
           </p>
-          <span className={`inline-block text-xs font-medium py-0.5 rounded-full mt-1.5 ${
-            school.is_updated
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
-          }`}>
-            {school.is_updated ? '資料已更新' : '資料未更新'}
-          </span>
         </div>
         {actionButtons}
       </header>
@@ -520,8 +513,15 @@ export default function SchoolDetailModal({
           exit={{ x: '100%' }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
         >
-          {/* Sticky header with close button - 固定在頂部 */}
-          <div className="flex-shrink-0 sticky top-0 z-10 flex justify-start p-4 bg-inherit">
+          {/* Sticky header with badge + close button - 固定在頂部 */}
+          <div className="flex-shrink-0 sticky top-0 z-10 flex items-end justify-between p-4 bg-inherit">
+            <span className={`text-xs font-medium py-0.5 px-2 rounded-full ${
+              school.is_updated
+                ? 'bg-green-100 text-green-600'
+                : 'bg-[#f9f3ea] border border-[#e8ddc8] text-[#4a3828]'
+            }`}>
+              {school.is_updated ? '資料已更新' : '資料未更新'}
+            </span>
             <button
               type="button"
               aria-label="關閉"
@@ -577,8 +577,15 @@ export default function SchoolDetailModal({
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             <div className="max-h-[80vh] flex flex-col">
-              {/* 第一列：叉叉在右邊（與下方愛心同一垂直線，用相同 px 對齊） */}
-              <div className="flex items-center justify-end px-4 pt-4 pb-2 flex-shrink-0">
+              {/* 第一列：badge 在左、叉叉在右 */}
+              <div className="flex items-end justify-between px-4 pt-4 pb-2 flex-shrink-0">
+                <span className={`text-xs font-medium py-0.5 px-2 rounded-full ${
+                  school.is_updated
+                    ? 'bg-green-100 text-green-600'
+                    : 'bg-[#f9f3ea] border border-[#e8ddc8] text-[#4a3828]'
+                }`}>
+                  {school.is_updated ? '資料已更新' : '資料未更新'}
+                </span>
                 <button
                   type="button"
                   aria-label="關閉"
