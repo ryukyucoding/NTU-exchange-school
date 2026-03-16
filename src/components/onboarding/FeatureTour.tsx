@@ -146,9 +146,15 @@ export default function FeatureTour({ tourType }: FeatureTourProps) {
   const requiresAuth = pathname === '/wishlist' || pathname?.startsWith('/wishlist') || 
                        pathname === '/social' || pathname?.startsWith('/social');
 
-  // 检查是否已完成导览
+  // 检查是否已完成导览（僅在桌面版顯示導覽）
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    // 僅在桌面尺寸（>= md, 768px）顯示導覽；手機／平板寬度則完全不顯示
+    const isDesktop = window.matchMedia && window.matchMedia('(min-width: 768px)').matches;
+    if (!isDesktop) {
+      return;
+    }
 
     // 如果需要登录但未登录，不显示导览
     if (requiresAuth && status !== 'authenticated') {

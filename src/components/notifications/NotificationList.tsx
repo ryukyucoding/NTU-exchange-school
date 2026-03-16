@@ -32,9 +32,13 @@ interface Notification {
 interface NotificationListProps {
   onNotificationRead: () => void;
   onClose: () => void;
+  /** 若為 false（例如用於全頁通知頁），不顯示內建標題列 */
+  showHeader?: boolean;
+  /** 全頁模式：無 max-height，填滿可用高度 */
+  fullPage?: boolean;
 }
 
-export default function NotificationList({ onNotificationRead, onClose }: NotificationListProps) {
+export default function NotificationList({ onNotificationRead, onClose, showHeader = true, fullPage = false }: NotificationListProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,16 +67,22 @@ export default function NotificationList({ onNotificationRead, onClose }: Notifi
   };
 
   return (
-    <div className="flex flex-col max-h-96 bg-white rounded-xl">
-      <div className="flex items-center justify-between p-4">
-        <h3 className="font-semibold text-lg" style={{ color: '#5A5A5A' }}>通知</h3>
-      </div>
-      <div className="border-b border-gray-200" />
-      <div className="overflow-y-auto flex-1">
+    <div className={`flex flex-col rounded-xl bg-white ${fullPage ? 'min-h-0 flex-1' : 'max-h-[min(70vh,20rem)] md:max-h-96'}`}>
+      {showHeader && (
+        <>
+          <div className="flex items-center justify-between px-3 py-2.5 md:p-4">
+            <h3 className="text-base font-semibold md:text-lg" style={{ color: '#5A5A5A' }}>
+              通知
+            </h3>
+          </div>
+          <div className="border-b border-gray-200" />
+        </>
+      )}
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">載入中...</div>
+          <div className="p-6 text-center text-sm text-gray-500 md:p-8">載入中...</div>
         ) : notifications.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">暫無通知</div>
+          <div className="p-6 text-center text-sm text-gray-500 md:p-8">暫無通知</div>
         ) : (
           notifications.map((notification) => (
             <NotificationItem

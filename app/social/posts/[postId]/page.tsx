@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RouteGuard from '@/components/auth/RouteGuard';
@@ -105,8 +105,6 @@ function PostDetailContentInner() {
   const [commentCount, setCommentCount] = useState(0);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const mainContentRef = useRef<HTMLElement>(null);
-
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -139,23 +137,6 @@ function PostDetailContentInner() {
       fetchPost();
     }
   }, [postId, router]);
-
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
 
   const handleLike = async () => {
     if (!post) return;
@@ -362,103 +343,83 @@ function PostDetailContentInner() {
 
   return (
     // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
-      {/* Title Frame - 固定在 header 内部居中 */}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4]">
+      {/* 返回 + 標題膠囊 + 選單同一列；手機第二排；不畫底線避免與內容區「一條線」 */}
       <div
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{
-          height: '64px', // header 的高度
-          pointerEvents: 'none', // 让点击事件穿透
-        }}
+        className="fixed left-0 right-0 z-[51] flex items-center bg-white md:top-0 md:h-16 md:bg-transparent max-md:top-16 max-md:h-12 max-md:shadow-none"
+        style={{ pointerEvents: 'none' }}
       >
         <div
-          className="flex items-center justify-center pointer-events-auto"
-          style={{
-            maxWidth: 'calc(100vw - 32px)', // 适应屏幕宽度，左右各留16px边距
-            minWidth: '140px',
-            paddingLeft: '16px',
-            paddingRight: '16px',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-            border: '1px solid #5A5A5A',
-            borderRadius: '24px',
-            boxSizing: 'border-box',
-            backgroundColor: 'transparent',
-          }}
+          className="pointer-events-auto relative mx-auto flex h-full w-full max-w-[800px] items-center justify-center px-2 md:max-w-[calc(800px+2rem)] md:px-3"
+          style={{ pointerEvents: 'auto' }}
         >
-          <h1
-            className="text-sm font-semibold text-center"
-            style={{
-              color: '#5A5A5A',
-              fontSize: '14px',
-              lineHeight: '20px',
-              fontFamily: "'Noto Sans TC', sans-serif",
-              wordWrap: 'break-word',
-              overflowWrap: 'break-word',
-              whiteSpace: 'normal',
-            }}
-          >
-            {post.title}
-          </h1>
+          <div className="absolute left-2 top-1/2 z-10 -translate-y-1/2 md:left-3">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (returnUrl) router.push(returnUrl);
+                else router.back();
+              }}
+              className="h-9 gap-1 px-2 hover:bg-gray-100 md:px-3"
+              style={{ color: '#5A5A5A' }}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm max-md:inline">返回</span>
+            </Button>
+          </div>
+          <div className="pointer-events-none flex max-w-[min(52vw,280px)] justify-center px-10 md:max-w-[min(40vw,320px)] md:px-14">
+            <div
+              className="pointer-events-auto max-w-full rounded-full border border-[#5A5A5A] px-3 py-1"
+              style={{ backgroundColor: 'transparent', boxSizing: 'border-box' }}
+            >
+              <h1
+                className="truncate text-center text-sm font-semibold"
+                style={{ color: '#5A5A5A', fontFamily: "'Noto Sans TC', sans-serif" }}
+                title={post.title}
+              >
+                {post.title}
+              </h1>
+            </div>
+          </div>
+          <div className="absolute right-2 top-1/2 z-10 flex h-9 -translate-y-1/2 items-center justify-end md:right-3">
+            {isAuthor ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                    <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="border-gray-200 bg-white">
+                  <DropdownMenuItem
+                    onClick={handleEdit}
+                    className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    編輯貼文
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    刪除貼文
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+          </div>
         </div>
       </div>
 
-      {/* Content Frame: Main content area with post detail and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        {/* Layout: flex on md+, simple centering on mobile */}
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      {/* 手機：白底滿版無圓角（與標題列連成同一塊）；電腦：灰底 + 白卡圓角 */}
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-12 max-md:pb-20 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-            <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-              <div className="w-full min-w-full">
-              <div className="space-y-4 bg-white p-4 rounded-lg">
-                  {/* Back Button and Edit/Delete Menu */}
-                  <div className="flex items-center justify-between mb-4">
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        if (returnUrl) {
-                          router.push(returnUrl);
-                        } else {
-                          router.back();
-                        }
-                      }}
-                      className="flex items-center gap-2 hover:bg-gray-100"
-                      style={{ color: '#5A5A5A' }}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      返回
-                    </Button>
-                    {isAuthor && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100">
-                            <MoreHorizontal className="h-4 w-4" style={{ color: '#5A5A5A' }} />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white border-gray-200">
-                          <DropdownMenuItem
-                            onClick={handleEdit}
-                            className="text-[#5A5A5A] data-[highlighted]:bg-gray-100 data-[highlighted]:text-[#5A5A5A]"
-                          >
-                            <Edit className="h-4 w-4 mr-2" />
-                            編輯貼文
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={handleDelete}
-                            className="text-red-600 data-[highlighted]:bg-gray-100 data-[highlighted]:text-red-600"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            刪除貼文
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </div>
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto max-md:overflow-x-clip md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+              <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
+              <div className="space-y-4 bg-white p-4 max-md:p-4 max-md:shadow-none md:bg-transparent md:p-0 md:shadow-none">
 
                   {/* Post Card */}
                   <Card className="rounded-xl text-card-foreground p-6 bg-white border-0 shadow-none">
@@ -610,28 +571,31 @@ function PostDetailContentInner() {
 
                     {/* Ratings (if review post) */}
                     {post.ratings && (
-                      <div className="mb-6 mt-6 flex items-center justify-between gap-4 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                      <div
+                        className="mb-6 mt-6 flex flex-col gap-3 border-b pb-6 md:flex-row md:items-center md:justify-between md:gap-4"
+                        style={{ borderColor: '#D9D9D9' }}
+                      >
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             生活機能
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderStars(post.ratings.livingConvenience)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             學習體驗
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderStars(post.ratings.courseLoading)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+                        <div className="flex min-w-0 flex-row flex-nowrap items-center gap-2">
+                          <span className="shrink-0 whitespace-nowrap text-sm font-medium" style={{ color: '#5A5A5A' }}>
                             物價水準
                           </span>
-                          <div className="flex items-center gap-1">
+                          <div className="flex shrink-0 items-center gap-0.5">
                             {renderDollarSigns(post.ratings.costOfLiving)}
                           </div>
                         </div>
@@ -718,10 +682,11 @@ function PostDetailContentInner() {
                   <CommentSection postId={post.id} onCommentAdded={handleCommentAdded} />
               </div>
               </div>
+            </div>
             </main>
 
           {/* Right Sidebar - Fixed (does NOT scroll) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
             <SocialSidebar />
           </aside>
         </div>

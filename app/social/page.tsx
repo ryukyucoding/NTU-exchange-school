@@ -1,125 +1,146 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import FeatureTour from '@/components/onboarding/FeatureTour';
 import SocialSidebar from '@/components/social/SocialSidebar';
 import SocialBottomNav from '@/components/social/SocialBottomNav';
 import PostList from '@/components/social/PostList';
+import { SocialSearchInput } from '@/components/social/SocialSearchInput';
 import { Button } from '@/components/ui/button';
 import LoadingScreen from '@/components/ui/loading-screen';
 
 function SocialContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [filter, setFilter] = useState<'all' | 'following'>('all');
-  const [hashtag, setHashtag] = useState<string | null>(null);
-  const mainContentRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const hashtagParam = searchParams.get('hashtag');
-    setHashtag(hashtagParam);
-  }, [searchParams]);
+  const searchFocus = searchParams.get('focus') === 'search';
+  const hashtag = searchParams.get('hashtag') || null;
+  const searchQ = searchParams.get('q') || null;
 
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
+  const clearSearch = () => {
+    router.push('/social?focus=search');
+  };
+
+  const searchChipClass =
+    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-[#8D7051] transition-colors';
+  const searchChipBg = 'rgba(141, 112, 81, 0.34)';
+  const searchChipText = 'text-[#4a3828]';
+
+  const filterButtons = (
+    <div className="pointer-events-auto flex w-full max-w-md gap-2 md:max-w-[25%] md:min-w-[280px]">
+          <Button
+            onClick={() => setFilter('all')}
+            style={{
+              borderRadius: '9999px',
+              boxShadow: 'none',
+              ...(filter === 'all'
+                ? {
+                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                    borderColor: '#8D7051',
+                    color: 'white',
+                  }
+                : {
+                    backgroundColor: 'transparent',
+                    borderColor: '#8D7051',
+                    color: '#8D7051',
+                  }),
+            }}
+            className="h-9 flex-1 border text-xs shadow-none transition-colors"
+          >
+            所有貼文
+          </Button>
+          <Button
+            onClick={() => setFilter('following')}
+            style={{
+              borderRadius: '9999px',
+              boxShadow: 'none',
+              ...(filter === 'following'
+                ? {
+                    backgroundColor: 'rgba(141, 112, 81, 0.34)',
+                    borderColor: '#8D7051',
+                    color: 'white',
+                  }
+                : {
+                    backgroundColor: 'transparent',
+                    borderColor: '#8D7051',
+                    color: '#8D7051',
+                  }),
+            }}
+            className="h-9 flex-1 border text-xs shadow-none transition-colors"
+          >
+            追蹤中
+          </Button>
+    </div>
+  );
 
   return (
-    // AppShell 在 /social 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
-      {/* Filter buttons - 固定在 header 内部居中 */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
-          height: '64px', // header 的高度
-          pointerEvents: 'none' // 让点击事件穿透
-        }}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4]">
+      {/* 手機：篩選第二排白底；電腦：與 header 同列 */}
+      <div
+        className="fixed left-0 right-0 z-[51] flex justify-center bg-white px-3 md:top-0 md:h-16 md:items-center md:bg-transparent md:px-4 max-md:top-16 max-md:h-12 max-md:items-center"
+        style={{ pointerEvents: 'none' }}
       >
-        <div className="flex gap-2 pointer-events-auto" style={{ width: '25%' }}>
-              <Button
-                onClick={() => setFilter('all')}
-                style={{
-                  borderRadius: '9999px',
-                  boxShadow: 'none',
-                  ...(filter === 'all'
-                    ? {
-                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                        borderColor: '#8D7051',
-                        color: 'white',
-                      }
-                    : {
-                        backgroundColor: 'transparent',
-                        borderColor: '#8D7051',
-                        color: '#8D7051',
-                      }),
-                }}
-                className="flex-1 text-xs py-1 border transition-colors shadow-none"
-              >
-                所有貼文
-              </Button>
-              <Button
-                onClick={() => setFilter('following')}
-                style={{
-                  borderRadius: '9999px',
-                  boxShadow: 'none',
-                  ...(filter === 'following'
-                    ? {
-                        backgroundColor: 'rgba(141, 112, 81, 0.34)',
-                        borderColor: '#8D7051',
-                        color: 'white',
-                      }
-                    : {
-                        backgroundColor: 'transparent',
-                        borderColor: '#8D7051',
-                        color: '#8D7051',
-                      }),
-                }}
-                className="flex-1 text-xs py-1 border transition-colors shadow-none"
-              >
-                追蹤中
-              </Button>
-        </div>
+        {filterButtons}
       </div>
 
-      {/* Content Frame: Main content area with posts and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        {/* Layout: flex on all screens, mx-auto centers content on mobile when sidebars are hidden */}
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      {/* 手機整欄白底與主欄固定寬度（max-w-[800px] 置中）；電腦維持灰底+側欄 */}
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white max-md:bg-white md:bg-[#F4F4F4] px-0 pb-16 pt-[calc(0.75rem+3rem)] max-md:pb-16 md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6 max-md:gap-0 md:mx-auto md:max-w-[1400px]">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          {/* Main Content - Posts (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-full">
-            <PostList filter={filter} hashtag={hashtag} />
+          {/* 電腦：圓角白框固定高度，捲動在框內 → 往上滑仍維持左右上圓角裁切；頂部與右欄對齊不加 py-2 */}
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto max-md:overflow-x-clip md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+              {/* 電腦版：僅有 q 時顯示標籤列。手機版：僅在「搜尋模式」(focus=search) 或有 q 時顯示搜尋列 */}
+              {searchQ ? (
+                <div className="flex items-center gap-2 px-4 py-3 md:px-4 md:py-3 border-b border-[#e8e6e3]">
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className={`${searchChipClass} ${searchChipText}`}
+                    style={{ backgroundColor: searchChipBg }}
+                    aria-label="取消搜尋"
+                  >
+                    <span>{searchQ}</span>
+                    <X className="w-3.5 h-3.5 shrink-0 text-[#6b5b4c] hover:text-[#4a3828]" />
+                  </button>
+                </div>
+              ) : (searchFocus && (
+                <div className="md:hidden flex items-center px-4 py-3 border-b border-[#e8e6e3]">
+                  <SocialSearchInput variant="dialog" className="w-full h-11" />
+                </div>
+              ))}
+              <div className="min-h-[60vh] flex-1 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
+                {/* 手機搜尋模式且尚未輸入關鍵字：顯示空狀態；桌面維持顯示貼文 */}
+                {searchFocus && !searchQ ? (
+                  <>
+                    <div className="md:hidden flex flex-col items-center justify-center py-16 text-[#8a7a63] text-sm">
+                      <p>輸入關鍵字搜尋貼文</p>
+                      <p className="mt-1 text-xs">可搜尋標題、內文與標籤</p>
+                    </div>
+                    <div className="hidden md:block">
+                      <PostList filter={filter} hashtag={hashtag} q={searchQ} />
+                    </div>
+                  </>
+                ) : (
+                  <PostList filter={filter} hashtag={hashtag} q={searchQ} />
+                )}
+              </div>
             </div>
           </main>
 
-          {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-              <SocialSidebar />
+          {/* Right Sidebar - fixed width, hidden below md (768px) */}
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
+            <SocialSidebar />
           </aside>
         </div>
-
       </div>
 
-      {/* Bottom Navigation - Only visible on screens smaller than lg */}
+      {/* Bottom Navigation - Only visible on screens smaller than md (768px) */}
       <SocialBottomNav />
     </div>
   );

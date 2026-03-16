@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Plus, LayoutGrid, User } from 'lucide-react';
 import PostTypeDialog from './PostTypeDialog';
+import { SocialSearchInput } from './SocialSearchInput';
 import { useBoards } from '@/hooks/useBoards';
 import { usePopularTags } from '@/hooks/usePopularTags';
 
@@ -69,9 +70,14 @@ export default function SocialSidebar() {
   const { tags: popularTags, loading: tagsLoading } = usePopularTags();
 
   return (
-    <div className="w-64 flex flex-col gap-4 h-full">
-      {/* Navigation */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+    <div className="w-full flex flex-col gap-4 h-full">
+      {/* 搜尋列：白底、與下方區塊一致 */}
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none rounded-xl flex-shrink-0">
+        <SocialSearchInput variant="sidebar" className="w-full" />
+      </Card>
+
+      {/* Navigation：白底、深灰文字，與「追蹤的看板」同配色 */}
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none rounded-xl">
         <nav className="flex flex-col gap-2">
           <Link href="/social/boards" data-tour-step="social-boards">
             <Button
@@ -95,7 +101,7 @@ export default function SocialSidebar() {
       </Card>
 
       {/* Followed Boards */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
         <h3 className="font-semibold mb-3 text-gray-800">追蹤的看板</h3>
         {loading ? (
           <div className="text-sm text-gray-400">載入中...</div>
@@ -123,7 +129,7 @@ export default function SocialSidebar() {
       </Card>
 
       {/* Popular Topics */}
-      <Card className="p-4 bg-white border-0 shadow-none">
+      <Card className="p-3 md:p-4 bg-white border-0 shadow-none">
         <h3 className="font-semibold mb-3 text-gray-800">熱門話題</h3>
         {tagsLoading ? (
           <div className="text-sm text-gray-400">載入中...</div>

@@ -153,6 +153,15 @@ CREATE TABLE public.PostBoard (
   CONSTRAINT PostBoard_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id),
   CONSTRAINT PostBoard_boardId_fkey FOREIGN KEY (boardId) REFERENCES public.Board(id)
 );
+CREATE TABLE public.PostSchool (
+  id text NOT NULL,
+  postId text NOT NULL,
+  schoolId bigint NOT NULL,
+  CONSTRAINT PostSchool_pkey PRIMARY KEY (id),
+  CONSTRAINT PostSchool_postId_fkey FOREIGN KEY (postId) REFERENCES public.Post(id) ON DELETE CASCADE,
+  CONSTRAINT PostSchool_schoolId_fkey FOREIGN KEY (schoolId) REFERENCES public.schools(id) ON DELETE CASCADE,
+  CONSTRAINT PostSchool_postId_schoolId_key UNIQUE (postId, schoolId)
+);
 CREATE TABLE public.SchoolRating (
   postId text NOT NULL,
   livingConvenience integer NOT NULL CHECK ("livingConvenience" >= 1 AND "livingConvenience" <= 5),

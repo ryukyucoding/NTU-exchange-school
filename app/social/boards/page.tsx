@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import RouteGuard from '@/components/auth/RouteGuard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,6 @@ function BoardsContent() {
     Oceania: [],
   });
   const [_loading, setLoading] = useState(true);
-  const mainContentRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -52,23 +51,6 @@ function BoardsContent() {
     fetchCountries();
   }, []);
 
-  // 设置主内容区的最小宽度
-  useEffect(() => {
-    const updateMinWidth = () => {
-      if (mainContentRef.current) {
-        if (window.innerWidth >= 1024) {
-          mainContentRef.current.style.minWidth = '500px';
-        } else {
-          mainContentRef.current.style.minWidth = '800px';
-        }
-      }
-    };
-    
-    updateMinWidth();
-    window.addEventListener('resize', updateMinWidth);
-    return () => window.removeEventListener('resize', updateMinWidth);
-  }, []);
-
   const toggleRegion = (region: string) => {
     setExpandedRegions((prev) => {
       const next = new Set(prev);
@@ -83,29 +65,14 @@ function BoardsContent() {
 
   return (
     // AppShell 在 /social/boards 會加 pt-16，所以這裡用 (100vh - 64px) 鎖住整頁高度，避免 body 滾動
-    <div className="h-[calc(100vh-64px)] overflow-hidden flex flex-col" style={{ backgroundColor: 'rgba(244, 244, 244, 1)' }}>
-      {/* Topic Frame - 固定在 header 内部居中 */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
-          height: '64px', // header 的高度
-          pointerEvents: 'none' // 让点击事件穿透
-        }}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
+      <div
+        className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+        style={{ pointerEvents: 'none' }}
       >
             <div 
-          className="flex items-center justify-center pointer-events-auto"
-              style={{
-                width: 'auto',
-                minWidth: '96px',
-                paddingLeft: '16px',
-                paddingRight: '16px',
-                paddingTop: '4px',
-                paddingBottom: '4px',
-                border: '1px solid #5A5A5A',
-                borderRadius: '24px',
-            boxSizing: 'border-box',
-            backgroundColor: 'transparent',
-              }}
+          className="pointer-events-auto flex items-center justify-center rounded-full border border-[#5A5A5A] bg-transparent px-4 py-1 max-md:bg-white"
+              style={{ minWidth: '96px' }}
             >
               <h1 
                 className="text-sm font-semibold whitespace-nowrap"
@@ -121,17 +88,13 @@ function BoardsContent() {
         </div>
       </div>
 
-      {/* Content Frame: Main content area with boards and sidebar */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar - Empty but keeps layout structure, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0">
-            {/* Empty sidebar to maintain three-column layout */}
-          </aside>
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          {/* Main Content - Boards list (ONLY scrollable area), can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="space-y-4 w-full min-w-full">
+          <main className="flex h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 flex-col bg-white pr-px max-md:overflow-y-auto md:max-w-[800px] md:bg-[#F4F4F4] md:pr-0">
+            <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-[800px] max-md:min-h-full max-md:flex-1 flex-col max-md:overflow-y-auto md:h-full md:flex-1 md:overflow-hidden md:rounded-xl md:bg-white md:shadow-sm">
+            <div className="min-h-[60vh] flex-1 space-y-4 overflow-y-auto overscroll-contain max-md:min-h-full md:min-h-0 md:p-4">
               {REGIONS.map((region) => {
                 const isExpanded = expandedRegions.has(region.value);
                 const countries = countriesByRegion[region.value] || [];
@@ -181,10 +144,11 @@ function BoardsContent() {
                 );
               })}
             </div>
+            </div>
           </main>
 
-          {/* Right Sidebar - Fixed (does NOT scroll), hidden when space is too limited */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          {/* Right Sidebar - hidden below sm (640px) */}
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
               <SocialSidebar />
           </aside>
         </div>

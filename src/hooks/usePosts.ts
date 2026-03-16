@@ -10,6 +10,7 @@ interface UsePostsParams {
   sort?: 'latest' | 'popular';
   filterType?: 'rating' | null;
   hashtag?: string | null;
+  q?: string | null; // 關鍵字搜尋（標題/內容）
   bookmarked?: boolean;
   liked?: boolean;
 }
@@ -30,6 +31,7 @@ export function usePosts({
   sort = 'latest',
   filterType = null,
   hashtag = null,
+  q = null,
   bookmarked = false,
   liked = false,
 }: UsePostsParams): UsePostsReturn {
@@ -54,6 +56,7 @@ export function usePosts({
       if (authorId) params.append('authorId', authorId);
       if (filterType) params.append('filterType', filterType);
       if (hashtag) params.append('hashtag', hashtag);
+      if (q) params.append('q', q);
       if (bookmarked) params.append('bookmarked', 'true');
       if (liked) params.append('liked', 'true');
       if (cursor) params.append('cursor', cursor);
@@ -77,7 +80,7 @@ export function usePosts({
     } finally {
       setLoading(false);
     }
-  }, [filter, boardId, authorId, sort, filterType, hashtag, bookmarked, liked]);
+  }, [filter, boardId, authorId, sort, filterType, hashtag, q, bookmarked, liked]);
 
   // 切換 filter 參數時重置列表
   useEffect(() => {

@@ -41,17 +41,15 @@ function renderStars(rating: number) {
 function renderDollarSigns(rating: number) {
   if (rating <= 0) return null;
   return (
-    <button
-      type="button"
-      disabled
-      className="px-3 py-1 rounded text-sm font-semibold text-[#8D7051]"
+    <span
+      className="inline-flex shrink-0 items-center rounded px-2 py-0.5 text-sm font-semibold whitespace-nowrap text-[#8D7051]"
       style={{
         backgroundColor: 'rgba(141, 112, 81, 0.2)',
-        letterSpacing: '0.1em',
+        letterSpacing: '0.08em',
       }}
     >
       {'$'.repeat(rating)}
-    </button>
+    </span>
   );
 }
 
@@ -261,23 +259,26 @@ function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostC
         ))}
       </div>
 
-      {/* 評分指標 */}
+      {/* 評分指標：每列標題與星星/$$$ 同一行；小螢幕直向三列，寬螢幕橫向三欄 */}
       {post.ratings && (
-        <div className="mb-4 flex items-center justify-between gap-4" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+        <div
+          className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0 text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               生活機能
             </span>
-            {renderStars(post.ratings.livingConvenience)}
+            <div className="min-w-0 shrink-0">{renderStars(post.ratings.livingConvenience)}</div>
           </div>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+          <div className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0 text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               學習體驗
             </span>
-            {renderStars(post.ratings.courseLoading)}
+            <div className="min-w-0 shrink-0">{renderStars(post.ratings.courseLoading)}</div>
           </div>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="text-sm font-medium" style={{ color: '#5A5A5A' }}>
+          <div className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0 text-sm font-medium whitespace-nowrap" style={{ color: '#5A5A5A' }}>
               物價水準
             </span>
             {renderDollarSigns(post.ratings.costOfLiving)}
@@ -291,9 +292,8 @@ function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostC
         className="block cursor-pointer mb-4"
         style={{ textDecoration: 'none' }}
       >
-        <p 
-          className="text-sm"
-          style={{ color: '#5A5A5A' }}
+        <p
+          className="text-sm leading-relaxed text-[#5A5A5A] line-clamp-3 md:line-clamp-none"
         >
           {truncatedContent}
         </p>
@@ -306,10 +306,10 @@ function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostC
           size="sm"
           onClick={handleLike}
           className="flex items-center gap-2 hover:bg-transparent group"
-          style={{ color: '#5A5A5A' }}
+          style={{ color: isLiked ? '#8D7051' : '#5A5A5A' }}
         >
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-            <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-5 w-5 ${isLiked ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
           <span className="text-base">{likeCount}</span>
         </Button>
@@ -343,10 +343,10 @@ function SchoolReviewPostCard({ post, enableRealtime = true }: SchoolReviewPostC
           size="sm"
           onClick={handleBookmark}
           className="flex items-center gap-2 hover:bg-transparent group"
-          style={{ color: isBookmarked ? '#f59e0b' : '#5A5A5A' }}
+          style={{ color: isBookmarked ? '#8D7051' : '#5A5A5A' }}
         >
           <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:bg-[#f5ede1] transition-colors">
-            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-[#8D7051] text-[#8D7051]' : ''}`} />
           </div>
         </Button>
       </div>

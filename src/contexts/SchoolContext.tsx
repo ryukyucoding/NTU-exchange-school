@@ -48,12 +48,22 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     setError(null);
     try {
       const response = await fetch('/api/schools');
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const text = await response.text();
+      let data: { success?: boolean; schools?: School[]; error?: string; details?: string } = {};
+      try {
+        if (text) data = JSON.parse(text);
+      } catch {
+        /* 非 JSON（例如 HTML 錯誤頁） */
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        const message =
+          data?.details ||
+          data?.error ||
+          (text?.trim().startsWith('{') ? null : text?.slice(0, 280).replace(/\s+/g, ' ')) ||
+          `GET /api/schools failed (${response.status})`;
+        throw new Error(String(message));
+      }
 
       if (data.success && data.schools) {
         setSchools(data.schools);

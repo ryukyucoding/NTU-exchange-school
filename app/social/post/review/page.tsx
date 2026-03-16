@@ -83,8 +83,6 @@ function ReviewPostContent() {
   const [allowNavigation, setAllowNavigation] = useState(false);
   const [entryPage, setEntryPage] = useState<string | null>(null); // 記錄進入發布貼文頁面的上一頁
   const hasPushedHistoryRef = useRef(false);
-  const mainContentRef = useRef<HTMLElement>(null);
-
   // 從 URL 參數預填國家/學校（只在非編輯模式下執行一次）
   useEffect(() => {
     // 如果是編輯模式，不讀取 URL 參數
@@ -762,41 +760,25 @@ function ReviewPostContent() {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] bg-[#F4F4F4] overflow-hidden flex flex-col">
-      {/* Topic pill - 固定在 header 内部居中 */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-[51] flex justify-center items-center"
-        style={{ 
-          height: '64px',
-          pointerEvents: 'none'
-        }}
+    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
+      <div
+        className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+        style={{ pointerEvents: 'none' }}
       >
-        <div className="pointer-events-auto">
-          <div
-            className="inline-block px-4 py-2 rounded-full text-sm font-medium bg-transparent border"
-            style={{ 
-              color: '#5A5A5A',
-              borderColor: '#5A5A5A',
-              borderRadius: '9999px'
-            }}
-          >
+        <div className="pointer-events-auto max-w-[calc(100vw-32px)] truncate rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-2 text-sm font-medium text-[#5A5A5A]">
             {editPostId && title ? title : '發布貼文'}
-          </div>
         </div>
       </div>
 
-      {/* Content Frame */}
-      <div className="max-w-[1400px] mx-auto px-2 pb-20 pt-4 flex-1 overflow-hidden lg:pb-6">
-        <div className="flex gap-6 items-start justify-center h-full">
-          {/* Left Sidebar, shrinks on smaller screens */}
-          <aside className="hidden md:block md:w-16 lg:w-64 flex-shrink-0" />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
+          <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          {/* Main Content - Scrollable, can shrink to keep right sidebar visible */}
-          <main ref={mainContentRef} style={{ flex: '0 1 800px', flexBasis: '800px', minWidth: '800px', maxWidth: '800px' }} className="h-full overflow-y-auto overscroll-contain">
-            <div className="w-full min-w-full">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
+            <div className="w-full min-w-0 min-h-[60vh]">
 
               {/* White Card Container */}
-              <Card className="p-6 bg-white relative pt-8 w-[800px]" style={{ borderColor: 'white' }}>
+              <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px] mx-auto" style={{ borderColor: 'white' }}>
                 {/* Left spacer for "+" button */}
                 <div className="absolute left-0 top-0 bottom-0 w-12"></div>
                 
@@ -890,13 +872,11 @@ function ReviewPostContent() {
                     <Button
                       onClick={() => {
                         if (hasUnsavedChanges()) {
-                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
                           const targetUrl = entryPage || returnUrl;
                           setPendingNavigation(targetUrl);
                           setShowUnsavedDialog(true);
                         } else {
                           setAllowNavigation(true);
-                          // 使用 entryPage（進入發布貼文頁面的上一頁）作為返回目標
                           const targetUrl = entryPage || returnUrl;
                           router.push(targetUrl);
                         }
@@ -909,7 +889,7 @@ function ReviewPostContent() {
                         borderRadius: '9999px',
                         backgroundColor: 'transparent',
                       }}
-                      className="hover:bg-gray-50"
+                      className="transition-all duration-200 hover:border-red-600 hover:bg-red-50 hover:shadow-sm disabled:opacity-50"
                     >
                       捨棄變更
                     </Button>
@@ -924,7 +904,7 @@ function ReviewPostContent() {
                         borderRadius: '9999px',
                         backgroundColor: 'transparent',
                       }}
-                      className="hover:bg-gray-50"
+                      className="transition-all duration-200 hover:border-[#8D7051] hover:bg-[#f5f0e8] hover:text-[#4a3828] hover:shadow-sm disabled:opacity-50"
                     >
                       {isSavingDraft ? '儲存中...' : '儲存草稿'}
                     </Button>
@@ -933,11 +913,11 @@ function ReviewPostContent() {
                     onClick={handleSubmit}
                     disabled={isSubmitting || isSavingDraft || !canPublish}
                     style={{
-                      backgroundColor: canPublish ? '#BAC7E5' : '#BAC7E5',
-                      color: canPublish ? '#5A5A5A' : 'white',
+                      backgroundColor: '#BAC7E5',
+                      color: canPublish ? '#5A5A5A' : 'rgba(90,90,90,0.5)',
                       borderRadius: '9999px',
                     }}
-                    className={canPublish ? "hover:bg-[#BAC7E5]/90" : ""}
+                    className="transition-all duration-200 hover:bg-[#a8b8da] hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:hover:shadow-none"
                   >
                     {isSubmitting ? (editPostId ? '更新中...' : '發布中...') : (editPostId ? '更新貼文' : '發佈貼文')}
                   </Button>
@@ -948,7 +928,7 @@ function ReviewPostContent() {
           </main>
 
           {/* Right Sidebar - Drafts (編輯時隱藏) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
             {!editPostId && (
               <DraftList type="review" onLoadDraft={handleLoadDraft} />
             )}

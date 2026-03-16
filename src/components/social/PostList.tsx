@@ -14,6 +14,7 @@ interface PostListProps {
   variant?: 'card' | 'plain';
   filterType?: 'rating' | null;
   hashtag?: string | null;
+  q?: string | null; // 關鍵字搜尋（標題/內容）
   bookmarked?: boolean;
   liked?: boolean;
 }
@@ -26,6 +27,7 @@ export default function PostList({
   variant = 'card',
   filterType = null,
   hashtag = null,
+  q = null,
   bookmarked = false,
   liked = false,
 }: PostListProps) {
@@ -39,6 +41,7 @@ export default function PostList({
     sort,
     filterType,
     hashtag,
+    q,
     bookmarked,
     liked,
   });
@@ -69,16 +72,31 @@ export default function PostList({
   }, [hasMore, loading, loadMore]);
 
   const containerClassName =
-    variant === 'plain' ? 'space-y-4' : 'space-y-4 bg-white p-4 rounded-lg';
+    variant === 'plain'
+      ? 'space-y-4'
+      : 'min-h-full space-y-4 rounded-lg bg-white p-4 max-md:mx-0 max-md:w-full max-md:space-y-0 max-md:rounded-none max-md:p-0 md:rounded-none md:bg-transparent md:p-0';
 
   if (loading && posts.length === 0) {
     return <LoadingScreen className="py-12" />;
   }
 
   if (posts.length === 0) {
+    const isSearchEmpty = q != null && q.trim() !== '';
     return (
-      <div className={variant === 'plain' ? 'p-8 text-center' : 'bg-white p-8 rounded-lg'}>
-        <p className="text-muted-foreground">尚無貼文</p>
+      <div
+        className={
+          variant === 'plain'
+            ? 'p-8 text-center'
+            : 'rounded-lg bg-white p-8 max-md:min-h-[40vh] max-md:rounded-none md:rounded-xl'
+        }
+      >
+        {isSearchEmpty ? (
+          <p className="text-muted-foreground">
+            沒有找到與「{q.trim()}」相關的貼文
+          </p>
+        ) : (
+          <p className="text-muted-foreground">尚無貼文</p>
+        )}
       </div>
     );
   }

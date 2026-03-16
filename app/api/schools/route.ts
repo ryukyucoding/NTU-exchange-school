@@ -52,7 +52,11 @@ export async function GET(_req: NextRequest) {
     if (error) {
       console.error("Error fetching schools from Supabase:", error.message);
       return NextResponse.json(
-        { success: false, error: '伺服器錯誤，請稍後再試' },
+        {
+          success: false,
+          error: '伺服器錯誤，請稍後再試',
+          details: error.message,
+        },
         { status: 500 }
       );
     }
@@ -72,7 +76,7 @@ export async function GET(_req: NextRequest) {
 
     // 轉換資料格式以符合前端 School 類型
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedSchools = ((schools || []) as any[]).map((school: {
+    const formattedSchools = ((schools || []) as any[]).map((school: Record<string, unknown> & {
       id: number;
       name_zh: string;
       name_en: string;
@@ -167,8 +171,14 @@ export async function GET(_req: NextRequest) {
     );
   } catch (error: unknown) {
     console.error("Error in GET /api/schools:", error);
+    const isDev = process.env.NODE_ENV === 'development';
+    const details = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "伺服器錯誤，請稍後再試" },
+      {
+        success: false,
+        error: "伺服器錯誤，請稍後再試",
+        ...(isDev && { details }),
+      },
       { status: 500 }
     );
   }

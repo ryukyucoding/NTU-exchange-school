@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import posthog from 'posthog-js';
 
 interface UsePostActionsParams {
@@ -75,6 +76,12 @@ export function usePostActions({
       if (data.success) {
         setIsBookmarked(!isBookmarked);
         posthog.capture('post_bookmarked', { post_id: postId, action: isBookmarked ? 'remove' : 'add' });
+        toast.success(isBookmarked ? '已移除收藏' : '已加入收藏', {
+          position: 'top-center',
+          duration: 2000,
+          iconTheme: { primary: '#8D7051', secondary: '#fff' },
+          style: { border: 'none' },
+        });
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error);
