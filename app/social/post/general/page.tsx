@@ -971,7 +971,7 @@ function GeneralPostContent() {
           </main>
 
           {/* Right Sidebar - Drafts (轉發時為空，編輯時隱藏) */}
-          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
             {!editPostId && (!repostId && !currentRepostId) && (
               <DraftList type="general" onLoadDraft={handleLoadDraft} />
             )}

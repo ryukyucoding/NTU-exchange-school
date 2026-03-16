@@ -109,7 +109,7 @@ function SocialContent() {
                   </button>
                 </div>
               ) : (searchFocus && (
-                <div className="sm:hidden flex items-center px-4 py-3 border-b border-[#e8e6e3]">
+                <div className="md:hidden flex items-center px-4 py-3 border-b border-[#e8e6e3]">
                   <SocialSearchInput variant="dialog" className="w-full h-11" />
                 </div>
               ))}
@@ -117,11 +117,11 @@ function SocialContent() {
                 {/* 手機搜尋模式且尚未輸入關鍵字：顯示空狀態；桌面維持顯示貼文 */}
                 {searchFocus && !searchQ ? (
                   <>
-                    <div className="sm:hidden flex flex-col items-center justify-center py-16 text-[#8a7a63] text-sm">
+                    <div className="md:hidden flex flex-col items-center justify-center py-16 text-[#8a7a63] text-sm">
                       <p>輸入關鍵字搜尋貼文</p>
                       <p className="mt-1 text-xs">可搜尋標題、內文與標籤</p>
                     </div>
-                    <div className="hidden sm:block">
+                    <div className="hidden md:block">
                       <PostList filter={filter} hashtag={hashtag} q={searchQ} />
                     </div>
                   </>
@@ -132,14 +132,14 @@ function SocialContent() {
             </div>
           </main>
 
-          {/* Right Sidebar - fixed width, hidden below sm (640px) */}
-          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
+          {/* Right Sidebar - fixed width, hidden below md (768px) */}
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
             <SocialSidebar />
           </aside>
         </div>
       </div>
 
-      {/* Bottom Navigation - Only visible on screens smaller than sm (640px) */}
+      {/* Bottom Navigation - Only visible on screens smaller than md (768px) */}
       <SocialBottomNav />
     </div>
   );

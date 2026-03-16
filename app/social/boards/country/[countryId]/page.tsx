@@ -431,7 +431,7 @@ function CountryBoardContent() {
           </main>
 
           {/* Right Sidebar (fixed, does NOT scroll) */}
-          <aside className="hidden sm:block sm:w-56 md:w-60 lg:w-64 flex-shrink-0">
+          <aside className="hidden md:block md:w-60 lg:w-64 flex-shrink-0">
             <SocialSidebar />
           </aside>
         </div>

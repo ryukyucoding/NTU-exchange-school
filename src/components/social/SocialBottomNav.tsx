@@ -37,7 +37,7 @@ export default function SocialBottomNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-none sm:hidden" aria-label="社群導航">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-none md:hidden" aria-label="社群導航">
         <div className="flex h-14 items-center justify-center gap-6 px-4">
           <Link
             href="/social/boards"
