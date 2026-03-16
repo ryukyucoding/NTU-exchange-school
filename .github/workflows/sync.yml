@@ -2,8 +2,7 @@ name: Sync Schools
 
 on:
   schedule:
-    # 每天台灣 10:37 (UTC 02:37) — 離峰時段，減少延遲
-    - cron: '37 2 * * *'
+    - cron: '30 12 * * *'
   workflow_dispatch: # 也可以手動觸發
 
 jobs:
