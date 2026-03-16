@@ -118,9 +118,9 @@ export default function TableView({ schools }: TableViewProps) {
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[80px] text-[#6b5b4c] text-center">地區</TableHead>
-              <TableHead className="w-[100px] text-[#6b5b4c] text-center">申請組別</TableHead>
-              <TableHead className="w-[120px] text-[#6b5b4c] text-center">年級限制</TableHead>
+              <TableHead className="md:w-[72px] text-[#6b5b4c] text-center whitespace-nowrap">地區</TableHead>
+              <TableHead className="md:w-[120px] text-[#6b5b4c] text-center whitespace-nowrap">申請組別</TableHead>
+              <TableHead className="md:w-[140px] text-[#6b5b4c] text-center whitespace-nowrap">年級限制</TableHead>
               <TableHead className="w-[80px] text-center">
                 <Button
                   variant="ghost"
@@ -132,8 +132,8 @@ export default function TableView({ schools }: TableViewProps) {
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead className="w-[150px] text-[#6b5b4c] text-center">學院限制</TableHead>
-              <TableHead className="w-[120px] text-[#6b5b4c] text-center">語言要求</TableHead>
+              <TableHead className="md:w-[170px] text-[#6b5b4c] text-center whitespace-nowrap">學院限制</TableHead>
+              <TableHead className="md:w-[120px] text-[#6b5b4c] text-center whitespace-nowrap">語言要求</TableHead>
               <TableHead className="w-[80px] text-center">
                 <Button
                   variant="ghost"
