@@ -7,6 +7,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -215,6 +216,61 @@ async function main() {
   console.log('\n' + '='.repeat(55));
   console.log(`✅ 匯入完成！成功 ${success} 筆 / 失敗 ${fail} 筆`);
   console.log('='.repeat(55));
+
+  // ── 同步 Board 記錄 ──────────────────────────────────────────
+  console.log('\n🔄 同步 Board 記錄...');
+
+  const { data: countries } = await supabase.from('Country').select('id, country_zh, country_en');
+  const { data: allSchools } = await supabase.from('schools').select('id, name_zh, name_en');
+  const { data: existingBoards } = await supabase.from('Board').select('id, type, country_id, schoolId');
+
+  const existingCountryIds = new Set(
+    (existingBoards || []).filter((b: any) => b.type === 'country' && b.country_id).map((b: any) => b.country_id)
+  );
+  const existingSchoolIds = new Set(
+    (existingBoards || []).filter((b: any) => b.type === 'school' && b.schoolId).map((b: any) => b.schoolId)
+  );
+
+  const newCountryBoards = (countries || [])
+    .filter((c: any) => !existingCountryIds.has(c.id))
+    .map((c: any) => ({
+      id: randomUUID(),
+      type: 'country',
+      name: c.country_zh || c.country_en,
+      slug: `country-${c.id}`,
+      country_id: c.id,
+      schoolId: null,
+      description: null,
+    }));
+
+  const newSchoolBoards = (allSchools || [])
+    .filter((s: any) => !existingSchoolIds.has(s.id))
+    .map((s: any) => ({
+      id: randomUUID(),
+      type: 'school',
+      name: s.name_zh || s.name_en,
+      slug: `school-${s.id}`,
+      country_id: null,
+      schoolId: s.id,
+      description: null,
+    }));
+
+  let boardCreated = 0;
+  for (const batch of [newCountryBoards, newSchoolBoards]) {
+    if (batch.length === 0) continue;
+    const { data, error } = await supabase.from('Board').insert(batch).select('id');
+    if (error) {
+      console.error(`❌ Board 建立失敗: ${error.message}`);
+    } else {
+      boardCreated += data?.length ?? 0;
+    }
+  }
+
+  if (boardCreated > 0) {
+    console.log(`✅ 新建 ${boardCreated} 個 Board（國家 ${newCountryBoards.length} + 學校 ${newSchoolBoards.length}）`);
+  } else {
+    console.log('⏭️  所有 Board 已存在，無需建立');
+  }
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

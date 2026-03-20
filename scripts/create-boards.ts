@@ -8,23 +8,31 @@ import { randomUUID } from 'crypto';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-// 手動載入 .env.local
+// 載入環境變數（依序嘗試 .env.local 和 .env）
 const env: Record<string, string> = {};
-try {
-  const envFile = readFileSync(resolve(process.cwd(), '.env.local'), 'utf-8');
-  envFile.split('\n').forEach((line) => {
-    const trimmed = line.trim();
-    if (trimmed && !trimmed.startsWith('#')) {
-      const [key, ...valueParts] = trimmed.split('=');
-      if (key && valueParts.length > 0) {
-        const value = valueParts.join('=').trim().replace(/^["']|["']$/g, '');
-        env[key] = value;
+function loadEnvFile(filename: string): boolean {
+  try {
+    const envFile = readFileSync(resolve(process.cwd(), filename), 'utf-8');
+    envFile.split('\n').forEach((line) => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const [key, ...valueParts] = trimmed.split('=');
+        if (key && valueParts.length > 0) {
+          const value = valueParts.join('=').trim().replace(/^["']|["']$/g, '');
+          if (!env[key]) env[key] = value; // 不覆蓋已載入的值
+        }
       }
-    }
-  });
-} catch (error) {
-  console.error('❌ 無法讀取 .env.local 文件');
-  console.error('💡 請確保 .env.local 文件存在並包含必要的環境變數');
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const loaded1 = loadEnvFile('.env.local');
+const loaded2 = loadEnvFile('.env');
+if (!loaded1 && !loaded2) {
+  console.error('❌ 無法讀取 .env.local 或 .env 文件');
   process.exit(1);
 }
 
