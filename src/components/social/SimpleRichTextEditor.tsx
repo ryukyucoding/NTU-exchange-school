@@ -413,6 +413,14 @@ export default function SimpleRichTextEditor({
     const handleKeyDown = (e: KeyboardEvent) => {
       const editor = editorRef.current;
       if (editor && document.activeElement === editor) {
+        // 攔截 Enter 鍵，強制使用 insertLineBreak 插入 <br>，避免 Chrome 產生 <div> 導致換行遺失
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          document.execCommand('insertLineBreak', false);
+          requestAnimationFrame(() => flushMarkdownFromDom());
+          return;
+        }
+
         // 如果按下 Backspace 或 Delete，且選中了圖片，確保它被正確移除
         if (e.key === 'Backspace' || e.key === 'Delete') {
           setTimeout(handleInput, 0);
@@ -460,7 +468,7 @@ export default function SimpleRichTextEditor({
       }
       document.removeEventListener('selectionchange', handleSelectionChange);
     };
-  }, [value, updateCursorPosition, handleInput]);
+  }, [value, updateCursorPosition, handleInput, flushMarkdownFromDom]);
 
   // 獲取選取範圍用於測量層
   const getSelectionInfo = () => {

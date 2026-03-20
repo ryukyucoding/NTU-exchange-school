@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import CountrySchoolSelect from '@/components/social/CountrySchoolSelect';
-import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
+import SimpleTextEditor from '@/components/social/SimpleTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';
 import RatingInput from '@/components/social/RatingInput';
 import DraftList from '@/components/social/DraftList';
@@ -854,7 +854,7 @@ function ReviewPostContent() {
 
                 {/* Content Section */}
                 <div className="mb-6 pb-6" style={{ borderBottom: '1px solid #D9D9D9' }}>
-                  <SimpleRichTextEditor
+                  <SimpleTextEditor
                     value={content}
                     onChange={setContent}
                     placeholder="輸入內容..."

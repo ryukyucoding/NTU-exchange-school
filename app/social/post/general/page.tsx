@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import MultiCountrySchoolSelect from '@/components/social/MultiCountrySchoolSelect';
-import SimpleRichTextEditor from '@/components/social/SimpleRichTextEditor';
+import SimpleTextEditor from '@/components/social/SimpleTextEditor';
 import HashtagInput from '@/components/social/HashtagInput';
 import DraftList from '@/components/social/DraftList';
 import RepostPreview from '@/components/social/RepostPreview';
@@ -894,7 +894,7 @@ function GeneralPostContent() {
                     </div>
                   )}
                   {/* 輸入框 - 用戶可以在這裡輸入文字 */}
-                  <SimpleRichTextEditor
+                  <SimpleTextEditor
                     value={content}
                     onChange={setContent}
                     placeholder={(currentRepostId || repostId) ? "說點什麼..." : "輸入內容..."}

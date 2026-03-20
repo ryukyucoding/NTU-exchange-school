@@ -253,12 +253,13 @@ export async function POST(req: NextRequest) {
       }
 
       // 刪除舊的關聯資料（但保留 PostBoard，因為會在後面重新建立）
+      // PostSchool 可能不存在於部分 schema，用 Promise.resolve 包裝以支援 .catch
       await Promise.all([
         (supabase as any).from('Hashtag').delete().eq('postId', postId),
         (supabase as any).from('PostPhoto').delete().eq('postId', postId),
         (supabase as any).from('SchoolRating').delete().eq('postId', postId),
         (supabase as any).from('PostBoard').delete().eq('postId', postId),
-        (supabase as any).from('PostSchool').delete().eq('postId', postId).catch(() => {}),
+        Promise.resolve((supabase as any).from('PostSchool').delete().eq('postId', postId)).catch(() => {}),
       ]);
     } else {
       // 創建新 post
