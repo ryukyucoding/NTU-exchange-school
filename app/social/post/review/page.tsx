@@ -778,7 +778,7 @@ function ReviewPostContent() {
             <div className="w-full min-w-0 min-h-[60vh]">
 
               {/* White Card Container */}
-              <Card className="px-8 py-6 max-md:px-4 max-md:py-3 max-md:pt-5 relative pt-8 w-full max-w-[800px] mx-auto" style={{ border: 'none', boxShadow: 'none', backgroundColor: 'white' }}>
+              <Card className="px-4 py-3 pt-5 md:px-8 md:py-6 md:pt-8 relative w-full max-w-[800px] mx-auto" style={{ border: 'none', boxShadow: 'none', backgroundColor: 'white' }}>
                 {/* Content wrapper */}
                 <div>
                 {/* Title Section */}
