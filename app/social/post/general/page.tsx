@@ -817,7 +817,7 @@ function GeneralPostContent() {
   return (
     <div className="flex h-[calc(100dvh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
       <div
-        className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
+        className="flex shrink-0 items-center justify-center border-b border-gray-100 bg-white max-md:h-12 md:fixed md:left-0 md:right-0 md:top-0 md:z-[51] md:h-16 md:border-b-0 md:bg-transparent"
         style={{ pointerEvents: 'none' }}
       >
         <div className="pointer-events-auto max-w-[calc(100vw-32px)] truncate rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-2 text-sm font-medium text-[#5A5A5A] select-none touch-none">
@@ -825,7 +825,7 @@ function GeneralPostContent() {
         </div>
       </div>
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 pt-14 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1400px] flex-1 overflow-hidden bg-white px-0 pb-20 md:bg-[#F4F4F4] md:px-2 md:pb-6 md:pt-4 lg:pb-6">
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
