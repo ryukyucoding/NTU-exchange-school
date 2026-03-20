@@ -375,40 +375,47 @@ export default function SimpleTextEditor({
   } as const;
 
   return (
-    <div className="relative rounded-lg border border-gray-200 bg-white overflow-hidden">
-      {/* 編輯區 - contentEditable，所見即所得（工具列在下方，編輯長文時不必往上捲） */}
-      <div
-        ref={editorRef}
-        contentEditable
-        suppressContentEditableWarning
-        onInput={handleInput}
-        onFocus={handleEditorFocus}
-        onCompositionStart={handleCompositionStart}
-        onCompositionEnd={handleCompositionEnd}
-        data-placeholder={placeholder}
-        className="simple-text-editor-ce min-h-[200px] px-3 py-3 text-sm focus:outline-none [&>div]:min-h-[1.65em] [&>p]:min-h-[1.65em]"
-        style={{
-          color: '#374151',
-          lineHeight: 1.75,
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-        }}
-      />
-
-      {/* Placeholder */}
-      {!hasContent && (
+    <div className="w-full min-w-0 rounded-lg border border-gray-200 overflow-hidden">
+      {/* 編輯區 - contentEditable + placeholder 用 grid 重疊 */}
+      <div style={{ display: 'grid' }}>
         <div
-          className="absolute top-3 left-3 pointer-events-none text-sm"
-          style={{ color: '#9ca3af' }}
-        >
-          {placeholder}
-        </div>
-      )}
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleInput}
+          onFocus={handleEditorFocus}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+          data-placeholder={placeholder}
+          className="simple-text-editor-ce w-full px-3 py-3 text-sm focus:outline-none bg-white [&>div]:min-h-[1.65em] [&>p]:min-h-[1.65em]"
+          style={{
+            gridArea: '1/1',
+            minHeight: 200,
+            color: '#374151',
+            lineHeight: 1.75,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
+        />
+        {!hasContent && (
+          <div
+            style={{
+              gridArea: '1/1',
+              padding: '12px',
+              color: '#9ca3af',
+              pointerEvents: 'none',
+              fontSize: '14px',
+              lineHeight: 1.75,
+            }}
+          >
+            {placeholder}
+          </div>
+        )}
+      </div>
 
       {/* 工具列 - 置於編輯區下方 */}
       <div
-        className="flex flex-wrap items-center gap-1 px-2 py-2 border-t border-gray-200 bg-gray-100"
-        style={{ minHeight: 44 }}
+        className="flex flex-wrap items-center gap-1 px-2 py-1.5 border-t border-gray-200 bg-gray-50"
       >
         <Button
           type="button"

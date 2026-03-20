@@ -765,7 +765,7 @@ function ReviewPostContent() {
         className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
         style={{ pointerEvents: 'none' }}
       >
-        <div className="pointer-events-auto max-w-[calc(100vw-32px)] truncate rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-2 text-sm font-medium text-[#5A5A5A]">
+        <div className="pointer-events-auto max-w-[calc(100vw-32px)] truncate rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-2 text-sm font-medium text-[#5A5A5A] select-none touch-none">
             {editPostId && title ? title : '發布貼文'}
         </div>
       </div>
@@ -774,16 +774,13 @@ function ReviewPostContent() {
         <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-6">
           <aside className="hidden shrink-0 md:block md:w-16 lg:w-64" aria-hidden />
 
-          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto overscroll-contain bg-white md:mx-auto">
+          <main className="h-full min-h-0 w-full min-w-0 max-w-[800px] flex-1 overflow-y-auto max-md:overflow-x-clip overscroll-contain bg-white md:mx-auto max-md:touch-pan-y">
             <div className="w-full min-w-0 min-h-[60vh]">
 
               {/* White Card Container */}
-              <Card className="p-6 bg-white relative pt-8 w-full max-w-[800px] mx-auto" style={{ borderColor: 'white' }}>
-                {/* Left spacer for "+" button */}
-                <div className="absolute left-0 top-0 bottom-0 w-12"></div>
-                
-                {/* Content wrapper with left and right margins */}
-                <div className="ml-12 mr-12">
+              <Card className="px-8 py-6 max-md:px-4 max-md:py-3 max-md:pt-5 relative pt-8 w-full max-w-[800px] mx-auto" style={{ border: 'none', boxShadow: 'none', backgroundColor: 'white' }}>
+                {/* Content wrapper */}
+                <div>
                 {/* Title Section */}
                 <div className="mb-6">
                   <Input
