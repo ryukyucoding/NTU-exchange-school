@@ -756,11 +756,11 @@ function ReviewPostContent() {
   };
 
   if (loading) {
-    return <LoadingScreen className="h-[calc(100vh-64px)] bg-[#F4F4F4]" />;
+    return <LoadingScreen className="h-[calc(100dvh-64px)] bg-[#F4F4F4]" />;
   }
 
   return (
-    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
+    <div className="flex h-[calc(100dvh-64px)] flex-col overflow-hidden bg-[#F4F4F4] max-md:bg-white">
       <div
         className="fixed left-0 right-0 z-[51] flex items-center justify-center border-b border-gray-100 bg-white md:top-0 md:h-16 md:border-b-0 md:bg-transparent max-md:top-16 max-md:h-12"
         style={{ pointerEvents: 'none' }}

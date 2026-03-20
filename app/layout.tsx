@@ -10,6 +10,12 @@ const inter = Inter({ subsets: ['latin'] });
 
 const BASE_URL = 'https://tang-yuan.vercel.app';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
