@@ -35,7 +35,7 @@ export default function UnsavedChangesDialog({
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90%] sm:max-w-[425px] rounded-lg bg-white">
+      <DialogContent className="max-w-[92%] sm:max-w-[425px] rounded-lg bg-white">
         <DialogHeader>
           <DialogTitle style={{ color: '#5A5A5A' }}>捨棄變更？</DialogTitle>
           <DialogDescription style={{ color: '#5A5A5A' }}>
