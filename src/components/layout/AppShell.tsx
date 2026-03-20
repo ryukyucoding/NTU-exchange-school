@@ -32,10 +32,12 @@ export default function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen">
-      {/* Header Frame - 完全透明 */}
-      <header 
-        className="fixed top-0 left-0 right-0 z-[100] h-16 pointer-events-none" 
-        style={{ backgroundColor: 'unset', background: 'unset' }}
+      {/* Header Frame - 預設透明，post 編輯頁手機版加背景防止內容穿透 */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-[100] h-16 pointer-events-none ${
+          pathname?.startsWith('/social/post') ? 'max-md:bg-[#F4F4F4]' : ''
+        }`}
+        style={pathname?.startsWith('/social/post') ? undefined : { backgroundColor: 'unset', background: 'unset' }}
       >
         <div className="relative flex h-full items-center justify-between px-3 sm:px-4">
           {/* 左上角：選單；社群頁小螢幕 Logo 改置中，此處只留選單 */}

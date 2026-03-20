@@ -762,7 +762,7 @@ function ReviewPostContent() {
   return (
     <div className="flex flex-col bg-white md:h-[calc(100dvh-64px)] md:overflow-hidden md:bg-[#F4F4F4]">
       <div
-        className="sticky top-0 z-[51] flex shrink-0 items-center justify-center border-b border-gray-100 bg-white max-md:pb-3 max-md:pt-16 md:fixed md:left-0 md:right-0 md:top-0 md:h-16 md:border-b-0 md:bg-transparent"
+        className="flex shrink-0 items-center justify-center border-b border-gray-100 bg-white max-md:h-12 md:fixed md:left-0 md:right-0 md:top-0 md:z-[51] md:h-16 md:border-b-0 md:bg-transparent"
         style={{ pointerEvents: 'none' }}
       >
         <div className="pointer-events-auto max-w-[calc(100vw-32px)] truncate rounded-full border border-[#5A5A5A] bg-white/95 px-4 py-2 text-sm font-medium text-[#5A5A5A] select-none touch-none">
