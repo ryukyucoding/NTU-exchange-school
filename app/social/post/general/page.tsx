@@ -833,7 +833,7 @@ function GeneralPostContent() {
             <div className="w-full min-w-0 min-h-[60vh]">
 
               {/* White Card Container */}
-              <Card className="px-4 py-3 pt-5 md:px-8 md:py-6 md:pt-8 relative w-full max-w-[800px] mx-auto" style={{ border: 'none', boxShadow: 'none', backgroundColor: 'white' }}>
+              <Card className="relative w-full max-w-[800px] mx-auto" style={{ border: 'none', boxShadow: 'none', backgroundColor: 'white', padding: '32px 32px 24px' }}>
                 {/* Content wrapper */}
                 <div>
                 {/* Title Section */}
