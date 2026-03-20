@@ -454,6 +454,40 @@ function GeneralPostContent() {
     };
   }, [initialValues, allowNavigation, returnUrl, entryPage, title, content, selectedCountries, selectedSchoolIds, hashtags, currentRepostId, repostId, router]);
 
+  // 攔截所有 SPA 內的連結點擊（底部導航、側邊欄等）
+  useEffect(() => {
+    if (!initialValues || allowNavigation) return;
+
+    const handleClick = (e: MouseEvent) => {
+      // 只攔截左鍵且無修飾鍵的點擊
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      const anchor = (e.target as HTMLElement).closest('a');
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      // 不攔截外部連結
+      if (href.startsWith('http') && !href.startsWith(window.location.origin)) return;
+      // 不攔截當前頁面的連結
+      if (href === window.location.pathname + window.location.search) return;
+
+      if (hasUnsavedChanges()) {
+        e.preventDefault();
+        e.stopPropagation();
+        setPendingNavigation(href);
+        setShowUnsavedDialog(true);
+      }
+    };
+
+    // capture phase 確保在 Next.js 處理之前攔截
+    document.addEventListener('click', handleClick, true);
+
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+    };
+  }, [initialValues, allowNavigation, title, content, selectedCountries, selectedSchoolIds, hashtags, currentRepostId, repostId]);
+
   const handleLoadDraft = async (draft: Draft) => {
     // 檢查是否有未儲存的變更
     if (hasUnsavedChanges()) {
