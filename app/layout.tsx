@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: BASE_URL,
     images: [
       {
-        url: '/logo-social.png',
+        url: '/og-cover.png',
         width: 1200,
         height: 630,
         alt: '湯圓｜臺大交換學校地圖',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '湯圓｜臺大交換學校地圖',
     description: '台灣大學交換學校查詢系統 - 搜尋、篩選、比較全球交換學校資訊，分享交換心得與評價',
-    images: ['/logo-social.png'],
+    images: ['/og-cover.png'],
   },
   alternates: {
     canonical: BASE_URL,
