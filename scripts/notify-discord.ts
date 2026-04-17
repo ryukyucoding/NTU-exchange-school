@@ -128,10 +128,16 @@ async function notifyDiffReport() {
 
   lines.push(`✅ 無變更: ${summary.unchanged} 所`);
 
+  const DESCRIPTION_LIMIT = 4000;
+  let description = lines.join('\n');
+  if (description.length > DESCRIPTION_LIMIT) {
+    description = description.slice(0, DESCRIPTION_LIMIT) + '\n…（內容過多，已截斷）';
+  }
+
   await sendBotMessage({
     embeds: [{
       title: `📊 學校資料差異報告 Semester ${SEMESTER}`,
-      description: lines.join('\n'),
+      description,
       color: 0xf39c12,
       timestamp: report.generated_at,
     }],
